@@ -130,7 +130,7 @@ def classify_remote_message(message: str) -> DownloadError:
                              block=True)
     if any(word in lowered for word in ("配额", "quota", "次数", "上限", "limit")):
         return DownloadError("quota", f"No alcanza la cuota sin conexión: {text}")
-    if any(word in lowered for word in ("已存在", "exist", "Duplicada", "duplicate")):
+    if any(word in lowered for word in ("已存在", "exist", "重复", "duplicate")):
         return DownloadError("duplicate", f"El servidor remoto ya tiene la misma tarea: {text}")
     if any(word in lowered for word in ("链接", "无效", "invalid", "url", "格式")):
         return DownloadError("invalid_link", f"El servidor remoto no acepta este enlace: {text}")
