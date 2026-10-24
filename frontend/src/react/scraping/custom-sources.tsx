@@ -15,10 +15,13 @@ import { CUSTOM_SOURCES_URL as URL, CUSTOM_SOURCES_KEY as KEY, fetchCustomSource
   type CustomSource as Source } from './custom-source-data';
 
 const FIELDS = [['code', 'Código'], ['title', 'Título'], ['studio', 'Estudio'], ['series', 'Series'],
-  ['release_date', 'Fecha de lanzamiento'], ['performers', 'Actores (lista de texto)'], ['tags', 'Etiquetas (lista de texto)']] as const;
+  ['release_date', 'Fecha de lanzamiento'], ['performers', 'Intérpretes (lista)'], ['tags', 'Etiquetas (lista)'],
+  ['cover', 'Portada (dirección de imagen)']] as const;
+const KINDS: [string, string][] = [['html', 'Página web'], ['json', 'API JSON']];
 const TYPES = [['censored', 'Con censura'], ['amateur', 'Amateur'], ['uncensored', 'Sin censura'], ['fc2', 'FC2'],
   ['kmib', 'MIB coreano'], ['other', 'Otros'], ['unsure', 'Código por verificar'], ['unknown', 'Desconocido']] as const;
-const blank = (): Source => ({ name: '', endpoint: '', enabled: false, fields: { code: 'id', title: 'title' }, content_types: ['censored'] });
+const blank = (): Source => ({ name: '', kind: 'html', endpoint: '', enabled: true,
+  fields: { title: 'h1', cover: 'img@src' }, content_types: ['censored', 'uncensored', 'amateur', 'fc2', 'other', 'unsure', 'unknown'] });
 
 export function CustomSources({ receipt }: { receipt(message: string): void }) {
   const [editing, setEditing] = useState<Source | null>(null);
@@ -27,12 +30,12 @@ export function CustomSources({ receipt }: { receipt(message: string): void }) {
   const changed = (result: { items: Source[] }) => queryClient.setQueryData(KEY, result);
   const hasContent = Boolean(query.isPending || query.error || query.data?.items.length || action.error);
   const add = <Button variant="secondary" onClick={() => setEditing(blank())}>Añadir fuente</Button>;
-  return <Section title="Fuentes de metadatos personalizadas">
+  return <Section title="Fuentes de información personalizadas">
     {hasContent ? <Stack>
       {query.isPending ? <div aria-busy="true" data-skeleton="" aria-label="Cargando fuentes personalizadas" /> : null}
       {query.error ? <ErrorText>{errorMessage(query.error)}</ErrorText> : null}
       {query.data?.items.map((source) => <div key={source.id} className="flex flex-wrap items-center gap-3">
-        <span className="min-w-0 flex-1">{source.name} · {source.enabled ? 'Activada' : 'Desactivada'}</span>
+        <span className="min-w-0 flex-1">{source.name} · {source.kind === 'html' ? 'Página web' : 'API JSON'} · {source.enabled ? 'Activada' : 'Desactivada'}</span>
         <Button variant="secondary" onClick={() => setEditing(source)}>Editar</Button>
         <Button variant="secondary" {...busyProps(action.busy === source.id)} onClick={() => void action.run(source.id!,
           (signal) => apiSend<{ items: Source[] }>(URL, { ...source, enabled: !source.enabled }, 'POST', signal),
@@ -60,14 +63,21 @@ function SourceForm({ initial, cancel, saved }: {
   const revision = useRef(0);
   const action = useAction();
   const change = (patch: Partial<Source>) => { revision.current++; setSource((current) => ({ ...current, ...patch })); setPreview('') };
+  const html = (source.kind || 'json') === 'html';
   return <form aria-label="Configuración de la fuente de metadatos" aria-busy={action.busy === 'preview'} onSubmit={(event) => {
     event.preventDefault();
     void action.run('save', (signal) => apiSend<{ items: Source[] }>(URL, source, 'POST', signal), saved);
   }}>
     <Stack>
       <Input label="Nombre de la fuente" value={source.name} maxLength={80} onChange={(name) => change({ name })} />
-      <Input label="Dirección de la API JSON" value={source.endpoint} maxLength={2048}
-        placeholder="https://example.com/api/movies/{code}" onChange={(endpoint) => change({ endpoint })} />
+      <div className="flex flex-col gap-2">
+        <FieldLabel>Tipo de fuente</FieldLabel>
+        <SelectField id="custom-source-kind" label="Tipo de fuente" epoch={0} value={source.kind || 'json'}
+          options={KINDS} onPick={(kind) => change({ kind: kind as Source['kind'] })} />
+      </div>
+      <Input label={html ? 'Dirección de la página' : 'Dirección de la API JSON'} value={source.endpoint} maxLength={2048}
+        placeholder={html ? 'https://example.com/video/{code}' : 'https://example.com/api/movies/{code}'}
+        onChange={(endpoint) => change({ endpoint })} />
       <div className="flex flex-col gap-2">
         <FieldLabel>Conexión de la fuente</FieldLabel>
         <SelectField id="custom-source-network" label="Conexión de la fuente" epoch={0} value={source.network || 'direct'}
@@ -79,14 +89,18 @@ function SourceForm({ initial, cancel, saved }: {
           options={[["original", "Tal cual"], ["lowercase", "Minúsculas"], ["compact", "Sin guiones"], ["underscore", "Guion a guion bajo"]]}
           onPick={(code_format) => change({ code_format })} />
       </div>
-      <Help>Escribe una API JSON pública y la ruta de cada campo de la respuesta, por ejemplo data.title. El campo de código sirve para comprobar que es la misma obra.</Help>
-      {FIELDS.map(([field, label]) => <Input key={field} label={`Ruta del campo ${label}`} value={source.fields[field] || ''}
+      {html
+        ? <Help>Escribe la dirección de una página pública con {'{code}'} donde va el código (por ejemplo https://sitio.com/video/{'{code}'}) y un selector CSS para cada dato: <code>h1.title</code> lee el texto y <code>img.cover@src</code> lee un atributo. Las listas (intérpretes, etiquetas) toman todos los elementos que coinciden. Si no pones selector de código, la página debe mostrar el código para aceptarla.</Help>
+        : <Help>Escribe una API JSON pública y la ruta de cada campo de la respuesta, por ejemplo data.title. El campo de código sirve para comprobar que es la misma obra.</Help>}
+      {FIELDS.map(([field, label]) => <Input key={field} label={`${html ? 'Selector CSS' : 'Ruta del campo'} · ${label}`} value={source.fields[field] || ''}
+        placeholder={html ? { code: '.codigo', title: 'h1', studio: '.studio a', series: '.series a', release_date: '.date',
+          performers: '.cast a', tags: '.genre a', cover: 'img.cover@src' }[field] : undefined}
         onChange={(path) => { const fields = { ...source.fields }; if (path) fields[field] = path; else delete fields[field]; change({ fields }) }} />)}
       <div className="flex flex-wrap gap-3" role="group" aria-label="Tipos de contenido compatibles">
         {TYPES.map(([type, label]) => <Checkbox key={type} isSelected={source.content_types.includes(type)}
           onChange={(checked) => change({ content_types: checked ? [...source.content_types, type] : source.content_types.filter((kind) => kind !== type) })}>{label}</Checkbox>)}
       </div>
-      <Checkbox isSelected={source.enabled} onChange={(enabled) => change({ enabled })}>Fuentes activas</Checkbox>
+      <Checkbox isSelected={source.enabled} onChange={(enabled) => change({ enabled })}>Usar esta fuente al obtener datos</Checkbox>
       <Input label="Código de prueba (Enter para consultar)" value={code} onChange={(value) => {
         revision.current++; setCode(value); setPreview('');
       }} onKeyDown={(event) => {
@@ -99,7 +113,7 @@ function SourceForm({ initial, cancel, saved }: {
           }, (cause) => { if (current === revision.current) action.setError(errorMessage(cause)) });
       }} />
       {action.busy === 'preview' ? <Help role="status"><span dangerouslySetInnerHTML={{ __html: spinnerHtml('Probando la fuente') }} />Probando la fuente…</Help> : null}
-      {preview ? <CodeBlock code={preview} language="json" label="Respuesta de la API de metadatos" /> : null}
+      {preview ? <CodeBlock code={preview} language="json" label="Datos leídos de la fuente" /> : null}
       {action.error ? <ErrorText>{action.error}</ErrorText> : null}
     </Stack>
     <Footer><Button variant="secondary" type="button" onClick={cancel}>Cancelar</Button>
