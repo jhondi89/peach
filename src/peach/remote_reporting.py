@@ -18,10 +18,10 @@ from urllib.parse import urlsplit
 from . import __version__
 
 FIELDS = {
-    "usage": "Peach 版本、操作系统类型；每天最多一次，不含安装标识。",
-    "errors": "Peach 版本、系统类型、Python 版本、CPU 架构、故障环节、异常链、Peach 代码文件名/函数名/行号、结构化错误码、媒体工具故障类别、HTTP 方法/路由模板/关联错误编号、同类故障次数与统计日期；首次立即上传，重复次数每小时或退出时合并，每天最多 20 批。",
+    "usage": "Versión de Peach y tipo de sistema operativo; como máximo una vez al día, sin identificador de instalación.",
+    "errors": "Versión de Peach, tipo de sistema, versión de Python, arquitectura de CPU, etapa del fallo, cadena de excepciones, archivo/función/línea del código de Peach, código de error estructurado, categoría de fallo de las herramientas multimedia, método HTTP/plantilla de ruta/número de error relacionado, cantidad de fallos similares y fecha; el primero se envía de inmediato, las repeticiones se agrupan cada hora o al salir, con un máximo de 20 lotes al día.",
 }
-NOTICE = "发送至 Sentry。不上报错误原文、完整日志、诊断 ZIP、媒体名称、路径、网址、观看记录或凭据。接收服务会接触连接 IP；关闭后停止新发送，已发送的信息无法撤回。"
+NOTICE = "Se envía a Sentry. No se envía el texto original de los errores, registros completos, ZIP de diagnóstico, nombres de medios, rutas, URL, historial ni credenciales. El servicio receptor verá la IP de conexión; al desactivarlo deja de enviarse, pero lo ya enviado no se puede retirar."
 _lock = threading.RLock()
 _client = None
 _client_dsn = ""
@@ -95,13 +95,13 @@ def snapshot(config=None):
 
 def parse_choices(body, *, partial=False):
     if not isinstance(body, dict):
-        raise ValueError("遥测和自动错误诊断必须是布尔值")
+        raise ValueError("La telemetría y el diagnóstico automático de errores deben ser verdadero o falso")
     defaults = consent() if partial else {}
     choices = {key: body.get(key, defaults.get(key)) for key in FIELDS}
     if any(type(value) is not bool for value in choices.values()):
-        raise ValueError("遥测和自动错误诊断必须是布尔值")
+        raise ValueError("La telemetría y el diagnóstico automático de errores deben ser verdadero o falso")
     if choices["usage"] != choices["errors"]:
-        raise ValueError("版本统计与错误诊断须同时开启或关闭")
+        raise ValueError("Las estadísticas de versión y el diagnóstico de errores deben activarse o desactivarse juntos")
     return choices
 
 

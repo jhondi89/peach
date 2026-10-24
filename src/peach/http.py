@@ -234,7 +234,7 @@ class HttpxTransport:
                 headers = _without(headers, ("content-length", "content-type"))
             url = target
         raise httpx.TooManyRedirects(
-            f"超过 {self.MAX_REDIRECTS} 次重定向", request=response.request)
+            f"Más de {self.MAX_REDIRECTS} redirecciones", request=response.request)
 
     def close(self) -> None:
         if self._owns_client:

@@ -117,7 +117,7 @@ def _add_cover(post: Mapping[str, object], media: list[dict],
     matched = _COVER_DIMS_RE.search(cover)
     media.append({
         "id": "cover",
-        "name": "封面",
+        "name": "Portada",
         "url": cover,
         "thumb_url": cover,
         "media_kind": "image",

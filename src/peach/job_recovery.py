@@ -17,7 +17,7 @@ current_job_id = ContextVar('peach_resuming_job_id', default=None)
 
 def _path(db: Path, key: str) -> Path:
     if not key or any(c not in "abcdefghijklmnopqrstuvwxyz0123456789-" for c in key):
-        raise ValueError("任务恢复标识无效")
+        raise ValueError("El identificador de recuperación de la tarea no es válido")
     return state_for(db).parent / "job-recovery" / (key + ".json")
 
 
@@ -28,7 +28,7 @@ def read(db: Path, key: str) -> dict:
     except FileNotFoundError:
         return {}
     except (OSError, ValueError):
-        return {'status': 'blocked', 'error': '任务恢复记录无法读取，请重新发起任务。'}
+        return {'status': 'blocked', 'error': "No se puede leer el registro de recuperación de la tarea; vuelve a iniciarla."}
 
 
 def save(db: Path, key: str, job_id: str, request: dict, *, run_id=None, waiting=False) -> None:
@@ -62,7 +62,7 @@ def cancel(db: Path, key: str) -> None:
         data = read(db, key)
         if data.get('run_id') is not None:
             from .task_runs import TaskRunStore
-            TaskRunStore(db).finish(data['run_id'], 'cancelled', error='用户停止任务')
+            TaskRunStore(db).finish(data['run_id'], 'cancelled', error="El usuario detuvo la tarea")
         _path(db, key).unlink(missing_ok=True)
 
 

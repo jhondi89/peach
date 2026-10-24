@@ -73,7 +73,7 @@ def script_owner(name: str) -> str:
 def _identifier(value: str) -> str:
     text = str(value or "").strip()
     if not _IDENTIFIER.fullmatch(text):
-        raise ValueError(f"归属标识只能是小写字母、数字、下划线和连字符：{value!r}")
+        raise ValueError(f"El identificador de pertenencia solo puede tener minúsculas, números, guiones bajos y guiones: {value!r}")
     return text
 
 
@@ -116,15 +116,15 @@ def owner_label(owner: str | None) -> str:
     """
     kind, _, identifier = str(owner or "").partition(":")
     if kind == "user":
-        return "手动填写"
+        return "Escrito a mano"
     if kind == "review":
-        return f"复核批准 {identifier}"
+        return f"Aprobado en revisión {identifier}"
     if kind == "auto":
-        return f"{identifier} 免复核落库"
+        return f"{identifier} guardado sin revisión"
     if kind == "scan":
-        return "文件名推导"
+        return "Deducido del nombre de archivo"
     if kind == "script":
-        return f"维护脚本 {identifier}"
+        return f"Script de mantenimiento {identifier}"
     return ""
 
 
@@ -139,7 +139,7 @@ class RevisionConflict(ValueError):
         self.expected = int(expected)
         self.revisions = {int(key): int(value) for key, value in revisions.items()}
         current = "、".join(f"{key}={value}" for key, value in sorted(self.revisions.items()))
-        super().__init__(f"资产已被改过：期望 revision {expected}，数据库现值 {current}")
+        super().__init__(f"El recurso ya fue modificado: se esperaba revision {expected}, la base de datos tiene {current}")
 
 
 @dataclass(frozen=True)
@@ -211,12 +211,12 @@ def write_owned_fields(
     fields = list(values)
     unknown = [name for name in fields if name not in OWNED_FIELDS]
     if unknown:
-        raise ValueError(f"不是受归属保护的真相字段：{sorted(unknown)}")
+        raise ValueError(f"No es un campo protegido por pertenencia: {sorted(unknown)}")
     if not fields:
-        raise ValueError("要写的字段是空的")
+        raise ValueError("El campo a escribir está vacío")
     kind, _, identifier = str(owner or "").partition(":")
     if kind not in {"user", "review", "auto", "scan", "script"}:
-        raise ValueError(f"归属串的类别不在清单里：{owner!r}")
+        raise ValueError(f"La categoría de la cadena de pertenencia no está en la lista: {owner!r}")
     _identifier(identifier)
 
     marks = ",".join("?" * len(ids))

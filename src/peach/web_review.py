@@ -624,46 +624,43 @@ def _pending_first(rows: list[dict]) -> list[dict]:
 def _review_evidence(category: str, row: dict) -> str:
     """给本身没有 reason 列的候选拼一句可判断的证据，别让复核页只剩一个名字。"""
     if category == "metadata_fields":
-        current = str(row.get("current_value") or "").strip() or "尚无"
-        target = '匹配资产' if row.get('asset_path') else '同番号资产'
+        current = str(row.get("current_value") or "").strip() or "Aún sin valor"
+        target = "Recurso coincidente" if row.get('asset_path') else "Recurso con el mismo código"
         owner = owner_label(str(row.get("current_owner") or ""))
-        return (f"当前值：{current}"
+        return (f"Valor actual: {current}"
                 + (f"（{owner}）" if owner else "")
-                + f"；{row.get('videos') or 0} 个{target}；"
-                f"{len(row.get('candidates') or [])} 个资料来源")
+                + f"; {row.get('videos') or 0} {target}; {len(row.get('candidates') or [])} fuentes de datos")
     if category == "western_identity":
         overlap = row.get("token_overlap") or "0"
         variant = row.get("matched_variant") or ""
-        spelling = f"（写法 {variant}）" if variant and variant != row.get("creator") else ""
-        return (f"{row.get('verdict', '')} → {row.get('babepedia_name', '')}"
-                f"{spelling}；词元重合 {overlap}；{row.get('videos', '')} 部作品")
+        spelling = f"(escrito {variant})" if variant and variant != row.get("creator") else ""
+        return (f"{row.get('verdict', '')} → {row.get('babepedia_name', '')}{spelling}; coincidencia de términos {overlap}; {row.get('videos', '')} obras")
     if category == "cover_sources":
         if row.get("result") != "取得":
-            return f"未取得：{row.get('note') or '所有渠道都没有候选'}"
+            return f"No obtenido: {row.get('note') or '所有渠道都没有候选'}"
         return (f"{row.get('source', '')} · {row.get('width', '')}×{row.get('height', '')}"
                 f" · {row.get('kb', '')} KB")
     if category == "fc2_markings":
         if row.get("is_collection"):
-            return (f"合集，{row.get('collection_parts', '')} 个分片各自独立；"
-                    f"封面不下发，分片回落到自己的缩略图")
+            return (f"Recopilación: sus {row.get('collection_parts', '')} partes son independientes; no se envía portada y cada parte usa su propia miniatura")
         bits = []
         if row.get("performer_votes"):
             # 票数就是「几条独立评论这么说」，是这批候选唯一的置信度信号。
-            bits.append(f"评论标记 {row.get('performer_votes')}")
+            bits.append(f"Marca de reseña {row.get('performer_votes')}")
         if row.get("equivalents"):
-            bits.append(f"等同于 {row.get('equivalents')}")
+            bits.append(f"Equivale a {row.get('equivalents')}")
         if row.get("writer"):
-            bits.append(f"卖家 {row.get('writer')}")
+            bits.append(f"Vendedor {row.get('writer')}")
         return "；".join(bits)
     if category == "fc2_similarity":
         kinds = str(row.get("evidence_kinds") or "").replace(" ", "、")
-        detail = [f"证据 {kinds}" if kinds else "所选资料缺少足够依据"]
+        detail = [f"Prueba {kinds}" if kinds else "Los datos elegidos no tienen fundamento suficiente"]
         if row.get("duration_delta_seconds") != "":
-            detail.append(f"时长差 {row.get('duration_delta_seconds')} 秒")
+            detail.append(f"Diferencia de duración {row.get('duration_delta_seconds')} s")
         if row.get("size_delta_percent") != "":
-            detail.append(f"体积差 {row.get('size_delta_percent')}%")
+            detail.append(f"Diferencia de tamaño {row.get('size_delta_percent')}%")
         if row.get("shared_performers"):
-            detail.append(f"共同演员 {row.get('shared_performers')}")
+            detail.append(f"Intérpretes en común {row.get('shared_performers')}")
         if row.get("warnings"):
             detail.append(str(row.get("warnings")))
         return "；".join(detail)
@@ -695,18 +692,18 @@ def _selected_metadata_candidate(contract: ReviewContract, item_key: str, candid
               for row in read_candidates("metadata_fields", contract.candidate_root)[0]}
     group = groups.get(item_key)
     if group is None:
-        raise ValueError("所选字段资料不在当前批次，无法批准")
+        raise ValueError("Los datos del campo elegido no están en el lote actual; no se pueden aprobar")
     if str(group.get("status") or "").strip() != "candidate":
-        raise ValueError("只有待确认的资料字段可以批准")
+        raise ValueError("Solo se pueden aprobar campos de datos pendientes")
     try:
         candidates = json.loads(str(group.get("candidates_json") or "[]"))
     except (TypeError, ValueError) as exc:
-        raise ValueError("待确认资料的 JSON 格式无效") from exc
+        raise ValueError("El JSON de los datos pendientes no es válido") from exc
     selected = next((candidate for candidate in candidates
                      if isinstance(candidate, dict)
                      and str(candidate.get("candidate_key") or "") == candidate_key), None)
     if selected is None:
-        raise ValueError("所选来源的资料不在当前待确认列表中")
+        raise ValueError("Los datos de la fuente elegida no están en la lista de pendientes actual")
     return group, selected
 
 
@@ -727,12 +724,12 @@ studio_logo_key = logo_key
 #: 表现就是「点通过、什么也没发生」——`creator_tags` 和 `studio_logos` 各犯过一次，
 #: `performer_avatars` 是第三次。`test_every_approvable_category_can_land` 守住这条。
 DECISION_ONLY_CATEGORIES = {
-    "western_identity": "身份判断落在 entity 上，由专门的合并流程写，不在复核这一步",
-    "code_creators": "番号与创作者的绑定由 metadata_fields 那条路写",
-    "cover_sources": "封面已在 /cover 缓存里，复核只是确认取得与否",
-    "fc2_markings": "只记录识别依据，不修改影片资料",
-    "fc2_similarity": "提供不同番号之间的对应线索，合并需另行确认",
-    "video_endcards": "只登记首尾帧证据，不改资产",
+    "western_identity": "La decisión de identidad recae en la entidad y la escribe el flujo de fusión, no este paso de revisión",
+    "code_creators": "El vínculo entre código y creador lo escribe la vía de metadata_fields",
+    "cover_sources": "La portada ya está en la caché /cover; la revisión solo confirma si se obtuvo",
+    "fc2_markings": "Solo registra los motivos de identificación, sin cambiar los datos del video",
+    "fc2_similarity": "Da pistas de correspondencia entre códigos distintos; fusionar requiere otra confirmación",
+    "video_endcards": "Solo registra pruebas de los fotogramas inicial y final, sin cambiar el recurso",
 }
 
 
@@ -758,20 +755,20 @@ def _install_performer_avatar(contract: ReviewContract, entity_id: str) -> int:
             for row in read_candidates("performer_avatars", contract.candidate_root)[0]}
     candidate = rows.get(str(entity_id))
     if candidate is None:
-        raise ValueError("所选资料不在当前批次，无法批准")
+        raise ValueError("Los datos elegidos no están en el lote actual; no se pueden aprobar")
     if str(candidate.get("verdict") or "").strip() != "ok":
-        raise ValueError("只有通过图片质量检查的备选图片可以使用")
+        raise ValueError("Solo se pueden usar imágenes alternativas que pasaron la revisión de calidad")
     digest = str(candidate.get("sha256") or "").strip().lower()
     if len(digest) != 64 or any(char not in "0123456789abcdef" for char in digest):
-        raise ValueError("所选图片缺少有效的 SHA-256 校验值")
+        raise ValueError("A la imagen elegida le falta un SHA-256 válido")
     objects_root = contract.candidate_root / "provider-cache" / "performer-avatars"
     source = next((item for item in objects_root.glob(f"*/objects/{digest}.*")
                    if item.is_file()), None)
     if source is None:
-        raise ValueError(f"所选图片不在本机缓存：{digest[:12]}")
+        raise ValueError(f"La imagen elegida no está en la caché local: {digest[:12]}")
     body = source.read_bytes()
     if hashlib.sha256(body).hexdigest() != digest:
-        raise ValueError("图片内容与待确认记录不一致，无法使用")
+        raise ValueError("El contenido de la imagen no coincide con el registro pendiente; no se puede usar")
     content_type = str(candidate.get("mime_type") or "").strip() or "image/jpeg"
     with contract.read_connection() as connection:
         # 候选出来之后实体并入了别人：图装到现在那一条名下，不写成没人读的孤立文件。
@@ -809,20 +806,20 @@ def _install_studio_logo(contract: ReviewContract, studio: str) -> int:
             for row in read_candidates("studio_logos", contract.candidate_root)[0]}
     candidate = rows.get(studio)
     if candidate is None:
-        raise ValueError("所选资料不在当前批次，无法批准")
+        raise ValueError("Los datos elegidos no están en el lote actual; no se pueden aprobar")
     saved = str(candidate.get("saved") or "").strip()
     if not saved:
-        raise ValueError("所选资料中没有可用的本机图片，无法使用")
+        raise ValueError("Los datos elegidos no tienen imágenes locales utilizables; no se pueden usar")
     source = contract.candidate_root / "studio-logos" / PurePosixPath(
         saved.replace("\\", "/")).name
     if not source.is_file():
-        raise ValueError(f"所选图片未保存在本机：{source.name}")
+        raise ValueError(f"La imagen elegida no está guardada en este equipo: {source.name}")
     key = studio_logo_key(studio)
     if not key:
-        raise ValueError("厂牌名无法生成存盘文件名")
+        raise ValueError("No se puede generar un nombre de archivo con el nombre del estudio")
     content_type = LOGO_CONTENT_TYPES.get(source.suffix.lower())
     if content_type is None:
-        raise ValueError(f"不支持的图片格式：{source.suffix}")
+        raise ValueError(f"Formato de imagen no compatible: {source.suffix}")
     contract.logo_root.mkdir(parents=True, exist_ok=True)
     destination = contract.logo_root / f"{key}.img"
     # 原子替换：中途失败不会留下半张图被 `/logo` 读到。
@@ -888,7 +885,7 @@ def w_review_decision(contract: ReviewContract, body):
     try:
         expected_revision = None if raw_revision in (None, "") else int(raw_revision)
     except (TypeError, ValueError) as exc:
-        raise ValueError(f"{EXPECTED_REVISION_FIELD} 必须是整数") from exc
+        raise ValueError(f"{EXPECTED_REVISION_FIELD} debe ser un número entero") from exc
     asset_revisions = {}
     with contract.write_transaction() as connection:
         connection.execute(
@@ -900,7 +897,7 @@ def w_review_decision(contract: ReviewContract, body):
         if category == "metadata_fields" and status == "approved":
             candidate_key = str(body.get("candidate_key") or "").strip()
             if not candidate_key:
-                raise ValueError("批准资料字段时，请先选择要采用的来源")
+                raise ValueError("Para aprobar campos de datos, primero elige la fuente que quieres usar")
             group, candidate = _selected_metadata_candidate(contract, item_key, candidate_key)
             applied, asset_revisions = _approve_metadata_with_receipt(
                 connection, group, candidate, now, note, expected_revision)
@@ -911,15 +908,15 @@ def w_review_decision(contract: ReviewContract, body):
                           for row in read_candidates(category, contract.candidate_root)[0]}
             candidate = candidates.get(item_key)
             if candidate is None:
-                raise ValueError("所选资料不在当前批次，无法批准")
+                raise ValueError("Los datos elegidos no están en el lote actual; no se pueden aprobar")
             if str(candidate.get("status") or "").strip() != "candidate":
-                raise ValueError("只有 candidate 状态的复核项可以批准")
+                raise ValueError("Solo se pueden aprobar elementos de revisión en estado candidate")
             creator = str(candidate.get("creator") or "").strip()
             tags = [tag.strip() for tag in str(candidate.get("tags") or "").split("|") if tag.strip()]
             claimed_creator = str(body.get("creator", "")).strip()
             claimed_tags = [tag.strip() for tag in str(body.get("tags", "")).split("|") if tag.strip()]
             if (claimed_creator and claimed_creator != creator) or (claimed_tags and claimed_tags != tags):
-                raise ValueError("提交内容与所选资料不一致，未保存")
+                raise ValueError("Lo enviado no coincide con los datos elegidos; no se guardó")
             if not creator or not tags:
                 raise ValueError("approved creator review requires creator and tags")
             entity = resolve_entity(connection, "creator", creator)
@@ -942,8 +939,7 @@ def w_review_decision(contract: ReviewContract, body):
                 asset_ids = sorted(available_ids)
                 if len(asset_ids) > REVIEW_APPLY_LIMIT:
                     raise ValueError(
-                        f"该创作者有 {len(asset_ids)} 条作品，超过单次批准上限 "
-                        f"{REVIEW_APPLY_LIMIT}，请在页面上显式勾选后再通过"
+                        f"Este creador tiene {len(asset_ids)} obras, más que el límite de aprobación por vez ({REVIEW_APPLY_LIMIT}); márcalas explícitamente en la página antes de aprobar"
                     )
             payload = json.dumps({"review_item": item_key}, ensure_ascii=False)
             connection.executemany(
@@ -993,11 +989,11 @@ def w_review_genre(contract: ReviewContract, body):
     genre = str(body.get("genre", "")).strip()
     tag = str(body.get("tag", "")).strip()
     if not genre:
-        raise ValueError("要收录的 genre 是空的")
+        raise ValueError("El género a incluir está vacío")
     # 标签名进的是和账本同一套词表，判据照 `w_item_tag` 那条：长度上限一致，
     # `演员:` 是出演者标记不是标签。两处各写一套的话，同一个名字这边收得进、那边加不上。
     if tag and (len(tag) > 80 or tag.startswith("演员:")):
-        raise ValueError("标签名须为 1 到 80 个字符，且不能是出演者标记")
+        raise ValueError("El nombre de la etiqueta debe tener entre 1 y 80 caracteres y no puede ser una marca de intérprete")
     now = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     with contract.write_transaction() as connection:
         key = record_genre_decision(connection, genre, tag or None, now)

@@ -71,7 +71,7 @@ CREDENTIAL_STATUS_CODES = frozenset({401})
 AMBIGUOUS_AUTH_STATUS_CODES = frozenset({403})
 
 #: 判据明确时给出的下一步。措辞只有这一处。
-CREDENTIAL_ADVICE = "换一份凭据后重跑"
+CREDENTIAL_ADVICE = "Cambia las credenciales y vuelve a ejecutar"
 
 #: 重定向终点落在这些路径上就是登录墙或年龄闸。站方不一定回 401：javdb 对未登录
 #: 用户访问部分详情页直接 302 到 `/login`，DMM 把未过年龄闸的请求送去
@@ -100,17 +100,16 @@ def auth_wall_reason(*, status_code: int = 0, final_url: str = "",
     那就不必按「成因不明」措辞了，直接说换凭据。
     """
     if status_code in CREDENTIAL_STATUS_CODES:
-        return f"来源返回 {status_code}，{CREDENTIAL_ADVICE}"
+        return f"La fuente respondió {status_code}, {CREDENTIAL_ADVICE}"
     path = urlsplit(str(final_url or "")).path
     if path and LOGIN_LOCATIONS.search(path):
-        return f"重定向终点落在 {path}，{CREDENTIAL_ADVICE}"
+        return f"La redirección terminó en {path}, {CREDENTIAL_ADVICE}"
     text = body_text(body) if isinstance(body, bytes) else str(body)
     for pattern, label in _AUTH_PAGE_MARKERS:
         if pattern.search(text):
             return f"{label}，{CREDENTIAL_ADVICE}"
     if status_code in AMBIGUOUS_AUTH_STATUS_CODES:
-        return (f"来源返回 {status_code}：可能是凭据失效，也可能是出口 IP 被封，"
-                "先看站点是否要求登录再决定换凭据还是等")
+        return (f"La fuente respondió {status_code}: puede que las credenciales hayan caducado o que la IP de salida esté bloqueada; mira primero si el sitio pide iniciar sesión y luego decide si cambiar las credenciales o esperar")
     return ""
 
 
@@ -128,7 +127,7 @@ def auth_error(source: str, reason: str, *, status_code: int = 0,
                detail: str = "") -> MetadataProviderError:
     """把一次鉴权失败包成 `kind="auth"` 的错误。措辞只有这一处。"""
     return MetadataProviderError(
-        f"{source} 需要登录或已被拒绝：{reason}", kind="auth",
+        f"{source} pide iniciar sesión o rechazó el acceso: {reason}", kind="auth",
         status_code=status_code, retryable=False, temporary=True, detail=detail,
     )
 
@@ -142,7 +141,7 @@ def validate_provider_code(code: str) -> str:
         return tokyo
     value = raw.upper()
     if not _SAFE_CODE.fullmatch(value):
-        raise ValueError("metadata provider 只接受规范化番号，不接受路径、URL 或任意文本")
+        raise ValueError("El proveedor de metadatos solo acepta códigos normalizados, no rutas, URL ni texto libre")
     return value
 
 
@@ -267,7 +266,7 @@ def normalized_performers(raw: object) -> tuple[list[dict], list[str]]:
         name = canonicalize_entity_name("performer", current)
         repeated = bool(name and name != current)
         if repeated:
-            warnings.append(f"来源演员名含重复片段，已规范化：{preferred} → {name}")
+            warnings.append(f"El nombre de intérprete de la fuente tenía fragmentos repetidos y se normalizó: {preferred} → {name}")
         key = normalize_entity_name(name)
         if not name or key in seen:
             continue
@@ -309,8 +308,8 @@ def normalized_release_date(raw: object) -> tuple[str, list[str]]:
     try:
         normalized = date.fromisoformat(candidate).isoformat()
     except ValueError:
-        return "", [f"来源发行日期无效，已忽略：{value}"]
-    warnings = [] if value == normalized else [f"来源发行时间已规范化为日期：{value} → {normalized}"]
+        return "", [f"La fecha de lanzamiento de la fuente no es válida y se ignoró: {value}"]
+    warnings = [] if value == normalized else [f"La fecha de lanzamiento de la fuente se normalizó a una fecha: {value} → {normalized}"]
     return normalized, warnings
 
 
@@ -385,7 +384,7 @@ def _runtime_evidence(raw: object) -> dict | None:
     if not 0 < minutes <= 24 * 60:
         return None
     value: int | float = int(minutes) if minutes.is_integer() else round(minutes, 2)
-    return {"value": value, "display_value": f"{value:g} 分钟", "warnings": []}
+    return {"value": value, "display_value": f"{value:g} min", "warnings": []}
 
 
 def _safe_evidence_url(raw: object) -> str:
@@ -404,7 +403,7 @@ def _url_evidence(raw: object, label: str) -> dict | None:
     value = _safe_evidence_url(raw)
     if not value:
         return None
-    host = urlsplit(value).hostname or "外部来源"
+    host = urlsplit(value).hostname or "Fuente externa"
     return {"value": value, "display_value": f"{label}（{host}）", "warnings": []}
 
 
@@ -419,11 +418,11 @@ def _url_list_evidence(raw: object, label: str) -> dict | None:
     warnings = []
     if len(values) > MAX_EVIDENCE_URLS:
         warnings.append(
-            f"来源返回 {len(values)} 个链接；候选只保留前 {MAX_EVIDENCE_URLS} 个，完整值仍在原始快照"
+            f"La fuente devolvió {len(values)} enlaces; los candidatos solo guardan los primeros {MAX_EVIDENCE_URLS}; el valor completo sigue en la instantánea original"
         )
         values = values[:MAX_EVIDENCE_URLS]
-    hosts = list(dict.fromkeys(urlsplit(value).hostname or "外部来源" for value in values))
-    host_label = "、".join(hosts[:2]) + (" 等" if len(hosts) > 2 else "")
+    hosts = list(dict.fromkeys(urlsplit(value).hostname or "Fuente externa" for value in values))
+    host_label = "、".join(hosts[:2]) + (" y más" if len(hosts) > 2 else "")
     return {
         "value": values,
         "display_value": f"{len(values)} {label}（{host_label}）",
@@ -458,12 +457,12 @@ def extract_catalog_evidence(payload: dict) -> dict[str, dict]:
     if runtime is not None:
         out["runtime"] = runtime
     for field, label in {
-        "poster_url": "海报", "cover_url": "封面", "trailer_url": "预告片",
+        "poster_url": "Póster", "cover_url": "Portada", "trailer_url": "Tráiler",
     }.items():
         evidence = _url_evidence(payload.get(field), label)
         if evidence is not None:
             out[field] = evidence
-    screenshots = _url_list_evidence(payload.get("screenshot_urls"), "张截图")
+    screenshots = _url_list_evidence(payload.get("screenshot_urls"), "capturas")
     if screenshots is not None:
         out["screenshot_urls"] = screenshots
     return out
@@ -497,7 +496,7 @@ def extract_peach_fields(payload: dict, genre_decisions=None) -> dict[str, dict]
             out[field] = {
                 "value": name,
                 "display_value": name,
-                "warnings": ([f"来源值含重复片段，已规范化：{raw_name} → {name}"]
+                "warnings": ([f"El valor de la fuente tenía fragmentos repetidos y se normalizó: {raw_name} → {name}"]
                              if repeated else []),
             }
     release_date, date_warnings = normalized_release_date(payload.get("release_date"))

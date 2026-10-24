@@ -171,11 +171,11 @@ def save_bundle(destination: Path | None = None) -> Path:
             return target
         except OSError:
             continue
-    raise OSError("诊断报告无法写入数据目录或临时目录")
+    raise OSError("No se puede escribir el informe de diagnóstico en la carpeta de datos ni en la temporal")
 
 
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(description="保存本机脱敏诊断包，无需启动 Peach 服务")
+    parser = argparse.ArgumentParser(description="Guarda un paquete de diagnóstico anonimizado de este equipo sin iniciar el servicio de Peach")
     parser.add_argument("destination", nargs="?", type=Path)
     args = parser.parse_args(argv)
     print(save_bundle(args.destination))

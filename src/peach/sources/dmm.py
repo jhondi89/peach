@@ -54,10 +54,10 @@ SEARCH_LIMIT = 30
 DETAIL_ATTEMPTS = 2
 HEADERS = {"Content-Type": "application/json", "Accept": "application/json"}
 JST = timezone(timedelta(hours=9))
-UNRECOGNISED = "认不出可以问 DMM 的番号"
-MISSING = "DMM 没有这个番号"
-NOT_JSON = "DMM 返回的不是作品 JSON"
-REFUSED = "DMM 拒绝了这条查询"
+UNRECOGNISED = "No se reconoce un código que se pueda consultar en DMM"
+MISSING = "DMM no tiene este código"
+NOT_JSON = "DMM no devolvió el JSON de la obra"
+REFUSED = "DMM rechazó esta consulta"
 
 _CODE = re.compile(r"^(\d{3})?([A-Z]{2,8})-?(\d{1,5})$")
 _CID = re.compile(r"^(?:h_\d+|\d+)?([a-z]+)(\d+)([a-z]*)$")
@@ -184,7 +184,7 @@ class DmmSource(SiteSource):
             raise SourceFailure(FailureReason.PARSE_ERROR, NOT_JSON)
         cid = str(item["id"])
         if not identifies_code(code, {"content_id": cid, "id": item.get("makerContentId")}):
-            raise SourceFailure(FailureReason.PARSE_ERROR, "来源返回的番号不匹配")
+            raise SourceFailure(FailureReason.PARSE_ERROR, "El código que devolvió la fuente no coincide")
         name = lambda key: str((item.get(key) or {}).get("name") or "")
         rows = lambda key: [row for row in item.get(key) or [] if isinstance(row, dict) and row.get("name")]
         directors = rows("directors")

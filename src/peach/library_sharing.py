@@ -18,12 +18,12 @@ MAX_BYTES = 18 * 1024 * 1024
 MAX_RAW_BYTES = 100 * 1024 * 1024
 FILENAME = "peach-library-taste.json.gz"
 FIELDS = [
-    "去重后的作品编号，以及评分、喜欢、不喜欢、已看、稍后看、播放次数、观看比例与手动添加的标签",
-    "出演者、创作者、厂牌、系列、手动标签、年代与时长分组的收藏、喜欢、不喜欢、观看数量和评分分布（有编号作品与无编号条目分开），以及主动收藏的实体名称",
-    "馆藏文件数量、有编号作品数量与无编号条目数量",
-    "Peach 版本、字段版本与 UTC 自然周",
+    "Códigos de obra sin duplicados, junto con puntuación, me gusta, no me gusta, visto, ver más tarde, reproducciones, proporción vista y etiquetas añadidas a mano",
+    "Favoritos, me gusta, no me gusta, visualizaciones y distribución de puntuaciones por intérprete, creador, estudio, serie, etiqueta manual, época y duración (separando obras con código y elementos sin código), y los nombres de las entidades marcadas como favoritas",
+    "Cantidad de archivos de la colección, de obras con código y de elementos sin código",
+    "Versión de Peach, versión de los campos y semana natural UTC",
 ]
-NOTICE = "匿名处理后上传馆藏与各类偏好明细。"
+NOTICE = "Envía, tras anonimizarlos, los detalles de tu colección y de cada tipo de preferencia."
 
 
 def _path(config):
@@ -38,7 +38,7 @@ def consent(config):
 def save_choice(config, enabled):
     """保存设置页或安装器的主动选择，不读取馆藏或初始化上传。"""
     if type(enabled) is not bool:
-        raise ValueError("馆藏与口味上传选项必须是布尔值")
+        raise ValueError("Las opciones de envío de colección y gustos deben ser verdadero o falso")
     value = {"enabled": enabled, "schema": SCHEMA, "revision": uuid.uuid4().hex,
              "selected_at": datetime.now(timezone.utc).isoformat()}
     atomic_write_text(_path(config), json.dumps(value))
@@ -71,7 +71,7 @@ def collect(contract):
                **projection}
     data = json.dumps(payload, ensure_ascii=False, allow_nan=False, separators=(",", ":")).encode()
     if len(data) > MAX_RAW_BYTES:
-        raise ValueError("馆藏与口味明细超过 100 MiB，整份未发送")
+        raise ValueError("Los detalles de colección y gustos superan 100 MiB; no se envió nada")
     return payload, data
 
 
@@ -79,7 +79,7 @@ def compressed(data):
     """使用无文件名和时间戳的 gzip 附件，保持全部 JSON 字段。"""
     wire = gzip.compress(data, mtime=0)
     if len(wire) > MAX_BYTES:
-        raise ValueError("馆藏与口味明细压缩后超过 18 MiB，整份未发送")
+        raise ValueError("Los detalles de colección y gustos superan 18 MiB comprimidos; no se envió nada")
     return wire
 
 
@@ -112,12 +112,12 @@ class Service:
 
     def save(self, body):
         if type(body.get("enabled")) is not bool:
-            raise ValueError("馆藏与口味上传选项必须是布尔值")
+            raise ValueError("Las opciones de envío de colección y gustos deben ser verdadero o falso")
         with self._lock:
             if body["enabled"] and (not self._preview or body.get("preview_token") != self._preview[0]
                     or time.monotonic() > self._preview[1]
                     or body.get("consent") is not True or body.get("schema") != SCHEMA):
-                raise ValueError("请先查看字段与数据预览，再明确同意上传")
+                raise ValueError("Primero revisa los campos y la vista previa de los datos, y luego acepta explícitamente el envío")
             save_choice(self.config, body["enabled"])
             self._preview = None
         self._wake.set()

@@ -99,7 +99,7 @@ class PublicSnapshots:
                                   'released': released, 'revision': snapshot.revision, 'value': value},
                                  ensure_ascii=False, allow_nan=False)
             if len(encoded.encode('utf-8')) > MAX_SNAPSHOT_BYTES:
-                raise ValueError('公开资料快照超过读取范围')
+                raise ValueError("La instantánea de datos públicos supera el rango de lectura")
             path.parent.mkdir(parents=True, exist_ok=True)
             atomic_write_text(path, encoded, mode=0o600)
         return snapshot

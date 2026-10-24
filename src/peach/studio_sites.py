@@ -100,8 +100,7 @@ FIELDS = ("entity_id", "studio", "assets", "candidate_url", "final_url", "status
 CONFIRMED_SITES: dict[str, tuple[str, str]] = {
     "SOD Create": (
         "https://www.sod.co.jp/",
-        "用户 2026-09-03 确认：SOD Create 是 Soft On Demand 的厂牌，"
-        "sod.co.jp 是母公司官网",
+        "El usuario confirmó el 2026-09-03: SOD Create es un estudio de Soft On Demand y sod.co.jp es la web de la empresa matriz",
     ),
 }
 
@@ -214,15 +213,15 @@ def parked_reason(title: str, text: str, headers: str = "", final_url: str = "")
     厂牌官网发现与实体链接体检共用这一份：两边要回答的都是「这个 200 是不是真站」。
     """
     if PARKED_TITLE.search(title):
-        return f"{PARKED_NOTE}（标题自述在出售域名：{title[:44]}）"
+        return f"{PARKED_NOTE} (el título dice que el dominio está en venta: {title[:44]})"
     # 不截窗口。实测停放页把「domain for sale」写在第 81683 字节，任何固定窗口都会漏；
     # 整篇扫一遍在这个量级上不值得省。
     if PARKED.search(text):
-        return f"{PARKED_NOTE}或域名出售页"
+        return f"{PARKED_NOTE} o página de venta de dominio"
     for where, blob in (("最终地址", final_url), ("响应头", headers), ("正文", text)):
         match = PARKING_HOSTS.search(blob)
         if match:
-            return f"{PARKED_NOTE}（{where}指向 {match.group(1).lower()}）"
+            return f"{PARKED_NOTE} ({where} apunta a {match.group(1).lower()})"
     return ""
 
 
@@ -248,7 +247,7 @@ def parked_after_certificate_error(url: str, error: Exception, fetch) -> str:
     except Exception:
         return ""
     reason = response_parked_reason(response) if response.status_code == 200 else ""
-    return f"{reason}；HTTPS 证书无效" if reason else ""
+    return f"{reason}; el certificado HTTPS no es válido" if reason else ""
 
 
 def site_verdict(name: str, status: int, body: bytes, title: str,
@@ -270,17 +269,17 @@ def site_verdict(name: str, status: int, body: bytes, title: str,
     比不放松任何判据——每个别名都是账本里这个实体自己的名字，不是从页面上猜出来的。
     """
     if status != 200:
-        return "未取得", f"HTTP {status}"
+        return "No obtenido", f"HTTP {status}"
     if len(body) < MIN_BODY:
-        return "未取得", f"页面只有 {len(body)} 字节，疑似空壳"
+        return "No obtenido", f"La página solo tiene {len(body)} bytes; parece vacía"
     if PARKED_TITLE.search(title):
-        return "未取得", f"标题自述在出售域名（{title[:44]}）"
+        return "No obtenido", f"El título dice que el dominio está en venta ({title[:44]})"
     if BROKEN_TITLE.search(title):
-        return "未取得", f"站点自述不可用（{title[:44]}）"
+        return "No obtenido", f"El sitio dice que no está disponible ({title[:44]})"
     text = decode(body)
     reason = parked_reason("", text, final_url=url)
     if reason:
-        return "未取得", reason
+        return "No obtenido", reason
     # 标题不比域名多说任何东西，就等于没有自述身份。实测 `prestige.com` 返回 200、
     # 不是停放页、标题正好是 `prestige.com`——它因此通过了「标题含厂牌名」，被判成
     # Prestige 官网，而真站是 `prestige-av.com`，那是另一家公司。停放页规则拦不住它：
@@ -293,17 +292,17 @@ def site_verdict(name: str, status: int, body: bytes, title: str,
     host = (urlsplit(url).hostname or "").casefold().removeprefix("www.")
     printed = title.casefold().strip()
     if host and host in printed and not re.sub(r"\W|_", "", printed.replace(host, "")):
-        return "未取得", f"标题只是域名回显，没有自述身份（{title[:40]}）"
+        return "No obtenido", f"El título solo repite el dominio, sin identificarse ({title[:40]})"
     # 用户确认的母公司官网。上面四道（状态码、空壳、停放页／自述不可用、域名回显）照旧
     # 要过：确认的是「这个地址属于这家公司」，不是「这个地址此刻返回的任何东西都算数」。
     # 白名单换掉的只有「页面得自述厂牌名」这一条——`SOD Create` 这个串本来就不会出现在
     # 母公司官网上，那条信息不在页面里。
     if confirmed:
-        return "ok", f"{confirmed}；实测标题：{title[:40] or '无'}"
+        return "ok", f"{confirmed}; título medido: {title[:40] or '无'}"
     spellings = [(spelling, normalise(spelling)) for spelling in (name, *aliases)]
     spellings = [pair for pair in spellings if pair[1]]
     if not spellings:
-        return "未取得", "厂牌名与别名里都没有可比对的字符"
+        return "No obtenido", "Ni el nombre del estudio ni sus alias tienen caracteres comparables"
     adult = bool(ADULT.search(text))
     # 命中哪个写法要写进判词。`东京热` 的行上只写「标题自述厂牌名」，复核的人看到标题里
     # 是「東京熱」会以为判错了；写出对上的是哪个别名，这一步就自己解释了自己。写「对上的是
@@ -311,12 +310,12 @@ def site_verdict(name: str, status: int, body: bytes, title: str,
     # 是同一个串，说成页面的原文就不准了。
     spelled = next((t for t, token in spellings if token in normalise(title)), "")
     if spelled:
-        matched = "" if spelled == name else f"（对上的是别名「{spelled}」）"
+        matched = "" if spelled == name else f"(coincidió el alias “{spelled}”)"
         if adult:
-            return "ok", f"标题自述厂牌名{matched}，且页面是成人站"
+            return "ok", f"El título incluye el nombre del estudio{matched} y la página es un sitio para adultos"
         # 同名的无关公司到这里为止和真站没有任何可区分之处，所以只能交给人看，
         # 不能算已确认——一条错的官网会被下游当成社媒 handle 的来源。
-        return "weak", f"标题有厂牌名但页面不像成人站；需人工确认（{title[:40]}）"
+        return "weak", f"El título tiene el nombre del estudio pero la página no parece un sitio para adultos; hay que confirmarlo a mano ({title[:40]})"
     # 日站普遍把品牌名写成假名：`本中`、`無垢`、`ダスッ`、`グローリークエスト`。拿账本里的
     # 拉丁名去比标题，对这一整类真站必然对不上——`honnaka.jp` 的标题是
     # 「年齢チェック | 全作品、本物中出しのAVメーカー【本中】公式サイト」。这是系统性漏判，
@@ -329,11 +328,11 @@ def site_verdict(name: str, status: int, body: bytes, title: str,
     # `linkedin.com/in/fareedkhan`，按请求地址判就成了「域名由厂牌名推出」，
     # 一个 LinkedIn 个人主页因此被确认成厂牌官网。跳走之后这条证据就不再成立。
     if host in derived_hosts and adult:
-        return "ok", "域名由厂牌名推出，且页面是成人站（标题用假名写品牌名）"
+        return "ok", "El dominio se dedujo del nombre del estudio y la página es un sitio para adultos (el título escribe la marca en kana)"
     body_text = normalise(text[:20000])
     if any(token in body_text for _, token in spellings):
-        return "weak", "标题未自述，但正文出现厂牌名；需人工看图确认"
-    return "未取得", f"标题与正文都没有厂牌名（标题：{title[:40] or '无'}）"
+        return "weak", "El título no se identifica, pero el texto incluye el nombre del estudio; hay que mirar la imagen y confirmarlo a mano"
+    return "No obtenido", f"Ni el título ni el texto tienen el nombre del estudio (título: {title[:40] or '无'})"
 
 
 def load_aliases(connection: sqlite3.Connection, entity_ids: Sequence[int]
@@ -389,7 +388,7 @@ def load_named_studios(connection: sqlite3.Connection, names: list[str]) -> list
             continue
         found.append({"entity_id": row[0], "studio": name, "assets": row[1]})
     if missing:
-        raise SystemExit(f"数据库里没有这些厂牌：{'、'.join(missing)}")
+        raise SystemExit(f"La base de datos no tiene estos estudios: {'、'.join(missing)}")
     return found
 
 
@@ -452,7 +451,7 @@ def discover(record: dict, other_names: Sequence[str], seeds: Sequence[str], *,
     name = record["studio"]
     row = {field: "" for field in FIELDS}
     row.update(record)
-    row["verdict"], row["note"] = "未取得", "没有可推导的候选域名"
+    row["verdict"], row["note"] = "No obtenido", "没有可推导的候选域名"
     if is_platform(name):
         # 一个请求都不发：这不是「查不到」，是这条路对发行平台本来就不成立。
         row["verdict"], row["note"] = PLATFORM_VERDICT, (
@@ -480,10 +479,10 @@ def discover(record: dict, other_names: Sequence[str], seeds: Sequence[str], *,
         try:
             status, body, final = probe(url, timeout)
         except Exception as exc:
-            trail.append(f"{url} → 取不到：{type(exc).__name__}")
+            trail.append(f"{url} → no se obtuvo: {type(exc).__name__}")
             if not row["candidate_url"]:
-                row.update(candidate_url=url, verdict="未取得",
-                           note=f"取不到：{type(exc).__name__}")
+                row.update(candidate_url=url, verdict="No obtenido",
+                           note=f"No se obtuvo: {type(exc).__name__}")
             continue
         title = page_title(body)
         verdict, note = site_verdict(

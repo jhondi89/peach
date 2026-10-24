@@ -11,9 +11,9 @@ def browser_client(request: Request):
     authorization = request.headers.get("authorization", "")
     token = authorization.removeprefix("Bearer ") if authorization.startswith("Bearer ") else ""
     if not service.authorized(token):
-        raise HTTPException(401, "请在 Peach 下载渠道启用浏览器添加并配置专用令牌")
+        raise HTTPException(401, "Activa Añadir desde el navegador en los canales de descarga de Peach y configura su token exclusivo")
     if not service.downloads.available:
-        raise HTTPException(403, "浏览器添加只在允许修改数据库的设备上可用")
+        raise HTTPException(403, "Añadir desde el navegador solo está disponible en dispositivos que pueden modificar la base de datos")
     return service
 
 

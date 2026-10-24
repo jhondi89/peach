@@ -57,7 +57,7 @@ class HardwareTranscoder:
         self.enabled = enabled
         self.backend = os.environ.get("PEACH_TRANSCODE_BACKEND", "auto").strip().lower()
         if self.backend not in {"auto", "software", "nvenc", "vaapi"}:
-            raise ValueError("PEACH_TRANSCODE_BACKEND 必须为 auto、software、nvenc 或 vaapi")
+            raise ValueError("PEACH_TRANSCODE_BACKEND debe ser auto, software, nvenc o vaapi")
         self.device = os.environ.get("PEACH_VAAPI_DEVICE", "").strip()
         self._encoders: dict[Path, tuple[HardwareEncoder, ...]] = {}
         self._lock = threading.Lock()

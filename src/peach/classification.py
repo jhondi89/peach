@@ -138,34 +138,34 @@ def creator_release_identifier(creator: str, *, path: str, filename: str, code: 
     from .sources.dmm import matching_cids
     verdict, _, reason = classify_code(creator,[dict(path=path,name=filename,code=code)])
     if verdict in SETTLED_VERDICTS:
-        return 'release_identifier', f'{reason}；只移除创作者投影，番号不改写'
+        return 'release_identifier', f"{reason}; solo se quita la asignación de creador, el código no se cambia"
     site = _site_release(creator)
     site_path = any(_site_release(part) == site for part in re.split(r'[\\/]',path)) if site else False
     numbered_file = re.match(r'^(\d{3,6})[-_]',filename)
     if site and (site == _site_release(filename) or
                  (site_path and numbered_file and int(numbered_file[1]) == int(site.split('-')[1]))):
-        return 'release_identifier', f'目录与媒体文件同为站点作品号 {site}；官网目录 {SITE_RELEASES[site.split("-")[0]]}'
+        return 'release_identifier', f"La carpeta y los archivos usan el mismo número de obra del sitio {site}; carpeta oficial {SITE_RELEASES[site.split("-")[0]]}"
     versionless = re.sub(r'[-_](?:[468]k|hd)(?:[-_](?:c|ch))?$', '', creator, flags=re.I)
     identity = release_code_from_text(versionless)
     if (versionless != creator and identity and is_jav_code(identity)
             and normalise_code_key(versionless) == normalise_code_key(identity)
             and creator.casefold() in [part.casefold() for part in re.split(r'[\\/]', path)]):
-        return 'release_identifier', f'目录名是发行标识 {identity} 与画质版本后缀；不作为账号，也不推断目录内文件的番号'
+        return 'release_identifier', f"El nombre de la carpeta es el identificador de lanzamiento {identity} con sufijo de calidad; no se trata como cuenta ni se deduce el código de sus archivos"
     ppv = re.fullmatch(r'gachincoppv[-_](\d{3,6})[-_](?:hd|fhd|[468]k)', creator, re.I)
     if ppv and re.fullmatch(re.escape(creator) + r'(?:[-_]?\d+)?\.[a-z0-9]+', filename, re.I):
-        return 'release_identifier', '目录与分段文件使用 Gachinco PPV 作品号及画质后缀；不作为账号'
+        return 'release_identifier', "La carpeta y los archivos por partes usan el número de obra PPV de Gachinco con sufijo de calidad; no se trata como cuenta"
     if identity and is_jav_code(identity) and re.search(
             r'(?<![a-z0-9])' + re.escape(versionless) + r'(?:[-_](?:[468]k|hd)\d?(?:[-_]c)?)?\.[a-z0-9]+$',filename,re.I):
-        return 'release_identifier', f'目录与媒体文件的发行标识 {identity} 一致；画质与版本后缀不作为账号'
+        return 'release_identifier', f"El identificador de lanzamiento {identity} de la carpeta y de los archivos coincide; los sufijos de calidad y versión no se tratan como cuenta"
     product = re.fullmatch(r'([a-z]{2,8})(\d{5})(?:hhb|mhb|dmb|dm|hq|sd|hd|pl)',creator,re.I)
     if product and re.fullmatch(re.escape(product[1]+product[2])+r'(?:\.part\d+)?\.[a-z0-9]+',filename,re.I):
         identity = normalise_code_key(product[1]+'-'+product[2])
         if is_jav_code(identity):
-            return 'release_identifier', f'目录商品标识与媒体文件 {product[1]+product[2]} 一致；番号不改写'
+            return 'release_identifier', f"El identificador de producto de la carpeta coincide con el archivo {product[1]+product[2]}; el código no se cambia"
     identifier = release_code_from_text(re.sub(r'_\d{3}$', '', creator))
     cid = re.sub(r'_\d{3}$', '', re.sub(r'\.[^.]+$', '', filename))
     if identifier and re.fullmatch(r'[a-z]+\d{5}(?:hhb|mhb|dmb|dm|hq|sd|hd|pl)',cid,re.I) and matching_cids(identifier,[cid]):
-        return 'release_identifier', f'目录番号 {identifier} 与文件 DMM 商品标识一致；番号不改写'
+        return 'release_identifier', f"El código de carpeta {identifier} coincide con el identificador DMM del archivo; el código no se cambia"
     return ('identifier_candidate',reason) if verdict == '存疑' else ('','')
 
 

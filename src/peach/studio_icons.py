@@ -90,7 +90,7 @@ FIELDS = ("entity_id", "studio", "safe", "variant", "installed", "original_size"
 from peach.user_agent import USER_AGENT
 
 OK, WORDMARK, TOOSMALL = "ok", "仍是字标", "只有小图标"
-MISSING, SKIP = "未取得", "无官网链接"
+MISSING, SKIP = "No obtenido", "无官网链接"
 #: 方标没有，装的是补白过的字标。可以装，但复核件上要能看出装的是哪一类。
 PADDED = "字标补白"
 #: 取到了、也够清楚，但那是整个主机共用的一枚，代表不了这个实体。
@@ -653,24 +653,24 @@ class SquareMark:
     def __call__(self, data: bytes, size: int = 0, content_type: str = "") -> bytes | None:
         image = link_marks.decode(data, content_type)
         if image is None:
-            self.reasons.append("解不开")
+            self.reasons.append("No se puede decodificar")
             return None
         aspect = link_marks.content_aspect(image)
         if aspect == 0.0 or aspect > link_marks.MAX_CONTENT_ASPECT:
-            self.reasons.append(f"内容比 {aspect:.2f} 是字标")
+            self.reasons.append(f"Con proporción {aspect:.2f} es un logotipo de texto")
             if aspect > 0.0 and min(image.size) >= MIN_SHORT_EDGE and self.wordmark is None:
                 self.wordmark = _as_png(image)
                 self.wordmark_size = f"{image.size[0]}x{image.size[1]}"
                 self.wordmark_aspect = f"{aspect:.2f}"
             return None
         if min(image.size) < MIN_SHORT_EDGE:
-            self.reasons.append(f"只有 {image.size[0]}x{image.size[1]}")
+            self.reasons.append(f"Solo {image.size[0]}x{image.size[1]}")
             return None
         payload = _as_png(image)
         face = self.faces(payload) if self.faces is not None else None
         if face is not None:
             self.portraits.append(
-                f"{image.size[0]}x{image.size[1]} 里检出一张脸（{face.score}）")
+                f"Se detectó una cara en {image.size[0]}x{image.size[1]} ({face.score})")
             return None
         self.size = f"{image.size[0]}x{image.size[1]}"
         self.aspect = f"{aspect:.2f}"
@@ -823,8 +823,7 @@ class EntityScope:
         if digest not in self._seen:
             self._seen.add(digest)
             self.rejected.append(
-                f"{candidate.url} 是 {site_icons.host_key(candidate.url)} 的主机级图标"
-                f"（sha256 {digest[:8]}）")
+                f"{candidate.url} es el icono a nivel de host de {site_icons.host_key(candidate.url)} (sha256 {digest[:8]})")
         return False
 
 
@@ -906,11 +905,11 @@ def hunt_logo_row(safe: str, target: dict[str, str], entry: dict[str, str],
     biggest = max(found, key=lambda item: _short_edge(item[3]))
     candidates: list[tuple[bytes, str, str, str]] = []
     if policy.wordmark is not None:
-        candidates.append((policy.wordmark, policy.wordmark_size, "站点自己的字标",
+        candidates.append((policy.wordmark, policy.wordmark_size, "Logotipo propio del sitio",
                            policy.wordmark_url or str(icon["url"])))
     if biggest[0] is not made:
-        candidates.append((biggest[0], biggest[3], "这一趟取到的最大一枚", biggest[1]))
-    candidates.append((made, str(icon["mark_size"]), "与 icon 位同一枚方标",
+        candidates.append((biggest[0], biggest[3], "El más grande obtenido en esta ronda", biggest[1]))
+    candidates.append((made, str(icon["mark_size"]), "El mismo logo cuadrado que el de la posición icon",
                        str(icon["url"])))
     for payload, size, origin, url in candidates:
         if _short_edge(size) < MIN_LOGO_SHORT_EDGE:
@@ -925,10 +924,10 @@ def hunt_logo_row(safe: str, target: dict[str, str], entry: dict[str, str],
                     content_aspect=f"{link_marks.content_aspect(square):.2f}",
                     sha256=hashlib.sha256(baked).hexdigest(),
                     candidate=str(_store(candidate_dir, f"{safe}.logo.png", baked)),
-                    evidence=f"{origin}（{size}）烤成方图")
+                    evidence=f"{origin} ({size}) convertido a cuadrado")
     return _row(safe, target, entry, LOGO, TOOSMALL, url=str(icon["url"]),
                 mark_size=str(icon["mark_size"]),
-                evidence=f"这一趟取到的都不到 {MIN_LOGO_SHORT_EDGE}：" + "、".join(
+                evidence=f"Todo lo obtenido en esta ronda es menor que {MIN_LOGO_SHORT_EDGE}:" + "、".join(
                     f"{origin} {size}" for _, size, origin, _ in candidates))
 
 
@@ -954,7 +953,7 @@ def icon_row(safe: str, target: dict[str, str], entries: list[dict[str, str]],
     """
     if not entries:
         return _row(safe, target, None, ICON, SKIP,
-                    evidence="数据库里这个厂牌没有能取图的链接（存档快照不算）"), None
+                    evidence="En la base de datos este estudio no tiene enlaces de donde obtener imágenes (las capturas de archivo no cuentan)"), None
     attempts: list[str] = []
     reachable = False
     policy = SquareMark(faces)
@@ -965,7 +964,7 @@ def icon_row(safe: str, target: dict[str, str], entries: list[dict[str, str]],
         if entry["link_kind"] == FALLBACK_LINK_KIND:
             got = first_mark(avatar_urls(entry["url"], fetch), fetch, policy)
             if got:
-                found.append((got[0], got[1], "数据库里登记的社媒头像",
+                found.append((got[0], got[1], "Foto de redes sociales registrada en la base de datos",
                               policy.size, policy.aspect))
             if found:
                 return _made_rows(safe, target, entry, policy, found, candidate_dir)
@@ -976,26 +975,26 @@ def icon_row(safe: str, target: dict[str, str], entries: list[dict[str, str]],
             entry["url"], fetch, policy,
             accept=scope if shares_its_host(entry["url"]) else None)
         if made:
-            found.append((made, entry["url"], "官网声明的图标", policy.size, policy.aspect))
+            found.append((made, entry["url"], "Icono declarado por la web oficial", policy.size, policy.aspect))
         # 声明那一枚够大、大位又已经有图时才免掉首页那一趟：SO MODEL AGENT 声明的
         # favicon 只有 114×114，而 header 里挂着 600×150 的完整字标，那才是大位要的。
         if not _enough(found) or not target["installed"]:
             marks, profiles = site_assets(entry["url"], fetch)
             own = first_mark(marks, fetch, policy)
             if own:
-                found.append((own[0], own[1], "站点 header 里的 <img>",
+                found.append((own[0], own[1], "<img> en el encabezado del sitio",
                               policy.size, policy.aspect))
             if avatar and not _enough(found):
                 got = first_mark([avatar], fetch, policy)
                 if got:
-                    found.append((got[0], got[1], "人指定的社媒头像",
+                    found.append((got[0], got[1], "Foto de redes sociales indicada por una persona",
                                   policy.size, policy.aspect))
             for profile in profiles:
                 if _enough(found):
                     break
                 got = first_mark(avatar_urls(profile, fetch), fetch, policy)
                 if got:
-                    found.append((got[0], got[1], f"{profile} 的头像",
+                    found.append((got[0], got[1], f"Foto de {profile}",
                                   policy.size, policy.aspect))
         if found:
             return _made_rows(safe, target, entry, policy, found, candidate_dir)
@@ -1013,32 +1012,31 @@ def icon_row(safe: str, target: dict[str, str], entries: list[dict[str, str]],
                     mark_size=f"{side.size[0]}x{side.size[1]}" if side else "",
                     content_aspect=policy.wordmark_aspect,
                     sha256=hashlib.sha256(plate).hexdigest(), candidate=str(path),
-                    evidence=(f"方形标识未取得，装的是字标：{policy.wordmark_size}"
-                              f"／内容比 {policy.wordmark_aspect}，烤成方图"))
+                    evidence=(f"No se obtuvo un logo cuadrado; se instaló el logotipo de texto: {policy.wordmark_size} / proporción {policy.wordmark_aspect}, convertido a cuadrado"))
         # 不出这一行，`logo` 位会回落到 `<safe>.img`——BangBus 的那一份是母品牌
         # BANGBROS，小位对了大位却挂着别家的牌子。
         logo_path = _store(candidate_dir, f"{safe}.logo.png", plate)
         logo = _row(safe, target, entry, LOGO, OK,
                     mark_size=icon["mark_size"], content_aspect=policy.wordmark_aspect,
                     sha256=icon["sha256"], candidate=str(logo_path),
-                    evidence=(f"与 icon 位同一份方图（原字标 {policy.wordmark_size}）"))
+                    evidence=(f"La misma imagen cuadrada que la de la posición icon (logotipo original {policy.wordmark_size})"))
         return icon, logo
     if not reachable:
         verdict, evidence = MISSING, f"试过 {tried}，一份字节都没取回来"
     elif policy.portraits and not policy.reasons:
         # 站上那几张都是照片。下一步是人工指一张标识，不是换个时间再抓。
         verdict = PORTRAIT
-        evidence = f"试过 {tried}：" + "、".join(policy.portraits)
+        evidence = f"Se probó {tried}:" + "、".join(policy.portraits)
     elif scope.rejected and not policy.reasons:
         # 取到了、也够清楚，但那是平台模板的通用图标，和这个实体无关。
         verdict = SHARED
-        evidence = f"试过 {tried}：" + "；".join(scope.rejected)
+        evidence = f"Se probó {tried}:" + "；".join(scope.rejected)
     elif policy.reasons and all("只有 " in reason for reason in policy.reasons):
         # 是方标，只是站上没有够大的那一份。下一步是找更大的资产，不是放弃。
-        verdict, evidence = TOOSMALL, f"试过 {tried}：" + "、".join(policy.reasons)
+        verdict, evidence = TOOSMALL, f"Se probó {tried}:" + "、".join(policy.reasons)
     else:
         verdict = WORDMARK
-        evidence = f"试过 {tried}：" + "、".join(
+        evidence = f"Se probó {tried}:" + "、".join(
             policy.reasons + policy.portraits + scope.rejected or ["没有候选"])
     return _row(safe, target, entry, ICON, verdict, evidence=evidence), None
 
@@ -1060,21 +1058,21 @@ def logo_row(safe: str, target: dict[str, str], entries: list[dict[str, str]],
     got = fetch(url)
     if got is None:
         return _row(safe, target, entry, LOGO, MISSING,
-                    evidence="指定的 logo 来源一份字节都没取回来")
+                    evidence="La fuente de logo indicada no devolvió ni un byte")
     image = link_marks.decode(got[0], got[1])
     if image is None:
-        return _row(safe, target, entry, LOGO, MISSING, evidence="指定的 logo 来源解不开")
+        return _row(safe, target, entry, LOGO, MISSING, evidence="No se puede decodificar la fuente de logo indicada")
     if min(image.size) < MIN_LOGO_SHORT_EDGE:
         return _row(safe, target, entry, LOGO, TOOSMALL,
                     mark_size=f"{image.size[0]}x{image.size[1]}",
-                    evidence=f"短边 {min(image.size)} < {MIN_LOGO_SHORT_EDGE}")
+                    evidence=f"Lado corto {min(image.size)} < {MIN_LOGO_SHORT_EDGE}")
     payload = _as_png(image)
     path = _store(candidate_dir, f"{safe}.logo.png", payload)
     return _row(safe, target, entry, LOGO, OK,
                 mark_size=f"{image.size[0]}x{image.size[1]}",
                 content_aspect=f"{link_marks.content_aspect(image):.2f}",
                 sha256=hashlib.sha256(payload).hexdigest(), candidate=str(path),
-                evidence="用户指定的 logo 来源")
+                evidence="Fuente del logo indicada por el usuario")
 
 
 def icon_from_logo(safe: str, target: dict[str, str], logo: dict[str, object],
@@ -1091,7 +1089,7 @@ def icon_from_logo(safe: str, target: dict[str, str], logo: dict[str, object],
     if payload is None or image is None:
         return _row(safe, target, None, ICON, MISSING,
                     url=str(logo["url"]), link_kind="logo-source",
-                    evidence="指定的 logo 来源烤不成方图")
+                    evidence="No se puede convertir a cuadrado la fuente de logo indicada")
     # 判「补没补白」看源图自己的长宽，不看内容比：`images.MAX_ASPECT` 正是 `bake_square`
     # 把长条补成方图的那条线。方图也可能被重新摆位，但那不是补白。名录里的 jpg 是整幅
     # 不透明的，内容比对它一律回 0，拿那个数分不出方图和长条。
@@ -1104,7 +1102,7 @@ def icon_from_logo(safe: str, target: dict[str, str], logo: dict[str, object],
                 mark_size=f"{image.size[0]}x{image.size[1]}",
                 content_aspect=f"{aspect:.2f}",
                 sha256=hashlib.sha256(payload).hexdigest(), candidate=str(path),
-                evidence=f'与 logo 位同一份指定来源（{logo["mark_size"]}）烤成方图')
+                evidence=f"Convertido a cuadrado desde la misma fuente indicada que el logo ({logo["mark_size"]})")
 
 
 def wordmark_source_rows(safe: str, target: dict[str, str], fetch, candidate_dir: Path,
@@ -1124,21 +1122,21 @@ def wordmark_source_rows(safe: str, target: dict[str, str], fetch, candidate_dir
     got = fetch(url)
     if got is None:
         return _row(safe, target, None, ICON, MISSING, url=url, link_kind=kind,
-                    evidence="指定的字标来源一份字节都没取回来"), None
+                    evidence="La fuente de logotipo indicada no devolvió ni un byte"), None
     source = link_marks.decode(got[0], got[1])
     if source is None:
         return _row(safe, target, None, ICON, MISSING, url=url, link_kind=kind,
-                    evidence="指定的字标来源解不开"), None
+                    evidence="No se puede decodificar la fuente de logotipo indicada"), None
     if min(source.size) < MIN_SHORT_EDGE:
         return _row(safe, target, None, ICON, TOOSMALL, url=url, link_kind=kind,
                     mark_size=f"{source.size[0]}x{source.size[1]}",
-                    evidence=f"短边 {min(source.size)} < {MIN_SHORT_EDGE}"), None
+                    evidence=f"Lado corto {min(source.size)} < {MIN_SHORT_EDGE}"), None
     plate = images.bake_square(_as_png(source))
     square = link_marks.decode(plate) if plate else None
     if square is None:
         return _row(safe, target, None, ICON, MISSING, url=url, link_kind=kind,
                     mark_size=f"{source.size[0]}x{source.size[1]}",
-                    evidence="指定的字标来源烤不成方图"), None
+                    evidence="No se puede convertir a cuadrado la fuente de logotipo indicada"), None
     aspect = f"{link_marks.content_aspect(square):.2f}"
     payload = _as_png(square)
     digest = hashlib.sha256(payload).hexdigest()
@@ -1147,11 +1145,11 @@ def wordmark_source_rows(safe: str, target: dict[str, str], fetch, candidate_dir
     icon = _row(safe, target, None, ICON, PADDED, url=url, link_kind=kind,
                 mark_size=size, content_aspect=aspect, sha256=digest,
                 candidate=str(_store(candidate_dir, f"{safe}.png", payload)),
-                evidence=f"指定的字标来源（{origin}）烤成方图")
+                evidence=f"Convertido a cuadrado desde la fuente de logotipo indicada ({origin})")
     logo = _row(safe, target, None, LOGO, OK, url=url, link_kind=kind,
                 mark_size=size, content_aspect=aspect, sha256=digest,
                 candidate=str(_store(candidate_dir, f"{safe}.logo.png", payload)),
-                evidence=f"与 icon 位同一份方图（原字标 {origin}）")
+                evidence=f"La misma imagen cuadrada que la de la posición icon (logotipo original {origin})")
     return icon, logo
 
 
@@ -1170,28 +1168,28 @@ def icon_source_row(safe: str, target: dict[str, str], fetch, candidate_dir: Pat
     got = fetch(url)
     if got is None:
         return _row(safe, target, None, ICON, MISSING, url=url, link_kind=kind,
-                    evidence="指定的方标来源一份字节都没取回来")
+                    evidence="La fuente de logo cuadrado indicada no devolvió ni un byte")
     source = link_marks.decode(got[0], got[1])
     if source is None:
         return _row(safe, target, None, ICON, MISSING, url=url, link_kind=kind,
-                    evidence="指定的方标来源解不开")
+                    evidence="No se puede decodificar la fuente de logo cuadrado indicada")
     plate = images.bake_square(_as_png(source))
     square = link_marks.decode(plate) if plate else None
     if square is None:
         return _row(safe, target, None, ICON, MISSING, url=url, link_kind=kind,
                     mark_size=f"{source.size[0]}x{source.size[1]}",
-                    evidence="指定的方标来源烤不成方图")
+                    evidence="No se puede convertir a cuadrado la fuente de logo cuadrado indicada")
     if min(square.size) < MIN_SHORT_EDGE:
         return _row(safe, target, None, ICON, TOOSMALL, url=url, link_kind=kind,
                     mark_size=f"{square.size[0]}x{square.size[1]}",
-                    evidence=f"裁出来的方标短边 {min(square.size)} < {MIN_SHORT_EDGE}")
+                    evidence=f"El lado corto del logo cuadrado recortado {min(square.size)} < {MIN_SHORT_EDGE}")
     payload = _as_png(square)
     return _row(safe, target, None, ICON, OK, url=url, link_kind=kind,
                 mark_size=f"{square.size[0]}x{square.size[1]}",
                 content_aspect=f"{link_marks.content_aspect(square):.2f}",
                 sha256=hashlib.sha256(payload).hexdigest(),
                 candidate=str(_store(candidate_dir, f"{safe}.png", payload)),
-                evidence=f"指定的方标来源（{source.size[0]}x{source.size[1]}）裁出方标")
+                evidence=f"Logo cuadrado recortado de la fuente indicada ({source.size[0]}x{source.size[1]})")
 
 
 def harvest(targets: dict[str, dict[str, str]],
@@ -1293,10 +1291,10 @@ def install(rows: list[dict[str, object]], logo_root: Path, *,
             continue
         candidate = Path(str(row["candidate"])).read_bytes()
         if hashlib.sha256(candidate).hexdigest() != row["sha256"]:
-            raise ValueError(f'候选文件与复核记录哈希不一致，拒绝安装：{row["safe"]}')
+            raise ValueError(f"El archivo candidato no coincide con el hash del registro de revisión; no se instala: {row["safe"]}")
         payload = images.bake_square(candidate)
         if payload is None:
-            raise ValueError(f'无法生成可用的方形图片，未安装：{row["safe"]}')
+            raise ValueError(f"No se puede generar una imagen cuadrada utilizable; no se instala: {row["safe"]}")
         installed_sha256 = hashlib.sha256(payload).hexdigest()
         variant = str(row.get("variant") or ICON)
         targets = [logo_root / f'{row["safe"]}.{variant}.img']
@@ -1350,18 +1348,18 @@ def land_one(name: str, entries: list[dict[str, str]], logo_root: Path,
     targets = {key: value for key, value in harvest_targets({}, links, logo_root).items()
                if key == safe}
     if not targets:
-        return {"outcome": SKIP if not entries else "已有标识", "rows": []}
+        return {"outcome": SKIP if not entries else "Ya tiene logo", "rows": []}
     rows = harvest(targets, links, fetch, candidate_dir, faces)
     # 大位那张来自站点页头的 `<img>`，命令行那一趟不过人像闸：页头横幅放一张艺人照，
     # 复核的人一眼就看得出来。这里没人看，所以每一张要落盘的都再过一次。
     for item in rows:
         if (item["verdict"] in INSTALLABLE and item["candidate"]
                 and faces(Path(str(item["candidate"])).read_bytes()) is not None):
-            item.update(verdict=PORTRAIT, evidence=f"{item['evidence']}；检出人脸")
+            item.update(verdict=PORTRAIT, evidence=f"{item['evidence']}; se detectó una cara")
     verdicts = [str(item["verdict"]) for item in rows]
     if faces.unavailable:
-        return {"outcome": f"人像闸未生效，不自动装（{faces.unavailable}）",
+        return {"outcome": f"El filtro de retratos no funcionó; no se instala automáticamente ({faces.unavailable})",
                 "verdicts": verdicts, "rows": rows}
     written = install(rows, logo_root, source=source, batch=batch)
-    return {"outcome": "已装上" if written else next(iter(verdicts), MISSING),
+    return {"outcome": "Aplicado" if written else next(iter(verdicts), MISSING),
             "verdicts": verdicts, "installed": written, "rows": rows}

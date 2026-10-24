@@ -28,7 +28,7 @@ class AutomaticUpdates:
         except FileNotFoundError:
             return {"mode": "off", "interval_hours": 24}
         except (OSError, ValueError):
-            return {"mode": "off", "interval_hours": 24, "error": "自动更新设置无法读取，请重新保存。"}
+            return {"mode": "off", "interval_hours": 24, "error": "No se pueden leer los ajustes de actualización automática; vuelve a guardarlos."}
 
     def snapshot(self) -> dict:
         data = self.read()
@@ -56,14 +56,14 @@ class AutomaticUpdates:
 
     def save(self, body: dict) -> dict:
         if not self.available:
-            raise ValueError("自动更新需要由托盘管理的服务")
+            raise ValueError("Las actualizaciones automáticas necesitan el servicio gestionado por el icono de la barra")
         mode, hours = body.get("mode"), body.get("interval_hours")
         if mode not in ("off", "check", "download"):
-            raise ValueError("请选择自动更新方式")
+            raise ValueError("Elige cómo actualizar automáticamente")
         if type(hours) is not int or hours not in (6, 24, 168):
-            raise ValueError("请选择检查频率")
+            raise ValueError("Elige la frecuencia de búsqueda")
         if mode == "download" and not distribution.standalone():
-            raise ValueError("自动下载仅适用于 Windows 独立测试包")
+            raise ValueError("La descarga automática solo funciona con el paquete independiente de Windows")
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with FileLock(str(self.path) + ".lock", timeout=0):
             current = self.read()

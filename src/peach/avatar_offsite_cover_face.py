@@ -35,7 +35,7 @@ MAX_IMAGE_BYTES = 8 << 20
 #: DMM 图片主机按来源页放行。
 REFERER = "https://www.dmm.co.jp/"
 
-UNFETCHED = "未取得"
+UNFETCHED = "No obtenido"
 
 
 @dataclass
@@ -152,21 +152,21 @@ def find(pages, actor: str, skip: set[str], probe, matcher, transport,
             works += [work for work in avwikidb.single_works(html, actor)
                       if work["code"] not in listed]
     except (Blocked, Unavailable) as error:
-        return Outcome(f"avwikidb 单人作品{UNFETCHED}：{error}", unavailable=True)
+        return Outcome(f"Obras individuales en avwikidb {UNFETCHED}: {error}", unavailable=True)
     if not works:
-        return Outcome("avwikidb 上没有她的单人作品")
+        return Outcome("avwikidb no tiene obras individuales de ella")
     cache = AvatarCandidateCache(Path(providers_root) / COVER_CACHE)
     faces, urls = listed_faces(works, skip, probe,
                                lambda url: fetch_cover(transport, cache, url))
     if not faces:
-        return Outcome(f"馆外 {len(urls)} 部单人作品封面上没有能截的脸", urls=urls)
+        return Outcome(f"No hay caras recortables en las portadas de {len(urls)} obras individuales externas", urls=urls)
     agreed, scores = agreeing(faces, matcher)
     if matcher.unavailable:
-        return Outcome(f"比对模型不可用：{matcher.unavailable}", faces=faces, urls=urls,
+        return Outcome(f"Modelo de comparación no disponible: {matcher.unavailable}", faces=faces, urls=urls,
                        unavailable=True)
     evidence = {"avwikidb": actor, "codes": [face.code for face in agreed], "scores": scores}
     if len({face.code for face in agreed}) < AGREE_WORKS:
-        return Outcome(f"馆外单人作品封面只截到 {len(faces)} 张脸，凑不齐两部互证",
+        return Outcome(f"Las portadas de obras individuales externas solo dieron {len(faces)} caras; no alcanzan dos obras que coincidan",
                        faces=faces, urls=urls, evidence=evidence)
     return Outcome("", winner=agreed[0], faces=faces, urls=urls, evidence=evidence)
 

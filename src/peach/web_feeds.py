@@ -49,7 +49,7 @@ def fetch(transport, url: str, *, etag: str | None = None,
           last_modified: str | None = None):
     """取一次订阅地址。304 不是失败，原样交给调用方判。"""
     if not public_https_url(url):
-        raise ValueError("订阅地址必须是解析到公网的 HTTPS 地址")
+        raise ValueError("La dirección de la suscripción debe ser HTTPS y resolver a una dirección pública")
     headers = {"Accept": "text/html"}
     if etag:
         headers["If-None-Match"] = etag
@@ -86,7 +86,7 @@ def poll_source(contract, transport, source) -> dict:
         _backfill_solo_works(contract, transport, source, report)
         return report
     if response.status != 200:
-        message = f"来源回了 HTTP {response.status}"
+        message = f"La fuente respondió HTTP {response.status}"
         report.update(ok=False, error=message)
         with contract.database.write_transaction() as connection:
             feeds.settle(connection, source_id, error=message, interval_minutes=interval)
@@ -95,7 +95,7 @@ def poll_source(contract, transport, source) -> dict:
     if parsed is None:
         # 解不出不等于「这次没有新作」：JavDB 那种回了一份不含作品的页面也是这条路。
         # 当成安静的源会让一个坏掉的订阅永远不报错。
-        message = "这一页解不出任何条目"
+        message = "No se pudo extraer ninguna entrada de esta página"
         report.update(ok=False, error=message)
         with contract.database.write_transaction() as connection:
             feeds.settle(connection, source_id, error=message, interval_minutes=interval)
@@ -142,10 +142,10 @@ def _backfill_solo_works(contract, transport, source, report: dict) -> None:
     try:
         response = fetch(transport, url)
         if response.status != 200:
-            raise ValueError(f"来源回了 HTTP {response.status}")
+            raise ValueError(f"La fuente respondió HTTP {response.status}")
         parsed = feeds.parse(source["kind"], response.body, url)
         if parsed is None:
-            raise ValueError("这一页解不出任何条目")
+            raise ValueError("No se pudo extraer ninguna entrada de esta página")
     except Exception as error:  # noqa: BLE001 - 主页已经落库，补拉只记原因
         report["backfill_error"] = str(error)
         return
@@ -181,21 +181,21 @@ def _execute_check(contract, body, job_id: str) -> dict:
     completed = {row['source'] for row in results if row.get('ok') and not row.get('backfill_error')}
     codes = [code for row in results for code in row.get('codes') or []]
     if not contract.feed_job.checkpoint(job_id, source_ids=[int(row['id']) for row in rows]):
-        raise InterruptedError('订阅检查已停止')
+        raise InterruptedError("Se detuvo la revisión de suscripciones")
     try:
         for index, source in enumerate(rows):
             if int(source['id']) in completed:
                 continue
             if not contract.feed_job.update(job_id, checked=len(results), total=len(rows),
                                             current=source["name"] or source["url"]):
-                raise InterruptedError('订阅检查已停止')
+                raise InterruptedError("Se detuvo la revisión de suscripciones")
             report = poll_source(contract, transport, source)
             results = [row for row in results if row['source'] != report['source']]
             results.append(report)
             codes.extend(report.get("codes") or [])
             if not contract.feed_job.checkpoint(job_id, results=results, checked=len(results),
                                                 total=len(rows), added=len(set(codes))):
-                raise InterruptedError('订阅检查已停止')
+                raise InterruptedError("Se detuvo la revisión de suscripciones")
     finally:
         close = getattr(transport, "close", None)
         if close:
@@ -308,7 +308,7 @@ def _subscribe(connection, entity_id: int, canonical_name: str) -> list[int]:
         " WHERE entity_id=?", (int(entity_id),))]
     pages = entry_links.javdb_actor_pages(canonical_name, refs)
     if not pages:
-        raise ValueError("这位在 JavDB 上没有演员页编号")
+        raise ValueError("Esta persona no tiene número de página de actriz en JavDB")
     return feeds.follow_entity(connection, entity_id, pages)
 
 
@@ -336,7 +336,7 @@ def _follow_entity(contract, body) -> dict:
             "SELECT canonical_name FROM entity WHERE id=? AND kind='performer'",
             (entity_id,)).fetchone()
         if row is None:
-            raise ValueError("找不到这位女优")
+            raise ValueError("No se encuentra a esta actriz")
         if not enabled:
             feeds.unfollow_entity(connection, entity_id)
             ids: list[int] = []
@@ -366,18 +366,18 @@ def q_feed_lookup(contract, args) -> dict:
     """
     name = entities.canonicalize_entity_name("performer", str(args.get("q") or ""))
     if not name:
-        raise ValueError("要先给一个女优名")
+        raise ValueError("Primero escribe el nombre de una actriz")
     url = javdb.SEARCH.format(quote(name))
     try:
         response = _transport(contract)(HttpRequest("GET", url, {"Accept": "text/html"}),
                                         LOOKUP_TIMEOUT, FETCH_MAX_BYTES)
     except Exception as error:  # noqa: BLE001 - 冷却、限流还是断网，原因原样交给页面
-        raise ValueError(f"JavDB 没有搜成：{error}") from error
+        raise ValueError(f"La búsqueda en JavDB falló: {error}") from error
     if response.status != 200:
-        raise ValueError(f"JavDB 回了 HTTP {response.status}")
+        raise ValueError(f"JavDB respondió HTTP {response.status}")
     html = response.body.decode("utf-8", "replace")
     if javdb.LOGIN.search(html):
-        raise ValueError("JavDB 回的是登入页，这一趟搜不了；稍后再试")
+        raise ValueError("JavDB devolvió la página de inicio de sesión; esta vez no se puede buscar, inténtalo más tarde")
     cards = javdb.search_cards(html)
     wanted = alias.match_key(name)
     with contract.database.read_connection() as connection:
@@ -424,12 +424,12 @@ def _follow_by_name(contract, body) -> dict:
     """
     name = entities.canonicalize_entity_name("performer", str(body.get("name") or ""))
     if not name:
-        raise ValueError("女优名不能为空")
+        raise ValueError("El nombre de la actriz no puede estar vacío")
     raw = body.get("ids")
     ids = [value for value in (raw if isinstance(raw, list) else [])
            if isinstance(value, str) and ACTOR_ID.match(value)]
     if not ids:
-        raise ValueError("要先勾选至少一张演员卡")
+        raise ValueError("Marca al menos una tarjeta de actriz")
     with contract.database.write_transaction() as connection:
         holders: dict[int, str] = {}
         for actor_id in ids:
@@ -440,7 +440,7 @@ def _follow_by_name(contract, body) -> dict:
             if held is not None:
                 holders[int(held[0])] = str(held[1])
         if len(holders) > 1:
-            raise ValueError("这几张卡分属数据库里不同的人：" + "、".join(holders.values()))
+            raise ValueError("Estas tarjetas son de personas distintas en la base de datos:" + "、".join(holders.values()))
         created = False
         if holders:
             [(entity_id, canonical)] = holders.items()

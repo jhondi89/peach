@@ -14,7 +14,7 @@ from html import escape
 #: 三页共用的文档头。`robots` 那一行管只读 HTML 的爬虫，响应头 `X-Robots-Tag` 管所有响应：
 #: 公网入口在跑的时候登录页就在互联网上，不希望它进任何搜索结果。图标声明和主站同一份，
 #: 没有会话时登录页就是书签实际停在的地方。
-_PAGE_HEAD = ('<!doctype html>\n<html lang="zh-CN"><head><meta charset="utf-8">'
+_PAGE_HEAD = ('<!doctype html>\n<html lang="es"><head><meta charset="utf-8">'
               '<meta name="viewport" content="width=device-width,initial-scale=1">'
               '<meta name="color-scheme" content="light dark">'
               '<meta name="robots" content="noindex, nofollow">'
@@ -41,7 +41,7 @@ def page_shell(title: str, page: str, data: Mapping[str, str] | None = None, *, 
     attributes = ""
     for key, value in (data or {}).items():
         if not _DATA_KEY.fullmatch(key):
-            raise ValueError(f"data-* 键名不合法：{key!r}")
+            raise ValueError(f"Nombre de clave data-* no válido: {key!r}")
         attributes += f' data-{key}="{escape(value, quote=True)}"'
     sprite = f'<svg width="0" height="0" aria-hidden="true" style="position:absolute">{symbols}</svg>' if symbols else ""
     return (f'{_PAGE_HEAD}<title>{escape(title)}</title>{_THEME_SCRIPT}'
@@ -60,14 +60,14 @@ def runtime_facts(config) -> tuple[tuple[str, str], ...]:
     from .mp4recover import untrunc_path
 
     available = FFmpegResolver(config.directory("tools") / "ffmpeg").ffmpeg() is not None
-    ffmpeg = "可用" if available else "未安装；MP4 可直接播放，转码和缩略图需要安装 FFmpeg。"
-    untrunc = "可用" if untrunc_path(config.directory("tools")) else "未安装；缺索引的 MP4 需要它才修得了。"
+    ffmpeg = "Disponible" if available else "No instalado; los MP4 se reproducen directamente, pero para transcodificar y generar miniaturas hace falta FFmpeg."
+    untrunc = "Disponible" if untrunc_path(config.directory("tools")) else "No instalado; los MP4 sin índice lo necesitan para repararse."
     return (
-        ("版本", __version__),
-        ("操作系统", system_platform.system()),
-        ("数据目录", str(config.data_root)),
-        ("设置文件", str(config.path)),
-        ("日志目录", str(config.directory("logs"))),
+        ("Versión", __version__),
+        ("Sistema operativo", system_platform.system()),
+        ("Carpeta de datos", str(config.data_root)),
+        ("Archivo de ajustes", str(config.path)),
+        ("Carpeta de registros", str(config.directory("logs"))),
         ("FFmpeg", ffmpeg),
         ("untrunc", untrunc),
     )
@@ -82,11 +82,11 @@ def runtime_fact_entries(config) -> list[dict[str, str]]:
                if choice is None]
     if missing:
         entry = next(row for row in entries if row["term"] == "FFmpeg")
-        entry.update(value="未找到 " + "、".join(missing) + "；转码、媒体信息与缩略图需要 FFmpeg 工具包。",
-                     download_url="https://ffmpeg.org/download.html", download_label="下载 FFmpeg")
+        entry.update(value="No se encontró " + "、".join(missing) + "; transcodificar, leer información del medio y generar miniaturas necesitan el paquete de FFmpeg.",
+                     download_url="https://ffmpeg.org/download.html", download_label="Descargar FFmpeg")
     untrunc = next(row for row in entries if row["term"] == "untrunc")
-    if untrunc["value"] != "可用":
-        untrunc.update(value=untrunc["value"] + f"解压到 {config.directory('tools') / 'untrunc'}。",
+    if untrunc["value"] != "Disponible":
+        untrunc.update(value=untrunc["value"] + f"Descomprímelo en {config.directory('tools') / 'untrunc'}.",
                        download_url="https://github.com/anthwlock/untrunc/releases",
-                       download_label="下载 untrunc")
-    return [row for row in entries if not (row["term"] in ("FFmpeg", "untrunc") and row["value"] == "可用")]
+                       download_label="Descargar untrunc")
+    return [row for row in entries if not (row["term"] in ("FFmpeg", "untrunc") and row["value"] == "Disponible")]

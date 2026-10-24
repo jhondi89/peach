@@ -180,11 +180,11 @@ def export_pack(connection: sqlite3.Connection, *, version: str, revision: int |
         if previous is not None:
             seed_validation.validate(previous)
             if revision <= previous.get("revision", 0) or version <= previous["version"]:
-                raise ValueError("导出需要更新的 version 与 revision")
+                raise ValueError("La exportación necesita version y revision más nuevas")
         by_id = {item["id"]: item for item in inherited}
         for item in withdrawals or []:
             if item["id"] in by_id and item != by_id[item["id"]]:
-                raise ValueError("累计撤销 id 不得改写")
+                raise ValueError("El id de una anulación acumulada no se puede cambiar")
             by_id[item["id"]] = item
         for item in entities:
             item["identity"] = {"kind": item["kind"], "name": item["name"], "refs": item["refs"]}
@@ -192,7 +192,7 @@ def export_pack(connection: sqlite3.Connection, *, version: str, revision: int |
         pack["content_sha256"] = seed_validation.digest(pack)
         seed_validation.validate(pack)
     elif withdrawals or previous:
-        raise ValueError("累计撤销需要格式 2 的 revision")
+        raise ValueError("Las anulaciones acumuladas necesitan una revision de formato 2")
     return pack
 
 
@@ -206,7 +206,7 @@ def load(path) -> dict:
         result = {}
         for key, value in pairs:
             if key in result:
-                raise ValueError(f"种子 JSON 字段重复：{key}")
+                raise ValueError(f"Campo JSON de la semilla repetido: {key}")
             result[key] = value
         return result
 

@@ -54,7 +54,7 @@ from .performer_profiles import fetched_at as profile_fetched_at, read_profile, 
 from .scripting import HostLimiter
 
 TASK_KEY = "performer-profile"
-TASK_LABEL = "补女优资料"
+TASK_LABEL = "Completar datos de actrices"
 SOURCE = "auto:performer-profile"
 MINNANO, AVWIKIDB, JAVDB = alias.MINNANO, "avwikidb", "javdb"
 #: javdb 的主机间隔，与 `harvest_directory_links.SOURCE_INTERVAL` 同一档（docs/SOURCING.md）。
@@ -74,7 +74,7 @@ RULE = 2
 MAX_WORKS = 3
 
 WRITE, FRESH, MISS, UNFETCHED, TAKEN, BIND, CONFLICT = (
-    "写入", "未过期", "未命中", "未取得", "占用", "绑定", "冲突")
+    "写入", "未过期", "未命中", "No obtenido", "占用", "绑定", "冲突")
 REVIEW_FILE = "performer-profile-landing.csv"
 FIELDS = ("entity_id", "canonical_name", "site", "page", "action", "detail", "batch")
 #: 两站交叉核对的列：(performer_profile 的列, avwikidb 那边的键)。
@@ -91,7 +91,7 @@ def followup_key(entity_id: int) -> str:
 def parse_key(key: str) -> int:
     prefix, _, raw = str(key).partition(":")
     if prefix != TASK_KEY or not raw.isdigit():
-        raise ValueError(f"认不出这条补女优资料后继：{key}")
+        raise ValueError(f"No se reconoce esta tarea derivada de datos de actriz: {key}")
     return int(raw)
 
 
@@ -298,7 +298,7 @@ def _run(contract, key: str, handle) -> dict:
                  "codes": work_codes(connection, entity_id),
                  "fetched": profile_fetched_at(connection, entity_id)}
     if names is None:
-        return {"outcome": "档案已不存在"}
+        return {"outcome": "La ficha ya no existe"}
     canonical = names[0]
     if handle is not None:
         handle.progress(label=_label(canonical), throttle=0)
@@ -323,11 +323,11 @@ def _run(contract, key: str, handle) -> dict:
     if done:
         outcome = "；".join(done)
     elif landed:
-        outcome = "资料未过期"
+        outcome = "Los datos no han caducado"
     elif any(report.startswith(UNFETCHED) for report in reports.values()):
         outcome = UNFETCHED
     else:
-        outcome = "哪一站都没对上她"
+        outcome = "Ningún sitio coincidió con ella"
     summary = {"name": canonical, "outcome": outcome, "sites": reports, "landed": bool(landed)}
     if conflict_count:
         summary["conflicts"] = conflict_count
@@ -339,13 +339,13 @@ def _visit_minnano(contract, pages, entity_id: int, names, state: dict, batch: s
     """minnano-av：进她的资料页，核对名字，整行写 `performer_profile`。"""
     canonical, aliases = names
     if _fresh(state["fetched"]):
-        reports[MINNANO] = "资料未过期"
+        reports[MINNANO] = "Los datos no han caducado"
         rows.append({**base, "site": MINNANO, "page": "", "action": FRESH,
-                     "detail": "资料取回不到 30 天"})
+                     "detail": "Los datos se obtuvieron hace menos de 30 días"})
         return
     keys, refs = alias.search_keys(canonical, aliases), state["minnano"]
     if not keys and not refs:
-        reports[MINNANO] = "未命中：没有能拿去检索的名字"
+        reports[MINNANO] = "Sin coincidencia: no hay nombre para buscar"
         return
     mine = {alias.match_key(name) for name in [canonical, *aliases] if not alias.rejection(name)}
     try:
@@ -361,15 +361,15 @@ def _visit_minnano(contract, pages, entity_id: int, names, state: dict, batch: s
         if parsed is not None and alias._anchored(written, mine):
             anchored.append((url, parsed))
     if len(anchored) != 1:
-        detail = (f"{len(anchored)} 张资料页都列着她" if anchored
-                  else note or "资料页上没有数据库里她的名字")
+        detail = (f"Aparece en {len(anchored)} páginas de datos" if anchored
+                  else note or "La página de datos no tiene su nombre de la base de datos")
         reports[MINNANO] = f"{MISS}：{detail}"
         rows.append({**base, "site": MINNANO, "page": "", "action": MISS, "detail": detail})
         return
     url, parsed = anchored[0]
     with contract.database.write_transaction() as connection:
         if not _alive(connection, entity_id, canonical):
-            reports[MINNANO] = f"{MISS}：数据库里这条实体已经变了"
+            reports[MINNANO] = f"{MISS}: esta entidad ya cambió en la base de datos"
             return
         wrote = write_profile(connection, entity_id, parsed, source=batch, source_url=url)
         bound = ""
@@ -377,15 +377,15 @@ def _visit_minnano(contract, pages, entity_id: int, names, state: dict, batch: s
             bound = bind(connection, entity_id, MINNANO, parsed["actress_id"],
                          {"source": SOURCE, "batch": batch})
     state["profile"] = parsed
-    reports[MINNANO] = f"命中 {url}"
+    reports[MINNANO] = f"Coincide en {url}"
     rows.append({**base, "site": MINNANO, "page": url, "action": WRITE if wrote else MISS,
                  "batch": batch if wrote else "",
-                 "detail": "资料页列着数据库里她的名字" if wrote else "这一行是人写的，不覆盖"})
+                 "detail": "La página de datos lista su nombre de la base de datos" if wrote else "Esta fila la escribió una persona; no se sobrescribe"})
     if bound:
         rows.append({**base, "site": MINNANO, "page": url, "action": bound,
                      "batch": batch if bound == BIND else "",
-                     "detail": f"minnano-av 编号 {parsed['actress_id']}"
-                               + ("" if bound == BIND else " 已属另一条实体")})
+                     "detail": f"Número de minnano-av {parsed['actress_id']}"
+                               + ("" if bound == BIND else " ya pertenece a otra entidad")})
 
 
 def _visit_avwikidb(contract, pages, entity_id: int, names, state: dict, batch: str, base: dict,
@@ -395,9 +395,9 @@ def _visit_avwikidb(contract, pages, entity_id: int, names, state: dict, batch: 
     refs = state["avwikidb"]
     profile, fresh = _avwikidb_state(contract, entity_id, refs)
     if fresh:
-        reports[AVWIKIDB] = "资料未过期"
+        reports[AVWIKIDB] = "Los datos no han caducado"
         rows.append({**base, "site": AVWIKIDB, "page": avwikidb.ACTOR_PAGE.format(id=refs[0]),
-                     "action": FRESH, "detail": "编号已绑，资料取回不到 30 天"})
+                     "action": FRESH, "detail": "Número ya vinculado; los datos se obtuvieron hace menos de 30 días"})
         return 0
     if refs:
         actor_ref, work = refs[0], ""
@@ -420,7 +420,7 @@ def _visit_avwikidb(contract, pages, entity_id: int, names, state: dict, batch: 
     found = conflicts(state.get("profile") or profile, actor)
     with contract.database.write_transaction() as connection:
         if not _alive(connection, entity_id, canonical):
-            reports[AVWIKIDB] = f"{MISS}：数据库里这条实体已经变了"
+            reports[AVWIKIDB] = f"{MISS}: esta entidad ya cambió en la base de datos"
             return 0
         verdict = bind(connection, entity_id, AVWIKIDB, actor_ref,
                        _actor_metadata(actor, work, batch, found))
@@ -467,19 +467,18 @@ def _actor_metadata(actor: dict, work: str, batch: str, found: list[dict]) -> di
 def _record_bind(url: str, verdict: str, work: str, actor: dict, found: list[dict], batch: str,
                  base: dict, reports: dict, rows: list) -> int:
     """写绑定与冲突的判词行，返回记下的冲突条数。"""
-    reports[AVWIKIDB] = (f"命中 {url}" if verdict == BIND else f"{TAKEN}：{url} 已属另一条实体")
-    detail = f"{work} 的出演表里对得上她" if work else "编号已绑，重取女优页"
+    reports[AVWIKIDB] = (f"Coincide en {url}" if verdict == BIND else f"{TAKEN}: {url} ya pertenece a otra entidad")
+    detail = f"Coincide en el reparto de {work}" if work else "Número ya vinculado; se vuelve a obtener la página de la actriz"
     if not actor:
-        detail += "；女优页未取得，资料留空"
+        detail += "; no se obtuvo la página de la actriz, los datos quedan vacíos"
     rows.append({**base, "site": AVWIKIDB, "page": url, "action": verdict,
                  "batch": batch if verdict == BIND else "",
-                 "detail": detail if verdict == BIND else "编号已属另一条实体"})
+                 "detail": detail if verdict == BIND else "El número ya pertenece a otra entidad"})
     if verdict != BIND:
         return 0
     for item in found:
         rows.append({**base, "site": AVWIKIDB, "page": url, "action": CONFLICT, "batch": batch,
-                     "detail": f"{item['field']}：minnano-av {item[MINNANO]}，"
-                               f"avwikidb {item[AVWIKIDB]}；资料表不改"})
+                     "detail": f"{item['field']}: minnano-av {item[MINNANO]}, avwikidb {item[AVWIKIDB]}; la tabla de datos no cambia"})
     return len(found)
 
 
@@ -493,14 +492,14 @@ def _visit_javdb(contract, pages, entity_id: int, names, batch: str, base: dict,
                     "SELECT provider,external_kind,external_id FROM entity_external_ref"
                     " WHERE entity_id=?", (int(entity_id),))]
     if not entry_links.is_jav_performer(refs):
-        reports[JAVDB] = "不查：JAV 目录站里没有她"
+        reports[JAVDB] = "No se consulta: no está en los sitios de catálogo JAV"
         return
     if entry_links.provider_ids(refs).get(JAVDB):
-        reports[JAVDB] = "编号已绑"
+        reports[JAVDB] = "Número ya vinculado"
         return
     keys = alias.search_keys(canonical, aliases)[:alias.MAX_KEYS]
     if not keys:
-        reports[JAVDB] = f"{MISS}：没有能拿去检索的名字"
+        reports[JAVDB] = f"{MISS}: no hay nombre para buscar"
         return
     mine = {alias.match_key(name) for name in [canonical, *aliases] if not alias.rejection(name)}
     cards, notes, searched = [], [], 0
@@ -517,14 +516,14 @@ def _visit_javdb(contract, pages, entity_id: int, names, batch: str, base: dict,
         if javdb.LOGIN.search(html):
             # 回 200 的登入页不是「搜过、站上没有她」：丢掉缓存，按未取得等下一轮。
             pages.forget(url)
-            notes.append(f"{key} 回的是登入页")
+            notes.append(f"{key} devolvió la página de inicio de sesión")
             continue
         searched += 1
         cards = [card for card in javdb.search_cards(html)
                  if any(alias.match_key(name) in mine for name in card["names"])]
         if cards:
             break
-        notes.append(f"{key} 搜不到她")
+        notes.append(f"No se encontró en {key}")
     if not cards:
         detail = "；".join(notes)
         if not searched:
@@ -536,13 +535,13 @@ def _visit_javdb(contract, pages, entity_id: int, names, batch: str, base: dict,
         return
     ids = [card["id"] for card in cards]
     if not javdb.one_person(cards):
-        detail = f"站上同名不止一位：{'、'.join(ids)}"
+        detail = f"Hay más de una persona con el mismo nombre en el sitio: {'、'.join(ids)}"
         reports[JAVDB] = f"{MISS}：{detail}"
         rows.append({**base, "site": JAVDB, "page": url, "action": MISS, "detail": detail})
         return
     with contract.database.write_transaction() as connection:
         if not _alive(connection, entity_id, canonical):
-            reports[JAVDB] = f"{MISS}：数据库里这条实体已经变了"
+            reports[JAVDB] = f"{MISS}: esta entidad ya cambió en la base de datos"
             return
         verdicts = [(card, bind(connection, entity_id, JAVDB, card["id"],
                                 {"source": SOURCE, "batch": batch})) for card in cards]
@@ -552,8 +551,8 @@ def _visit_javdb(contract, pages, entity_id: int, names, batch: str, base: dict,
         record = f"（{card['record']}）" if card["record"] else ""
         rows.append({**base, "site": JAVDB, "page": url, "action": verdict,
                      "batch": batch if verdict == BIND else "",
-                     "detail": f"演员卡 {card['id']}{record} 列着她的名字" if verdict == BIND
-                               else f"演员 id {card['id']} 已属另一条实体"})
+                     "detail": f"La tarjeta de actriz {card['id']}{record} lista su nombre" if verdict == BIND
+                               else f"El id de actriz {card['id']} ya pertenece a otra entidad"})
 
 
 def _parse_stamp(value) -> datetime | None:
@@ -572,7 +571,7 @@ def _find_in_cast(pages, codes: list[str], mine: set[str], romaji: str) -> tuple
     站拒绝访问照样抛 `Blocked`。
     """
     if not codes:
-        return "", "", "没有能进作品页的番号"
+        return "", "", "No hay códigos que lleven a una página de obra"
     notes = []
     for code in codes:
         try:
@@ -587,10 +586,10 @@ def _find_in_cast(pages, codes: list[str], mine: set[str], romaji: str) -> tuple
         if len(matched) == 1:
             return next(iter(matched)), code, ""
         if matched:
-            return "", "", f"{code} 的出演表里不止一位对得上：" + "、".join(
+            return "", "", f"Hay más de una persona en el reparto de {code} que coincide:" + "、".join(
                 person["name"] for person in matched.values())
         shown = "、".join(person["name"] for person in cast)
-        notes.append(f"{code} 的出演表{'是 ' + shown if shown else '是空的'}")
+        notes.append(f"Reparto de {code}{'是 ' + shown if shown else '是空的'}")
     return "", "", "；".join(notes)
 
 

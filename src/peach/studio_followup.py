@@ -31,7 +31,7 @@ from .followups import Attempts, Followup, FollowupType, attempts_root, register
 
 #: 这类后继在任务中心的身份，也是活动页上那一行的名字来源。
 TASK_KEY = "studio-mark"
-TASK_LABEL = "补厂牌官网与标识"
+TASK_LABEL = "Completar web oficial y logo de estudios"
 
 #: 这条后继写下的一切都带这个归属串，撤回按它认。
 SOURCE = "auto:studio-mark"
@@ -57,7 +57,7 @@ def parse_key(key: str) -> int:
     """把后继 key 拆回厂牌 id。形状不对就抛——那说明排队的行不是这个版本写的。"""
     prefix, _, raw = str(key).partition(":")
     if prefix != TASK_KEY or not raw.isdigit():
-        raise ValueError(f"认不出这条补厂牌后继：{key}")
+        raise ValueError(f"No se reconoce esta tarea derivada de estudio: {key}")
     return int(raw)
 
 
@@ -145,10 +145,10 @@ def _run(contract, key: str, handle) -> dict:
                                  (entity_id,)).fetchone()
         if row is None:
             # 实体被合并或删掉了。这不是失败：那件事已经不存在了。
-            return {"outcome": "档案已不存在"}
+            return {"outcome": "La ficha ya no existe"}
         name = str(row[0] or "")
         if has_mark(logo_root, name):
-            return {"name": name, "outcome": "已有标识"}
+            return {"name": name, "outcome": "Ya tiene logo"}
         linked = connection.execute(
             "SELECT count(*) FROM entity_link WHERE entity_id=? AND link_kind IN (?,?)",
             (entity_id, *studio_icons.ICON_LINK_KINDS)).fetchone()[0]
@@ -159,8 +159,8 @@ def _run(contract, key: str, handle) -> dict:
     if not linked:
         site = _land_site(contract, entity_id, name, aliases, batch)
         summary["site"] = site
-        if site["outcome"] != "已登记":
-            return {**summary, "outcome": f"官网{site['outcome']}"}
+        if site["outcome"] != "Registrado":
+            return {**summary, "outcome": f"Web oficial {site['outcome']}"}
     return {**summary, **_land_mark(contract, entity_id, name, batch)}
 
 
@@ -173,12 +173,12 @@ def _land_site(contract, entity_id: int, name: str, aliases, batch: str) -> dict
     verdict = str(row["verdict"])
     if verdict != "ok":
         # `weak` 与 `未取得` 都不写：前者要人看，后者是没有证据。
-        return {"outcome": "待人确认" if verdict == "weak" else "未取得",
+        return {"outcome": "Pendiente de confirmación" if verdict == "weak" else "No obtenido",
                 "verdict": verdict, "note": str(row["note"])[:200]}
     url = str(row["final_url"] or row["candidate_url"])
     now = datetime.now(timezone.utc).isoformat()
     metadata = {"source": SOURCE, "batch": batch, "verdict": verdict, "installed_at": now,
-                "evidence": f"{row['note']}；标题「{row['title']}」", "sha256": row["sha256"]}
+                "evidence": f"{row['note']}; título “{row['title']}”", "sha256": row["sha256"]}
     with contract.database.write_transaction() as connection:
         connection.execute(
             "INSERT OR IGNORE INTO entity_link"
@@ -187,7 +187,7 @@ def _land_site(contract, entity_id: int, name: str, aliases, batch: str) -> dict
             (entity_id, OFFICIAL, OFFICIAL_LABEL, url, urlsplit(url).hostname or "",
              json.dumps(metadata, ensure_ascii=False), now, now))
     contract.cache_bust()
-    return {"outcome": "已登记", "url": url}
+    return {"outcome": "Registrado", "url": url}
 
 
 def _land_mark(contract, entity_id: int, name: str, batch: str) -> dict:

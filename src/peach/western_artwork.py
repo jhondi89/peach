@@ -53,10 +53,10 @@ def babepedia_page(http: HttpTransport, name: str, aliases=(), *, profile_url: s
     parsed_profile = urlsplit(url)
     if (not public_https_url(url) or parsed_profile.hostname not in ('www.babepedia.com', 'babepedia.com')
             or not parsed_profile.path.startswith('/babe/')):
-        raise ValueError('Babepedia 未取得：档案地址不一致')
+        raise ValueError("No se obtuvo Babepedia: la dirección del perfil no coincide")
     response = http(HttpRequest('GET', url, {'User-Agent': USER_AGENT}), TIMEOUT, PAGE_LIMIT)
     if response.status != 200:
-        raise ValueError(f'Babepedia 未取得：HTTP {response.status}')
+        raise ValueError(f"No se obtuvo Babepedia: HTTP {response.status}")
     soup = BeautifulSoup(response_text(response), 'html.parser')
     heading = soup.select_one('h1#babename')
     found = heading.get_text(' ', strip=True) if heading else ''
@@ -68,10 +68,10 @@ def babepedia_page(http: HttpTransport, name: str, aliases=(), *, profile_url: s
     alias_names = [n.strip() for n in aka.get_text(' ', strip=True).split(' - ') if n.strip()] if aka else []
     listed = {_name(n) for n in alias_names}
     if not found or not (known & {_name(found), *listed}):
-        raise ValueError('Babepedia 未取得：档案身份不一致')
+        raise ValueError("No se obtuvo Babepedia: la identidad del perfil no coincide")
     final = response.url or url
     if urlsplit(final).hostname not in ('www.babepedia.com', 'babepedia.com'):
-        raise ValueError('Babepedia 未取得：来源域名不一致')
+        raise ValueError("No se obtuvo Babepedia: el dominio de la fuente no coincide")
     return soup, final, found, alias_names
 
 
@@ -120,10 +120,10 @@ def face_matched_portrait(fetched: list, covers: list, matcher) -> tuple:
         found.append(choice)
         candidates[choice['ref']] = Candidate(choice, body, origin, inspected)
     if not covers:
-        return None, {}, '没有单人作品封面可比，只留候选'
+        return None, {}, "No hay portadas de obras individuales para comparar; solo queda como candidato"
     result = match_gallery(found, covers, matcher, lambda choice: candidates.get(choice['ref']))
     if result.winner is None or not result.evidence.get('covers'):
-        return None, {}, result.reason or '没有比上封面的图，只留候选'
+        return None, {}, result.reason or "Ninguna imagen coincidió con la portada; solo queda como candidato"
     return result.winner, result.evidence, ''
 
 
@@ -157,7 +157,7 @@ def filename_date(name: str, site: str) -> str:
 
 def _graphql(http: HttpTransport, site: str, query: str, variables: dict) -> dict:
     if site not in SITES:
-        raise ValueError('未支持的发行方')
+        raise ValueError("Distribuidora no compatible")
     variables = {**variables, 'site': site.upper()}
     response = http(HttpRequest('POST', f'https://www.{site}.com/graphql',
                                {'User-Agent': USER_AGENT, 'Content-Type': 'application/json',
@@ -165,10 +165,10 @@ def _graphql(http: HttpTransport, site: str, query: str, variables: dict) -> dic
                                json.dumps({'query': query, 'variables': variables}).encode()),
                     TIMEOUT, PAGE_LIMIT)
     if response.status != 200:
-        raise ValueError(f'官方封面未取得：HTTP {response.status}')
+        raise ValueError(f"No se obtuvo la portada oficial: HTTP {response.status}")
     data = json.loads(response.body)
     if data.get('errors') or not isinstance(data.get('data'), dict):
-        raise ValueError('官方封面未取得：接口没有返回有效资料')
+        raise ValueError("No se obtuvo la portada oficial: la API no devolvió datos válidos")
     return data['data']
 
 

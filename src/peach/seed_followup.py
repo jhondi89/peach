@@ -17,7 +17,7 @@ from . import seed_pack, seed_corrections, seed_validation
 from .followups import Followup, FollowupType, register
 
 TASK_KEY = "seed-import"
-TASK_LABEL = "导入初始资料"
+TASK_LABEL = "Importar datos iniciales"
 REVIEW_FILE = "seed-landing.csv"
 FIELDS = ("kind", "entity", "field", "ours", "source", "theirs", "detail", "batch", "withdrawal_id", "evidence")
 #: 活动页摘要里的计数键与它们的中文名，按这个顺序拼结论。
@@ -67,11 +67,11 @@ def plan(connection: sqlite3.Connection, *, since_entity_id: int, pack_path: Pat
 def _rows(report: dict) -> list[dict]:
     rows = [{"kind": item["kind"], "entity": item["entity"], "field": item["field"], "ours": item["ours"],
              "source": item["source"], "theirs": item["theirs"], "batch": report["batch"],
-             "detail": "包里说的与本机不一致；本机这条不是种子写的，种子不动它"}
+             "detail": "Lo que dice el paquete no coincide con este equipo; esta fila no la escribió la semilla, así que no se toca"}
             for item in report["conflicts"]]
     rows += [{"kind": item["kind"], "entity": "、".join(item["entities"]), "field": "identity", "ours": "",
               "source": "", "theirs": item["name"], "batch": report["batch"],
-              "detail": "包里一条对上本机两位，可能是重复身份；合并不可逆，由人决定"}
+              "detail": "Una entrada del paquete coincide con dos personas de este equipo; puede ser una identidad duplicada. Fusionar no se puede deshacer, así que lo decide una persona"}
              for item in report["duplicates"]]
     rows += [{"kind": item["kind"], "entity": item["entity"], "field": item["field"], "source": item["source"],
               "detail": item["detail"] + "；" + item["reason"], "withdrawal_id": item["id"],
@@ -91,19 +91,19 @@ def record_review(root: Path, report: dict) -> Path:
 def outcome(report: dict) -> str:
     parts = [f"{label} {report[key]}" for key, label in SUMMARY_LABELS if report.get(key)]
     if report["conflicts"]:
-        parts.append(f"不一致 {len(report['conflicts'])}")
+        parts.append(f"{len(report['conflicts'])} no coinciden")
     if report["duplicates"]:
-        parts.append(f"重复身份 {len(report['duplicates'])}")
+        parts.append(f"{len(report['duplicates'])} identidades duplicadas")
     if report.get("withdrawal_conflicts"):
-        parts.append(f"撤销待复核 {len(report['withdrawal_conflicts'])}")
-    return "、".join(parts) if parts else f"没有可补的（对上 {report['matched']} 位）"
+        parts.append(f"{len(report['withdrawal_conflicts'])} anulaciones por revisar")
+    return "、".join(parts) if parts else f"Nada que completar ({report['matched']} coincidencias)"
 
 
 def run(contract, key: str, handle) -> dict:
     """将私有种子包补进账本；测试使用临时种子包。"""
     pack = seed_pack.load(seed_pack.DEFAULT_PACK)
     if key != followup_key(pack["version"], seed_validation.digest(pack)):
-        raise ValueError("种子内容与排队任务的摘要不一致，请重新派发")
+        raise ValueError("El contenido de la semilla no coincide con el resumen de la tarea en cola; vuelve a enviarla")
     if handle is not None:
         handle.progress(label=f"{TASK_LABEL}：{pack['version']}", throttle=0)
     with contract.database.write_transaction() as connection:

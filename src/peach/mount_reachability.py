@@ -18,9 +18,9 @@ DEGRADED_INTERVAL = 60.0
 PROBE_TIMEOUT = 5.0
 MAX_PENDING = 4
 MESSAGES = {
-    "ok": "可读取", "permission_denied": "没有权限读取", "missing": "目录不存在",
-    "not_directory": "目标不是目录", "unavailable": "目录读取失败",
-    "unmapped": "未配置挂载点", "checking": "正在检测", "timeout": "探测未返回",
+    "ok": "Se puede leer", "permission_denied": "Sin permiso de lectura", "missing": "La carpeta no existe",
+    "not_directory": "El destino no es una carpeta", "unavailable": "Falló la lectura de la carpeta",
+    "unmapped": "No hay punto de montaje configurado", "checking": "Comprobando", "timeout": "La comprobación no respondió",
 }
 FAILURES = frozenset({"permission_denied", "missing", "not_directory", "unavailable", "unmapped"})
 

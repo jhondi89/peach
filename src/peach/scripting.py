@@ -27,7 +27,7 @@ from .migrations import sqlite_backup
 from .user_agent import USER_AGENT as USER_AGENT
 
 #: `--apply` 缺 `--backup` 时的唯一拒绝话术。
-BACKUP_REQUIRED = "--apply 必须同时给 --backup"
+BACKUP_REQUIRED = "--apply debe ir acompañado de --backup"
 
 
 def readonly_uri(db_path: Path | str) -> str:

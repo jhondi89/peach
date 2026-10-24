@@ -36,12 +36,12 @@ def initialize() -> None:
     if config.present:
         return
     if config.directory("database").joinpath("ledger.db").exists():
-        raise RuntimeError("已有数据库但缺少配置文件，请恢复 config.toml 后启动")
+        raise RuntimeError("Hay base de datos pero falta el archivo de configuración; restaura config.toml antes de iniciar")
     process = launch("init", "--no-input")
     try:
         code = process.wait(timeout=120)
         if code:
-            raise RuntimeError(f"初始化失败，退出码 {code}")
+            raise RuntimeError(f"Falló la inicialización, código de salida {code}")
     finally:
         stop_process(process)
 
@@ -76,7 +76,7 @@ def supervise(host: str, port: int, stopping: threading.Event) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="运行通过浏览器管理的 Peach 服务")
+    parser = argparse.ArgumentParser(description="Ejecuta el servicio de Peach que se gestiona desde el navegador")
     parser.add_argument("--host", default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8900)
     args = parser.parse_args(argv)

@@ -142,9 +142,9 @@ def w_taste_refresh(contract: WebContract, body, *, progress=None, checkpoint=No
             result = w_taste_refresh(contract, {**body, "background": False},
                 progress=lambda **fields: job.update(job_id, **fields),
                 checkpoint=lambda **fields: job.checkpoint(job_id, **fields), resume_state=job.snapshot())
-            job.update(job_id, **result, status="complete", message="部分浏览记录未取得" if result["warnings"] else "口味分析已更新", completed_at=time.time())
+            job.update(job_id, **result, status="complete", message="No se obtuvieron algunos registros de navegación" if result["warnings"] else "Análisis de gustos actualizado", completed_at=time.time())
         return job.start(work, restart=True, initial={
-            "stage": "discovering", "message": "正在查找 Peach 主机上的浏览器资料"},
+            "stage": "discovering", "message": "Buscando perfiles de navegador en el equipo de Peach"},
             recovery={'background': True, 'window': body.get('window') or 'all'})
     window = str(body.get("window") or "all")
     sources = enabled_history_sources(contract.taste_history_store)
@@ -158,7 +158,7 @@ def w_taste_refresh(contract: WebContract, body, *, progress=None, checkpoint=No
         profile_keys = [f'{kind}:{source.browser}:{source.profile}:{source.path}'
                         for kind, selected, _refresh in plans for source in selected]
         if checkpoint and not checkpoint(profile_keys=profile_keys):
-            raise InterruptedError('口味读取已停止')
+            raise InterruptedError("Se detuvo la lectura de gustos")
     def profile_progress(**fields):
         if progress:
             progress(**{**fields, 'checked': len(completed), 'total': len(profile_keys)})
@@ -173,13 +173,13 @@ def w_taste_refresh(contract: WebContract, body, *, progress=None, checkpoint=No
                 completed.add(key)
             if checkpoint and not checkpoint(refresh_results=results.copy(), completed_profiles=sorted(completed),
                                               checked=len(completed), total=len(profile_keys)):
-                raise InterruptedError('口味读取已停止')
+                raise InterruptedError("Se detuvo la lectura de gustos")
     if contract.taste_history_store.is_file():
         analysis = analyze_history(contract.taste_history_store, contract.taste_history_root, progress=progress)
         write_manifest(contract.taste_history_manifest, results, analysis)
     contract.cache_bust()
     if progress:
-        progress(stage="dashboard", checked=0, total=None, message="正在汇总口味分布、标签与创作者排名")
+        progress(stage="dashboard", checked=0, total=None, message="Resumiendo la distribución de gustos y los rankings de etiquetas y creadores")
     return {"refresh": results, "warnings": [f"{row['browser']} · {row['profile']}：{row['error']}"
             for row in results if row.get("status") == "failed"], "dashboard": q_taste(contract, {"window": window})}
 
@@ -227,10 +227,10 @@ def w_search_history(contract: WebContract, body):
     return {"ok": True, "operation": operation}
 
 _STORAGE_LABELS = {
-    "system": "系统盘",
-    "local": "资源盘",
-    "115": "115 网盘",
-    "pikpak": "PikPak 网盘",
+    "system": "Disco del sistema",
+    "local": "Disco de recursos",
+    "115": "Nube 115",
+    "pikpak": "Nube PikPak",
 }
 
 

@@ -55,21 +55,21 @@ FETCH_TIMEOUT = 30
 #: 表里没有的按代号原样显示——新来源接进来时先露一个代号，好过盖成一个含混的
 #: 「其他」：看到代号的人才知道该来这里补一行。
 SOURCE_NAMES = {
-    "gfriends": "图库",
-    "jae": "展会名录",
-    "social-web": "社交主页",
-    "follow-content": "在线作品",
-    "cover": "作品封面",
-    "cover-fallback": "作品封面",
-    "cover-face": "封面人脸",
+    "gfriends": "Galería",
+    "jae": "Directorio de eventos",
+    "social-web": "Página social",
+    "follow-content": "Obras en línea",
+    "cover": "Portada de la obra",
+    "cover-fallback": "Portada de la obra",
+    "cover-face": "Cara de la portada",
     "babepedia": "Babepedia",
-    "kmib": "官网",
-    "picker": "自己挑的",
-    "history": "取过的图",
-    "asset": "作品画面",
-    "code-cover": "番号封面",
-    "url": "地址",
-    "upload": "本机",
+    "kmib": "Web oficial",
+    "picker": "Elegida por ti",
+    "history": "Imágenes usadas antes",
+    "asset": "Imagen de la obra",
+    "code-cover": "Portada por código",
+    "url": "Dirección",
+    "upload": "Este equipo",
 }
 #: 按番号取来的封面放在这个来源目录里。它不属于任何人，所以只存对象、不写证据：
 #: 证据按 `performer-<id>-*` 存，写了就会冒充成某个人「取过的图」。
@@ -83,7 +83,7 @@ SHEET_CELLS = 9
 #: 装上去时来源记录的 `provider` 也是它，整张装的那一份和取来的落在同一条记录上。
 ADDRESS_CACHE = "url"
 #: 发布账号没有本人身份依据时，作品画面格子上的说明。
-STAND_IN_NOTE = "代表作画面，非本人"
+STAND_IN_NOTE = "Imagen de una obra, no es la persona"
 
 
 class PickerError(RuntimeError):
@@ -142,7 +142,7 @@ def cover_version(cover: Path | None) -> str:
 def _check_version(cover: Path | None, version: str | None) -> None:
     """框是在 `version` 那一张封面上画的；封面此后被换过，同一组坐标就落在别的地方。"""
     if version is not None and cover_version(cover) != version:
-        raise PickerError("这张封面刚换过，返回备选图片重新框一次")
+        raise PickerError("Esta portada acaba de cambiar; vuelve a las imágenes alternativas y encuádrala de nuevo")
 
 
 def name_chain(connection: sqlite3.Connection, entity_id: int) -> list[str]:
@@ -244,7 +244,7 @@ def _history(providers_root: Path, entity_id: int, current: str,
         if body is None or images.is_flat(body):
             continue
         provider = str(record.get("provider") or "")
-        label = SOURCE_NAMES.get(provider, provider or "取过的图")
+        label = SOURCE_NAMES.get(provider, provider or "Imágenes usadas antes")
         width, height = int(record.get("width") or 0), int(record.get("height") or 0)
         whole = provider in WHOLE_COVER_PROVIDERS
         focus, cast = None, 0
@@ -322,7 +322,7 @@ def asset_artwork(connection: sqlite3.Connection, cover_root: Path,
         cast = artwork_cast_size(cover, cast)
         found.append((width * height, order, Choice(
             ref=bases[0], source="asset",
-            label=str(code or title or f"作品 {asset_id}"),
+            label=str(code or title or f"Obra {asset_id}"),
             width=width, height=height,
             detail=" · ".join(filter(None, (STAND_IN_NOTE if stand_in else "", str(title or "")))),
             crop=True, bases=tuple(bases),
@@ -383,7 +383,7 @@ def code_cover(code: str, cover_root: Path | None, providers_root: Path,
     """
     key = normalise_code_key(code)
     if not key:
-        raise PickerError("认不出这个番号")
+        raise PickerError("No se reconoce este código")
     body, cover = _code_cover_bytes(key, cover_root, providers_root)
     if body is None:
         body = fetch(key)
@@ -391,7 +391,7 @@ def code_cover(code: str, cover_root: Path | None, providers_root: Path,
             _code_cover_url(key), body, accept_image(body))
     size = images.measure_image_size(body)
     if size is None:
-        raise PickerError("这个番号的封面不是一张能识别的图片")
+        raise PickerError("La portada de este código no es una imagen reconocible")
     face = read_sidecar(cover) if cover is not None else None
     if face_square(face, *size) is None:
         face = probe(body)
@@ -413,7 +413,7 @@ def framed(ref: str, body: bytes, probe: Callable[[bytes], dict | None], *,
     body = images.upright(body)
     size = images.measure_image_size(body)
     if size is None:
-        raise PickerError("这不是一张能识别的图片")
+        raise PickerError("No es una imagen reconocible")
     return Choice(ref=ref, source=source, label=label, width=size[0], height=size[1],
                   bases=(ref,) if ref else (), focus=face_square(probe(body), *size))
 
@@ -564,7 +564,7 @@ def _cached_object(providers_root: Path, digest: str) -> bytes:
     """按内容哈希取那张图。路径可能过期，内容不会。"""
     body = _object_bytes(providers_root, digest)
     if body is None:
-        raise PickerError("这张图不在本机缓存里了")
+        raise PickerError("Esta imagen ya no está en la caché local")
     return body
 
 
@@ -575,10 +575,10 @@ def fetch_image(transport: HttpTransport, url: str) -> bytes:
             HttpRequest("GET", url, {"Accept": "image/*"}),
             FETCH_TIMEOUT, MAX_IMAGE_BYTES)
     except Exception as error:  # noqa: BLE001 — 网络层什么都可能抛
-        raise PickerError(f"取不到这张图：{error}") from error
+        raise PickerError(f"No se pudo obtener esta imagen: {error}") from error
     if response is None or response.status != 200:
-        status = "无响应" if response is None else f"HTTP {response.status}"
-        raise PickerError(f"取不到这张图：{status}")
+        status = "Sin respuesta" if response is None else f"HTTP {response.status}"
+        raise PickerError(f"No se pudo obtener esta imagen: {status}")
     return response.body
 
 
@@ -599,10 +599,10 @@ def allowed_source(url: str) -> bool:
 def accept_image(body: bytes) -> InspectedAvatar:
     """确认这堆字节真是一张能用的图。格式由解码结果定，不看扩展名也不信响应头。"""
     if len(body) > MAX_IMAGE_BYTES:
-        raise PickerError("图太大了")
+        raise PickerError("La imagen es demasiado grande")
     inspected = inspect_avatar(body)
     if inspected is None:
-        raise PickerError("这不是一张能识别的 JPEG 或 PNG 图片")
+        raise PickerError("No es una imagen JPEG o PNG reconocible")
     return inspected
 
 
@@ -625,41 +625,41 @@ def _asset_image(ref: str, connection: sqlite3.Connection, entity_id: int,
     读出来，而资料页本来看不到那部作品。
     """
     if artwork is None:
-        raise PickerError("这一次取不到作品画面")
+        raise PickerError("Esta vez no se pudieron obtener imágenes de la obra")
     _, _, rest = ref.partition(":")
     raw_id, _, what = rest.partition(":")
     try:
         asset_id = int(raw_id)
     except ValueError as error:
-        raise PickerError("无法识别这张备选图片") from error
+        raise PickerError("No se reconoce esta imagen alternativa") from error
     row = connection.execute(
         "SELECT a.code FROM asset_entity ae JOIN asset a ON a.id=ae.asset_id "
         "WHERE ae.entity_id=? AND ae.asset_id=?",
         (int(entity_id), asset_id)).fetchone()
     if row is None:
-        raise PickerError("这部作品不在这个人名下")
+        raise PickerError("Esta obra no está a nombre de esta persona")
     if what == "cover":
         key = artwork_key(asset_id, row[0])
         path = (Path(artwork.cover_root) / f"{key}.jpg") if key else None
-        label = "封面"
+        label = "Portada"
         _check_version(path, version)
     elif what.startswith("cell"):
         try:
             cell = int(what[len("cell"):])
         except ValueError as error:
-            raise PickerError("无法识别这张备选图片") from error
+            raise PickerError("No se reconoce esta imagen alternativa") from error
         if not 0 <= cell < SHEET_CELLS:
-            raise PickerError("无法识别这张备选图片")
+            raise PickerError("No se reconoce esta imagen alternativa")
         path = artwork.frame(asset_id, cell)
-        label = f"第 {cell + 1} 格"
+        label = f"Cuadro {cell + 1}"
     else:
-        raise PickerError("无法识别这张备选图片")
+        raise PickerError("No se reconoce esta imagen alternativa")
     if path is None or not Path(path).is_file():
-        raise PickerError(f"这部作品的{label}还没有落在本机")
+        raise PickerError(f"{label} de esta obra aún no está en este equipo")
     try:
         body = Path(path).read_bytes()
     except OSError as error:
-        raise PickerError(f"读不出这部作品的{label}") from error
+        raise PickerError(f"No se puede leer {label} de esta obra") from error
     return body, {"source": "avatar picker", "provider": "asset",
                   "external_id": f"{asset_id}:{what}",
                   "asset_id": asset_id, "asset_code": str(row[0] or ""),
@@ -682,7 +682,7 @@ def resolve(ref: str, connection: sqlite3.Connection, providers_root: Path,
     """
     if ref.startswith(("follow:", "follow-avatar:", "follow-link:")):
         if online is None:
-            raise PickerError("未取得在线备选头像")
+            raise PickerError("No se obtuvieron fotos alternativas en línea")
         return online(ref)
     if ref.startswith("sha256:"):
         digest = ref.split(":", 1)[1].strip().lower()
@@ -698,7 +698,7 @@ def resolve(ref: str, connection: sqlite3.Connection, providers_root: Path,
         body, path = _code_cover_bytes(
             key, artwork.cover_root if artwork else None, providers_root) if key else (None, None)
         if body is None:
-            raise PickerError("这个番号的封面还没有取过")
+            raise PickerError("La portada de este código aún no se ha descargado")
         _check_version(path, version)
         return body, {"source": "avatar picker", "provider": "code-cover",
                       "external_id": key, "asset_code": key}
@@ -707,16 +707,16 @@ def resolve(ref: str, connection: sqlite3.Connection, providers_root: Path,
         url = ref.split(":", 1)[1]
         body = AvatarCandidateCache(providers_root / ADDRESS_CACHE).lookup(url)
         if body is None:
-            raise PickerError("这个地址的图还没有取过")
+            raise PickerError("La imagen de esta dirección aún no se ha descargado")
         return body, {"source": "avatar picker", "provider": ADDRESS_CACHE,
                       "external_id": "", "upstream_url": url}
     if not ref.startswith("gfriends:"):
-        raise PickerError("无法识别这张备选图片")
+        raise PickerError("No se reconoce esta imagen alternativa")
     category, _, filename = ref.split(":", 1)[1].partition("/")
     index = gfriends.load_index(providers_root / GFRIENDS_CACHE)
     match = gfriends.candidates(index, name_chain(connection, entity_id))
     if (category, filename) not in match.finder:
-        raise PickerError("当前索引中没有这张备选图片")
+        raise PickerError("Esta imagen alternativa no está en el índice actual")
     # 证据里记的是找到这一张的那个名字，不是整条链：事后要答的是「这张图凭什么算他」。
     matched = match.finder[(category, filename)]
     url = gfriends.image_url(category, filename)
@@ -724,7 +724,7 @@ def resolve(ref: str, connection: sqlite3.Connection, providers_root: Path,
     body = cache.lookup(url)
     if body is None:
         if transport is None:
-            raise PickerError("这张图还没下载过，而这一次不允许联网")
+            raise PickerError("Esta imagen aún no se ha descargado y esta vez no se permite conectarse a internet")
         body = fetch_image(transport, url)
     return body, {"source": "avatar picker", "provider": "gfriends",
                   "gfriends_category": category, "gfriends_file": filename,
@@ -742,14 +742,14 @@ def crop(body: bytes, box: object) -> tuple[bytes, dict]:
     body = images.upright(body)
     size = images.measure_image_size(body)
     if size is None:
-        raise PickerError("这不是一张能识别的图片")
+        raise PickerError("No es una imagen reconocible")
     edges = images.clamp_box(box, size[0], size[1])
     if edges is None:
-        raise PickerError("框选的区域不成立")
+        raise PickerError("El área recortada no es válida")
     cropped = images.crop_to_box(
         body, (edges["x0"], edges["y0"], edges["x1"], edges["y1"]))
     if cropped is None:
-        raise PickerError("这一块裁不出来")
+        raise PickerError("No se puede recortar esta parte")
     return cropped, {"source_kind": "user_cropped",
                      "crop_box": [edges["x0"], edges["y0"], edges["x1"], edges["y1"]],
                      "crop_source_px": [size[0], size[1]]}

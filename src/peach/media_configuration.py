@@ -117,25 +117,25 @@ def _validated_paths(row: dict, *, windows: bool) -> tuple[PureWindowsPath, Pure
     text = str(row.get("path", "")).strip()
     root = text if windows else str(row.get("root", "")).strip()
     if any(ord(char) < 32 for char in text + root):
-        raise ValueError("路径不能包含控制字符")
+        raise ValueError("La ruta no puede contener caracteres de control")
     if not windows and not root:
-        raise ValueError("无法自动配置媒体目录，请检查配置文件中的目录对应关系")
+        raise ValueError("No se puede configurar la carpeta de medios automáticamente; revisa la correspondencia de carpetas en el archivo de configuración")
     if not platform.is_windows_path(root) or ".." in PureWindowsPath(root).parts:
-        raise ValueError("媒体路径必须包含盘符，例如 B:\\；网络共享请先映射为 Windows 盘符" if windows
-                         else "配置文件中 [media.locations] 的路径格式无效；请使用 Windows 格式，例如 R:\\media")
+        raise ValueError("La ruta de medios debe incluir una letra de unidad, por ejemplo B:\\; asigna antes una letra de unidad de Windows a las carpetas compartidas de red" if windows
+                         else "El formato de las rutas de [media.locations] en el archivo de configuración no es válido; usa el formato de Windows, por ejemplo R:\\media")
     path = PureWindowsPath(text) if windows else PurePosixPath(text)
     if not text or not (platform.is_windows_path(text) if windows else text.startswith("/")):
-        raise ValueError("请填写媒体目录的完整路径，例如 D:\\Movies" if windows
-                         else "请填写媒体目录的完整路径，例如 /media")
+        raise ValueError("Escribe la ruta completa de la carpeta de medios, por ejemplo D:\\Movies" if windows
+                         else "Escribe la ruta completa de la carpeta de medios, por ejemplo /media")
     if ".." in path.parts:
-        raise ValueError("媒体目录路径不能包含上级目录 ..")
+        raise ValueError("La ruta de la carpeta de medios no puede contener ..")
     return PureWindowsPath(root), path
 
 
 def validate(raws: object, *, windows: bool, config=None) -> tuple[dict, dict, list[str]]:
     """离线来源允许保存；绝对路径、盘符根与来源间重叠在保存前校验。"""
     if not isinstance(raws, list) or not raws or len(raws) > 100:
-        return {}, {}, ["请添加 1 到 100 个媒体目录"]
+        return {}, {}, ["Añade entre 1 y 100 carpetas de medios"]
     raws = prepare_sources(raws, windows=windows, config=config)
     locations: dict[str, list[str]] = {}
     mounts: dict[str, list[str]] = {}
@@ -144,20 +144,20 @@ def validate(raws: object, *, windows: bool, config=None) -> tuple[dict, dict, l
     for index, row in enumerate(raws):
         try:
             if not isinstance(row, dict):
-                raise ValueError("媒体来源格式不正确")
+                raise ValueError("El formato de la fuente de medios no es correcto")
             location = row.get("location")
             if not isinstance(location, str) or location not in dict(SOURCE_OPTIONS):
-                raise ValueError("请选择列表中的媒体来源")
+                raise ValueError("Elige una fuente de medios de la lista")
             if "cost" in row and row["cost"] not in ("free", "metered"):
-                raise ValueError("请选择代理流量保护设置")
+                raise ValueError("Elige el ajuste de protección del tráfico del proxy")
             declared, path = _validated_paths(row, windows=windows)
             for other_root, other_path in seen:
                 if (declared == other_root or declared.is_relative_to(other_root)
                         or other_root.is_relative_to(declared)):
-                    raise ValueError("媒体路径与另一文件夹重复或互相包含" if windows
-                                     else "配置文件中的目录对应关系重复或互相包含")
+                    raise ValueError("La ruta de medios se repite con otra carpeta o se contienen entre sí" if windows
+                                     else "La correspondencia de carpetas del archivo de configuración se repite o se contiene entre sí")
                 if path == other_path or path.is_relative_to(other_path) or other_path.is_relative_to(path):
-                    raise ValueError("媒体目录与另一行重复或互相包含")
+                    raise ValueError("La carpeta de medios se repite con otra fila o se contienen entre sí")
             seen.append((declared, path))
             locations.setdefault(location, []).append(str(declared))
             if not windows:

@@ -36,10 +36,10 @@ def describe(root: Path) -> dict:
 def save(root: Path, body: dict) -> dict:
     mode = body.get("mode")
     if mode not in {"environment", "direct", "proxy"}:
-        raise ValueError("请选择 Peach 代理的连接方式")
+        raise ValueError("Elige la forma de conexión del proxy de Peach")
     address = body.get("proxy") or values(root).get("proxy", "")
     if not isinstance(address, str):
-        raise ValueError("代理地址必须是文字")
+        raise ValueError("La dirección del proxy debe ser texto")
     address = address.strip()
     if mode == "proxy":
         try:
@@ -49,7 +49,7 @@ def save(root: Path, body: dict) -> dict:
         except ValueError:
             valid = False
         if not valid or any(char.isspace() for char in address):
-            raise ValueError("请填写带端口的 HTTP 或 SOCKS 代理地址")
+            raise ValueError("Escribe una dirección de proxy HTTP o SOCKS con puerto")
     path = CredentialStore(root).path_for("peach-proxy")
     atomic_write_text(path, json.dumps({"mode": mode, "proxy": address if mode == "proxy" else ""}), mode=0o600)
     return describe(root)
@@ -58,7 +58,7 @@ def save(root: Path, body: dict) -> dict:
 def client_options(root: Path) -> dict:
     saved = values(root)
     if saved.get("conflict"):
-        raise ValueError("来源代理设置不同，请先在配置页选择 Peach 代理")
+        raise ValueError("Las fuentes tienen proxys distintos; elige primero el proxy de Peach en la configuración")
     mode = saved.get("mode", "environment")
     if mode == "proxy":
         return {"trust_env": False, "proxy": saved["proxy"]}
