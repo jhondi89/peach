@@ -11,7 +11,7 @@ it('定位请求只递这条路径，成功回执一句', async () => {
   const fetcher = fetchMock(200, { ok: true, path: LOG });
   vi.stubGlobal('fetch', fetcher);
   const revealed = vi.fn();
-  const host = await mount(<PathLine path={LOG} prefix="完整记录：" onRevealed={revealed} />);
+  const host = await mount(<PathLine path={LOG} prefix="Registro completo:" onRevealed={revealed} />);
 
   expect(host.textContent).toContain(`完整记录：${LOG}`);
   await click(host.querySelector('button[aria-label="在资源管理器中显示"]'));
@@ -19,7 +19,7 @@ it('定位请求只递这条路径，成功回执一句', async () => {
   expect(fetcher.mock.calls[0]?.[0]).toBe('/api/reveal');
   expect(sentBody(fetcher)).toEqual({ path: LOG });
   /* 资源管理器弹在跑 Peach 那台机器上：从别的设备看这一页时，屏幕上不会有任何动静。 */
-  expect(revealed).toHaveBeenCalledWith('已在资源管理器中显示');
+  expect(revealed).toHaveBeenCalledWith('Mostrado en el explorador de archivos');
 });
 
 it('开不了时原因留在路径旁边，不冒充成功的回执', async () => {
@@ -48,7 +48,7 @@ it('服务端不认这条路径时照直说，不落进通用的权限说法', a
 
 it('路径和那颗键排在同一条中线上', async () => {
   // 键比这行小字高一截，顶对齐时它自己看着往上飘。
-  const host = await mount(<PathLine path={LOG} prefix="完整记录：" />);
+  const host = await mount(<PathLine path={LOG} prefix="Registro completo:" />);
 
   expect(host.querySelector('p')!.parentElement!.className).toContain('items-center');
 });

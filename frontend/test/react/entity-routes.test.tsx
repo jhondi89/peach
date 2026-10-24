@@ -110,7 +110,7 @@ function entityFrame() {
   const frame = document.createElement('template');
   frame.innerHTML = `<div data-entity-hero><div class="peach-react"></div></div>
     <div data-entity-filter><div class="peach-react"></div></div>
-    <section class="feednew" data-feed-new aria-label="未入库的新作" hidden></section>
+    <section class="feednew" data-feed-new aria-label="Estrenos fuera de la colección" hidden></section>
     <div data-entity-body><div class="peach-react"></div></div>`;
   const parts = [...frame.content.childNodes];
   const hero = frame.content.querySelector<HTMLElement>('[data-entity-hero]')!;
@@ -127,8 +127,8 @@ function entityProps(name: string, hosts: EntityPageProps['hosts']): EntityPageP
   return {
     kind: 'performer', name, filters: {}, media: { media: 'videos', set: 0 }, jav: false, seed: '42',
     revision: 0, feedRevision: 0, photoSize: 'small', photoLayout: 'masonry', followImagesOnly: false,
-    javLayout: 'small', javLayouts: [['small', '小图', 'layout-grid']], photoLayouts: [['masonry', '瀑布流', 'columns-2']],
-    states: [{ k: '', label: '全部' }], peopleLayout: 'big', hosts,
+    javLayout: 'small', javLayouts: [['small', 'Pequeño', 'layout-grid']], photoLayouts: [['masonry', 'Mosaico', 'columns-2']],
+    states: [{ k: '', label: 'Todos' }], peopleLayout: 'big', hosts,
     layout: { active: false, size: 'small', portrait: false, javImage: 'cover' },
     selectMode: false, selected: new Set(), seekSeconds: 10, wireDrag: vi.fn(),
     skeletonHtml: () => '<div data-test-skeleton></div>', groupCollapse: true, canLoadMore: () => true,
@@ -155,7 +155,7 @@ function entityProps(name: string, hosts: EntityPageProps['hosts']): EntityPageP
       portraitImg: () => '', wireDrag: vi.fn(), wireScroller: vi.fn(), wireFeedRow: vi.fn(),
       feedRowHtml: () => '<div class="feednewrow"></div>', receipt: vi.fn(), failure: vi.fn(),
       aliasForm: vi.fn(async () => {}), sourceToolsHtml: () => '', wireSourceTools: vi.fn(), comboItems: () => [],
-      sortKeys: vi.fn(() => [{ key: 'new', label: '入库时间', pressed: true, dir: '' as const, ariaLabel: '' }]),
+      sortKeys: vi.fn(() => [{ key: 'new', label: 'Fecha de importación', pressed: true, dir: '' as const, ariaLabel: '' }]),
     },
     actions: {
       route: vi.fn(), toggleTag: vi.fn(), clearFilter: vi.fn(), clearAll: vi.fn(), setSort: vi.fn(),

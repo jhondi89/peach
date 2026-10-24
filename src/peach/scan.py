@@ -132,14 +132,13 @@ def check_scan_target(
     """扫描根必须落在这个来源的某个数据库路径前缀内，否则拒绝（ADR-0023 第 2 阶段的写入侧门槛）。"""
     declared = declared_roots.get(location)
     if declared is None:
-        known = "、".join(sorted(declared_roots)) or "（设置文件里一个都没有）"
-        raise ScanTargetError(f"✗ 未声明的来源 {location!r}；[media.locations] 里已知：{known}")
+        known = "、".join(sorted(declared_roots)) or "(no hay ninguno en el archivo de ajustes)"
+        raise ScanTargetError(f"✗ Fuente no declarada {location!r}; conocidas en [media.locations]: {known}")
     actual = resolve_location(root, declared_roots)[0]
     if actual != location:
         raise ScanTargetError(
-            f"✗ 扫描目录与媒体来源不一致：{location} 的数据库路径前缀是 {'、'.join(declared)}，"
-            f"但要扫的是 {root}"
-            + (f"（该目录属于 {actual}）" if actual else "（不在任何已配置的媒体目录下）")
+            f"✗ La carpeta escaneada no coincide con la fuente de medios: el prefijo de la base de datos de {location} es {'、'.join(declared)}, pero se va a escanear {root}"
+            + (f"(esta carpeta pertenece a {actual})" if actual else "(no está bajo ninguna carpeta de medios configurada)")
         )
 
 
@@ -170,10 +169,9 @@ def ledger_root_for(
         return text
     if not location_mounts:
         raise ScanTargetError(
-            f"✗ 媒体来源 {location!r} 未配置本机目录，无法转换 {text} 的路径；"
-            f"请先在 [media.mounts] 中配置媒体目录")
+            f"✗ La fuente de medios {location!r} no tiene carpeta local configurada, así que no se puede convertir la ruta de {text}; configura primero la carpeta de medios en [media.mounts]")
     shown = "、".join(os.fspath(mount) for mount in location_mounts)
-    raise ScanTargetError(f"✗ {text} 不在来源 {location!r} 的挂载点 {shown} 之下")
+    raise ScanTargetError(f"✗ {text} no está bajo el punto de montaje {shown} de la fuente {location!r}")
 
 
 def walk_root_for(
@@ -188,8 +186,7 @@ def walk_root_for(
     location_mounts = tuple(mounts.get(location, ()))
     if index >= len(location_mounts):
         raise ScanTargetError(
-            f"✗ 媒体来源 {location!r} 的第 {index + 1} 个数据库路径前缀没有对应的本机目录；"
-            f"请先在 [media.mounts] 中按相同顺序配置媒体目录")
+            f"✗ El prefijo de ruta {index + 1} de la base de datos de la fuente {location!r} no tiene carpeta local; configura las carpetas de medios en [media.mounts] en el mismo orden")
     return Path(location_mounts[index]).joinpath(*tail)
 
 
@@ -334,10 +331,7 @@ class ScanResult:
     acquired: int = 0
 
     def summary(self) -> str:
-        return (f"✓ {self.location}: {self.files:,} 文件 / "
-                f"{self.total_bytes / 1024 ** 4:.2f} TB / 耗时 {self.seconds:.0f}s；"
-                f"附属文件未登记 {self.sidecars:,} 个；清单中已消失 {self.gone:,} 个；"
-                f"字幕 {self.subtitles:,} 条（孤立 {self.orphan_subtitles:,} 条）")
+        return (f"✓ {self.location}: {self.files:,} archivos / {self.total_bytes / 1024 ** 4:.2f} TB / {self.seconds:.0f} s; {self.sidecars:,} archivos asociados sin registrar; {self.gone:,} desaparecidos de la lista; {self.subtitles:,} subtítulos ({self.orphan_subtitles:,} sueltos)")
 
 
 def _walk(top: Path, pending: list[str] | None = None):
@@ -412,7 +406,7 @@ def _pending_directories(previous, walk_root):
     if previous.get('current_directory'):
         pending.append(previous['current_directory'])
     if any(not Path(value).is_relative_to(walk_root) for value in pending):
-        raise ScanTargetError('扫描目录与保存的断点不一致，请核对挂载设置')
+        raise ScanTargetError("La carpeta escaneada no coincide con el punto de reanudación guardado; revisa la configuración de montajes")
     return pending
 
 
@@ -498,8 +492,7 @@ def _scan_location(
                     connection.commit()
                     batch.clear()
                     save_directory(directory, name, here)
-                    report(f"  {time.time() - started:5.0f}s  {files:,} 文件  "
-                           f"{total / 1024 ** 4:.2f} TB")
+                    report(f"  {time.time() - started:5.0f} s  {files:,} archivos  {total / 1024 ** 4:.2f} TB")
             sidecars = subtitles.directory_sidecars(
                 ledger_root.joinpath(*relative), here,
                 [name for name in here if medium_of(name) == "video"])

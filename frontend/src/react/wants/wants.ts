@@ -13,7 +13,7 @@ export const wantFollowKey = (itemId: number) => ['wants', 'follow', itemId] as 
 
 /** 清单上的四段，次序就是页签里排的次序。 */
 export const PHASES = [
-  ['searching', '待找'], ['unreleased', '未发售'], ['given_up', '暂时放弃'], ['acquired', '已入库'],
+  ['searching', 'Pendientes'], ['unreleased', 'Sin estrenar'], ['given_up', 'Abandonados por ahora'], ['acquired', 'Ya en la colección'],
 ] as const;
 export type Phase = (typeof PHASES)[number][0];
 
@@ -80,13 +80,13 @@ export const resetWants = (ids: number[], signal?: AbortSignal) =>
 export const invalidateWants = () => queryClient.invalidateQueries({ queryKey: WANTS_KEY });
 
 /** 一条想要叫什么：番号打头，没有番号的关注条目用标题。 */
-export const wantName = (want: Want) => want.code || want.title || `关注条目 ${want.follow_item_id ?? want.id}`;
+export const wantName = (want: Want) => want.code || want.title || `Elemento seguido ${want.follow_item_id ?? want.id}`;
 
 /** 「待找」那一段的说明：新片查不到不计数，老片查满三次就暂时放弃。 */
 export function searchNote(want: Want): string {
-  if (want.phase === 'acquired') return want.acquired_at ? `入库于 ${want.acquired_at.slice(0, 10)}` : '已入库';
-  if (want.phase === 'unreleased') return want.release_date ? `${want.release_date} 发售` : '还没发售';
-  if (want.phase === 'given_up') return `查过 ${want.search_count} 次都没找到`;
-  if (want.fresh) return '新片：查不到也一直留在待找';
-  return want.search_count ? `查过 ${want.search_count} 次` : '还没查过';
+  if (want.phase === 'acquired') return want.acquired_at ? `Importado el ${want.acquired_at.slice(0, 10)}` : 'Ya en la colección';
+  if (want.phase === 'unreleased') return want.release_date ? `Se estrena el ${want.release_date}` : 'Aún no se estrena';
+  if (want.phase === 'given_up') return `Buscado ${want.search_count} veces sin éxito`;
+  if (want.fresh) return 'Estreno: aunque no se encuentre, sigue en pendientes';
+  return want.search_count ? `Buscado ${want.search_count} veces` : 'Aún sin buscar';
 }

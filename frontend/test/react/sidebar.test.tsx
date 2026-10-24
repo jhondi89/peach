@@ -92,7 +92,7 @@ async function connect(r: Loaded) {
   await act(async () => { r.connectManagedRoutes(Promise.resolve(r.prefetchManagedRoute)) });
 }
 
-const CATALOG = [['', '首页', 'home'], ['unseen', '未看', 'eye'], ['follow', '关注', 'rss'], ['stats', '统计', 'chart']] as const;
+const CATALOG = [['', 'Inicio', 'home'], ['unseen', 'Sin ver', 'eye'], ['follow', 'Siguiendo', 'rss'], ['stats', 'Estadísticas', 'chart']] as const;
 
 const chip = (value: string, n: number | null = 1, extra: Partial<SidebarChip> = {}): SidebarChip =>
   ({ value, label: value.toUpperCase(), n, ...extra });
@@ -253,7 +253,7 @@ describe('导航', () => {
       store.save();
     });
     expect(navKeys(scroll).slice(0, 2)).toEqual(['follow', 'immerse']);
-    expect(scroll.querySelector('[data-nav="immerse"]')?.textContent).toContain('沉浸模式');
+    expect(scroll.querySelector('[data-nav="immerse"]')?.textContent).toContain('Modo inmersivo');
   });
 
   it('store 里的顺序一变（设置面板或另一台机器同步回来），这一列当场重排', async () => {
@@ -344,15 +344,15 @@ describe('筛选分组', async () => {
   it('一进来只展开正在生效的组；人自己开合过的组按会话记住，换一份聚合也不改', async () => {
     const { scroll, render } = await setup();
     render({ content: { kind: 'catalog', key: '1', facets: facets() }, filters: { tag: 'a' } });
-    expect(group(scroll, '内容标签')!.open).toBe(true);
-    expect(group(scroll, '来源')!.open).toBe(false);
-    const toggle = group(scroll, '来源')!.querySelector<HTMLElement>('[data-sidebar-toggle]')!;
+    expect(group(scroll, 'Etiquetas de contenido')!.open).toBe(true);
+    expect(group(scroll, 'Fuente')!.open).toBe(false);
+    const toggle = group(scroll, 'Fuente')!.querySelector<HTMLElement>('[data-sidebar-toggle]')!;
     expect(document.getElementById(toggle.getAttribute('aria-controls')!)).not.toBeNull();
     await click(toggle);
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
     render({ content: { kind: 'catalog', key: '2', facets: facets() }, filters: {} });
-    expect(group(scroll, '来源')!.open).toBe(true);
-    expect(group(scroll, '内容标签')!.open).toBe(false);
+    expect(group(scroll, 'Fuente')!.open).toBe(true);
+    expect(group(scroll, 'Etiquetas de contenido')!.open).toBe(false);
   });
 
   it('「展开全部」接在名单末尾，摊开照最新那一份聚合', async () => {
@@ -360,8 +360,8 @@ describe('筛选分组', async () => {
     const tags = Array.from({ length: 32 }, (_, index) => chip(`t${index}`, 40 - index));
     const content = { kind: 'catalog' as const, key: '1', facets: facets({ tags }) };
     render({ content, latest: facets({ tags: [...tags, chip('late', 1)] }) });
-    await click(group(scroll, '内容标签')!.querySelector('[data-sidebar-toggle]'));
-    const body = group(scroll, '内容标签')!.querySelector('[data-sidebar-body]')!;
+    await click(group(scroll, 'Etiquetas de contenido')!.querySelector('[data-sidebar-toggle]'));
+    const body = group(scroll, 'Etiquetas de contenido')!.querySelector('[data-sidebar-body]')!;
     expect(body.querySelectorAll('[data-sidebar-chip]')).toHaveLength(30);
     const more = body.lastElementChild as HTMLButtonElement;
     expect(more.getAttribute('data-sidebar-more')).toBe('tag');
@@ -372,8 +372,8 @@ describe('筛选分组', async () => {
     expect(more.getAttribute('aria-label')).toBe('收起内容标签');
     /* 收起收的是整组：组标题当场报收起、正文不再可聚焦；`details.open` 等高度过渡走完才摘。 */
     await click(more);
-    expect(group(scroll, '内容标签')!.querySelector('[data-sidebar-toggle]')!.getAttribute('aria-expanded')).toBe('false');
-    expect(group(scroll, '内容标签')!.querySelector<HTMLElement>('[data-sidebar-collapse]')!.inert).toBe(true);
+    expect(group(scroll, 'Etiquetas de contenido')!.querySelector('[data-sidebar-toggle]')!.getAttribute('aria-expanded')).toBe('false');
+    expect(group(scroll, 'Etiquetas de contenido')!.querySelector<HTMLElement>('[data-sidebar-collapse]')!.inert).toBe(true);
     expect(body.querySelectorAll('[data-sidebar-chip]')).toHaveLength(30);
   });
 
@@ -400,7 +400,7 @@ describe('筛选分组', async () => {
     await click(scroll.querySelector('[data-follow-drawer-tag="x"]'));
     expect(host.openFollowTag).toHaveBeenCalledWith('x');
     render({ content: { kind: 'follow', tags: [chip('y', 3), chip('z', 1)], selected: ['z'] } });
-    expect(group(scroll, '来源')).toBeNull();
+    expect(group(scroll, 'Fuente')).toBeNull();
     const z = scroll.querySelector('[data-follow-drawer-tag="z"]')!;
     expect(z.getAttribute('aria-pressed')).toBe('true');
     expect(z.querySelector('[data-sidebar-count]')!.textContent).toBe('1');
@@ -416,7 +416,7 @@ describe('筛选分组', async () => {
       filters: { provider: 'fanbox', dur_min: 600, dur_max: '' },
     });
     expect([...scroll.querySelectorAll('[data-sidebar-group]')].map((node) => node.getAttribute('data-sidebar-group')))
-      .toEqual(['来源', '时长', '内容标签']);
+      .toEqual(['Fuente', 'Duración', 'Etiquetas de contenido']);
     expect(chipOf(scroll, 'provider', 'fanbox')!.getAttribute('aria-pressed')).toBe('true');
     expect(chipOf(scroll, 'provider', 'kemono')!.querySelector('[data-sidebar-count]')).toBeNull();
     expect(chipOf(scroll, 'provider', 'kemono')!.querySelector('img')!.getAttribute('src')).toBe('/source-icon?provider=kemono');
@@ -435,7 +435,7 @@ describe('筛选分组', async () => {
 
     render({ content: { kind: 'follow', tags: [chip('y', 1)], selected: [] } });
     expect([...scroll.querySelectorAll('[data-sidebar-group]')].map((node) => node.getAttribute('data-sidebar-group')))
-      .toEqual(['内容标签']);
+      .toEqual(['Etiquetas de contenido']);
   });
 
   it('时长两端各有一枚读数，右端拉到头是「不限」；松手才提交', async () => {
@@ -443,7 +443,7 @@ describe('筛选分组', async () => {
     render({ content: { kind: 'catalog', key: '1', facets: facets({ duration: true }) }, filters: { dur_min: '1200' } });
     const tip = (end: string) => scroll.querySelector(`[data-range-end="${end}"]`)!.textContent;
     expect(tip('min')).toBe('20 分钟');
-    expect(tip('max')).toBe('不限');
+    expect(tip('max')).toBe('Sin límite');
     const max = scroll.querySelector<HTMLInputElement>('#durMax')!;
     act(() => {
       Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(max, '60');

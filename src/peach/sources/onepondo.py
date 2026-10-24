@@ -24,7 +24,7 @@ from .base import FailureReason, Page, Session, SiteConfig, SiteRecord, SiteSour
 
 #: 作品 JSON、剧照和样片都在 1pondo.tv 底下（含 `smovie.`）。免登录可读，不带 Cookie，主机间隔
 #: 用默认的 2 秒。作品 JSON 实测 6～8 KB，带样片清单也只有十几 KB，上限 1 MiB。
-ONEPONDO = SiteConfig(name="1pondo", label="一本道", provider="1pondo-json", base_url="https://www.1pondo.tv",
+ONEPONDO = SiteConfig(name="1pondo", label="1Pondo", provider="1pondo-json", base_url="https://www.1pondo.tv",
                       domains=("1pondo.tv",), stage="official", page_limit=1024 * 1024)
 DETAIL_PATH = "/dyn/phpauto/movie_details/movie_id/{movie_id}.json"
 PAGE_PATH = "/movies/{movie_id}/"
@@ -91,7 +91,7 @@ class OnePondoSource(SiteSource):
         return self.config.base_url + PAGE_PATH.format(movie_id=movie)
 
     def _unrecognised(self) -> SourceFailure:
-        return SourceFailure(FailureReason.NOT_FOUND, f"这个番号不是{self.config.label}的写法")
+        return SourceFailure(FailureReason.NOT_FOUND, f"Este código no tiene el formato de {self.config.label}")
 
     def fetch(self, code: str, *, session: Session) -> Page:
         url = self.detail_url(code)
@@ -100,7 +100,7 @@ class OnePondoSource(SiteSource):
         try:
             return session.get(url, config=self.config)
         except NotFound:
-            raise SourceFailure(FailureReason.NOT_FOUND, f"{self.config.label}站上没有这部片") from None
+            raise SourceFailure(FailureReason.NOT_FOUND, f"{self.config.label} no tiene esta obra") from None
 
     def parse(self, page: Page, code: str) -> SiteRecord:
         """作品 JSON → 记录。回的作品号对不上这个番号归 `not_found`：番号同形的另一家片子问到这里时，
@@ -111,9 +111,9 @@ class OnePondoSource(SiteSource):
         try:
             raw = json.loads(page.body or b"null")
         except ValueError:
-            raise SourceFailure(FailureReason.PARSE_ERROR, f"{self.config.label}返回的不是作品 JSON") from None
+            raise SourceFailure(FailureReason.PARSE_ERROR, f"{self.config.label} no devolvió el JSON de la obra") from None
         if not isinstance(raw, dict) or str(raw.get("MovieID") or "").strip() != wanted:
-            raise SourceFailure(FailureReason.NOT_FOUND, f"{self.config.label}回的作品号对不上这个番号")
+            raise SourceFailure(FailureReason.NOT_FOUND, f"El número de obra que devolvió {self.config.label} no coincide con este código")
         duration = raw.get("Duration")
         cover = _cover(raw)
         return SiteRecord(

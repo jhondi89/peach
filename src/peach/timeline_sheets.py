@@ -181,7 +181,7 @@ LOCAL_LOCATIONS = ("local",)
 
 #: 用户按停时写进 `stopped` 的那句话。调用方按它区分「人停的」和「机器停的」：
 #: 前者不是故障，后者要把原因摆到页面上。
-STOPPED_BY_USER = "已按停"
+STOPPED_BY_USER = "Detenido por el usuario"
 
 
 def pending(db_path: Path | str, interval: int, *, limit: int = 0) -> list[tuple]:

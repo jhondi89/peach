@@ -20,8 +20,8 @@ it('来源停用由服务端结果确认，保留配置以便再次启用', asyn
   const disable = Array.from(host.querySelectorAll('button')).find(button => button.textContent === '停用');
   await click(disable!);
   await settle();
-  expect(receipt).toHaveBeenCalledWith('已停用来源');
-  expect(host.textContent).toContain('已停用');
+  expect(receipt).toHaveBeenCalledWith('Fuente desactivada');
+  expect(host.textContent).toContain('Desactivada');
   const sent = JSON.parse(fetcher.mock.calls.find(([, options]) => options?.method === 'POST')?.[1].body);
   expect(sent).toMatchObject({ id: row.id, enabled: false, fields: { code: 'id' } });
 });

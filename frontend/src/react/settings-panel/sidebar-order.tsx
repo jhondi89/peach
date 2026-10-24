@@ -2,7 +2,6 @@
  *
  * 写入与侧栏那一列的拖动共用 `sidebar/sidebar-order.ts`：先落本地那份（侧栏按 store 的通知当场
  * 重排），再写 `/api/settings`。 */
-import { t } from '@peach/i18n';
 import { useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
 
 import { dismissMenu, presentMenu } from '@peach/legacy/ui';
@@ -97,11 +96,11 @@ export function SidebarOrder({ host }: { host: SettingsPanelHost }) {
           <span data-sidebar-label=""><i data-sidebar-grip="" aria-hidden="true"><Icon name="grip-vertical" /></i>
             <Icon name={glyph ?? ''} /><b>{label}</b></span>
           <span data-sidebar-actions="">
-            <button type="button" data-sidebar-key={key} data-sidebar-move="-1" aria-label={`上移 ${label}`} title={t('上移')}
+            <button type="button" data-sidebar-key={key} data-sidebar-move="-1" aria-label={`Subir ${label}`} title="Subir"
               disabled={index === 0} onClick={() => step(key, -1)}><Icon name="chevron-up" /></button>
-            <button type="button" data-sidebar-key={key} data-sidebar-move="1" aria-label={`下移 ${label}`} title={t('下移')}
+            <button type="button" data-sidebar-key={key} data-sidebar-move="1" aria-label={`Bajar ${label}`} title="Bajar"
               disabled={index === visible.length - 1} onClick={() => step(key, 1)}><Icon name="chevron-down" /></button>
-            <button type="button" data-sidebar-key={key} data-sidebar-hide="" aria-label={`隐藏 ${label}`} title={t('隐藏')}
+            <button type="button" data-sidebar-key={key} data-sidebar-hide="" aria-label={`Ocultar ${label}`} title="Ocultar"
               disabled={visible.length === 1}
               onClick={() => { if (order.length > 1) commit(order.filter((item) => item !== key)) }}><Icon name="eye-off" /></button>
           </span>
@@ -114,10 +113,10 @@ export function SidebarOrder({ host }: { host: SettingsPanelHost }) {
             disabled={!chosen} ref={trigger} onClick={toggleMenu}>
             {chosen
               ? <><Icon name={chosen[2] ?? ''} /><span data-sidebar-add-label="">{chosen[1]}</span><Icon name="chevron-down" /></>
-              : <><Icon name="check" /><span>全部页面都已显示</span></>}
+              : <><Icon name="check" /><span>Ya se muestran todas las páginas</span></>}
           </button>
           {available.length
-            ? <div className="popmenu" data-sidebar-add-menu="" role="listbox" aria-label={t('选择要添加的页面')} hidden ref={menu}>
+            ? <div className="popmenu" data-sidebar-add-menu="" role="listbox" aria-label="Elige la página que quieres añadir" hidden ref={menu}>
                 {available.map(([key, label, glyph]) => (
                   <button type="button" role="option" key={optionKey(key)} data-sidebar-add-option={optionKey(key)}
                     aria-selected={chosen?.[0] === key} tabIndex={chosen?.[0] === key ? 0 : -1} onKeyDown={optionKeys}
@@ -129,7 +128,7 @@ export function SidebarOrder({ host }: { host: SettingsPanelHost }) {
             : null}
         </div>
         <button type="button" className="geist-button primary" data-sidebar-add="" disabled={!chosen}
-          onClick={() => { if (chosen && !order.includes(chosen[0])) commit([...order, chosen[0]]) }}>添加</button>
+          onClick={() => { if (chosen && !order.includes(chosen[0])) commit([...order, chosen[0]]) }}>Añadir</button>
       </div>
     </div>
   );

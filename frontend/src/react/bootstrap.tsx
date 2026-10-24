@@ -1,11 +1,9 @@
-import { setLocale } from '@peach/i18n';
 import './styles.css';
 import { installErrorReporting } from '../error-reporting';
 import { mountApplication } from './application';
 installErrorReporting();
-setLocale('es');
 const host = document.getElementById('appRoot');
-if (!host) throw new Error('主界面宿主缺失');
+if (!host) throw new Error('Falta el contenedor de la interfaz principal');
 mountApplication(host);
 export { peachHistory } from '../history';
 export { popCount } from '../ui-kit';

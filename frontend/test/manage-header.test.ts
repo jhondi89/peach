@@ -5,8 +5,8 @@ import { describe, expect, it } from 'vitest';
 import { manageHeaderSkeletonHtml, manageHeaderView, type ManageEntry, type ManageHeaderProps } from '../src/manage-header';
 
 const SECTIONS: ManageEntry[] = [
-  ['stats', '统计', 'chart'], ['cleanup', '数据管理', 'database'], ['trash', '回收站', 'trash'],
-  ['configuration', 'Peach 配置', 'settings'],
+  ['stats', 'Estadísticas', 'chart'], ['cleanup', 'Datos', 'database'], ['trash', 'Papelera', 'trash'],
+  ['configuration', 'Configuración de Peach', 'settings'],
 ];
 const MENU = SECTIONS.filter(([key]) => key !== 'trash');
 
@@ -15,7 +15,7 @@ const props = (section: string, path: string, patch: Partial<ManageHeaderProps> 
 
 describe('页头判据', () => {
   it('诊断分区共用配置页标题', () => {
-    expect(manageHeaderView(props('configuration', '/settings/diagnostics'))).toMatchObject({ title: 'Peach 配置', compact: true });
+    expect(manageHeaderView(props('configuration', '/settings/diagnostics'))).toMatchObject({ title: 'Configuración de Peach', compact: true });
   });
   it('不在管理区时整块不画', () => {
     expect(manageHeaderView(props('', '/'))).toBeNull();
@@ -23,11 +23,11 @@ describe('页头判据', () => {
   });
 
   it('数据管理之下的子页画面包屑，标题取子页的名字；hub 自己与别的管理区不画', () => {
-    expect(manageHeaderView(props('cleanup', '/junk-files'))).toMatchObject({ title: '垃圾文件', crumb: '垃圾文件' });
-    expect(manageHeaderView(props('cleanup', '/sources'))).toMatchObject({ title: '来源和凭证', crumb: '来源和凭证' });
-    expect(manageHeaderView(props('cleanup', '/data-cleanup'))).toMatchObject({ title: '数据管理', crumb: '' });
-    expect(manageHeaderView(props('stats', '/stats'))).toMatchObject({ title: '统计', crumb: '' });
-    expect(manageHeaderView(props('trash', '/trash'))).toMatchObject({ title: '回收站', crumb: '回收站' });
+    expect(manageHeaderView(props('cleanup', '/junk-files'))).toMatchObject({ title: 'Archivos basura', crumb: 'Archivos basura' });
+    expect(manageHeaderView(props('cleanup', '/sources'))).toMatchObject({ title: 'Fuentes y credenciales', crumb: 'Fuentes y credenciales' });
+    expect(manageHeaderView(props('cleanup', '/data-cleanup'))).toMatchObject({ title: 'Datos', crumb: '' });
+    expect(manageHeaderView(props('stats', '/stats'))).toMatchObject({ title: 'Estadísticas', crumb: '' });
+    expect(manageHeaderView(props('trash', '/trash'))).toMatchObject({ title: 'Papelera', crumb: 'Papelera' });
   });
 
   it('窄屏标题收一档的只有数据管理 hub、来源和凭证与配置', () => {

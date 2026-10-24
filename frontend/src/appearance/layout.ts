@@ -2,22 +2,21 @@
  *
  * 首页与 JAV 各存一份卡片版式（`homeLayout` / `javLayout`）。「现在在首页还是在 JAV」是路由与目录状态的
  * 判据，归壳（`application/layout.js` 的 `javActive` / `homeLayoutActive`），这里只收它算好的布尔值。 */
-import { t } from '@peach/i18n';
 import { normalizeJavLayout, type JavLayout } from '../jav-artwork';
 import type { SettingsStore } from '../settings-store';
 import { allowedSetting, appSettingsStore, type AppSettings } from './settings';
 
 /** `[值, 显示名, 字形]`：版式开关在设置面板与筛选条下排各有一组，读的都是这一张表。 */
 export const JAV_LAYOUTS: readonly (readonly [value: string, label: string, icon: string])[] = [
-  ['big', t('大图'), 'maximize'], ['small', t('小图'), 'layout-grid'],
+  ['big', 'Grande', 'maximize'], ['small', 'Pequeño', 'layout-grid'],
 ];
 /* 图片墙是等宽网格，改的是列数。默认小图——一套图几十上百张，先看得见全貌，挑中哪一张再点开看大的。 */
 type Choice = readonly [value: string, label: string, icon: string];
 export const PHOTO_SIZES: readonly [big: Choice, small: Choice] = [
-  ['big', t('大图'), 'maximize'], ['small', t('小图'), 'layout-grid'],
+  ['big', 'Grande', 'maximize'], ['small', 'Pequeño', 'layout-grid'],
 ];
 export const PHOTO_LAYOUTS: readonly (readonly [value: string, label: string, icon: string])[] = [
-  ['fixed', t('固定比例'), 'layout-grid'], ['masonry', t('瀑布流'), 'columns-2'],
+  ['fixed', 'Proporción fija', 'layout-grid'], ['masonry', 'Mosaico', 'columns-2'],
 ];
 /* 大图卡片固定为 3:4；传统正封完整居中，比例留白使用同图模糊补底，整幅大封按主体取景。 */
 export const COVER_FRONT_RATIO = 0.75;

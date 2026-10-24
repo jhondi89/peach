@@ -146,12 +146,12 @@ class BrowserLogin:
         """拉起登录窗口。已经在等就回当前状态，不开第二个。没有浏览器时抛 ValueError。"""
         executable = self._find()
         if executable is None:
-            raise ValueError("这台电脑上没有找到 Chrome 或 Edge，用不了浏览器登录。可以展开下方用账号密码登录")
+            raise ValueError("No se encontró Chrome ni Edge en este equipo, así que no se puede iniciar sesión con el navegador. Puedes desplegar abajo el inicio con cuenta y contraseña")
         with self._lock:
             if self._state["state"] == WAITING:
                 return self._snapshot()
             run_id = uuid.uuid4().hex
-            self._state = {"id": run_id, "state": WAITING, "message": "浏览器窗口已打开，在里面登录 PikPak"}
+            self._state = {"id": run_id, "state": WAITING, "message": "La ventana del navegador está abierta; inicia sesión en PikPak ahí"}
             self._cancel = threading.Event()
             cancel = self._cancel
             self._thread = threading.Thread(target=self._run, args=(run_id, executable, cancel),
@@ -169,7 +169,7 @@ class BrowserLogin:
         with self._lock:
             if self._state["state"] == WAITING:
                 self._cancel.set()
-                self._state = {"id": self._state["id"], "state": CANCELLED, "message": "已取消浏览器登录"}
+                self._state = {"id": self._state["id"], "state": CANCELLED, "message": "Inicio de sesión con el navegador cancelado"}
             return self._snapshot()
 
     def close(self) -> None:
@@ -194,10 +194,10 @@ class BrowserLogin:
             state, message = self._wait(browser, cancel)
             self._finish(run_id, state, message)
         except BrowserUnavailable as error:
-            self._finish(run_id, FAILED, f"浏览器没有打开：{error}")
+            self._finish(run_id, FAILED, f"El navegador no se abrió: {error}")
         except Exception as error:  # noqa: BLE001 —— 线程里的任何异常都要变成可轮询的状态，否则页面一直等
             LOGGER.error("PikPak 浏览器登录出错：%s", type(error).__name__)
-            self._finish(run_id, FAILED, f"浏览器登录出错：{type(error).__name__}")
+            self._finish(run_id, FAILED, f"Error al iniciar sesión con el navegador: {type(error).__name__}")
         finally:
             browser.close()
         if self.status()["state"] == DONE and self.on_done is not None:
@@ -207,9 +207,9 @@ class BrowserLogin:
         deadline = self._clock() + self.wait_seconds
         while True:
             if cancel.is_set():
-                return CANCELLED, "已取消浏览器登录"
+                return CANCELLED, "Inicio de sesión con el navegador cancelado"
             if not browser.alive():
-                return CANCELLED, "浏览器窗口已关闭，登录没有完成"
+                return CANCELLED, "La ventana del navegador se cerró y el inicio de sesión no terminó"
             try:
                 raw = browser.evaluate(_READ_SCRIPT, timeout=10)
             except TimeoutError:
@@ -218,15 +218,15 @@ class BrowserLogin:
                 # 页面跳转的那一瞬执行环境被销毁，脚本会报错；这是还在加载，不是窗口关了。
                 raw = None
             except (OSError, ValueError):
-                return CANCELLED, "浏览器窗口已关闭，登录没有完成"
+                return CANCELLED, "La ventana del navegador se cerró y el inicio de sesión no terminó"
             if raw:
                 values = parse_capture(json.loads(raw))
                 if values is not None:
                     self._take(browser, values)
-                    return DONE, "已用浏览器登录 PikPak"
+                    return DONE, "Sesión de PikPak iniciada con el navegador"
             if self._clock() >= deadline:
                 minutes = int(self.wait_seconds // 60)
-                return TIMEOUT, f"{minutes} 分钟内没有完成登录，窗口已关闭。可以再点一次「用浏览器登录」"
+                return TIMEOUT, f"No se completó el inicio de sesión en {minutes} minutos y la ventana se cerró. Puedes volver a pulsar “Iniciar sesión con el navegador”"
             self._sleep(POLL_SECONDS)
 
     def _take(self, browser: _Browser, values: dict) -> None:

@@ -77,7 +77,7 @@ def _key(asset_id: int, source: Path) -> str:
 def _library_filter(library: str) -> tuple[str, list]:
     condition, parameters = media_libraries.predicate(settings_file.active(), library)
     if condition == "0":
-        raise ValueError("没有这个媒体库")
+        raise ValueError("No existe esta biblioteca")
     return condition, parameters
 
 
@@ -127,7 +127,7 @@ def _survey(contract, job, job_id: str, rows, cache: dict[str, str]) -> list[tup
         cache[key] = kind or CLEAN
         _save_cache(contract, cache)
         if not job.checkpoint(job_id, survey_checked=index, survey_cache=dict(cache)):
-            raise InterruptedError('媒体检查已停止')
+            raise InterruptedError("Se detuvo la revisión de medios")
         _advance(job, job_id, index, skipped=False)
     return found
 
@@ -142,7 +142,7 @@ def _advance(job, job_id: str, checked: int, *, skipped: bool) -> None:
         state['survey_checked'] = max(state.get('survey_checked', 0), checked)
         saved = {key: state.get(key, 0) for key in ('checked', 'survey_checked', 'skipped')}
     if not job.checkpoint(job_id, **saved):
-        raise InterruptedError('媒体检查已停止')
+        raise InterruptedError("Se detuvo la revisión de medios")
 
 
 def _reference_candidates(contract, asset_id: int, raw: str) -> list[str]:
@@ -240,7 +240,7 @@ def _repair(contract, job, job_id: str, found, cache: dict[str, str]) -> None:
         state = job.snapshot() or {}
         if not job.checkpoint(job_id, **{key: state.get(key, 0) for key in
                               ('checked', 'total', 'repaired', 'failed', 'missing_tool')}):
-            raise InterruptedError('媒体修复已停止')
+            raise InterruptedError("Se detuvo la reparación de medios")
 
 
 def run_media_repair(contract, job_id: str, scope: tuple[str, list]) -> None:
@@ -250,7 +250,7 @@ def run_media_repair(contract, job_id: str, scope: tuple[str, list]) -> None:
     cache.update((job.snapshot() or {}).get('survey_cache') or {})
     rows = _candidates(contract, scope)
     previous = job.snapshot() or {}
-    job.update(job_id, stage="扫描", total=len(rows), checked=previous.get('survey_checked', 0))
+    job.update(job_id, stage="Escanear", total=len(rows), checked=previous.get('survey_checked', 0))
     found = _survey(contract, job, job_id, rows, cache)
     _save_cache(contract, cache)
     if job.snapshot() is None:
@@ -258,7 +258,7 @@ def run_media_repair(contract, job_id: str, scope: tuple[str, list]) -> None:
     job.update(job_id, found=len(found))
     _repair(contract, job, job_id, found, cache)
     _save_cache(contract, cache)
-    job.update(job_id, stage="完成", status="complete", completed_at=time.time())
+    job.update(job_id, stage="Completado", status="complete", completed_at=time.time())
 
 
 def _public(state: dict | None) -> dict:
@@ -297,14 +297,14 @@ def w_media_repair(contract, body=None):
     if body.get("status_only") is True:
         return _public(job.snapshot())
     if contract.header_repairs is None or contract.transcode_service is None:
-        raise ValueError("这个服务实例没有接上转码与修复组件")
+        raise ValueError("Esta instancia del servicio no tiene conectados los componentes de transcodificación y reparación")
     library = str(body.get("library") or "")
     if not library:
-        raise ValueError("先选一个媒体库")
+        raise ValueError("Primero elige una biblioteca")
     scope = _library_filter(library)
     return _public(job.start(
         lambda job_id: run_media_repair(contract, job_id, scope),
-        initial={"library": library, "stage": "扫描", "total": 0, "checked": 0, "found": 0,
+        initial={"library": library, "stage": "Escanear", "total": 0, "checked": 0, "found": 0,
                  "repaired": 0, "failed": 0, "missing_tool": 0, "skipped": 0, "message": ""},
         restart=body.get("restart") is True,
         recovery={'library': library, 'restart': True},

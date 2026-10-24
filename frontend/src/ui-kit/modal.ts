@@ -1,7 +1,6 @@
 /* Geist Modal 的两种正文：一句待确认的话（`confirmModal`）与要填的一份表单（`formModal`）。
    由共享源码直接引用，随 `peach-app.js` 发出；壳与 React 子树打开的是同一份，
    标题 id 的序号因此全页连续。 */
-import { t } from '@peach/i18n';
 import { setActionBusy } from './controls';
 import { noteHtml } from './markup';
 import { playUiSound } from './sounds';
@@ -15,7 +14,7 @@ import { attachOverlayScrollbar } from './overlay-scrollbar';
 
    返回值里的 `dialog` 交给调用方接自己的行事件，`done` 在弹层关掉时兑现。 */
 let formModalSeq=0;
-export function formModal({title,description='',body='',confirmLabel,cancelLabel=t('取消'),
+export function formModal({title,description='',body='',confirmLabel,cancelLabel='Cancelar',
                            onConfirm=null,confirmDisabled=false}:{
   title?: string; description?: string; body?: string; confirmLabel?: string; cancelLabel?: string;
   onConfirm?: (()=>unknown)|null; confirmDisabled?: boolean;
@@ -60,7 +59,7 @@ export function formModal({title,description='',body='',confirmLabel,cancelLabel
       settled={confirmed:true,result:await onConfirm()};
       dialog.close();
     }catch(error:any){
-      failure.innerHTML=noteHtml(error.message||t('操作未完成'),{variant:'error'});
+      failure.innerHTML=noteHtml(error.message||'La acción no terminó',{variant:'error'});
       setActionBusy(accept,false);
     }finally{busy=false}
   };
@@ -86,7 +85,7 @@ export function confirmModal(options:{
   items?: readonly string[];
   onConfirm?: () => Promise<unknown>;
 }):Promise<{confirmed:boolean;result?:unknown}>;
-export function confirmModal({title,body,items=[],confirmLabel,cancelLabel=t('取消'),onConfirm=null,danger=false}:{
+export function confirmModal({title,body,items=[],confirmLabel,cancelLabel='Cancelar',onConfirm=null,danger=false}:{
   title?: string; body?: string; confirmLabel?: string; cancelLabel?: string; danger?: boolean;
   items?: readonly string[];
   onConfirm?: (()=>unknown)|null;
@@ -109,7 +108,7 @@ export function confirmModal({title,body,items=[],confirmLabel,cancelLabel=t('�
     const host=document.createElement('div');
     host.className='ui-geist-modal-list';
     list=document.createElement('ul');
-    list.setAttribute('aria-label',t('所选记录'));
+    list.setAttribute('aria-label','Registros seleccionados');
     list.tabIndex=0;
     for(const text of items){
       const item=document.createElement('li');
@@ -149,7 +148,7 @@ export function confirmModal({title,body,items=[],confirmLabel,cancelLabel=t('�
         settled={confirmed:true,result:await onConfirm()};
         dialog.close();
       }catch(error:any){
-        failure.innerHTML=noteHtml(error.message||t('操作未完成'),{variant:'error'});
+        failure.innerHTML=noteHtml(error.message||'La acción no terminó',{variant:'error'});
         setActionBusy(accept,false);
       }finally{busy=false}
     };

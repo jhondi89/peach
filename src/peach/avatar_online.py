@@ -49,7 +49,7 @@ def choices(connection: sqlite3.Connection, entity_id: int, *, project: MediaPro
             (entity_id,)):
         if _profile(url):
             result.append(Choice(ref=f"follow-link:{link_id}", source="social",
-                                 label=f"{label or urlsplit(url).hostname} · 社媒头像"))
+                                 label=f"{label or urlsplit(url).hostname} · foto de redes sociales"))
     for source in store.sources():
         if source["entity_id"] != entity_id:
             continue
@@ -57,7 +57,7 @@ def choices(connection: sqlite3.Connection, entity_id: int, *, project: MediaPro
         if avatar and avatar not in seen:
             seen.add(avatar)
             result.append(Choice(ref=f"follow-avatar:{source['id']}", source="social",
-                                 label=f"{source['label']} · 社媒头像"))
+                                 label=f"{source['label']} · foto de redes sociales"))
     item_ids = connection.execute(
         "SELECT i.id FROM follow_item i JOIN follow_source s ON s.id=i.source_id"
         " WHERE s.entity_id=? ORDER BY coalesce(i.published_at,i.first_seen_at) DESC,i.id DESC LIMIT ?",
@@ -84,7 +84,7 @@ def resolve(ref: str, connection: sqlite3.Connection, entity_id: int, *, project
     listed = choices(connection, entity_id, project=project)
     allowed = {base for choice in listed for base in (choice.bases or (choice.ref,))}
     if ref not in allowed:
-        raise PickerError("这张备选图片不属于当前创作者")
+        raise PickerError("Esta imagen alternativa no pertenece al creador actual")
     if ref.startswith("follow-link:"):
         row = connection.execute("SELECT url FROM entity_link WHERE id=? AND entity_id=?",
                                  (int(ref.split(":")[1]), entity_id)).fetchone()
@@ -106,11 +106,11 @@ def resolve(ref: str, connection: sqlite3.Connection, entity_id: int, *, project
             body = media(item, index)
         provider = "follow-content"
     if not body or len(body) > MAX_IMAGE_BYTES:
-        raise PickerError("这张图未取得或太大了")
+        raise PickerError("Esta imagen no se obtuvo o es demasiado grande")
     if not inspect_avatar(body):
         size = images.measure_image_size(body)
         body = images.crop_to_box(body, (0, 0, *size)) if size else None
     if not body:
-        raise PickerError("这不是一张能识别的图片")
+        raise PickerError("No es una imagen reconocible")
     accept_image(body)
     return body, {"source": "avatar picker", "provider": provider, "external_id": ref}

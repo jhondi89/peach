@@ -34,7 +34,7 @@ function menuElement(): HTMLElement {
     menu.setAttribute('data-player-context-menu', '');
     menu.id = 'playerMenu';
     menu.setAttribute('role', 'menu');
-    menu.setAttribute('aria-label', '播放器菜单');
+    menu.setAttribute('aria-label', 'Menú del reproductor');
     menu.hidden = true;
     document.body.append(menu);
   }
@@ -84,21 +84,21 @@ function playerMenuItems(player: VjsPlayer): MenuItem[] {
   };
   const copy = (withTime: boolean, receipt: string) => {
     void copyTextToClipboard(url(withTime)).then((ok) =>
-      playerHost().toast(ok ? receipt : '复制失败，请手动复制地址栏', { timeout: 4000, warn: !ok }));
+      playerHost().toast(ok ? receipt : 'No se pudo copiar; copia la dirección de la barra manualmente', { timeout: 4000, warn: !ok }));
   };
   const items: MenuItem[] = [
-    { icon: 'repeat', label: '循环播放', checked: !!player.loop(), run: () => player.loop(!player.loop()) },
-    mini ? { icon: 'maximize-2', label: '展开', run: () => hooks?.expand() }
-      : { icon: 'picture-in-picture-2', label: '迷你播放器', run: () => hooks?.toMiniplayer() },
+    { icon: 'repeat', label: 'Repetir', checked: !!player.loop(), run: () => player.loop(!player.loop()) },
+    mini ? { icon: 'maximize-2', label: 'Expandir', run: () => hooks?.expand() }
+      : { icon: 'picture-in-picture-2', label: 'Minirreproductor', run: () => hooks?.toMiniplayer() },
   ];
   if (document.pictureInPictureEnabled) {
-    items.push({ icon: 'player-pip', fill: true, label: '画中画',
+    items.push({ icon: 'player-pip', fill: true, label: 'Imagen en imagen',
       run: () => player.el().querySelector<HTMLElement>('.vjs-picture-in-picture-control')?.click() });
   }
-  items.push({ icon: 'link', label: '复制视频网址', run: () => copy(false, '已复制视频网址') });
-  items.push({ icon: 'link', label: '复制当前时间的视频网址', run: () => copy(true, '已复制当前时间的视频网址') });
+  items.push({ icon: 'link', label: 'Copiar URL del video', run: () => copy(false, 'URL del video copiada') });
+  items.push({ icon: 'link', label: 'Copiar URL del video en el momento actual', run: () => copy(true, 'URL del video en el momento actual copiada') });
   const stats = document.getElementById('playerStatsBtn');
-  if (!mini && stats && !stats.hidden) items.push({ icon: 'chart', label: '播放统计', run: () => stats.click() });
+  if (!mini && stats && !stats.hidden) items.push({ icon: 'chart', label: 'Estadísticas de reproducción', run: () => stats.click() });
   return items;
 }
 

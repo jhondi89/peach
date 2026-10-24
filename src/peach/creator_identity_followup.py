@@ -31,7 +31,7 @@ from .followups import Attempts, Followup, FollowupType, attempts_root, register
 
 #: 这类后继在任务中心的身份，也是活动页上那一行的名字来源。
 TASK_KEY = "creator-identity"
-TASK_LABEL = "查创作者身份"
+TASK_LABEL = "Identificar creadores"
 
 #: 这条后继写下的断言来源都以它开头，后面接 `@<任务行 id>`；撤回按它认。
 SOURCE = "script:creator-identity-wiki"
@@ -52,7 +52,7 @@ def parse_key(key: str) -> int:
     """把后继 key 拆回创作者 id。形状不对就抛——那说明排队的行不是这个版本写的。"""
     prefix, _, raw = str(key).partition(":")
     if prefix != TASK_KEY or not raw.isdigit():
-        raise ValueError(f"认不出这条查创作者身份后继：{key}")
+        raise ValueError(f"No se reconoce esta tarea derivada de identidad de creador: {key}")
     return int(raw)
 
 
@@ -122,7 +122,7 @@ def run(contract, key: str, handle) -> dict:
         current = fingerprint(connection, parse_key(key))
     outcome = str(summary.get("outcome", ""))
     Attempts(attempts_root(contract.candidate_root)).record(
-        key, current, outcome, retry_after=RETRY_UNFETCHED if outcome == "未取得" else None)
+        key, current, outcome, retry_after=RETRY_UNFETCHED if outcome == "No obtenido" else None)
     return summary
 
 
@@ -143,10 +143,10 @@ def _run(contract, key: str, handle) -> dict:
         current = _current(connection, entity_id)
         if current is None:
             # 实体被合并、删掉或改成厂牌了。这不是失败：那件事已经不存在了。
-            return {"outcome": "档案已不存在"}
+            return {"outcome": "La ficha ya no existe"}
         name, open_ = current
         if not open_:
-            return {"name": name, "outcome": "已有身份"}
+            return {"name": name, "outcome": "Ya tiene identidad"}
         keys = research.lookup_keys(name, research.filename_prefixes(connection, [entity_id])[entity_id])
     if handle is not None:
         handle.progress(label=_label(name), throttle=0)
@@ -157,17 +157,17 @@ def _run(contract, key: str, handle) -> dict:
         for pages in sites.values():
             pages.close()
     if finding is None:
-        return {"name": name, "outcome": "未取得", "keys": keys}
+        return {"name": name, "outcome": "No obtenido", "keys": keys}
     claims = [claim for claim in finding["claims"] if claim["status"] == "observed"]
     if not claims:
-        return {"name": name, "outcome": "两站都没有作品一览", "asked": finding["claims"][0]["evidence"]}
+        return {"name": name, "outcome": "Ninguno de los dos sitios tiene lista de obras", "asked": finding["claims"][0]["evidence"]}
     with contract.database.write_transaction() as connection:
         if _current(connection, entity_id) != (name, True):
-            return {"name": name, "outcome": "已变"}
+            return {"name": name, "outcome": "Cambió"}
         for claim in claims:
             write_claim(connection, entity_id=entity_id, source=batch, **claim)
     contract.cache_bust()
-    return {"name": name, "outcome": "是厂牌或系列", "page": claims[0]["source_url"],
+    return {"name": name, "outcome": "Es un estudio o una serie", "page": claims[0]["source_url"],
             "evidence": claims[0]["evidence"]}
 
 

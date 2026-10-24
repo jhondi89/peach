@@ -83,36 +83,36 @@ MAX_FOLLOWUP_DEPTH = 2
 
 #: 任务登记表：key → 给人看的名字。不在表里的 key 由界面原样显示，不猜。
 TASK_LABELS = {
-    "follow-check": "追更检查",
-    "follow-resolve": "关注来源查找",
-    "library-processing": "扫描与采集",
-    "taste-refresh": "口味分析",
-    "link-check": "链接检查",
-    "link-prune": "失效链接清理",
-    "resource-scan": "资源同步检查",
-    "resource-apply": "资源同步清理",
-    "scraping-cover": "封面采集",
-    "media-repair": "媒体修复",
-    "organize": "按模板整理",
-    "batch": "批量操作",
-    "scrape-codes": "番号资料刮削",
-    "jav-covers": "封面批量抓取",
-    "entity-avatar": "补全资料图片",
-    "studio-mark": "补厂牌官网与标识",
-    "creator-identity": "查创作者身份",
-    "code-samples": "补番号样张",
-    "feed-check": "订阅源拉取",
-    "feed-scrape": "取新作资料",
-    "want-scrape": "取想要的资料",
-    "timeline-thumbnails": "视频缩略图采集",
-    "download-postprocess": "云下载后处理",
-    "seed-import": "导入初始资料",
+    "follow-check": "Revisión de novedades",
+    "follow-resolve": "Búsqueda de fuentes seguidas",
+    "library-processing": "Escaneo y obtención de datos",
+    "taste-refresh": "Análisis de gustos",
+    "link-check": "Comprobación de enlaces",
+    "link-prune": "Limpieza de enlaces rotos",
+    "resource-scan": "Revisión de sincronización de recursos",
+    "resource-apply": "Limpieza de sincronización de recursos",
+    "scraping-cover": "Obtención de portadas",
+    "media-repair": "Reparación de medios",
+    "organize": "Organizar según plantilla",
+    "batch": "Operación en lote",
+    "scrape-codes": "Scraping de datos por código",
+    "jav-covers": "Obtención de portadas en lote",
+    "entity-avatar": "Completar imágenes de fichas",
+    "studio-mark": "Completar web oficial y logo de estudios",
+    "creator-identity": "Identificar creadores",
+    "code-samples": "Completar muestras por código",
+    "feed-check": "Obtención de suscripciones",
+    "feed-scrape": "Obtener datos de estrenos",
+    "want-scrape": "Obtener datos de deseados",
+    "timeline-thumbnails": "Miniaturas de video",
+    "download-postprocess": "Procesamiento tras la descarga en la nube",
+    "seed-import": "Importar datos iniciales",
 }
 
 
 #: 触发方式的中文名。跳过原因是给人看的一句话，里面不留英文枚举值。
 TRIGGER_LABELS = {
-    "manual": "手动", "scheduled": "定时", "startup": "启动", "cli": "命令行",
+    "manual": "Manual", "scheduled": "Programada", "startup": "Al iniciar", "cli": "Línea de comandos",
 }
 
 
@@ -276,7 +276,7 @@ class TaskRunStore:
             return self._start(task_key, trigger=trigger, mutex_key=mutex_key,
                                conflict=conflict, total=total, label=label, pid=pid)
 
-    def suspend(self, run_id: int, *, label: str = '等待安装完成后继续') -> None:
+    def suspend(self, run_id: int, *, label: str = "Continuará cuando termine la instalación") -> None:
         if not self.enabled:
             return
         with self.database.write_transaction(notify=False) as connection:
@@ -305,9 +305,9 @@ class TaskRunStore:
         `conflict="raise"` 是手动触发的语义：告诉用户是哪一轮挡着，让他自己决定。
         """
         if trigger not in TRIGGERS:
-            raise ValueError(f"未知的触发方式：{trigger}")
+            raise ValueError(f"Forma de inicio desconocida: {trigger}")
         if conflict not in ("skip", "raise"):
-            raise ValueError(f"未知的冲突处理方式：{conflict}")
+            raise ValueError(f"Forma de resolver conflictos desconocida: {conflict}")
         if not self.enabled:
             return None
         moment = stamp()
@@ -339,8 +339,8 @@ class TaskRunStore:
     def _record_skip(self, task_key: str, trigger: str, mutex_key: str,
                      blocking: TaskRun | None) -> None:
         """把一次静默跳过写成终态记录。它没有 `started_at`——这一轮从没开跑。"""
-        reason = (f"与第 {blocking.id} 轮（{trigger_label(blocking.trigger)}触发）冲突，本次跳过"
-                  if blocking else "已有一轮在进行，本次跳过")
+        reason = (f"Choca con la ronda {blocking.id} (iniciada por {trigger_label(blocking.trigger)}); se omite esta vez"
+                  if blocking else "Ya hay una ronda en curso; se omite esta vez")
         summary = json.dumps({"blocked_by": blocking.id if blocking else None},
                              ensure_ascii=False)
         with self.database.write_transaction(notify=False) as connection:
@@ -409,7 +409,7 @@ class TaskRunStore:
         写锁拿不到时按 `finish_retry_delays` 重试，全部用完仍写不进去才抛。
         """
         if status not in TERMINAL_STATUSES:
-            raise ValueError(f"{status} 不是终态")
+            raise ValueError(f"{status} no es un estado final")
         if not self.enabled or run_id is None:
             return False
         moment = stamp()
@@ -639,10 +639,10 @@ class TaskRunStore:
                 from .job_recovery import read
                 recovery = read(self.database.db_path, run.task_key)
                 if recovery.get('status') == 'active' and recovery.get('run_id') == run.id:
-                    self.suspend(run.id, label='等待服务启动后继续')
+                    self.suspend(run.id, label="Continuará cuando se inicie el servicio")
                     continue
             if self.finish(run.id, "interrupted",
-                           error="服务重启，这一轮没有跑完"):
+                           error="El servicio se reinició y esta ronda no terminó"):
                 recovered.append(run.id)
         return recovered
 
@@ -694,7 +694,7 @@ class TaskRunStore:
             clauses.append("status IN (%s)" % ",".join(f"'{s}'" for s in TERMINAL_STATUSES))
         elif status:
             if status not in (*ACTIVE_STATUSES, *TERMINAL_STATUSES):
-                raise ValueError(f"未知的状态：{status}")
+                raise ValueError(f"Estado desconocido: {status}")
             clauses.append("status=?")
             values.append(status)
         if task_key:

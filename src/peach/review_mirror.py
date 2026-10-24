@@ -75,7 +75,7 @@ class ReviewMirror:
         """优先返回 writer 实时队列；失败时退回上次安全缓存或本机队列。"""
         if not self.enabled:
             return self._annotate(local_payload, state="unavailable",
-                                  error="未配置可严格校验的写入端 HTTPS")
+                                  error="No hay HTTPS verificable para el equipo con escritura")
         try:
             payload = self._fetch_cached_live()
             return self._annotate(payload, state="live")
@@ -92,7 +92,7 @@ class ReviewMirror:
             return deepcopy(self._live_payload)
         health = self._request_json("/healthz")
         if health.get("ledger_sync") != "writer":
-            raise ReviewMirrorError("目标实例当前不是 ledger writer")
+            raise ReviewMirrorError("La instancia de destino no es ahora el ledger writer")
         payload = self._request_json("/api/review")
         self._validate(payload)
         rewritten = self._rewrite_preview_urls(payload)
@@ -116,23 +116,22 @@ class ReviewMirror:
         except Exception as error:
             if not self.curl_fallback:
                 raise ReviewMirrorError(
-                    f"无法读取写入端：{type(error).__name__}: {error}",
+                    f"No se puede leer el equipo con escritura: {type(error).__name__}: {error}",
                 ) from error
             try:
                 raw = self._curl_bytes(request.full_url)
             except ReviewMirrorError as curl_error:
                 raise ReviewMirrorError(
-                    f"无法读取写入端：{type(error).__name__}: {error}；"
-                    f"系统网络通道：{curl_error}",
+                    f"No se puede leer el equipo con escritura: {type(error).__name__}: {error}; canal de red del sistema: {curl_error}",
                 ) from error
         if len(raw) > MAX_REVIEW_BYTES:
-            raise ReviewMirrorError("写入端复核响应超过 8 MiB 上限")
+            raise ReviewMirrorError("La respuesta de revisión del equipo con escritura supera el límite de 8 MiB")
         try:
             payload = json.loads(raw)
         except (UnicodeDecodeError, json.JSONDecodeError) as error:
-            raise ReviewMirrorError("写入端返回的不是有效 JSON") from error
+            raise ReviewMirrorError("El equipo con escritura no devolvió JSON válido") from error
         if not isinstance(payload, dict):
-            raise ReviewMirrorError("写入端返回的不是 JSON 对象")
+            raise ReviewMirrorError("El equipo con escritura no devolvió un objeto JSON")
         return payload
 
     def _curl_bytes(self, url: str) -> bytes:
@@ -160,10 +159,10 @@ class ReviewMirror:
                 timeout=self.timeout + 2, check=False,
             )
         except (OSError, subprocess.TimeoutExpired) as error:
-            raise ReviewMirrorError(f"curl 启动失败：{type(error).__name__}: {error}") from error
+            raise ReviewMirrorError(f"No se pudo iniciar curl: {type(error).__name__}: {error}") from error
         if result.returncode != 0:
             detail = result.stderr.decode("utf-8", errors="replace").strip()
-            raise ReviewMirrorError(f"curl 退出 {result.returncode}：{detail or '未取得错误详情'}")
+            raise ReviewMirrorError(f"curl terminó con {result.returncode}: {detail or '未取得错误详情'}")
         return bytes(result.stdout)
 
     @staticmethod
@@ -215,7 +214,7 @@ class ReviewMirror:
     def _validate(payload: dict) -> None:
         for key in ("sections", "sources", "counts"):
             if not isinstance(payload.get(key), dict):
-                raise ReviewMirrorError(f"写入端复核响应缺少 {key}")
+                raise ReviewMirrorError(f"A la respuesta de revisión del equipo con escritura le falta {key}")
 
     def _rewrite_preview_urls(self, payload: dict) -> dict:
         result = deepcopy(payload)

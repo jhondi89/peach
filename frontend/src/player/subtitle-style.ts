@@ -1,14 +1,14 @@
 /* 字幕外观持久化与 TextTrack 时间轴显示。 */
 export const CAPTION_OPTIONS = {
-  font: { label: '字体', values: [['sans', '无衬线'], ['mono', '等宽无衬线'], ['serif', '衬线'], ['mono-serif', '等宽衬线'], ['casual', '休闲'], ['cursive', '手写'], ['small-caps', '小型大写字母']] },
-  size: { label: '字号', values: ['50', '75', '100', '150', '200', '300', '400'].map(value => [value, `${value}%`]) },
-  color: { label: '文字颜色', values: [['white', '白色'], ['yellow', '黄色'], ['green', '绿色'], ['cyan', '青色'], ['blue', '蓝色'], ['magenta', '品红'], ['red', '红色'], ['black', '黑色']] },
-  opacity: { label: '文字不透明度', values: ['25', '50', '75', '100'].map(value => [value, `${value}%`]) },
-  background: { label: '背景颜色', values: [['black', '黑色'], ['white', '白色'], ['red', '红色'], ['green', '绿色'], ['blue', '蓝色'], ['yellow', '黄色'], ['magenta', '品红'], ['cyan', '青色']] },
-  backgroundOpacity: { label: '背景不透明度', values: ['0', '25', '50', '75', '100'].map(value => [value, `${value}%`]) },
-  window: { label: '窗口颜色', values: [['black', '黑色'], ['white', '白色'], ['red', '红色'], ['green', '绿色'], ['blue', '蓝色'], ['yellow', '黄色'], ['magenta', '品红'], ['cyan', '青色']] },
-  windowOpacity: { label: '窗口不透明度', values: ['0', '25', '50', '75', '100'].map(value => [value, `${value}%`]) },
-  edge: { label: '字符边缘样式', values: [['none', '无'], ['raised', '凸起'], ['depressed', '凹陷'], ['outline', '描边'], ['shadow', '阴影']] },
+  font: { label: 'Fuente', values: [['sans', 'Sans serif'], ['mono', 'Sans serif monoespaciada'], ['serif', 'Serif'], ['mono-serif', 'Serif monoespaciada'], ['casual', 'Informal'], ['cursive', 'Manuscrita'], ['small-caps', 'Versalitas']] },
+  size: { label: 'Tamaño', values: ['50', '75', '100', '150', '200', '300', '400'].map(value => [value, `${value}%`]) },
+  color: { label: 'Color del texto', values: [['white', 'Blanco'], ['yellow', 'Amarillo'], ['green', 'Verde'], ['cyan', 'Cian'], ['blue', 'Azul'], ['magenta', 'Magenta'], ['red', 'Rojo'], ['black', 'Negro']] },
+  opacity: { label: 'Opacidad del texto', values: ['25', '50', '75', '100'].map(value => [value, `${value}%`]) },
+  background: { label: 'Color de fondo', values: [['black', 'Negro'], ['white', 'Blanco'], ['red', 'Rojo'], ['green', 'Verde'], ['blue', 'Azul'], ['yellow', 'Amarillo'], ['magenta', 'Magenta'], ['cyan', 'Cian']] },
+  backgroundOpacity: { label: 'Opacidad del fondo', values: ['0', '25', '50', '75', '100'].map(value => [value, `${value}%`]) },
+  window: { label: 'Color de la ventana', values: [['black', 'Negro'], ['white', 'Blanco'], ['red', 'Rojo'], ['green', 'Verde'], ['blue', 'Azul'], ['yellow', 'Amarillo'], ['magenta', 'Magenta'], ['cyan', 'Cian']] },
+  windowOpacity: { label: 'Opacidad de la ventana', values: ['0', '25', '50', '75', '100'].map(value => [value, `${value}%`]) },
+  edge: { label: 'Estilo del borde', values: [['none', 'Ninguno'], ['raised', 'En relieve'], ['depressed', 'Hundido'], ['outline', 'Contorno'], ['shadow', 'Sombra']] },
 } as const;
 export type CaptionKey = keyof typeof CAPTION_OPTIONS;
 export type CaptionStyle = Record<CaptionKey, string>;

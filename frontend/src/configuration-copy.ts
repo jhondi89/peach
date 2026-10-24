@@ -1,6 +1,4 @@
 /** 配置首屏与正式表单共用文案，保持文字和换行高度一致。 */
-import { t } from '@peach/i18n';
+export const ENTRY_LINKS_HELP = 'Si JavDB o MissAV no abren, escribe un dominio espejo que sí funcione.';
 
-export const ENTRY_LINKS_HELP = t('JavDB 或 MISSAV 打不开时，填一个能打开的镜像域名。');
-
-export const ENTRY_LINKS_HINT = t('只填域名，留空用默认地址');
+export const ENTRY_LINKS_HINT = 'Solo el dominio; déjalo vacío para usar la dirección predeterminada';

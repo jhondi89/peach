@@ -15,7 +15,7 @@ from .social_links import canonical_url, handle, host_of, platform
 
 MONTHS = {name: i for i, name in enumerate(('January', 'February', 'March', 'April', 'May',
     'June', 'July', 'August', 'September', 'October', 'November', 'December'), 1)}
-LINK_NAMES = {'www': '官网', 'instagram': 'Instagram', 'x': 'X', 'tiktok': 'TikTok',
+LINK_NAMES = {'www': "Web oficial", 'instagram': 'Instagram', 'x': 'X', 'tiktok': 'TikTok',
     'onlyfans': 'OnlyFans', 'onlyfansfree': 'OnlyFans', 'twitch': 'Twitch',
     'imdb': 'IMDb', 'iafd': 'IAFD', 'facebook': 'Facebook', 'youtube': 'YouTube'}
 
@@ -75,7 +75,7 @@ def land(connection, entity_id: int, expected_name: str, record: dict, *, batch:
     """仅补空资料，别名走同名占用判据，现有链接保留。调用方持有事务。"""
     current = connection.execute('SELECT kind,canonical_name FROM entity WHERE id=?', (entity_id,)).fetchone()
     if not current or current[0] not in ('performer', 'creator') or current[1] != expected_name:
-        raise ValueError('艺人身份已变化，请重新预览')
+        raise ValueError("La identidad del artista cambió; vuelve a generar la vista previa")
     held = read_profile(connection, entity_id)
     written = False
     if held is None:
@@ -112,11 +112,11 @@ def link_conflict(link_kind: str, url: str, existing: list) -> str:
     都是两处来源说法不一，留在回执里等人看。
     """
     if link_kind == 'official' and any(kind == 'official' for kind, _url in existing):
-        return '已有官网'
+        return "Ya tiene web oficial"
     site = platform(url)
     for _kind, held in existing:
         if site and platform(held) == site and handle(held) != handle(url):
-            return f'{site} 已登记另一个账号'
+            return f"{site} ya registró otra cuenta"
         if not site and link_kind != 'official' and host_of(held) == host_of(url):
-            return f'{host_of(url)} 已登记另一页'
+            return f"{host_of(url)} ya registró otra página"
     return ''

@@ -113,10 +113,10 @@ def _clean_segments(tail: str) -> tuple[str, ...]:
             continue
         if (segment == ".." or "\\" in segment or ":" in segment
                 or any(character < " " for character in segment)):
-            raise CloudPathError(f"✗ 云端路径里有不能接受的层级：{segment!r}")
+            raise CloudPathError(f"✗ La ruta en la nube tiene un nivel no aceptable: {segment!r}")
         parts.append(segment)
     if not parts:
-        raise CloudPathError("✗ 云端路径在前缀之后没有内容")
+        raise CloudPathError("✗ La ruta en la nube no tiene nada después del prefijo")
     return tuple(parts)
 
 
@@ -237,7 +237,7 @@ def map_cloud_path(cloud_path: str, prefixes: tuple[CloudPrefix, ...]) -> str:
     """
     text = str(cloud_path or "").strip().replace("\\", "/")
     if not text:
-        raise CloudPathError("✗ 请求里没有云端路径")
+        raise CloudPathError("✗ La solicitud no trae ruta en la nube")
     while "//" in text:
         text = text.replace("//", "/")
     if not text.startswith("/"):
@@ -246,15 +246,15 @@ def map_cloud_path(cloud_path: str, prefixes: tuple[CloudPrefix, ...]) -> str:
     for entry in prefixes:
         prefix = normalise_prefix(entry.prefix)
         if text == prefix:
-            raise CloudPathError("✗ 云端路径就是前缀本身，没有文件")
+            raise CloudPathError("✗ La ruta en la nube es el propio prefijo; no hay archivo")
         if not text.startswith(prefix + "/"):
             continue
         depth = len(prefix)
         if best is None or depth > best[0]:
             best = (depth, entry, text[len(prefix):])
     if best is None:
-        known = "、".join(normalise_prefix(entry.prefix) for entry in prefixes) or "（一条都没配）"
-        raise CloudPathError(f"✗ {text} 不在任何已配置的前缀下；已知：{known}")
+        known = "、".join(normalise_prefix(entry.prefix) for entry in prefixes) or "(no hay ninguno configurado)"
+        raise CloudPathError(f"✗ {text} no está bajo ningún prefijo configurado; conocidos: {known}")
     return str(PureWindowsPath(best[1].root).joinpath(*_clean_segments(best[2])))
 
 
@@ -477,10 +477,10 @@ def _prefix_rows(raw, declared_roots) -> tuple[CloudPrefix, ...]:
             continue
         settled = known.get(root.casefold())
         if settled is None:
-            shown = "、".join(sorted(known.values())) or "（设置文件里一个都没有）"
-            raise ValueError(f"{root} 不是已声明的媒体根；已知：{shown}")
+            shown = "、".join(sorted(known.values())) or "(no hay ninguno en el archivo de ajustes)"
+            raise ValueError(f"{root} no es una raíz de medios declarada; conocidas: {shown}")
         if prefix in seen:
-            raise ValueError(f"前缀 {prefix} 登记了不止一次")
+            raise ValueError(f"El prefijo {prefix} está registrado más de una vez")
         seen.add(prefix)
         rows.append(CloudPrefix(prefix, settled))
     return tuple(rows)
@@ -518,7 +518,7 @@ class PushDiscoverySettings:
 
     def save(self, body: dict, declared_roots) -> PushDiscoveryConfig:
         if not isinstance(body, dict):
-            raise ValueError("设置必须是一个对象")
+            raise ValueError("Los ajustes deben ser un objeto")
         config = PushDiscoveryConfig(
             enabled=body.get("enabled") is True,
             watch_local=body.get("watch_local") is not False,
@@ -674,12 +674,12 @@ class PushDiscoveryService:
     def submit_cloud(self, cloud_path: str) -> str:
         """webhook 收到一条云端路径：映射成账本路径再进队列，返回那条账本路径。"""
         if not self.config.cloud:
-            raise CloudPathError("✗ 云端通道没有打开")
+            raise CloudPathError("✗ El canal de la nube no está abierto")
         path = map_cloud_path(cloud_path, self.config.prefixes)
         from .platform import resolve_location
         location = resolve_location(path, self.declared_roots)[0]
         if location is None:
-            raise CloudPathError(f"✗ {path} 不在任何媒体来源已配置的目录下")
+            raise CloudPathError(f"✗ {path} no está bajo ninguna carpeta configurada de las fuentes de medios")
         self.submit(location, path)
         return path
 
@@ -714,16 +714,16 @@ class PushDiscoveryService:
 
     def _start_local(self) -> None:
         if not self.config.watch_local:
-            self.local_channel = ChannelState(False, "本地通道没有打开")
+            self.local_channel = ChannelState(False, "El canal local no está abierto")
             return
         roots = self._local_roots()
         if not roots:
-            self.local_channel = ChannelState(False, "本地来源在这台机器上没有可监视的目录")
+            self.local_channel = ChannelState(False, "La fuente local no tiene carpetas vigilables en este equipo")
             return
         try:
             from watchdog.observers import Observer
         except ImportError as error:  # 打包漏装时不该让整条服务起不来
-            self.local_channel = ChannelState(False, f"文件监视不可用：{error}")
+            self.local_channel = ChannelState(False, f"La vigilancia de archivos no está disponible: {error}")
             return
         handler = _LocalEventHandler(self)
         observer = Observer()
@@ -733,7 +733,7 @@ class PushDiscoveryService:
         try:
             observer.start()
         except OSError as error:
-            self.local_channel = ChannelState(False, f"文件监视启动失败：{error}")
+            self.local_channel = ChannelState(False, f"No se pudo iniciar la vigilancia de archivos: {error}")
             return
         self._observer = observer
         self.local_channel = ChannelState(
@@ -751,7 +751,7 @@ class PushDiscoveryService:
 
     def save(self, body: dict) -> dict:
         if not self.available:
-            raise ValueError("推送发现只在允许修改数据库的设备上可用")
+            raise ValueError("La detección automática solo está disponible en dispositivos que pueden modificar la base de datos")
         with self._lock:
             self.config = self.settings.save(body, self.declared_roots)
             # 密钥由 `start` 补：云端通道一打开，CloudDrive2 那一侧马上要填，页面得当场给出来。
@@ -761,7 +761,7 @@ class PushDiscoveryService:
 
     def rotate_secret(self) -> dict:
         if not self.available:
-            raise ValueError("推送发现只在允许修改数据库的设备上可用")
+            raise ValueError("La detección automática solo está disponible en dispositivos que pueden modificar la base de datos")
         self.secret.rotate()
         return self.snapshot(reveal=True)
 

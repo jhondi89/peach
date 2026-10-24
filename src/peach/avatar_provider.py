@@ -226,12 +226,12 @@ def mark_duplicate_candidates(rows: list[dict], installed: dict[str, int]) -> No
         digest = str(row.get("sha256") or "")
         if not digest:
             row["verdict"] = "rejected"
-            row["note"] = "缺少内容哈希，不能进入复核候选"
+            row["note"] = "Falta el hash del contenido; no puede entrar en revisión"
             continue
         owner = owners.get(digest)
         if owner is not None and owner != int(row["entity_id"]):
             row["verdict"] = "duplicate"
             row["duplicate_of_entity_id"] = owner
-            row["note"] = f"与 performer-{owner} 的头像内容完全相同"
+            row["note"] = f"Idéntica a la foto de performer-{owner}"
             continue
         owners[digest] = int(row["entity_id"])

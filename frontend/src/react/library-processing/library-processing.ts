@@ -90,21 +90,21 @@ export const processingActive = (state?: LibraryProcessingData) =>
 /** 时间向分钟取整；区间两端始终使用同一单位。 */
 export function remainingTime(state: LibraryProcessingData): string {
   if (!processingActive(state)) return '';
-  if (state.status === 'paused') return '已暂停，继续后更新预估';
-  if (state.status === 'pausing') return '正在暂停，当前步骤结束后暂停';
-  if (state.stalled) return '等待当前文件响应，剩余时间待更新';
+  if (state.status === 'paused') return 'En pausa; la estimación se actualiza al continuar';
+  if (state.status === 'pausing') return 'Pausando; se detendrá al terminar el paso actual';
+  if (state.stalled) return 'Esperando respuesta del archivo actual; tiempo restante por calcular';
   const low = state.eta_seconds_min, high = state.eta_seconds_max;
   if (low == null || high == null || !Number.isFinite(low) || !Number.isFinite(high) || low < 0 || high < low)
-    return '正在估算剩余时间…';
-  if (high < 60) return '预计剩余不到 1 分钟';
+    return 'Calculando tiempo restante…';
+  if (high < 60) return 'Falta menos de 1 minuto';
   const unit = high >= 86400 ? 86400 : high >= 3600 ? 3600 : 60;
-  const label = unit === 86400 ? '天' : unit === 3600 ? '小时' : '分钟';
+  const label = unit === 86400 ? 'días' : unit === 3600 ? 'horas' : 'minutos';
   const precision = unit === 60 ? 1 : 10;
   const start = Math.max(1 / precision, Math.floor(low / unit * precision) / precision);
   const end = Math.max(start, Math.ceil(high / unit * precision) / precision);
   const span = start === end ? `${end}` : `${start}–${end}`;
-  const rough = state.eta_initial || state.eta_kind !== 'measured' ? '（粗估）' : '';
-  return `预计剩余约 ${span} ${label}${rough}${state.eta_scope ? ` · ${state.eta_scope}` : ''}`;
+  const rough = state.eta_initial || state.eta_kind !== 'measured' ? '(aproximado)' : '';
+  return `Faltan unos ${span} ${label}${rough}${state.eta_scope ? ` · ${state.eta_scope}` : ''}`;
 }
 
 export const fetchLibraryProcessing = (signal?: AbortSignal) =>
@@ -124,7 +124,7 @@ export const RUNNING_POLL_MS = 2000;
 export const IDLE_POLL_MS = 10_000;
 
 /** 读失败时页面上留的那句话。上一份数据不撤，下一轮轮询自己会接上。 */
-export const DISCONNECTED_TEXT = '连接中断，正在重新读取处理进度';
+export const DISCONNECTED_TEXT = 'Se cortó la conexión; volviendo a leer el progreso';
 
 export function pollInterval(
   data: LibraryProcessingData | undefined, watching: boolean,
@@ -134,45 +134,45 @@ export function pollInterval(
 }
 
 const ACTION_LABELS: Record<string, string> = {
-  scanning_files: '扫描文件',
-  reading_local: '检查配套文件',
-  reading_local_cover: '读取配套图片',
-  querying_metadata: '查询外部资料',
-  fetching_cover: '采集缺失封面',
-  generating_preview: '生成视频预览',
-  writing_candidates: '保存待确认资料',
+  scanning_files: 'Escanear archivos',
+  reading_local: 'Revisar archivos complementarios',
+  reading_local_cover: 'Leer imágenes complementarias',
+  querying_metadata: 'Consultar datos externos',
+  fetching_cover: 'Obtener portadas faltantes',
+  generating_preview: 'Generar vistas previas',
+  writing_candidates: 'Guardar datos por confirmar',
 };
 
 /* 来源说「没有」按类型报一个数，不进问题清单：馆藏里大量独立资源和创作者作品
    任何目录站都收不到，它们不是待办。键与 `library_processing.MISS_MESSAGES` 同源。 */
 const NOTE_LABELS: Record<string, string> = {
-  querying_metadata: '没有资料',
-  fetching_cover: '没有封面',
+  querying_metadata: 'Sin datos',
+  fetching_cover: 'Sin portada',
 };
 
 export function notesLine(notes: Record<string, number>): string {
   const parts = Object.entries(notes)
     .filter(([key, count]) => NOTE_LABELS[key] && count > 0)
-    .map(([key, count]) => `${NOTE_LABELS[key]} ${count.toLocaleString()} 部`);
-  return parts.length ? `外部来源${parts.join('、')}，7 天内不再问。` : '';
+    .map(([key, count]) => `${NOTE_LABELS[key]} ${count.toLocaleString()} obras`);
+  return parts.length ? `Fuente externa ${parts.join('、')}; no se volverá a consultar en 7 días.` : '';
 }
 
 /** 此刻在做什么：哪个文件、哪一步、等了多久。 */
 export function currentLine(state: LibraryProcessingData): string {
-  if (state.status === 'paused') return '已暂停';
-  if (state.status === 'pausing') return '正在暂停';
-  const action = ACTION_LABELS[state.current_action || ''] || state.stage || '正在处理';
-  const waited = state.waited_seconds ? ` · 已等待 ${elapsedText(state.waited_seconds)}` : '';
+  if (state.status === 'paused') return 'En pausa';
+  if (state.status === 'pausing') return 'Pausando';
+  const action = ACTION_LABELS[state.current_action || ''] || state.stage || 'Procesando';
+  const waited = state.waited_seconds ? ` · esperando ${elapsedText(state.waited_seconds)}` : '';
   return state.current_asset_name
-    ? `当前：${state.current_asset_name} · ${action}${waited}`
+    ? `Ahora: ${state.current_asset_name} · ${action}${waited}`
     : action + waited;
 }
 
 /** 已知总量显示实际完成数；扫描目录期间显示持续发现的文件数。 */
 export function processingLine(state: LibraryProcessingData): string {
-  const count = state.total ? `${progressText(state.checked, state.total)} 项`
+  const count = state.total ? `${progressText(state.checked, state.total)} elementos`
     : state.current_action === 'scanning_files' || state.stage === '扫描文件'
-      ? `已发现 ${(state.scanned || 0).toLocaleString()} 个文件` : '';
+      ? `${(state.scanned || 0).toLocaleString()} archivos encontrados` : '';
   return currentLine(state) + (count ? ` · ${count}` : '');
 }
 
@@ -189,11 +189,11 @@ export function issueDetails(state: LibraryProcessingData): IssueDetails | null 
   if (!issues.length) return null;
   return {
     label: state.issues_truncated
-      ? `问题清单：共 ${state.issue_count || 0} 项，展开查看前 ${issues.length} 项`
-      : `问题清单：共 ${state.issue_count || 0} 项`,
+      ? `Problemas: ${state.issue_count || 0} en total; despliega para ver los primeros ${issues.length}`
+      : `Problemas: ${state.issue_count || 0} en total`,
     items: issues.map((issue, at) => ({
       key: `${issue.asset_id ?? 'source'}-${at}`,
-      label: issue.title || (issue.asset_id ? `视频 ${issue.asset_id}` : '媒体来源'),
+      label: issue.title || (issue.asset_id ? `Video ${issue.asset_id}` : 'Fuentes de medios'),
       href: issue.asset_id ? `/assets/${issue.asset_id}` : '',
       note: issue.message,
       hint: issue.path || '',
@@ -223,10 +223,10 @@ export function announceCompletion(
     if (state.job_id) localStorage.setItem(ANNOUNCED_KEY, state.job_id);
   } catch { /* 存储不可用时照常提示，最多重复一次 */ }
   if (state.requested_stage === 'previews') {
-    toast(`视频预览已生成：${state.previews || 0} 部`);
+    toast(`Vistas previas generadas: ${state.previews || 0}`);
     return;
   }
-  toast(`扫描与资料采集已完成：识别 ${state.identified || 0} 个番号，`
-    + `整理 ${state.candidates || 0} 组资料结果，自动保存 ${state.auto_applied || 0} 条`
-    + (state.previews ? `，生成 ${state.previews} 部视频预览` : ''));
+  toast(`Escaneo y obtención de datos terminados: ${state.identified || 0} códigos identificados,`
+    + `${state.candidates || 0} grupos de datos ordenados, ${state.auto_applied || 0} guardados automáticamente`
+    + (state.previews ? `, ${state.previews} vistas previas generadas` : ''));
 }

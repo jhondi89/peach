@@ -52,23 +52,23 @@ def read_bookmarks(path: Path, *, engine: str | None = None):
                 "SELECT p.url,b.title,b.dateAdded FROM moz_bookmarks b "
                 "JOIN moz_places p ON p.id=b.fk WHERE b.type=1"))
     if path.stat().st_size > 64 * 1024 * 1024:
-        raise ValueError("书签文件超过 64 MB")
+        raise ValueError("El archivo de marcadores supera 64 MB")
     raw = path.read_bytes()
     if raw.lstrip(b"\xef\xbb\xbf \r\n\t").startswith(b"{"):
         payload = json.loads(raw)
         if not isinstance(payload, dict) or not isinstance(payload.get("roots"), dict):
-            raise ValueError("书签 JSON 缺少 Chromium roots")
+            raise ValueError("Al JSON de marcadores le faltan los roots de Chromium")
         nodes = list(payload["roots"].values())
         values = []
         while nodes:
             node = nodes.pop()
             if not isinstance(node, dict):
-                raise ValueError("书签 JSON 含无效节点")
+                raise ValueError("El JSON de marcadores tiene nodos no válidos")
             if node.get("type") == "url":
                 values.append((node.get("url"), node.get("name"), _date(node.get("date_added"), chromium=True)))
             children = node.get("children", [])
             if not isinstance(children, list):
-                raise ValueError("书签 JSON 含无效文件夹")
+                raise ValueError("El JSON de marcadores tiene carpetas no válidas")
             nodes.extend(reversed(children))
         return _rows(values)
     # 通用 HTML 解析交给项目已固定的 BeautifulSoup；不执行脚本或读取外链。
@@ -79,7 +79,7 @@ def read_bookmarks(path: Path, *, engine: str | None = None):
     soup = BeautifulSoup(markup, "html.parser")
     from bs4 import Doctype
     if not any(isinstance(item, Doctype) and str(item).casefold() == "netscape-bookmark-file-1" for item in soup.contents):
-        raise ValueError("请选择浏览器导出的 HTML 书签文件或 Chromium Bookmarks 文件")
+        raise ValueError("Elige un archivo de marcadores HTML exportado por el navegador o un archivo Bookmarks de Chromium")
     return _rows((link.get("href"), link.get_text(), _date(link.get("add_date")))
                  for link in soup.find_all("a", href=True))
 
@@ -100,7 +100,7 @@ def refresh_bookmarks(sources, store_path: Path, *, host=None, progress=None, st
     results = []
     for index, source in enumerate(sources):
         if progress:
-            progress(stage="bookmarks", checked=index, total=len(sources), message="正在读取浏览器书签")
+            progress(stage="bookmarks", checked=index, total=len(sources), message="Leyendo los marcadores del navegador")
         try:
             if source.engine == "firefox":
                 with tempfile.TemporaryDirectory(prefix="peach-bookmarks-") as directory:
@@ -111,16 +111,16 @@ def refresh_bookmarks(sources, store_path: Path, *, host=None, progress=None, st
                 rows = read_bookmarks(source.path)
         except (OSError, ValueError, TypeError, sqlite3.DatabaseError, TimeoutError):
             if strict:
-                raise ValueError("书签文件未取得，请检查文件格式后重新导入") from None
-            results.append({"browser": source.browser, "profile": source.profile + " · 书签",
+                raise ValueError("No se obtuvo el archivo de marcadores; revisa su formato y vuelve a importarlo") from None
+            results.append({"browser": source.browser, "profile": source.profile + " · marcadores",
                             "bookmarks": 0, "added": 0, "status": "failed",
-                            "error": "浏览器书签未取得，请检查资料目录或退出浏览器后重试"})
+                            "error": "No se obtuvieron los marcadores del navegador; revisa la carpeta de perfil o cierra el navegador e inténtalo de nuevo"})
             continue
         with _open_history_store(store_path, host) as (store, resolved_host, now):
             from .taste_browsers import browser_snapshot_allowed
             if not browser_snapshot_allowed(store, source):
                 continue
-            tagged = HistorySource(source.browser, source.profile + " · 书签", source.path)
+            tagged = HistorySource(source.browser, source.profile + " · marcadores", source.path)
             key = _source_key(tagged, resolved_host)
             path_hash = hashlib.sha256(str(source.path.resolve()).encode()).hexdigest()
             store.execute("INSERT INTO history_source VALUES(?,?,?,?,?,?,?) "

@@ -111,15 +111,15 @@ class PikPakDav:
         self.listing = listing
         self.move_remote = move_remote
         if not 1 <= confirm_attempts <= 4:
-            raise ValueError('移动确认次数越出预算')
+            raise ValueError("Las confirmaciones de movimiento superan el presupuesto")
         self.confirm_attempts = confirm_attempts
         if self.root != PureWindowsPath('A:\\'):
-            raise ValueError('HTTPS WebDAV 整理只支持已声明的 A 盘根目录')
+            raise ValueError("Organizar por WebDAV HTTPS solo admite la raíz declarada de la unidad A")
 
     def url(self, path: str) -> str:
         item = PureWindowsPath(path)
         if item.drive.casefold() != self.root.drive.casefold() or '..' in item.parts or not item.is_absolute():
-            raise ValueError('WebDAV 路径越出已声明来源')
+            raise ValueError("La ruta WebDAV sale de la fuente declarada")
         return DAV_ORIGIN + quote('/' + '/'.join(item.parts[1:]), safe='/@')
 
     def request(self, method, path, **kwargs):
@@ -129,11 +129,11 @@ class PikPakDav:
                 for chunk in response.iter_bytes():
                     size += len(chunk)
                     if size > MAX_RESPONSE:
-                        raise ValueError('WebDAV 响应超过预算')
+                        raise ValueError("La respuesta WebDAV supera el presupuesto")
                     chunks.append(chunk)
                 return response.status_code, b''.join(chunks)
         except httpx.HTTPError:
-            raise OSError('WebDAV 网络应答未取得') from None
+            raise OSError("No se obtuvo respuesta de red de WebDAV") from None
 
     def list(self, path):
         self.url(path)
@@ -144,7 +144,7 @@ class PikPakDav:
         while pending:
             parent = pending.pop()
             if parent in visited or len(visited) >= MAX_FILES:
-                raise ValueError('WebDAV 目录遍历超过预算或循环')
+                raise ValueError("El recorrido de carpetas WebDAV superó el presupuesto o entró en un bucle")
             visited.add(parent)
             for entry in self.list(parent):
                 if entry['directory']:
@@ -152,7 +152,7 @@ class PikPakDav:
                 else:
                     files.append(entry)
             if len(files) > MAX_FILES:
-                raise ValueError('WebDAV 文件成员超过预算')
+                raise ValueError("Los archivos de WebDAV superan el presupuesto")
         return files
 
     def ensure_parent(self, path):
@@ -165,11 +165,11 @@ class PikPakDav:
         matches = [r for r in listing if PureWindowsPath(r['path']) == parent]
         if matches:
             if not matches[0]['directory']:
-                raise ValueError('目标父路径不是目录')
+                raise ValueError("La ruta padre de destino no es una carpeta")
             return
         status, _ = self.request('MKCOL', str(parent))
         if status != 201:
-            raise OSError('WebDAV 创建父目录失败：HTTP ' + str(status))
+            raise OSError("WebDAV no pudo crear la carpeta padre: HTTP " + str(status))
         self.refresh(grandparent)
 
     def submit_move(self, source, target):
@@ -182,16 +182,16 @@ class PikPakDav:
         self.url(target)
         old, new = PureWindowsPath(source), PureWindowsPath(target)
         if old.parent != new.parent and old.name != new.name:
-            raise ValueError('官方接口只接受同父改名或保留名称的移动；跨父改名须先拆成两步')
+            raise ValueError("La API oficial solo acepta renombrar en la misma carpeta padre o mover conservando el nombre; renombrar entre carpetas debe hacerse en dos pasos")
         old_parent, new_parent = str(old.parent), str(new.parent)
         entries = self.list(old_parent)
         found = [r for r in entries if PureWindowsPath(r['path']) == PureWindowsPath(source)]
         if len(found) != 1:
-            raise FileNotFoundError('WebDAV 来源未取得')
+            raise FileNotFoundError("No se obtuvo la fuente WebDAV")
         before = self.tree(source) if found[0]['directory'] else found
         self.ensure_parent(target)
         if any(PureWindowsPath(r['path']) == PureWindowsPath(target) for r in self.list(new_parent)):
-            raise FileExistsError('WebDAV 目标已存在')
+            raise FileExistsError("El destino WebDAV ya existe")
         try:
             response_status = self.submit_move(source, target)
         except OSError:
@@ -207,7 +207,7 @@ class PikPakDav:
                 raise
             except (UnconfirmedMove, OSError, ValueError):
                 if final:
-                    raise UnconfirmedMove('移动状态未确认，保留意图回执并停止；不重复操作、不写数据库') from None
+                    raise UnconfirmedMove("El estado del movimiento no se confirmó; se conserva el recibo de intención y se detiene; no se repite la operación ni se escribe en la base de datos") from None
                 time.sleep(2)
 
     def confirm_move(self, source, target, source_entry, before, response_status, *, final=True):
@@ -220,13 +220,13 @@ class PikPakDav:
             still_present = any(PureWindowsPath(r['path']) == PureWindowsPath(source) for r in old_listing)
             if still_present and not arrived:
                 if response_status == REJECTED or final:
-                    raise MoveNotExecuted('官方接口拒绝或未执行移动，原件已确认留在原处')
-                raise ValueError('移动请求仍可能在服务端处理')
+                    raise MoveNotExecuted("La API oficial rechazó o no ejecutó el movimiento; se confirmó que el original sigue en su lugar")
+                raise ValueError("Puede que el servidor siga procesando la solicitud de movimiento")
             after = self.tree(target) if source_entry['directory'] else arrived
             expected = {(str(PureWindowsPath(target, *PureWindowsPath(r['path']).parts[len(PureWindowsPath(source).parts):])), r['size'])
                         for r in before}
             if still_present or len(arrived) != 1 or arrived[0]['directory'] != source_entry['directory'] or expected != {(r['path'], r['size']) for r in after}:
-                raise ValueError('移动状态或完整成员不符')
+                raise ValueError("El estado del movimiento o los miembros completos no coinciden")
             for parent in {old_parent, new_parent}:
                 self.refresh(parent)
             if source_entry['directory']:
@@ -234,18 +234,18 @@ class PikPakDav:
         except MoveNotExecuted:
             raise
         except Exception:
-            raise UnconfirmedMove('移动状态未确认，保留意图回执并停止；不重复操作、不写数据库') from None
+            raise UnconfirmedMove("El estado del movimiento no se confirmó; se conserva el recibo de intención y se detiene; no se repite la operación ni se escribe en la base de datos") from None
 
 
 def _cloud_listing(cloud, path):
     """逐层完整读取官方目录元数据并校验来源、父目录与重名。"""
     item = PureWindowsPath(path)
     if item.drive.casefold() != 'a:' or not item.is_absolute() or '..' in item.parts or len(item.parts) > 32:
-        raise ValueError('官方目录路径越出 A 盘或超过层级预算')
+        raise ValueError("La ruta de la carpeta oficial sale de la unidad A o supera el presupuesto de niveles")
     previous = None
     for parent in (*reversed(item.parents), item):
         if previous is not None and not any(PureWindowsPath(row['path']) == parent and row['directory'] for row in previous):
-            raise FileNotFoundError('官方父目录未列出所需目录')
+            raise FileNotFoundError("La carpeta padre oficial no lista la carpeta necesaria")
         request = ListRequest(path=('/Pikpak/' + '/'.join(parent.parts[1:])).rstrip('/'), forceRefresh=True)
         call = cloud.channel.unary_stream(SERVICE + 'GetSubFiles',
             request_serializer=ListRequest.SerializeToString, response_deserializer=ListReply.FromString)
@@ -255,16 +255,16 @@ def _cloud_listing(cloud, path):
             for response in stream:
                 for member in response.subFiles:
                     if not member.fullPathName.startswith('/Pikpak/'):
-                        raise ValueError('官方目录成员来自其他来源')
+                        raise ValueError("Los miembros de la carpeta oficial vienen de otra fuente")
                     name = PureWindowsPath('A:\\' + member.fullPathName[len('/Pikpak/'):].replace('/', '\\'))
                     if name.parent != parent or str(name).casefold() in seen or member.size < 0:
-                        raise ValueError('官方目录成员越界、重名或体积无效')
+                        raise ValueError("Los miembros de la carpeta oficial se salen de rango, tienen nombres repetidos o tamaños no válidos")
                     seen.add(str(name).casefold())
                     rows.append(dict(path=str(name),size=member.size,directory=member.isDirectory))
                 if len(rows) > MAX_FILES:
-                    raise ValueError('官方目录成员超过预算')
+                    raise ValueError("Los miembros de la carpeta oficial superan el presupuesto")
         except grpc.RpcError as error:
-            raise OSError('官方完整目录未取得：' + error.code().name) from None
+            raise OSError("No se obtuvo la carpeta oficial completa:" + error.code().name) from None
         finally:
             stream.cancel()
         previous = rows
@@ -285,7 +285,7 @@ def _move_remote(cloud, source, target):
     if (old.drive.casefold() != 'a:' or new.drive.casefold() != 'a:' or not old.is_absolute()
             or not new.is_absolute() or '..' in old.parts or '..' in new.parts
             or old.name != new.name or old.parent == new.parent):
-        raise ValueError('官方移动来源、父目录或文件名不符')
+        raise ValueError("El origen, la carpeta padre o el nombre del movimiento oficial no coinciden")
     request = MoveRequest(theFilePaths=['/Pikpak/' + '/'.join(old.parts[1:])],
                           destPath=('/Pikpak/' + '/'.join(new.parent.parts[1:])).rstrip('/'),
                           conflictPolicy=2, moveAcrossClouds=False, handleConflictRecursively=False)
@@ -304,7 +304,7 @@ def _rename_remote(cloud, source, target):
     old, new = PureWindowsPath(source), PureWindowsPath(target)
     if (old.drive.casefold() != 'a:' or not old.is_absolute() or '..' in old.parts
             or old.parent != new.parent or '..' in new.parts):
-        raise ValueError('官方改名只支持 A 盘内的同父目录')
+        raise ValueError("El renombrado oficial solo admite la misma carpeta padre dentro de la unidad A")
     stub = cloud.channel.unary_unary(SERVICE + 'RenameFile',
         request_serializer=RenameRequest.SerializeToString, response_deserializer=pb.FileOperationResult.FromString)
     try:
@@ -320,7 +320,7 @@ def _refresh_listing(cloud, path):
     from . import downloads_clouddrive_pb2 as pb
     item = PureWindowsPath(path)
     if item.drive.casefold() != 'a:' or not item.is_absolute() or '..' in item.parts:
-        raise ValueError('目录缓存范围越出 A 盘')
+        raise ValueError("El alcance de la caché de carpetas sale de la unidad A")
     stub = cloud.channel.unary_unary(SERVICE + 'ForceExpireDirCache',
             request_serializer=pb.FileRequest.SerializeToString, response_deserializer=Empty.FromString)
     try:
@@ -328,7 +328,7 @@ def _refresh_listing(cloud, path):
              timeout=15, metadata=(('authorization', 'Bearer ' + cloud.token),))
     except grpc.RpcError as error:
         if error.code() != grpc.StatusCode.NOT_FOUND:
-            raise OSError('目录缓存刷新未取得：' + error.code().name) from None
+            raise OSError("No se obtuvo la actualización de la caché de carpetas:" + error.code().name) from None
     return _cloud_listing(cloud, path)
 
 
@@ -341,42 +341,42 @@ def _download_headers(cloud, sample_path):
             break
         path = PureWindowsPath(paths[index])
         if path.drive.casefold() != 'a:' or not path.is_absolute() or '..' in path.parts:
-            raise ValueError('认证样本越出 A 盘来源')
+            raise ValueError("La muestra de autenticación sale de la fuente de la unidad A")
         relative = '/' + '/'.join(path.parts[1:])
         try:
             reply = stub(DownloadRequest(path='/Pikpak' + relative, get_direct_url=True), timeout=15,
                          metadata=(('authorization', 'Bearer ' + cloud.token),))
         except grpc.RpcError as error:
             if error.code() != grpc.StatusCode.NOT_FOUND:
-                raise ValueError('既有 CloudDrive 直链认证未取得') from None
+                raise ValueError("No se obtuvo la autenticación de enlace directo de CloudDrive existente") from None
             if index == 0:
                 paths.extend(p for p in _fallback_samples() if p != sample_path)
             continue
         url = urlsplit(reply.directUrl)
         if url.hostname != 'dav.mypikpak.com' or url.scheme not in ('http', 'https') or url.username or url.query or unquote(url.path) != relative:
-            raise ValueError('既有直链来源或路径不符')
+            raise ValueError("La fuente o ruta del enlace directo existente no coincide")
         headers = dict(reply.additionalHeaders)
         if not any(k.casefold() == 'authorization' for k in headers):
-            raise ValueError('既有 WebDAV 认证未取得')
+            raise ValueError("No se obtuvo la autenticación WebDAV existente")
         if reply.userAgent:
             headers['User-Agent'] = reply.userAgent
         return headers
-    raise ValueError('既有 CloudDrive 认证样本未取得')
+    raise ValueError("No se obtuvo la muestra de autenticación de CloudDrive existente")
 
 
 @contextmanager
 def pikpak_renames(sample_path: str, roots):
     """仅显式启用的目录批次复用既有 CloudDrive 认证。"""
     if tuple(roots.get('pikpak', ())) != ('A:\\',):
-        raise ValueError('PikPak 来源根必须唯一声明为 A 盘')
+        raise ValueError("La raíz de la fuente PikPak debe declararse una sola vez como unidad A")
     credential = CredentialStore(SECRETS_DIR).load(CLOUDDRIVE_CREDENTIAL)
     if not credential or not credential.values.get('token'):
-        raise ValueError('既有 CloudDrive 令牌未取得')
+        raise ValueError("No se obtuvo el token de CloudDrive existente")
     address = DownloadSettings(STATE_DIR).load().clouddrive_address or discover()
     with CloudDriveClient(address, credential.values['token'], timeout=15) as cloud:
         info = cloud.find('/Pikpak')
         if info is None or info.CloudAPI.name.casefold() != 'webdav':
-            raise ValueError('既有 PikPak WebDAV 来源未取得')
+            raise ValueError("No se obtuvo la fuente WebDAV de PikPak existente")
         headers = _download_headers(cloud, sample_path)
         with httpx.Client(headers=headers, timeout=20, follow_redirects=False) as http:
             dav = PikPakDav(http, 'A:\\', lambda path: _refresh_listing(cloud, path),

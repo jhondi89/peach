@@ -38,7 +38,7 @@ describe('来源图标', () => {
   });
 });
 
-describe('创作者', () => {
+describe('Creador', () => {
   it('作者导航只认唯一实体，并跟随实际发布者', () => {
     const bound = source(1, { entity_id: 90, entity_name: 'Kou', author_key: 'entity:90', author_name: 'Kou' });
     expect(followAuthorEntity([bound, source(2)])).toBe('Kou');
@@ -85,7 +85,7 @@ describe('创作者', () => {
     expect(plain.author).toBe('kou');
     expect(plain.avatar).toContain('src="/kou.png"');
     expect(followIdentity(item(6, { author: '帖子作者' }), [], context()).author).toBe('帖子作者');
-    expect(followIdentity(item(7), [], context()).author).toBe('创作者未取得');
+    expect(followIdentity(item(7), [], context()).author).toBe('No se obtuvo el creador');
   });
 });
 
@@ -118,13 +118,13 @@ describe('标题前后的字样', () => {
   it('媒体未取得说清原因；缺 F95 会话时分「部分」与「全部」', () => {
     expect(followMediaIssue(item(1, { media_error: '404' }), context())).toBe('媒体未取得：404');
     const needs = item(2, { provider: 'f95zone', media_needs_credential: true });
-    expect(followMediaIssue(needs, context())).toBe('媒体未取得：需要 F95 登录会话解析');
-    expect(followMediaIssue({ ...needs, playable: true }, context())).toBe('部分媒体未取得：需要 F95 登录会话解析');
+    expect(followMediaIssue(needs, context())).toBe('No se obtuvieron los medios: se necesita una sesión iniciada en F95');
+    expect(followMediaIssue({ ...needs, playable: true }, context())).toBe('Faltan algunos medios: se necesita una sesión iniciada en F95');
     expect(followMediaIssue(needs, context({ credentials: new Set(['f95zone']) }))).toBe('');
   });
 
   it('时间按本机时区写，没给就明说，不加「约」', () => {
-    expect(followWhen(item(1))).toBe('时间未取得');
+    expect(followWhen(item(1))).toBe('Fecha no disponible');
     const when = followWhen(item(2, { published_at: '2026-09-04T00:00:00Z' }));
     expect(when).toMatch(/^\d{4}-\d\d-\d\d \d\d:\d\d$/);
     expect(when).not.toContain('约');
@@ -152,13 +152,13 @@ describe('标题前后的字样', () => {
     const now = Date.parse('2026-10-08T12:00:00Z');
     expect(followCompactWhen(item(1, { published_at: '2026-09-04T12:00:00Z' }), now)).toBe('09-04');
     expect(followCompactWhen(item(2, { published_at: '2024-09-04T12:00:00Z' }), now)).toBe('2024-09-04');
-    expect(followCompactWhen(item(3), now)).toBe('时间未取得');
+    expect(followCompactWhen(item(3), now)).toBe('Fecha no disponible');
   });
 
   it('标题为空或只有空白时写同一句「未命名内容」', () => {
     expect(followTitle(item(1, { title: '' }))).toBe(FOLLOW_UNTITLED);
-    expect(followTitle(item(2, { title: '   ' }))).toBe('未命名内容');
-    expect(followTitle({})).toBe('未命名内容');
+    expect(followTitle(item(2, { title: '   ' }))).toBe('Contenido sin título');
+    expect(followTitle({})).toBe('Contenido sin título');
     expect(followTitle(item(3, { title: ' 正题 ' }))).toBe('正题');
   });
 });

@@ -98,8 +98,8 @@ def _library_item(row):
 
 
 def library(settings, config):
-    groups = {key: group(label) for key, label in (("identification", "识别失败"),
-              ("metadata", "补资料失败"), ("cover", "缺封面"), ("duration", "缺时长"))}
+    groups = {key: group(label) for key, label in (("identification", "Falló la identificación"),
+              ("metadata", "Falló completar datos"), ("cover", "Sin portada"), ("duration", "Sin duración"))}
     try:
         with closing(sqlite3.connect(settings.db_path.resolve().as_uri() + "?mode=ro", uri=True, timeout=1)) as connection:
             connection.execute("PRAGMA query_only=ON")
@@ -109,45 +109,45 @@ def library(settings, config):
     except (sqlite3.Error, OSError):
         return {"groups": groups, "issue_at": None}
     assets = {row[0]: _library_item(row) for row in rows}
-    groups["duration"] = group("缺时长", [assets[row[0]] for row in rows if not row[2] or row[2] <= 0])
+    groups["duration"] = group("Sin duración", [assets[row[0]] for row in rows if not row[2] or row[2] <= 0])
     covers, posters = inventory(settings.cover_root), inventory(settings.poster_root)
     if covers is not None and posters is not None:
         missing = [assets[row[0]] for row in rows
                    if (normalise_code_key(row[1]).casefold() not in covers if row[1]
                        else f"{row[0]}_4" not in posters)]
-        groups["cover"] = group("缺封面", missing)
+        groups["cover"] = group("Sin portada", missing)
     failed, issue_at = failures(config)
     if failed is not None:
-        for key, label in (("identification", "识别失败"), ("metadata", "补资料失败")):
+        for key, label in (("identification", "Falló la identificación"), ("metadata", "Falló completar datos")):
             groups[key] = group(label, [assets[value] for value in failed[key] if value in assets])
     return {"groups": groups, "issue_at": issue_at}
 
 
 SOURCE_CHECK_REASONS = {
-    "proxy": "代理连接失败", "timeout": "来源连接超时", "network": "来源连接未取得",
-    "auth_required": "来源要求登录或拒绝当前出口", "cloudflare_challenge": "来源要求人机验证",
-    "cloudflare_blocked": "来源拦截当前出口", "ip_banned": "来源拦截当前出口",
-    "geo_restricted": "来源限制当前地区", "rate_limited": "来源正在限流",
-    "server_error": "来源服务异常", "parse_error": "资料解析失败",
-    "not_found": "上次查询未命中", "cooldown": "来源正在冷却",
+    "proxy": "Falló la conexión del proxy", "timeout": "Se agotó el tiempo de conexión con la fuente", "network": "No se obtuvo conexión con la fuente",
+    "auth_required": "La fuente pide iniciar sesión o rechaza la salida actual", "cloudflare_challenge": "La fuente pide verificación humana",
+    "cloudflare_blocked": "La fuente bloquea la salida actual", "ip_banned": "La fuente bloquea la salida actual",
+    "geo_restricted": "La fuente restringe la región actual", "rate_limited": "La fuente está limitando solicitudes",
+    "server_error": "Error en el servicio de la fuente", "parse_error": "Falló la lectura de los datos",
+    "not_found": "La última consulta no encontró nada", "cooldown": "La fuente está en espera",
 }
 
 
 def _source_health(cooling, failed, fresh, recent, connection_ok, reason_key, *, has_success, has_check):
     """来源诊断优先报告冷却与失败，再报告解析和连接证据。"""
     if cooling:
-        return "warning", "来源正在冷却"
+        return "warning", "La fuente está en espera"
     if failed:
         return "warning", SOURCE_CHECK_REASONS.get(reason_key, "来源未取得资料")
     if fresh:
-        return "ok", "资料解析通过"
+        return "ok", "Lectura de datos correcta"
     if has_success:
-        return "stale", "曾解析成功，近期解析状态待复查"
+        return "stale", "Se leyó bien antes; el estado reciente está por revisar"
     if recent and connection_ok:
-        return "unknown", "连接检查通过；解析状态未取得"
+        return "unknown", "Conexión correcta; no se obtuvo el estado de lectura"
     if has_check:
-        return "stale", "已有检查记录，解析状态待复查"
-    return "unchecked", "尚无检查或解析记录，可在来源和凭证中检查连接"
+        return "stale", "Hay registros de comprobación; el estado de lectura está por revisar"
+    return "unchecked", "Aún sin registros de comprobación o lectura; puedes comprobar la conexión en Fuentes y credenciales"
 
 
 def _profile_success(settings):

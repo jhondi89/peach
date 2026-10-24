@@ -163,9 +163,9 @@ it('播放列表页：进舞台、去资料页、翻页门槛与回执都接到�
   expect([props.openPlaylist, props.openEntity, props.canFlip]).toEqual([actions.openPlaylist, actions.openEntity, actions.canFlip]);
   expect(props.revision).toBe(3);
   const undo = async () => {};
-  props.toast('已删除播放列表', { undo });
+  props.toast('Lista borrada', { undo });
   props.toast('已重命名');
-  expect(vi.mocked(actions.receipt).mock.calls).toEqual([['已删除播放列表', { undo }], ['已重命名', {}]]);
+  expect(vi.mocked(actions.receipt).mock.calls).toEqual([['Lista borrada', { undo }], ['已重命名', {}]]);
   expect(actions.toast).not.toHaveBeenCalled();
 });
 
@@ -209,7 +209,7 @@ const followOpen = (patch: Partial<FollowFeedProps> = {}): FollowFeedProps => ({
 /** 关注列表的一页：标题带着状态档，认得出画的是哪一次取回来的。 */
 const followPage = (status: string) => ({
   groups: [1, 2, 3].map((id) => ({
-    primary: { id, title: `更新 ${id} ${status || '全部'}`, status: 'new', provider: 'kemono', provider_label: 'Kemono',
+    primary: { id, title: `更新 ${id} ${status || 'Todos'}`, status: 'new', provider: 'kemono', provider_label: 'Kemono',
       source_id: 1, published_at: '2026-09-10T08:00:00Z', media_kind: 'video', playable: true, thumb_url: `/thumb/${id}`,
       tags: [] },
     variants: [], duplicates: [], stack: null,

@@ -141,13 +141,13 @@ def _candidate(
         kinds.append("media_similarity")
     warnings = []
     if comment is not None:
-        warnings.append("匿名评论等价标记只作候选")
+        warnings.append("Las marcas equivalentes de reseñas anónimas solo son candidatas")
     if left in collections or right in collections:
-        warnings.append("涉及合集，只能复核分片关系，不能整体合并")
+        warnings.append("Incluye recopilaciones; solo se pueden revisar las partes, no fusionarlas enteras")
     if not assets.get(left) or not assets.get(right):
-        warnings.append("其中一个番号尚不在本地 ledger")
+        warnings.append("Uno de los códigos aún no está en el ledger local")
     if local_evidence.get("part_conflict"):
-        warnings.append("本地文件分片标记不同")
+        warnings.append("Las marcas de partes de los archivos locales son distintas")
     confidence = 1.0 if local_evidence.get("exact_hash") else (
         0.9 if comment is not None and "media_similarity" in kinds else
         0.72 if comment is not None else 0.65
@@ -171,7 +171,7 @@ def _candidate(
         "confidence": confidence,
         "warnings": "；".join(warnings),
         "reason": (
-            f"{left_code} ↔ {right_code}；证据：" + "、".join(kinds)
+            f"{left_code} ↔ {right_code}; pruebas:" + "、".join(kinds)
         ),
         "policy_version": POLICY_VERSION,
         "status": "candidate",

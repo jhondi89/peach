@@ -12,7 +12,7 @@ it('超额完成按满格读，负数与坏值按零读', async () => {
       <Progress label="超额" value={150} max={100} />
       <Progress label="负数" value={-5} max={100} />
       <Progress label="坏值" value={Number.NaN} max={100} />
-      <Progress label="正常" value={25} max={50} />
+      <Progress label="Normal" value={25} max={50} />
     </>,
   );
   const bars = [...host.querySelectorAll('[role="progressbar"]')];

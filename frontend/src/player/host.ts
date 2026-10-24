@@ -32,6 +32,6 @@ let current: PlayerHost | null = null;
 export function configurePlayer(host: PlayerHost): void { current = host }
 
 export function playerHost(): PlayerHost {
-  if (!current) throw new Error('播放器还没有接上宿主（configurePlayer）');
+  if (!current) throw new Error('El reproductor aún no está conectado a su anfitrión (configurePlayer)');
   return current;
 }

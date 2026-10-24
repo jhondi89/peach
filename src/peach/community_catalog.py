@@ -109,7 +109,7 @@ def picture(candidate: Candidate, data: bytes) -> Picture:
     落进 `.jpg` 之后卡片就一直在动。"""
     with Image.open(io.BytesIO(data)) as image:
         if getattr(image, "is_animated", False):
-            raise ValueError(f"{candidate.url} 是动图")
+            raise ValueError(f"{candidate.url} es una imagen animada")
         image.load()
         return Picture(candidate, image.size, data, fingerprint(image))
 
@@ -208,15 +208,15 @@ def _unverified(pool: list[Picture], usable: int,
     `usable` 是池子里社区来源那几张，不算官方小图与它的同页图。"""
     if not usable:
         if fetched:
-            raise NotFound("社区来源给的封面都是动图或太小")
-        raise Unavailable("社区来源的封面下载失败")
+            raise NotFound("Las portadas de las fuentes comunitarias son animadas o demasiado pequeñas")
+        raise Unavailable("Falló la descarga de la portada de la fuente comunitaria")
     origins = sorted({one.origin for one in pool})
     if len(origins) > 1:
         # 几家都答了、图都下到了，只是互相对不上：再问还是这几张，交 `NotFound` 让采集任务记住。
-        raise NotFound(f"{'、'.join(origins)} 给的封面不是同一张图，无法互相印证")
+        raise NotFound(f"Las portadas que dio {'、'.join(origins)} no son la misma imagen; no se pueden confirmar entre sí")
     allowed = [one for one in pool if not is_javdb_image(one.candidate.url)]
     if not allowed:
-        raise NotFound('未取得无 JavDB 水印的封面')
+        raise NotFound("No se obtuvo una portada sin marca de agua de JavDB")
     largest = max(allowed, key=lambda one: one.pixels)
     return largest.candidate, largest.size, largest.data, ()
 
@@ -237,7 +237,7 @@ def verified_cover(transport, code: str, works: list[tuple[str, dict]], *,
     urls = {url: _candidate(url) for _source, payload in works for url in payload.get("cover_urls") or []
             if not is_cross_product_cover(code, url)}
     if not urls:
-        raise NotFound("社区来源没有这部片的封面")
+        raise NotFound("Las fuentes comunitarias no tienen la portada de esta obra")
     siblings = tuple(one for one in siblings if not is_cross_product_cover(code, one.url))
     pool, fetched, usable = _pictures(transport, urls, reference, siblings, deadline=deadline)
     best = None

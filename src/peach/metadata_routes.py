@@ -230,17 +230,17 @@ def parse_route_overrides(raw: str | Mapping[str, Sequence[str] | str] | None):
     overrides: dict[str, tuple[str, ...]] = {}
     for entry in items:
         if len(entry) != 2:
-            raise ValueError("来源链覆盖要写成 `类型=来源,来源`")
+            raise ValueError("La cadena de fuentes debe escribirse como `tipo=fuente,fuente`")
         name, value = entry
         content = str(name).strip()
         if content not in CONTENT_TYPES:
-            raise ValueError("未知内容类型：" + content)
+            raise ValueError("Tipo de contenido desconocido:" + content)
         parts = value.split(",") if isinstance(value, str) else list(value)
         sources = tuple(dict.fromkeys(
             str(part).strip() for part in parts if str(part).strip()))
         unknown = [source for source in sources if source not in SOURCE_SPECS]
         if unknown:
-            raise ValueError("未知来源：" + "、".join(unknown))
+            raise ValueError("Fuente desconocida:" + "、".join(unknown))
         overrides[content] = sources
     return overrides
 
@@ -252,7 +252,7 @@ def route(content_type: str, *, overrides: Mapping[str, Sequence[str]] | None = 
     整条替换让设置里那一行自己就是答案。
     """
     if content_type not in ROUTES:
-        raise ValueError("未知内容类型：" + str(content_type))
+        raise ValueError("Tipo de contenido desconocido:" + str(content_type))
     resolved = parse_route_overrides(overrides)
     if content_type in resolved:
         return resolved[content_type]

@@ -30,11 +30,11 @@ describe('西方官方封面', () => {
 it('创作者名片官方头像使用本机代理和归档回退，实体图优先', () => {
   const ref = { id: 7, has_image: false, source_avatar_url: '/follow-avatar?service=fanbox&id=123',
     source_avatar_fallbacks: ['/follow-avatar?provider=kemono&ref=fanbox%2F123'] };
-  const image = parse(avatarInner('创作者', ref, null, 'creator'))!;
+  const image = parse(avatarInner('Creador', ref, null, 'creator'))!;
   expect(image.getAttribute('src')).toBe(ref.source_avatar_url);
   expect(image.dataset.fallbacks).toBe(ref.source_avatar_fallbacks[0]);
   expect(image.dataset.drop).toBe('self');
-  expect(parse(avatarInner('创作者', { ...ref, has_image: true }, null, 'creator'))?.getAttribute('src'))
+  expect(parse(avatarInner('Creador', { ...ref, has_image: true }, null, 'creator'))?.getAttribute('src'))
     .toBe('/entity-image?kind=creator&id=7');
 });
 
@@ -156,7 +156,7 @@ describe('avatarInner：首字母垫底，再叠真实图', () => {
     const ref = { id: 80, rep: 18, has_avatar: true, avatar_stand_in: true };
     const avatar = parse(entityAvatar('卖家账号', ref, 'creator'))!;
     expect(avatar.getAttribute('src')).toBe('/avatar?id=18');
-    expect(avatar.getAttribute('title')).toBe('代表作画面，非本人');
+    expect(avatar.getAttribute('title')).toBe('Imagen de una obra, no es la persona');
     const installed = parse(entityAvatar('卖家账号', { ...ref, has_image: true }, 'creator'))!;
     expect(installed.getAttribute('src')).toBe('/entity-image?kind=creator&id=80');
     expect(installed.hasAttribute('title')).toBe(false);
@@ -171,8 +171,8 @@ describe('avatarInner：首字母垫底，再叠真实图', () => {
   it('代表作画面替账号占位时注明不是本人；装了实体图的不注', () => {
     const standIn = parse(avatarInner('A', { id: 3, avatar_stand_in: true }, 41, 'creator'))!;
     expect(standIn.getAttribute('src')).toBe('/avatar?id=41');
-    expect(standIn.getAttribute('title')).toBe('代表作画面，非本人');
-    expect(standIn.getAttribute('aria-label')).toBe('代表作画面，非本人');
+    expect(standIn.getAttribute('title')).toBe('Imagen de una obra, no es la persona');
+    expect(standIn.getAttribute('aria-label')).toBe('Imagen de una obra, no es la persona');
     const installed = parse(avatarInner('A', { id: 3, has_image: true, avatar_stand_in: true }, 41, 'creator'))!;
     expect(installed.hasAttribute('title')).toBe(false);
     expect(parse(avatarInner('A', { id: 3 }, 41, 'creator'))!.hasAttribute('title')).toBe(false);
@@ -183,8 +183,8 @@ describe('avatarInner：首字母垫底，再叠真实图', () => {
     expect(standIn.hasAttribute('title')).toBe(false);
     expect(advanceImageFallback(standIn)).toBe('retry');
     expect(standIn.getAttribute('src')).toBe('/avatar?id=41');
-    expect(standIn.title).toBe('代表作画面，非本人');
-    expect(standIn.getAttribute('aria-label')).toBe('代表作画面，非本人');
+    expect(standIn.title).toBe('Imagen de una obra, no es la persona');
+    expect(standIn.getAttribute('aria-label')).toBe('Imagen de una obra, no es la persona');
     const person = parse(avatarInner('A', { id: 3, has_image: true }, 41, 'creator'))!;
     advanceImageFallback(person);
     expect(person.hasAttribute('title')).toBe(false);
@@ -223,7 +223,7 @@ describe('coverImage：官方封面', () => {
     const img = parse(coverImage({ code: 'MIDA-122', title: '作品（ブルーレイディスク）' }, 'big'))!;
     expect(img.dataset.coverCode).toBe('MIDA-122');
     expect(img.dataset.wideSleeve).toBe('1');
-    expect(parse(coverImage({ code: 'MIDA-159', title: '作品' }, 'big'))!.dataset.wideSleeve).toBeUndefined();
+    expect(parse(coverImage({ code: 'MIDA-159', title: 'Obra' }, 'big'))!.dataset.wideSleeve).toBeUndefined();
   });
   it('人脸纵向夹在 5%–60%，正封框六个数按顺序送到元素上', () => {
     const img = parse(coverImage({
@@ -316,7 +316,7 @@ describe('cardArtwork 与队列小图', () => {
   });
 
   it('队列一行没有图时写「无预览」占住那一格；番号作品按小图取', () => {
-    expect(queueThumbHtml({ id: 1 }, 'cover')).toBe('<span class="nopic">无预览</span>');
+    expect(queueThumbHtml({ id: 1 }, 'cover')).toBe('<span class="nopic">Sin vista previa</span>');
     expect(parse(queueThumbHtml(JAV, 'cover'))!.className).toBe('poster cover whole');
   });
 });
@@ -344,7 +344,7 @@ describe('卡片署名的身份推导', () => {
   });
 
   it('没有署名人是「未归属」', () => {
-    expect(cardIdentity({})).toMatchObject({ kind: '', name: '未归属' });
+    expect(cardIdentity({})).toMatchObject({ kind: '', name: 'Sin asignar' });
   });
 
   it('共演只写第一位再给总人数', () => {
@@ -379,16 +379,16 @@ describe('卡片署名的身份推导', () => {
   });
 
   it('详情队列的创作者头像使用 creator 实体引用', () => {
-    const html = queueAvatarHtml({ creator: '创作者', entity_refs: { creator: [{ id: 8, has_image: true }] } });
+    const html = queueAvatarHtml({ creator: 'Creador', entity_refs: { creator: [{ id: 8, has_image: true }] } });
     expect(parse(html)!.getAttribute('src')).toBe('/entity-image?kind=creator&id=8');
   });
 });
 
 describe('称谓与 Mix 署名', () => {
   it('「女优」只用于番号发行物', () => {
-    expect(performerLabel({ is_jav: true })).toBe('女优');
-    expect(performerLabel({ is_jav: false })).toBe('艺人');
-    expect(performerLabel(null)).toBe('艺人');
+    expect(performerLabel({ is_jav: true })).toBe('Actriz');
+    expect(performerLabel({ is_jav: false })).toBe('Artistas');
+    expect(performerLabel(null)).toBe('Artistas');
   });
 
   it('番号作品先认女优，其余先认创作者，再依次退到厂牌、番号、首个标签', () => {
@@ -398,7 +398,7 @@ describe('称谓与 Mix 署名', () => {
     expect(mixLabel({ studio: 's', code: 'c' }, label)).toBe('s');
     expect(mixLabel({ code: 'c' }, label)).toBe('c');
     expect(mixLabel({ tags: ['t'] }, label)).toBe('#t');
-    expect(mixLabel({}, () => '')).toBe('为你推荐');
+    expect(mixLabel({}, () => '')).toBe('Recomendado para ti');
   });
 });
 

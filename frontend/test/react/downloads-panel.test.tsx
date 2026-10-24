@@ -24,7 +24,7 @@ const snapshot = (patch: Partial<DownloadsSnapshot> = {}): DownloadsSnapshot => 
   available: true,
   providers: [
     { key: '115', label: '115', configured: true, target: '/115/云下载' },
-    { key: 'pikpak', label: 'PikPak', configured: true, target: '/云下载' },
+    { key: 'pikpak', label: 'PikPak', configured: true, target: '/descargas-nube' },
   ],
   tasks: [],
   ...patch,
@@ -61,16 +61,16 @@ it('远端在跑的任务给进度与取消键，取消发到取消接口', asyn
   const card = host.querySelector('[data-download-state=remote_running]')!;
   expect(card.querySelector('[role=progressbar]')?.getAttribute('aria-valuenow')).toBe('42');
   expect(card.textContent).toContain('远端下载中');
-  expect(buttonNamed('重新提交', card)).toBeNull();
-  await click(buttonNamed('取消', card));
+  expect(buttonNamed('Volver a enviar', card)).toBeNull();
+  await click(buttonNamed('Cancelar', card));
   await settle();
   expect(posts()).toEqual([['/api/downloads/cancel', { id: 1 }]]);
 });
 
 it('失败的任务写中文原因，可以重新提交；被判违规的只剩复制磁力', async () => {
-  const failed = task({ id: 2, state: 'failed', state_label: '失败', failure: 'no_source', cancellable: false,
+  const failed = task({ id: 2, state: 'failed', state_label: 'Fallida', failure: 'no_source', cancellable: false,
     resubmittable: true, failure_label: '没有可用的资源', failure_detail: '远端任务列表里找不到它' });
-  const blocked = task({ id: 3, state: 'failed', state_label: '失败', failure: 'rejected', cancellable: false,
+  const blocked = task({ id: 3, state: 'failed', state_label: 'Fallida', failure: 'rejected', cancellable: false,
     blocked: true, failure_label: '被判违规', failure_detail: '50038' });
   const { posts } = serve(snapshot({ tasks: [failed, blocked] }),
     { '/api/downloads': { ok: true, outcome: 'submitted', task: failed } });
@@ -78,9 +78,9 @@ it('失败的任务写中文原因，可以重新提交；被判违规的只剩�
   const [first, second] = [...host.querySelectorAll('[data-download-state=failed]')];
   expect(first?.textContent).toContain('没有可用的资源：远端任务列表里找不到它');
   expect(second?.textContent).toContain('被判违规');
-  expect([buttonNamed('取消', second!), buttonNamed('重新提交', second!)]).toEqual([null, null]);
-  expect(buttonNamed('复制磁力', second!)).not.toBeNull();
-  await click(buttonNamed('重新提交', first!));
+  expect([buttonNamed('Cancelar', second!), buttonNamed('Volver a enviar', second!)]).toEqual([null, null]);
+  expect(buttonNamed('Copiar magnet', second!)).not.toBeNull();
+  await click(buttonNamed('Volver a enviar', first!));
   await settle();
   expect(posts()).toEqual([['/api/downloads', {
     magnet: failed.source_uri, provider: '115', target: '/115/云下载', code: 'ABC-123', title: null, origin: 'paste',
@@ -91,12 +91,12 @@ it('只读端任务照常列出，但没有取消键', async () => {
   serve(snapshot({ available: false, tasks: [task()] }));
   const host = await show();
   expect(host.querySelector('[data-download-state=remote_running]')).not.toBeNull();
-  expect(buttonNamed('取消', host)).toBeNull();
+  expect(buttonNamed('Cancelar', host)).toBeNull();
 });
 
 it('后处理失败可以单独重试，不会重新提交磁力', async () => {
   const failed = task({
-    state: 'ingested', state_label: '已入库', cancellable: false,
+    state: 'ingested', state_label: 'Ya en la colección', cancellable: false,
     postprocess_state: 'failed', postprocess_label: '后处理失败',
     postprocess_detail: '资料采集失败', postprocess_retryable: true,
   });
@@ -105,7 +105,7 @@ it('后处理失败可以单独重试，不会重新提交磁力', async () => {
   });
   const host = await show();
   expect(host.textContent).toContain('资料采集失败');
-  await click(buttonNamed('重试后处理', host));
+  await click(buttonNamed('Reintentar el procesamiento', host));
   await settle();
   expect(posts()).toEqual([['/api/downloads/postprocess', { id: 1 }]]);
 });

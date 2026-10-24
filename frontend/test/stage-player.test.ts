@@ -269,7 +269,7 @@ describe('小窗自己的键', () => {
   it.each([
     ['分卷组', { part_group: { key: 'p' } }],
     ['版次组', { edition_group: { key: 'e' } }],
-    ['图片', { medium: 'image' }],
+    ['Imágenes', { medium: 'image' }],
     ['计费来源', { cost: 'metered', location: '115' }],
     ['反查不到关注条目的在线作品', { location: 'online' }],
   ])('小窗开着时%s的卡片照常进详情，不在小窗里换片', (_name, extra) => {

@@ -34,7 +34,7 @@ it('外部入口：能换镜像的两站各一个地址框，默认留空，保�
   expect(sentBody(fetcher)).toEqual({
     sites: { javdb: { host: 'javdb521.com' }, missav: { host: 'missav.ai' } },
   });
-  expect(receipt).toHaveBeenCalledWith('已保存配置');
+  expect(receipt).toHaveBeenCalledWith('Configuración guardada');
 });
 
 it('外部入口：说明就是卡里的头一块，它上面不画线', async () => {

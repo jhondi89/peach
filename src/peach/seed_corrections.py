@@ -16,14 +16,14 @@ def check_history(connection: sqlite3.Connection, pack: dict) -> None:
     incoming = {row["id"]: validation.canonical(row) for row in pack.get("withdrawals", [])}
     for version, previous_revision, digest, withdrawals in rows:
         if version == pack["version"] and digest != content_digest:
-            raise ValueError("同版本种子内容与已导入历史不同")
+            raise ValueError("El contenido de la semilla de la misma versión difiere del historial importado")
         if previous_revision > revision or (revision and previous_revision == revision and version != pack["version"]):
-            raise ValueError("种子 revision 不得回退或复用")
+            raise ValueError("La revision de la semilla no puede retroceder ni reutilizarse")
         if not revision and not previous_revision and version > pack["version"]:
-            raise ValueError("旧格式种子版本不得回退")
+            raise ValueError("La versión de una semilla de formato antiguo no puede retroceder")
         for old in json.loads(withdrawals):
             if incoming.get(old["id"]) != validation.canonical(old):
-                raise ValueError("种子必须原样继承全部历史撤销")
+                raise ValueError("La semilla debe heredar sin cambios todas las anulaciones históricas")
 
 
 def remember(connection: sqlite3.Connection, pack: dict, stamp: str) -> None:
@@ -47,7 +47,7 @@ def withdraw(connection: sqlite3.Connection, pack: dict, report: dict) -> None:
         found = seed_pack.matches(connection, identity)
         if len(found) != 1:
             _conflict(report, withdrawal, entity=identity["name"],
-                      detail="身份锚点未唯一命中，保留断言" if found else "身份锚点未命中，未取得可撤销实体")
+                      detail="El ancla de identidad no coincide de forma única; se conserva la afirmación" if found else "El ancla de identidad no coincide; no se obtuvo una entidad que deshacer")
             continue
         entity_id = found.pop()
         field, expected = withdrawal["field"], withdrawal["value"]
@@ -79,7 +79,7 @@ def withdraw(connection: sqlite3.Connection, pack: dict, report: dict) -> None:
             actual["fields"]["tags"] = profile["tags"]
             wanted = {**expected, "fields": {**expected["fields"], "tags": expected["fields"].get("tags", [])}}
             if validation.fact_key(field, actual) != validation.fact_key(field, wanted):
-                _conflict(report, withdrawal, entity=identity["name"], detail="现有资料与精确撤销值不一致，保留断言", source=profile["source"])
+                _conflict(report, withdrawal, entity=identity["name"], detail="Los datos actuales no coinciden con el valor exacto a deshacer; se conserva la afirmación", source=profile["source"])
                 continue
             candidates, table = [(entity_id, profile["source"])], "performer_profile"
         else:
@@ -88,12 +88,12 @@ def withdraw(connection: sqlite3.Connection, pack: dict, report: dict) -> None:
             if row is None:
                 continue
             if validation.fact_key(field, {"name": row[1]}) != validation.fact_key(field, expected):
-                _conflict(report, withdrawal, entity=identity["name"], detail="现有归属与精确撤销值不一致，保留断言", source=row[2])
+                _conflict(report, withdrawal, entity=identity["name"], detail="La pertenencia actual no coincide con el valor exacto a deshacer; se conserva la afirmación", source=row[2])
                 continue
             candidates = [(row[0], row[2])]
         for rowid, source in candidates:
             if not seed_pack._ours(source):
-                _conflict(report, withdrawal, entity=identity["name"], detail="断言归其他写入者所有，保留断言", source=source)
+                _conflict(report, withdrawal, entity=identity["name"], detail="La afirmación pertenece a otro escritor; se conserva", source=source)
                 continue
             connection.execute(f"DELETE FROM {table} WHERE rowid=?", (rowid,))
             report["withdrawn"] += connection.execute("SELECT changes()").fetchone()[0]

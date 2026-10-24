@@ -76,11 +76,11 @@ def integrity(db: Path) -> str:
     try:
         connection = sqlite3.connect(f"file:{db.as_posix()}?mode=ro", uri=True)
     except sqlite3.Error as exc:
-        return f"无法打开：{exc}"
+        return f"No se puede abrir: {exc}"
     try:
         return str(connection.execute("PRAGMA integrity_check").fetchone()[0])
     except sqlite3.Error as exc:
-        return f"检查失败：{exc}"
+        return f"Falló la comprobación: {exc}"
     finally:
         connection.close()
 
@@ -106,10 +106,10 @@ def plan(
     if not backups and not orphans:
         return BackupPlan((), ())
     if not live.is_file():
-        return BackupPlan(tuple(backups), (), "当前数据库不存在，不清退任何备份")
+        return BackupPlan(tuple(backups), (), "La base de datos actual no existe; no se elimina ninguna copia de seguridad")
     check = integrity(live)
     if check != "ok":
-        return BackupPlan(tuple(backups), (), f"当前数据库 integrity_check 不是 ok：{check}")
+        return BackupPlan(tuple(backups), (), f"El integrity_check de la base de datos actual no es ok: {check}")
     moment = now or datetime.now()
     live_mtime = _live_mtime(live)
     recent = set(backups[-keep_recent:]) if keep_recent > 0 else set()

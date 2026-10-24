@@ -46,7 +46,7 @@ POSIX_LOCAL_DECLARED_ROOT = r"R:\media"
 #: 本地来源的 ID。所有本地媒体目录都是 `asset.location = 'local'`。
 LOCAL_LOCATION = "local"
 #: 命令行里追加目录的题面：空答案就是「不加了」。
-MORE_MEDIA_PROMPT = "再加一个媒体目录（不加就直接回车）"
+MORE_MEDIA_PROMPT = "Añadir otra carpeta de medios (pulsa Enter para no añadir más)"
 #: 迁移随代码走，不随数据走。这里不 import `peach.config`：那个模块的常量在进程启动
 #: 那一刻就定型了，而首次设置正是要改变它们指向的 Peach 数据目录。
 MIGRATIONS_DIR = settings_file.PROJECT_ROOT / "migrations"
@@ -57,9 +57,9 @@ RELOAD_NAME = "configuration-reload.request"
 
 #: 监听范围的两个选项：(提交值, 说明)。题目文本和设置页的下拉都由它生成，
 #: 所以两处永远是同一批选项，改一个不会漏掉另一个。
-HOST_OPTIONS = (("1", "只有这台电脑"), ("2", "同一局域网的设备"))
+HOST_OPTIONS = (("1", "Solo este equipo"), ("2", "Dispositivos de la misma red local"))
 #: 首扫题的题面。CLI 在后面接 `(Y/n)`，设置页把它当勾选框的标签。
-SCAN_PROMPT = "现在扫描 {target}？"
+SCAN_PROMPT = "¿Escanear {target} ahora?"
 
 _DNS_LABEL = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?$")
 _HOST_CHOICES = {
@@ -99,10 +99,10 @@ class Answers:
 def validate_data_root(raw: str) -> Path:
     text = raw.strip()
     if not text:
-        raise ValueError("Peach 数据目录不能为空")
+        raise ValueError("La carpeta de datos de Peach no puede estar vacía")
     path = Path(text).expanduser()
     if path.is_file():
-        raise ValueError(f"{path} 是一个文件，Peach 数据目录要是目录")
+        raise ValueError(f"{path} es un archivo; la carpeta de datos de Peach debe ser una carpeta")
     return path
 
 
@@ -110,14 +110,14 @@ def media_dir_validator(*, windows: bool) -> Callable[[str], Path]:
     def validate(raw: str) -> Path:
         text = raw.strip()
         if not text:
-            raise ValueError("媒体目录不能为空")
+            raise ValueError("La carpeta de medios no puede estar vacía")
         path = Path(text).expanduser()
         if not path.is_dir():
-            raise ValueError(f"目录不存在，或者不是目录：{path}。先建好再填。")
+            raise ValueError(f"La carpeta no existe o no es una carpeta: {path}. Créala primero.")
         # Windows 媒体目录保留盘符；挂载盘的最终路径可能是 UNC。
         resolved = Path(os.path.abspath(path)) if windows else path.resolve()
         if windows and not is_windows_path(str(resolved)):
-            raise ValueError(f"{resolved} 不是盘符路径；网络位置先映射成盘符再来")
+            raise ValueError(f"{resolved} no es una ruta con letra de unidad; asigna antes una letra de unidad a la ubicación de red")
         return resolved
     return validate
 
@@ -135,9 +135,9 @@ def check_media_dirs(dirs: Sequence[Path]) -> dict[int, str]:
                 continue
             if path == other:
                 if other_index < index:
-                    problems[index] = f"和上面的 {other} 重复了"
+                    problems[index] = f"Se repite con {other} de arriba"
             elif path.is_relative_to(other):
-                problems[index] = f"已经在 {other} 里面，不用再加"
+                problems[index] = f"Ya está dentro de {other}; no hace falta añadirla"
     return problems
 
 
@@ -189,13 +189,13 @@ def validate_host(raw: str) -> str:
     try:
         return _HOST_CHOICES[key]
     except KeyError:
-        raise ValueError("填 1（只有这台电脑）或 2（同一局域网的设备）") from None
+        raise ValueError("Escribe 1 (solo este equipo) o 2 (dispositivos de la misma red local)") from None
 
 
 def validate_port(raw: str) -> int:
     text = raw.strip()
     if not text.isdigit() or not 1 <= int(text) <= 65535:
-        raise ValueError("端口要是 1 到 65535 之间的整数")
+        raise ValueError("El puerto debe ser un número entero entre 1 y 65535")
     return int(text)
 
 
@@ -206,13 +206,13 @@ def check_available_port(port: int, current: int) -> None:
         with socket.socket() as candidate:
             candidate.bind(("127.0.0.1", port))
     except OSError as exc:
-        raise ValueError("这个端口已被占用，请换一个端口") from exc
+        raise ValueError("Este puerto ya está en uso; elige otro") from exc
 
 
 def validate_mdns_name(raw: str) -> str:
     text = raw.strip()
     if not _DNS_LABEL.match(text):
-        raise ValueError("名字只能用字母、数字和连字符，不能以连字符开头或结尾")
+        raise ValueError("El nombre solo puede tener letras, números y guiones, y no puede empezar ni terminar con guion")
     return text
 
 
@@ -222,7 +222,7 @@ def validate_yes_no(raw: str) -> bool:
         return True
     if key in _NO:
         return False
-    raise ValueError("填 y 或 n")
+    raise ValueError("Escribe y o n")
 
 
 # --------------------------------------------------------------------------- 题目
@@ -240,16 +240,16 @@ def questions(
     home = Path.home() if home is None else home
     media_default = default_media_dir(home, windows=windows)
     return (
-        Question("data_root", "数据目录（Peach 数据库、缓存和设置文件都放在这里）",
+        Question("data_root", "Carpeta de datos (aquí van la base de datos, la caché y el archivo de ajustes de Peach)",
                  str(config.data_root), validate_data_root),
-        Question("media_dir", "媒体目录（必须已经存在，可以在外置硬盘上）",
+        Question("media_dir", "Carpeta de medios (debe existir; puede estar en un disco externo)",
                  str(media_default) if media_default else "",
                  media_dir_validator(windows=windows)),
         Question("host",
-                 "谁可以访问：" + "，".join(f"{value} = {label}" for value, label in HOST_OPTIONS),
+                 "Quién puede acceder:" + "，".join(f"{value} = {label}" for value, label in HOST_OPTIONS),
                  "2", validate_host),
-        Question("port", "端口", str(config.server.port), validate_port),
-        Question("mdns_name", "局域网访问地址（<名字>.local，只在允许局域网访问时发布）",
+        Question("port", "Puerto", str(config.server.port), validate_port),
+        Question("mdns_name", "Dirección en la red local (<nombre>.local; solo se publica si permites el acceso en la red local)",
                  config.server.mdns_name, validate_mdns_name),
     )
 
@@ -258,7 +258,7 @@ def scan_target_text(media_dirs: Sequence[Path | str]) -> str:
     """首扫题里的对象：一个目录就写它的路径，几个就写数目。"""
     if len(media_dirs) == 1:
         return str(media_dirs[0])
-    return f"这 {len(media_dirs)} 个文件夹"
+    return f"estas {len(media_dirs)} carpetas"
 
 
 def scan_question(media_dirs: Sequence[Path | str]) -> Question:
@@ -283,8 +283,8 @@ def ask_until_valid(
             return question.validate(candidate)
         except ValueError as exc:
             remaining = max_attempts - attempt
-            report(f"  {exc}" + (f"（还可以再试 {remaining} 次）" if remaining else ""))
-    raise OnboardingAborted(f"「{question.prompt}」连续 {max_attempts} 次没有拿到有效值。")
+            report(f"  {exc}" + (f"(puedes intentarlo {remaining} veces más)" if remaining else ""))
+    raise OnboardingAborted(f"“{question.prompt}” no obtuvo un valor válido en {max_attempts} intentos seguidos.")
 
 
 def collect(
@@ -495,19 +495,18 @@ def mounts_explanation(media_dirs: Sequence[Path | str] | Path | str) -> str:
     """说明非 Windows 终端设置保存的两种路径。"""
     if isinstance(media_dirs, (Path, str)):
         media_dirs = (media_dirs,)
-    shown = "、".join(str(path) for path in media_dirs) or "（还没填）"
+    shown = "、".join(str(path) for path in media_dirs) or "(aún sin completar)"
     roots = "、".join(posix_declared_roots(max(len(media_dirs), 1)))
-    return (f"Peach 数据库用 Windows 格式保存影片路径，前缀为 {roots}；"
-            f"实际媒体目录为 {shown}，按相同顺序保存在 [media.mounts] local，读取文件前自动转换。")
+    return (f"La base de datos de Peach guarda las rutas de los videos en formato Windows con el prefijo {roots}; las carpetas de medios reales son {shown}, guardadas en el mismo orden en [media.mounts] local, y se convierten automáticamente antes de leer los archivos.")
 
 
 def console_ask(prompt: str, default: str) -> str:
     """终端前端：把默认值放在方括号里，回车即接受；输入结束视为放弃。"""
-    suffix = f" [{default}]" if default else "（必填）"
+    suffix = f" [{default}]" if default else "(obligatorio)"
     try:
         return input(f"{prompt}{suffix}: ")
     except EOFError:
-        raise OnboardingAborted("输入已结束。") from None
+        raise OnboardingAborted("La entrada terminó.") from None
 
 
 def is_interactive(stdin) -> bool:

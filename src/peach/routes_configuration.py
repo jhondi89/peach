@@ -32,7 +32,7 @@ router = APIRouter()
 _SAVE_LOCK = threading.Lock()
 RELOAD_NAME = onboarding.RELOAD_NAME
 #: 直接由 CLI 管理的服务使用设置文件。
-FILE_MANAGED_NOTICE = "这个部署由配置文件管理服务；在本机编辑下方的设置文件。"
+FILE_MANAGED_NOTICE = "Esta instalación gestiona el servicio con un archivo de configuración; edita en este equipo el archivo de ajustes de abajo."
 
 
 def managed_configuration() -> bool:
@@ -100,7 +100,7 @@ def local_client(request: Request) -> bool:
 
 def local_only(request: Request) -> None:
     if not local_client(request):
-        raise HTTPException(403, "请在运行 Peach 的电脑上打开配置")
+        raise HTTPException(403, "Abre la configuración en el equipo donde corre Peach")
 
 
 @router.get("/api/diagnostics")
@@ -108,7 +108,7 @@ def system_diagnostics(request: Request, args: dict[str, str] = Depends(require_
     """本机诊断与 doctor JSON 共用报告；媒体来源只读后台快照。"""
     from . import diagnostics
     if not local_client(request):
-        raise HTTPException(403, "请在运行 Peach 的电脑上打开系统诊断")
+        raise HTTPException(403, "Abre el diagnóstico del sistema en el equipo donde corre Peach")
     return diagnostics.report(request.app.state.settings, request.app.state.mount_reachability.summary())
 
 
@@ -144,26 +144,26 @@ async def client_error(request: Request):
         while recent and now - recent[0] >= 60:
             recent.popleft()
         if len(recent) >= 20:
-            raise HTTPException(429, "错误记录过于频繁")
+            raise HTTPException(429, "Demasiados registros de error")
         recent.append(now)
     body = bytearray()
     async for part in request.stream():
         body.extend(part)
         if len(body) > 16 * 1024:
-            raise HTTPException(413, "错误记录过长")
+            raise HTTPException(413, "El registro de error es demasiado largo")
     try:
         data = json.loads(body)
     except (ValueError, UnicodeError):
-        raise HTTPException(400, "错误记录格式无效") from None
+        raise HTTPException(400, "El formato del registro de error no es válido") from None
     if not isinstance(data, dict) or not isinstance(data.get("message"), str):
-        raise HTTPException(400, "错误记录缺少原因")
+        raise HTTPException(400, "Al registro de error le falta el motivo")
     fields = {key: value[:6000] for key in ("message", "stack", "kind", "page", "source_file", "error_name")
               if isinstance(value := data.get(key), str)}
     fields.update({key: value for key in ('line', 'column')
                    if type(value := data.get(key)) is int and value >= 0})
     fields['user_agent'] = request.headers.get('user-agent', '')[:512]
     if error_reporting.event("browser", **fields) is None:
-        raise HTTPException(503, "错误日志无法写入")
+        raise HTTPException(503, "No se puede escribir el registro de errores")
     return {"recorded": True}
 
 
@@ -257,7 +257,7 @@ def read_configuration(request: Request, _args=Depends(require_auth)):
     local_only(request)
     config = settings_file.load_config()
     if not config.present:
-        raise HTTPException(409, "请先完成首次设置")
+        raise HTTPException(409, "Primero completa la configuración inicial")
     result = snapshot(config)
     sync = getattr(request.app.state, "sync", None)
     result["ledger_read_only"] = bool(sync is not None and sync.read_only)
@@ -373,7 +373,7 @@ def get_indexers(request: Request, _args=Depends(require_auth)):
     try:
         return Indexers(request.app.state.downloads.credentials).public()
     except (ValueError, OSError):
-        raise HTTPException(400, "索引器配置读不出来") from None
+        raise HTTPException(400, "No se puede leer la configuración de indexadores") from None
 
 
 @router.post("/api/configuration/indexers")
@@ -386,7 +386,7 @@ def save_indexers(request: Request, body: dict = Body(...), _args=Depends(requir
     except ValueError as error:
         raise HTTPException(400, str(error)) from None
     except OSError:
-        raise HTTPException(400, "索引器配置没有保存，请检查本机凭据目录权限") from None
+        raise HTTPException(400, "No se guardó la configuración de indexadores; revisa los permisos de la carpeta de credenciales de este equipo") from None
 
 
 @router.post("/api/configuration/downloads")
@@ -501,11 +501,11 @@ def uninstall(request: Request, body: dict = Body(...), _args=Depends(require_au
     local_only(request)
     same_origin(request)
     if body.get("confirmation") != "卸载 Peach":
-        raise HTTPException(400, "请确认卸载 Peach")
+        raise HTTPException(400, "Confirma la desinstalación de Peach")
     from .jobs import BackgroundJob
     if any(isinstance(job, BackgroundJob) and (job.snapshot() or {}).get("status") == "running"
            for job in vars(request.app.state.web_contract).values()):
-        raise HTTPException(409, "后台任务正在运行，请完成后卸载")
+        raise HTTPException(409, "Hay tareas en segundo plano en marcha; desinstala cuando terminen")
     try:
         return desktop_uninstall.request(settings_file.load_config(), body.get("delete_data"))
     except (ValueError, Timeout) as exc:
@@ -563,7 +563,7 @@ def _validate(body: dict[str, Any], config) -> tuple[dict[str, Any], dict[str, A
                 name = str(row.get("library", "")).strip()
                 if len(name) > 80 or any(ord(char) < 32 for char in name):
                     problems = [""] * len(body["media_sources"])
-                    problems[index] = "媒体库名称请使用 1 到 80 个可见字符"
+                    problems[index] = "El nombre de la biblioteca debe tener entre 1 y 80 caracteres visibles"
                     break
                 root = str(media_configuration.PureWindowsPath(row["path"] if os.name == "nt" else row["root"]))
                 if name:
@@ -572,7 +572,7 @@ def _validate(body: dict[str, Any], config) -> tuple[dict[str, Any], dict[str, A
                 glyph = str(row.get("library_icon", ""))
                 if glyph and glyph not in LIBRARY_ICONS:
                     problems = [""] * len(body["media_sources"])
-                    problems[index] = "请选择列表中的媒体库图标"
+                    problems[index] = "Elige un icono de biblioteca de la lista"
                     break
                 if glyph:
                     icons[root] = glyph
@@ -590,7 +590,7 @@ def _validate(body: dict[str, Any], config) -> tuple[dict[str, Any], dict[str, A
         if distribution.standalone():
             onboarding.check_available_port(port, config.server.port)
         elif port != config.server.port:
-            raise ValueError("访问端口由托盘管理")
+            raise ValueError("El puerto de acceso lo gestiona el icono de la barra")
         validated["port"] = port
     except ValueError as exc:
         errors["port"] = str(exc)
@@ -621,8 +621,8 @@ def _close_tunnel_without_password(request: Request) -> str:
                     force=True,
                 )
     except (Timeout, OSError, ValueError):
-        return "临时远程链接已停止；设置文件未能写入，请在本机检查设置文件。"
-    return "已停止临时远程链接：没有访问密码时不保留公网入口。"
+        return "El enlace remoto temporal se detuvo; no se pudo escribir el archivo de ajustes, revísalo en este equipo."
+    return "Se detuvo el enlace remoto temporal: sin contraseña de acceso no se mantiene el acceso público."
 
 
 @router.post("/api/configuration/access")
@@ -632,16 +632,16 @@ def save_access(request: Request, body: dict[str, Any] = Body(default_factory=di
     same_origin(request)
     path = request.app.state.settings.access_path
     if not request.app.state.settings.configured or path is None:
-        raise HTTPException(409, "请先完成首次设置")
+        raise HTTPException(409, "Primero completa la configuración inicial")
     if any(not isinstance(body.get(key, ""), str) for key in ("password", "confirmation", "current_password")):
-        raise HTTPException(400, "密码需要是文字")
+        raise HTTPException(400, "La contraseña debe ser texto")
     password = body.get("password", "")
     if body.get("action") not in {"set", "disable"}:
-        raise HTTPException(400, "请选择设置或关闭密码")
+        raise HTTPException(400, "Elige poner o quitar la contraseña")
     if body["action"] == "set" and not password:
-        raise HTTPException(400, {"message": "请输入访问密码", "errors": {"password": "请输入访问密码"}})
+        raise HTTPException(400, {"message": "Escribe la contraseña de acceso", "errors": {"password": "Escribe la contraseña de acceso"}})
     if body["action"] == "disable" and body.get("confirm_disable") is not True:
-        raise HTTPException(400, "关闭访问密码前先勾选确认")
+        raise HTTPException(400, "Antes de quitar la contraseña de acceso marca la confirmación")
     try:
         try:
             access.validate_password(password, body.get("confirmation", ""))
@@ -652,14 +652,14 @@ def save_access(request: Request, body: dict[str, Any] = Body(default_factory=di
         with FileLock(str(path.with_suffix(".lock")), timeout=0):
             policy = access.load(path)
             if body.get("revision") != policy["revision"]:
-                raise HTTPException(409, "访问设置已变更，请刷新后再保存")
+                raise HTTPException(409, "Los ajustes de acceso cambiaron; actualiza antes de guardar")
             if policy["mode"] == "locked":
-                raise HTTPException(409, "访问设置无法读取，请在本机检查配置文件")
+                raise HTTPException(409, "No se pueden leer los ajustes de acceso; revisa el archivo de configuración en este equipo")
             if policy["mode"] == "password" and not access.verify(policy, body.get("current_password", "")):
-                raise HTTPException(400, {"message": "当前访问密码不正确", "errors": {"current_password": "当前访问密码不正确"}})
+                raise HTTPException(400, {"message": "La contraseña de acceso actual no es correcta", "errors": {"current_password": "La contraseña de acceso actual no es correcta"}})
             policy = access.save(path, password if body["action"] == "set" else "")
     except Timeout:
-        raise HTTPException(409, "访问设置正在保存，请稍后重试") from None
+        raise HTTPException(409, "Se están guardando los ajustes de acceso; inténtalo más tarde") from None
     except ValueError as exc:
         raise HTTPException(400, str(exc)) from exc
     payload = access.public(policy)
@@ -685,7 +685,7 @@ def tunnel_changes(config, body: dict[str, Any]) -> dict[str, Any]:
     changes: dict[str, Any] = {}
     for key in ("mode", "hostname", "token"):
         if key in body and not isinstance(body[key], str):
-            raise HTTPException(400, f"{key} 必须是文字")
+            raise HTTPException(400, f"{key} debe ser texto")
     try:
         if "mode" in body:
             changes["mode"] = tunnel.normalize_mode(body["mode"])
@@ -710,12 +710,12 @@ def save_tunnel(request: Request, body: dict[str, Any] = Body(default_factory=di
     same_origin(request)
     config = settings_file.load_config()
     if not config.present:
-        raise HTTPException(409, "请先完成首次设置")
+        raise HTTPException(409, "Primero completa la configuración inicial")
     if body.get("revision") != revision(config):
-        raise HTTPException(409, "设置已变更，请刷新后再保存")
+        raise HTTPException(409, "Los ajustes cambiaron; actualiza antes de guardar")
     enabled = body.get("enabled")
     if not isinstance(enabled, bool):
-        raise HTTPException(400, "enabled 必须是 true 或 false")
+        raise HTTPException(400, "enabled debe ser true o false")
     updated = replace(
         config, tunnel=replace(config.tunnel, enabled=enabled, **tunnel_changes(config, body)),
     )
@@ -746,16 +746,16 @@ def save_tunnel(request: Request, body: dict[str, Any] = Body(default_factory=di
             if revision(current) != revision(config):
                 if started_here:
                     manager.stop()
-                raise HTTPException(409, "设置已变更，请刷新后再保存")
+                raise HTTPException(409, "Los ajustes cambiaron; actualiza antes de guardar")
             settings_file.write(updated, force=True)
     except Timeout:
         if started_here:
             manager.stop()
-        raise HTTPException(409, "设置正在保存，请稍后重试") from None
+        raise HTTPException(409, "Se están guardando los ajustes; inténtalo más tarde") from None
     except OSError as exc:
         if started_here:
             manager.stop()
-        raise HTTPException(500, f"设置写入失败：{exc}") from exc
+        raise HTTPException(500, f"No se pudieron escribir los ajustes: {exc}") from exc
     if not enabled:
         state = manager.stop()
     return {**tunnel_payload(updated, state, enabled), "revision": revision(updated)}
@@ -786,18 +786,18 @@ def save_configuration(request: Request, body: dict[str, Any] = Body(default_fac
                        _args=Depends(require_auth)):
     local_only(request)
     if not managed_configuration():
-        raise HTTPException(409, "此部署通过配置文件管理服务")
+        raise HTTPException(409, "Esta instalación gestiona el servicio con un archivo de configuración")
     same_origin(request)
     with _SAVE_LOCK:
         config = settings_file.load_config()
         if not config.present:
-            raise HTTPException(409, "请先完成首次设置")
+            raise HTTPException(409, "Primero completa la configuración inicial")
         if body.get("revision") != revision(config):
-            raise HTTPException(409, "配置已变更，请刷新后再保存")
+            raise HTTPException(409, "La configuración cambió; actualiza antes de guardar")
         errors, validated = _validate(body, config)
         if errors:
             # 400 的响应体带每个字段的原因：页面把它写回出错的那一行底下，不是弹一句总话。
-            raise HTTPException(400, {"message": "有几项需要修改", "errors": errors})
+            raise HTTPException(400, {"message": "Hay algunas cosas que corregir", "errors": errors})
         paths = validated["media_dirs"]
         locations, mounts = dict(config.locations), dict(config.mounts)
         if "locations" in validated:
@@ -813,7 +813,7 @@ def save_configuration(request: Request, body: dict[str, Any] = Body(default_fac
                 [{"location": "local", "path": str(path)} for path in paths], windows=False, config=config)
             local_roots, local_mounts, problems = media_configuration.validate(sources, windows=False, config=config)
             if problems:
-                raise HTTPException(400, {"message": "有几项需要修改", "errors": {"media_dirs": problems}})
+                raise HTTPException(400, {"message": "Hay algunas cosas que corregir", "errors": {"media_dirs": problems}})
             locations["local"], mounts["local"] = local_roots["local"], local_mounts["local"]
             validated["library_names"] = {**config.library_names, **{
                 row["root"]: row["library"] for row in sources if row.get("library")}}
@@ -832,7 +832,7 @@ def save_configuration(request: Request, body: dict[str, Any] = Body(default_fac
             config.directory("state").mkdir(parents=True, exist_ok=True)
             (config.directory("state") / RELOAD_NAME).write_text("reload", encoding="utf-8")
         except OSError as exc:
-            raise HTTPException(500, f"配置保存失败：{exc}") from exc
+            raise HTTPException(500, f"No se pudo guardar la configuración: {exc}") from exc
     url = f"http://127.0.0.1:{prepared.server.port}/" if distribution.standalone() else str(request.base_url)
     return {"saved": True, "url": url,
             "revision": revision(prepared)}

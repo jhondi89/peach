@@ -25,7 +25,7 @@ const snapshot = (patch: Partial<DownloadsSnapshot> = {}): DownloadsSnapshot => 
   available: true,
   providers: [
     { key: '115', label: '115', configured: true, target: '/115/云下载' },
-    { key: 'pikpak', label: 'PikPak', configured: true, target: '/云下载' },
+    { key: 'pikpak', label: 'PikPak', configured: true, target: '/descargas-nube' },
   ],
   tasks: [],
   ...patch,
@@ -71,16 +71,16 @@ it('带着番号与标题打开：标题行写番号与片名，搜索框与番�
   const { close, receipt, page } = await open({ code: 'ABC-123', title: '一部作品', origin: 'asset:12', searchReason: '中字' });
   expect(page.querySelector('[role=dialog]')?.textContent).toContain('ABC-123 · 一部作品');
   expect(page.textContent).toContain('版本目标：中字');
-  expect(field(page, '按番号查找资源')?.value).toBe('ABC-123');
-  expect(field(page, '番号')).toBeNull();
-  expect(field(page, '目标目录')?.value).toBe('/115/云下载');
-  await type(field(page, '磁力链接'), MAGNET);
-  await submit(section(page, '提交下载'));
+  expect(field(page, 'Buscar recursos por código')?.value).toBe('ABC-123');
+  expect(field(page, 'Código')).toBeNull();
+  expect(field(page, 'Carpeta de destino')?.value).toBe('/115/云下载');
+  await type(field(page, 'Enlace magnet'), MAGNET);
+  await submit(section(page, 'Enviar descarga'));
   await settle();
   expect(posts).toEqual([{
     magnet: MAGNET, provider: '115', target: '/115/云下载', code: 'ABC-123', title: '一部作品', origin: 'asset:12',
   }]);
-  expect(receipt).toHaveBeenCalledWith('已提交离线下载，进度在任务中心');
+  expect(receipt).toHaveBeenCalledWith('Descarga en la nube enviada; el progreso está en Tareas');
   expect(close).toHaveBeenCalled();
 });
 
@@ -88,8 +88,8 @@ it('提交没成功时弹层不关，原因留在表单里', async () => {
   serve(snapshot(), { ok: false, outcome: 'failed',
     task: task({ state: 'failed', failure_label: '没有可用的资源', failure_detail: '远端拒收' }) });
   const { close, receipt, page } = await open({});
-  await type(field(page, '磁力链接'), MAGNET);
-  await submit(section(page, '提交下载'));
+  await type(field(page, 'Enlace magnet'), MAGNET);
+  await submit(section(page, 'Enviar descarga'));
   await settle();
   expect(page.textContent).toContain('提交没有成功：没有可用的资源：远端拒收');
   expect([close.mock.calls.length, receipt.mock.calls.length]).toEqual([0, 0]);
@@ -106,26 +106,26 @@ it('查找另一番号时清空先前的磁力和作品资料，资料未取得�
       : snapshot() };
   }));
   const { page } = await open({ code: 'ABC-123', title: '原作品', origin: 'asset:12', performers: '甲', duration: 600 });
-  await type(field(page, '磁力链接'), MAGNET);
-  await type(field(page, '按番号查找资源'), 'ABC-999');
-  await act(async () => field(page, '按番号查找资源')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
+  await type(field(page, 'Enlace magnet'), MAGNET);
+  await type(field(page, 'Buscar recursos por código'), 'ABC-999');
+  await act(async () => field(page, 'Buscar recursos por código')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
   await settle();
-  expect(page.querySelector('[data-resource-work]')?.textContent).toContain('作品资料未取得');
+  expect(page.querySelector('[data-resource-work]')?.textContent).toContain('No se obtuvieron los datos de la obra');
   expect(page.querySelector('[data-resource-work]')?.textContent).not.toContain('原作品');
-  expect(field(page, '磁力链接')?.value).toBe('');
-  await type(field(page, '磁力链接'), MAGNET);
-  await submit(section(page, '提交下载'));
+  expect(field(page, 'Enlace magnet')?.value).toBe('');
+  await type(field(page, 'Enlace magnet'), MAGNET);
+  await submit(section(page, 'Enviar descarga'));
   expect(posts).toEqual([{ magnet: MAGNET, provider: '115', target: '/115/云下载', code: 'ABC-999' }]);
 });
 
 it('入库页交进来的下载方式先选中；换渠道时目标目录跟着换，115 才提配额', async () => {
   serve(snapshot());
   const { page } = await open({}, 'pikpak');
-  expect(field(page, '目标目录')?.value).toBe('/云下载');
+  expect(field(page, 'Carpeta de destino')?.value).toBe('/descargas-nube');
   expect(page.textContent).not.toContain('扣一条离线配额');
-  expect(buttonNamed('提交下载', page)?.className).toContain('bg-button-primary');
+  expect(buttonNamed('Enviar descarga', page)?.className).toContain('bg-button-primary');
   await choose(page.querySelector('[role=dialog] [aria-label="下载到"]'), '115');
-  expect(field(page, '目标目录')?.value).toBe('/115/云下载');
+  expect(field(page, 'Carpeta de destino')?.value).toBe('/115/云下载');
   expect(page.textContent).toContain('每提交一次扣一条离线配额');
 });
 
@@ -135,9 +135,9 @@ it('没有下载渠道时可以查找资源，提交下载禁用', async () => {
     { key: 'pikpak', label: 'PikPak', configured: false, target: '' },
   ] }));
   const { page } = await open({});
-  expect(section(page, '查找资源')).not.toBeNull();
-  expect(buttonNamed('提交下载', page)?.disabled).toBe(true);
-  expect(page.textContent).toContain('下载渠道设置');
+  expect(section(page, 'Buscar recursos')).not.toBeNull();
+  expect(buttonNamed('Enviar descarga', page)?.disabled).toBe(true);
+  expect(page.textContent).toContain('Ajustes de canales de descarga');
   expect(page.querySelector('[data-resource-work]')).toBeNull();
 });
 
@@ -153,14 +153,14 @@ it.each(['abf-258', 'ABF258', 'ABF-258'])('查询同番号 %s 保留已知作品
   }));
   const { page } = await open({ code: 'ABF-258', title: '同一作品', origin: 'wishlist:12', cover: '/cover?code=ABF-258', performers: '甲' });
   const details = page.querySelector('[data-resource-work]')!;
-  expect(details.compareDocumentPosition(section(page, '查找资源')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  await type(field(page, '按番号查找资源'), requested);
-  await act(async () => field(page, '按番号查找资源')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
+  expect(details.compareDocumentPosition(section(page, 'Buscar recursos')!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  await type(field(page, 'Buscar recursos por código'), requested);
+  await act(async () => field(page, 'Buscar recursos por código')!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })));
   await settle();
   expect(details.textContent).toContain('同一作品');
   expect(details.querySelector('img')?.getAttribute('src')).toBe('/cover?code=ABF-258');
-  await type(field(page, '磁力链接'), MAGNET);
-  await submit(section(page, '提交下载'));
+  await type(field(page, 'Enlace magnet'), MAGNET);
+  await submit(section(page, 'Enviar descarga'));
   expect(posts).toEqual([{ magnet: MAGNET, provider: '115', target: '/115/云下载', code: requested, title: '同一作品', origin: 'wishlist:12' }]);
 });
 
@@ -168,6 +168,6 @@ it('只读端可查找资源，提交下载禁用', async () => {
   serve(snapshot({ available: false }));
   const { page } = await open({});
   expect(page.textContent).toContain('云下载只在允许修改数据库的设备上可用');
-  expect(section(page, '查找资源')).not.toBeNull();
-  expect(buttonNamed('提交下载', page)?.disabled).toBe(true);
+  expect(section(page, 'Buscar recursos')).not.toBeNull();
+  expect(buttonNamed('Enviar descarga', page)?.disabled).toBe(true);
 });

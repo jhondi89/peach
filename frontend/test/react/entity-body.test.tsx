@@ -162,7 +162,7 @@ const indexes = (host: HTMLElement) =>
 describe('照片墙', () => {
   it('各部样张一部一段排在本地图片前面，段头写番号、标题与「来源 样张 · 发行日 · 张数」', async () => {
     const { host } = await openPhotos();
-    expect(groups(host)).toEqual([['SSIS-057', 3], ['SSIS-001', 2], ['本地图片', 2]]);
+    expect(groups(host)).toEqual([['SSIS-057', 3], ['SSIS-001', 2], ['Imágenes locales', 2]]);
     const head = host.querySelector('[data-photo-group]')!;
     expect(head.querySelector('[data-photo-group-title]')?.getAttribute('title')).toBe('雨の日');
     expect(head.querySelector('[data-photo-group-meta]')?.textContent).toBe('DMM 样张 · 2021-05-18 · 3 张');

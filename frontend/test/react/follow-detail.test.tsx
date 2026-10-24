@@ -97,12 +97,12 @@ describe('取数', () => {
     const gone = await mount(<QueryClientProvider client={queryClient}><FollowDetailPage {...props} id={9} /></QueryClientProvider>);
     await vi.waitFor(async () => {
       await settle();
-      expect(gone.textContent).toContain('这条关注内容已不存在');
+      expect(gone.textContent).toContain('Este contenido ya no existe');
     });
     /* 不存在的条目重试也取不回来：只给一条回到关注的路。 */
     const back = gone.querySelector('[data-follow-detail-gone] [data-note-action]');
-    expect(back?.textContent).toBe('回到关注');
-    expect(gone.textContent).not.toContain('重试');
+    expect(back?.textContent).toBe('Volver a Siguiendo');
+    expect(gone.textContent).not.toContain('Reintentar');
     await click(back);
     expect(props.actions.close).toHaveBeenCalled();
   });
@@ -143,7 +143,7 @@ describe('侧栏', () => {
     })), sources: [{ id: 1, provider: 'kemono', author_name: '作者' }] });
     const origin = host.querySelector('[data-follow-origin]')!;
     expect([origin.getAttribute('title'), origin.getAttribute('aria-label'), origin.getAttribute('href')])
-      .toEqual(['打开来源页面', '打开来源页面', 'https://example.invalid/post/2']);
+      .toEqual(['Abrir la página de origen', 'Abrir la página de origen', 'https://example.invalid/post/2']);
     expect([...host.querySelectorAll('[data-follow-resources] a')].map((link) => link.textContent))
       .toEqual(['Gofile', 'MEGA', 'files.example.org']);
     const download = host.querySelector('[data-follow-download]')!;
@@ -157,7 +157,7 @@ describe('侧栏', () => {
     const { host } = await show(data(item(5, { title: '', media_items: [
       { index: 0, media_kind: 'video', name: 'a.mp4', resource_group: 'g1' }, { ...image(1), resource_group: 'g1' },
     ] })));
-    expect(host.querySelector('[data-follow-detail-name]')?.textContent).toBe('未命名内容');
+    expect(host.querySelector('[data-follow-detail-name]')?.textContent).toBe('Contenido sin título');
     expect(host.querySelector('[data-follow-queue]')?.textContent).toContain('未命名内容 · 2 个媒体');
   });
 
@@ -169,10 +169,10 @@ describe('侧栏', () => {
       const summary = host.querySelector('[data-follow-detail-summary]')!;
       expect(summary.hasAttribute('data-clamped')).toBe(true);
       const toggle = host.querySelector('[data-follow-summary-toggle]')!;
-      expect(toggle.textContent).toBe('展开');
+      expect(toggle.textContent).toBe('Expandir');
       await click(toggle);
       expect(summary.hasAttribute('data-clamped')).toBe(false);
-      expect(host.querySelector('[data-follow-summary-toggle]')?.textContent).toBe('收起');
+      expect(host.querySelector('[data-follow-summary-toggle]')?.textContent).toBe('Contraer');
     } finally {
       high.mockRestore();
       box.mockRestore();
@@ -196,8 +196,8 @@ describe('写操作', () => {
     expect(posts(fetcher)).toEqual([['/api/follow/save', { item: 4 }]]);
     const save = host.querySelectorAll('[data-follow-detail-save]');
     expect(save).toHaveLength(1);
-    expect(save[0]!.getAttribute('aria-label')).toBe('已保存');
-    expect(given.toast).toHaveBeenCalledWith('已保存到数据库');
+    expect(save[0]!.getAttribute('aria-label')).toBe('Guardado');
+    expect(given.toast).toHaveBeenCalledWith('Guardado en la base de datos');
   });
 
   it('标记已看：键按下、多一枚「恢复未看」；回执的撤销写回原状态', async () => {
@@ -210,7 +210,7 @@ describe('写操作', () => {
     expect(host.querySelector('[data-follow-detail-status="seen"]')?.getAttribute('aria-pressed')).toBe('true');
     expect(host.querySelector('[data-follow-detail-status="new"]')).not.toBeNull();
     const [message, options] = given.toast.mock.calls[0]!;
-    expect(message).toBe('已标记看过');
+    expect(message).toBe('Marcado como visto');
     await options!.undo!();
     await settle();
     expect(posts(fetcher)).toEqual([['/api/follow/status', { item: 5, to: 'seen' }], ['/api/follow/status', { item: 5, to: 'new' }]]);
@@ -238,13 +238,13 @@ describe('写操作', () => {
     vi.stubGlobal('fetch', fetcher);
     const { host, actions: given } = await show(data(item(7)));
     const key = () => host.querySelector('[data-follow-detail-want]')!;
-    expect([key().getAttribute('aria-pressed'), key().getAttribute('aria-label')]).toEqual(['false', '想要']);
+    expect([key().getAttribute('aria-pressed'), key().getAttribute('aria-label')]).toEqual(['false', 'Lo quiero']);
     await click(key());
     await vi.waitFor(async () => {
       await settle();
       expect(key().getAttribute('aria-pressed')).toBe('true');
     });
-    expect(given.toast).toHaveBeenCalledWith('已加入想要');
+    expect(given.toast).toHaveBeenCalledWith('Añadido a deseados');
     await click(key());
     await vi.waitFor(async () => {
       await settle();
@@ -256,7 +256,7 @@ describe('写操作', () => {
   });
 });
 
-describe('媒体', () => {
+describe('Medios', () => {
   it('视频的媒体框交给舞台挂播放器，卸下这块媒体区时调回它给的清理', async () => {
     const shown = item(10, { media_items: [{ index: 0, media_kind: 'video' }, image(1)] });
     const { host, actions: given } = await show(data(shown));
@@ -334,11 +334,11 @@ describe('文案与排序', () => {
       pageParams: [0],
     });
     const { host, props } = await show(data(item(41)), { relatedLimit: 20 });
-    expect(host.querySelector('[data-follow-related] h3')?.textContent).toBe('接着看');
+    expect(host.querySelector('[data-follow-related] h3')?.textContent).toBe('Seguir viendo');
     await click(host.querySelector('[data-follow-related] [data-follow-open]'));
     expect(props.actions.openItem).toHaveBeenCalledWith(42);
     await act(async () => { setFollowItemStatus(42, 'seen') });
-    expect(host.querySelector('[data-follow-related] [data-empty-state] h3')?.textContent).toBe('暂无接着看的内容');
+    expect(host.querySelector('[data-follow-related] [data-empty-state] h3')?.textContent).toBe('Nada para seguir viendo por ahora');
     const { host: disabled } = await show(data(item(43)), { relatedLimit: 0 });
     expect(disabled.querySelector('[data-follow-related]')).toBeNull();
     expect(fetcher.mock.calls.some(([url]) => String(url).startsWith('/api/follow?limit='))).toBe(false);
@@ -346,7 +346,7 @@ describe('文案与排序', () => {
 
   it('合集行首：发布串不拿发布时间当版本标签，正文带上作者', () => {
     const reply = item(30, { author: 'kou', summary: '第二段更新', variant_kind: '', published_at: '2026-09-18T00:00:00Z' });
-    expect(collectionCopy(group(item(29), { is_release: true }), reply)).toEqual({ label: '视频', title: 'kou：第二段更新' });
+    expect(collectionCopy(group(item(29), { is_release: true }), reply)).toEqual({ label: 'Videos', title: 'kou：第二段更新' });
     expect(collectionCopy(group(item(29)), item(31, { variant_kind: 'wip' }))).toEqual({ label: 'WIP', title: '更新 31' });
   });
 

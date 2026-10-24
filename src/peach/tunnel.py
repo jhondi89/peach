@@ -43,7 +43,7 @@ EDGE_HEADERS = ("cf-connecting-ip", "cf-ray")
 QUICK_MODE = "quick"
 NAMED_MODE = "named"
 MODES = (QUICK_MODE, NAMED_MODE)
-STANDALONE_NAMED_ERROR = "独立包只支持临时链接"
+STANDALONE_NAMED_ERROR = "El paquete independiente solo admite enlaces temporales"
 #: 一段主机名标签：字母数字开头结尾，中间可带连字符；整串至少两段且不超过 253 字符。
 HOSTNAME_RE = re.compile(
     r"^(?=.{1,253}$)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?"
@@ -152,25 +152,25 @@ def build_origin(
     """
     if standalone_mode:
         if type(port) is not int or not 1 <= port <= 65535:
-            raise TunnelError(f"独立包 Tunnel 的 HTTP 端口无效：{port}")
+            raise TunnelError(f"El puerto HTTP del túnel del paquete independiente no es válido: {port}")
         return TunnelOrigin(f"http://127.0.0.1:{port}")
     if port is None:
         port = 443
     address = (lan_address or "").strip()
     if not address:
-        raise TunnelError("无法确定源码服务的局域网地址")
+        raise TunnelError("No se puede determinar la dirección de red local del servicio desde código fuente")
     try:
         parsed_address = ipaddress.ip_address(address)
     except ValueError as exc:
-        raise TunnelError(f"源码 Tunnel 的局域网地址不是 IP：{address}") from exc
+        raise TunnelError(f"La dirección de red local del túnel desde código fuente no es una IP: {address}") from exc
     hostname = (mdns_name or "").strip().rstrip(".")
     if not hostname:
-        raise TunnelError("源码服务没有配置 mDNS 名称")
+        raise TunnelError("El servicio desde código fuente no tiene nombre mDNS configurado")
     origin_name = hostname if hostname.endswith(".local") else f"{hostname}.local"
     if ca_path is None or not Path(ca_path).is_file():
-        raise TunnelError(f"源码 Tunnel 需要项目 CA：{ca_path}")
+        raise TunnelError(f"El túnel desde código fuente necesita la CA del proyecto: {ca_path}")
     if type(port) is not int or not 1 <= port <= 65535:
-        raise TunnelError(f"源码 Tunnel 的 HTTPS 端口无效：{port}")
+        raise TunnelError(f"El puerto HTTPS del túnel desde código fuente no es válido: {port}")
     host = f"[{address}]" if parsed_address.version == 6 else address
     return TunnelOrigin(
         f"https://{host}:{port}", origin_server_name=origin_name, ca_path=Path(ca_path),
@@ -193,13 +193,13 @@ def origin_for_config(
 
 def _access_error(policy: dict, token: str) -> str | None:
     if policy.get("mode") == "locked":
-        return "访问设置损坏，不能启动公网 Tunnel"
+        return "Los ajustes de acceso están dañados; no se puede iniciar el túnel público"
     if policy.get("mode") == "open":
-        return "启动公网 Tunnel 前必须先设置访问密码"
+        return "Antes de iniciar el túnel público hay que poner una contraseña de acceso"
     if policy.get("mode") not in {"password", "legacy"}:
-        return "访问设置不是受支持的密码模式"
+        return "Los ajustes de acceso no usan un modo de contraseña compatible"
     if not token:
-        return "缺少 Peach 内部访问令牌，不能启动公网 Tunnel"
+        return "Falta el token de acceso interno de Peach; no se puede iniciar el túnel público"
     return None
 
 
@@ -215,7 +215,7 @@ def normalize_mode(value: str) -> str:
     """把设置里的模式收敛成两个已知值之一；空串按临时链接处理。"""
     mode = (value or "").strip().lower() or QUICK_MODE
     if mode not in MODES:
-        raise TunnelError(f"tunnel.mode 只能是 quick 或 named：{value}")
+        raise TunnelError(f"tunnel.mode solo puede ser quick o named: {value}")
     return mode
 
 
@@ -232,9 +232,9 @@ def normalize_hostname(value: str) -> str:
             host = host[len(prefix):]
     host = host.rstrip("/").rstrip(".")
     if not host:
-        raise TunnelError("命名隧道需要填写公开主机名")
+        raise TunnelError("El túnel con nombre necesita un nombre de host público")
     if not HOSTNAME_RE.match(host):
-        raise TunnelError(f"公开主机名不是有效的域名：{value}")
+        raise TunnelError(f"El nombre de host público no es un dominio válido: {value}")
     return host
 
 
@@ -276,7 +276,7 @@ def named_plan(
         raise TunnelError(STANDALONE_NAMED_ERROR)
     secret = (token or "").strip()
     if not secret:
-        raise TunnelError("命名隧道需要填写 Cloudflare 隧道令牌")
+        raise TunnelError("El túnel con nombre necesita el token del túnel de Cloudflare")
     url = public_url(normalize_hostname(hostname))
     return TunnelPlan(
         binary=binary, origin=TunnelOrigin(url), command=build_named_command(binary, secret),
@@ -300,7 +300,7 @@ def plan_for_config(
     """校验安全前置并返回可审阅的启动计划。"""
     validate_access(access_path, token)
     if not standalone_mode and not tls_enabled:
-        raise TunnelError("源码 Tunnel 需要正在运行的 HTTPS 服务")
+        raise TunnelError("El túnel desde código fuente necesita un servicio HTTPS en marcha")
     tunnel_settings = getattr(config, "tunnel", None)
     binary = _require_binary(
         getattr(tunnel_settings, "binary", ""),
@@ -332,8 +332,7 @@ def _require_binary(
     )
     if binary is None:
         raise TunnelError(
-            "找不到 cloudflared：安装官方 cloudflared，"
-            "或用设置文件的 tunnel.binary 与 PEACH_CLOUDFLARED 指定路径"
+            "No se encuentra cloudflared: instala cloudflared oficial, o indica la ruta con tunnel.binary en el archivo de ajustes o con PEACH_CLOUDFLARED"
         )
     return binary
 
@@ -352,7 +351,7 @@ def plan_for_settings(
     """
     validate_access(settings.access_path, settings.token)
     if not settings.tunnel_standalone and not settings.tls_enabled:
-        raise TunnelError("源码 Tunnel 需要正在运行的 HTTPS 服务")
+        raise TunnelError("El túnel desde código fuente necesita un servicio HTTPS en marcha")
     binary = _require_binary(
         settings.tunnel_binary, executable=executable, environ=environ, which=which,
     )
@@ -396,9 +395,9 @@ def _read_state(path: Path) -> TunnelSnapshot:
     except FileNotFoundError:
         return TunnelSnapshot()
     except (OSError, ValueError, TypeError):
-        return TunnelSnapshot(error="Tunnel 状态文件不可读")
+        return TunnelSnapshot(error="No se puede leer el archivo de estado del túnel")
     if not isinstance(data, dict):
-        return TunnelSnapshot(error="Tunnel 状态文件格式错误")
+        return TunnelSnapshot(error="El archivo de estado del túnel tiene un formato incorrecto")
     return TunnelSnapshot(
         state=str(data.get("state") or "stopped"),
         url=str(data.get("url") or ""),
@@ -413,7 +412,7 @@ def saved_snapshot(state_dir: Path) -> TunnelSnapshot:
     saved = _read_state(state_path(state_dir))
     if saved.state in {"running", "starting"}:
         return TunnelSnapshot(
-            state="stopped", error="上一次 Tunnel 没有正常收尾，运行结果未取得",
+            state="stopped", error="El túnel anterior no terminó bien; no se obtuvo su resultado",
         )
     return saved
 
@@ -673,7 +672,7 @@ class TunnelManager:
                     started_at=self._started_at,
                 )
             if process is not None and not self._process_alive(process):
-                error = self._error or "cloudflared 已退出"
+                error = self._error or "cloudflared se cerró"
                 return TunnelSnapshot(
                     state="error", url=self._url, error=error,
                     pid=self._process_pid(process), started_at=self._started_at,
@@ -717,7 +716,7 @@ class TunnelManager:
                 if not self._process_alive(process):
                     with self._lock:
                         if not self._url and not self._error:
-                            self._error = "cloudflared 在取得入口前退出"
+                            self._error = "cloudflared se cerró antes de obtener el acceso"
                         snapshot = TunnelSnapshot(
                             state="error", url=self._url, error=self._error,
                             pid=self._process_pid(process), started_at=self._started_at,
@@ -772,7 +771,7 @@ class TunnelManager:
                         handle.close()
                     except OSError:
                         pass
-                message = f"cloudflared 启动失败：{exc}"
+                message = f"No se pudo iniciar cloudflared: {exc}"
                 self._generation += 1
                 self._process = None
                 self._reader = None
@@ -783,7 +782,7 @@ class TunnelManager:
             self._process = process
             stream = process.stdout
             if stream is None:
-                message = "cloudflared 没有输出通道"
+                message = "cloudflared no tiene canal de salida"
                 self._terminate_process(process)
                 self._generation += 1
                 self._process = None
@@ -807,7 +806,7 @@ class TunnelManager:
                     started_at=self._started_at,
                 ))
             except (OSError, RuntimeError) as exc:
-                message = f"Tunnel 启动状态失败：{exc}"
+                message = f"Falló el estado de inicio del túnel: {exc}"
                 self._generation += 1
                 self._process = None
                 self._reader = None
@@ -840,8 +839,8 @@ class TunnelManager:
             if alive:
                 self.stop()
             message = error or (
-                "cloudflared 未在限定时间内取得入口"
-                if not url else "cloudflared 未在限定时间内连接到 Cloudflare 边缘"
+                "cloudflared no obtuvo el acceso a tiempo"
+                if not url else "cloudflared no se conectó con la red de Cloudflare a tiempo"
             )
             self._write_error(message)
             raise TunnelError(message)
@@ -852,7 +851,7 @@ class TunnelManager:
         try:
             _write_state(self.state_file, snapshot)
         except OSError as exc:
-            message = f"Tunnel 状态写入失败：{exc}"
+            message = f"No se pudo escribir el estado del túnel: {exc}"
             self.stop()
             self._write_error(message)
             raise TunnelError(message) from exc

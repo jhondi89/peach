@@ -124,6 +124,6 @@ def version_labels(versions: list[dict]) -> list[str]:
         if show_spec and not same_editions and spec:
             label += ' · ' + spec
         if forms and len({version['signature'] for version in versions}) == 1:
-            label += ' · ' + ('分卷版' if version['multipart'] else '完整文件')
+            label += ' · ' + ("Versión en partes" if version['multipart'] else "Archivo completo")
         labels.append(label)
     return labels

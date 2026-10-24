@@ -5,7 +5,6 @@
  * `.ui-configpage` 的第一层：最前面是页签条（`.ui-board-local-nav`），后面每组一个 `h2.ui-configgroup` 小标题
  * 紧跟这一组的根节点，根节点就是那一格页签面板。小标题在样式里不显示，它的字已经写在页签上；
  * 没有内容的组连标题与页签一起省略。页签条第一帧就在，和整页同一次提交画出来。 */
-import { t } from '@peach/i18n';
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactElement } from 'react';
 import { peachHistory, shellNavigate, settingsPath } from '@peach/history';
@@ -31,8 +30,8 @@ export function ConfigurationPage({ receipt, reopenTutorial, section = '', diagn
   if (!data) {
     return (
       <div className="ui-configpage">
-        <Note tone="error" title={t('配置读取失败')}>
-          {config.error ? errorMessage(config.error) : t('未取得配置，请刷新页面重试。')}
+        <Note tone="error" title="No se pudo cargar la configuración">
+          {config.error ? errorMessage(config.error) : 'No se obtuvo la configuración; recarga la página e inténtalo de nuevo.'}
         </Note>
       </div>
     );
@@ -82,23 +81,23 @@ function ConfigurationGroups(
   const network = Boolean(data.peach_proxy || data.access || data.tunnel || (data.editable && data.port_editable !== false));
   const downloads = data.downloads;
   const groups: Group[] = [
-    { title: t('媒体库与入库'), body: (panel) => <div {...groupRoot(panel)}>
+    { title: 'Bibliotecas e importación', body: (panel) => <div {...groupRoot(panel)}>
       <MediaSettings {...group} /><MediaProcessingSettings receipt={receipt} />
     </div> },
-    { title: t('来源与订阅'), body: (panel) => <SourceSettings {...group} panel={panel} /> },
+    { title: 'Fuentes y suscripciones', body: (panel) => <SourceSettings {...group} panel={panel} /> },
     ...(downloads ? [{
-      title: t('下载渠道'),
+      title: 'Canales de descarga',
       body: (panel: ConfigurationPanel) => <DownloadGroup initial={downloads} receipt={receipt} panel={panel} />,
     }] : []),
-    ...(network ? [{ title: t('网络与访问'), body: (panel: ConfigurationPanel) => <NetworkSettings {...group} panel={panel} /> }] : []),
+    ...(network ? [{ title: 'Red y acceso', body: (panel: ConfigurationPanel) => <NetworkSettings {...group} panel={panel} /> }] : []),
     {
-      title: t('应用与维护'),
+      title: 'Aplicación y mantenimiento',
       body: (panel) => <div {...groupRoot(panel)}>
         <GeneralSettings {...group} />
         <MaintenanceSettings {...group} reopenTutorial={reopenTutorial} />
       </div>,
     },
-    { title: t('系统诊断'), body: panel => <div {...groupRoot(panel)}>{panel.active ? diagnostics : null}</div> },
+    { title: 'Diagnóstico del sistema', body: panel => <div {...groupRoot(panel)}>{panel.active ? diagnostics : null}</div> },
   ];
   const at = Math.max(0, groups.findIndex((item) => item.title === chosen));
   const move = (event: KeyboardEvent<HTMLButtonElement>, from: number) => {
@@ -115,7 +114,7 @@ function ConfigurationGroups(
   };
   return (
     <div ref={workspace} className="ui-configpage">
-      <div className="ui-board-local-nav" role="tablist" aria-label={t('配置分区')} data-section-nav="" data-section-items=""
+      <div className="ui-board-local-nav" role="tablist" aria-label="Secciones de la configuración" data-section-nav="" data-section-items=""
         aria-orientation={narrow ? 'horizontal' : 'vertical'}>
         {groups.map(({ title }, i) => (
           <button key={title} ref={(node) => { buttons.current[i] = node }} type="button" role="tab"

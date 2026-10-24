@@ -1,11 +1,11 @@
 import { JAV_RELEASE_SORT } from '../../sort-preferences';
 
 export const DISCOVERY_SORTS = [
-  ['taste', '口味', '按口味匹配排序'],
-  ['release_date', JAV_RELEASE_SORT[1], '按发行日期排序'],
-  ['source_score', '来源评分', '按来源评分排序'],
-  ['duration', '时长', '按时长排序'],
-  ['code', '番号', '按番号排序'],
+  ['taste', 'Gustos', 'Ordenar por afinidad con tus gustos'],
+  ['release_date', JAV_RELEASE_SORT[1], 'Ordenar por fecha de lanzamiento'],
+  ['source_score', 'Puntuación de la fuente', 'Ordenar por puntuación de la fuente'],
+  ['duration', 'Duración', 'Ordenar por duración'],
+  ['code', 'Código', 'Ordenar por código'],
 ] as const;
 export type DiscoverySort = typeof DISCOVERY_SORTS[number][0];
 export type DiscoveryDirection = 'asc' | 'desc';
@@ -16,11 +16,11 @@ export function discoveryScore(value: number | null | undefined): string {
 
 /** 口味相关度使用固定百分制；未知读数保留空值。 */
 export function recommendationScore(value: number | null | undefined) {
-  if (typeof value !== 'number' || !Number.isFinite(value)) return { score: '—', label: '资料未取得', color: 'neutral' as const };
+  if (typeof value !== 'number' || !Number.isFinite(value)) return { score: '—', label: 'Sin datos', color: 'neutral' as const };
   const score = Math.round(Math.max(0, Math.min(1, value)) * 100);
-  const tier = score >= 75 ? { label: '强烈推荐', color: 'lime' as const }
-    : score >= 50 ? { label: '推荐', color: 'blue' as const }
-    : score >= 25 ? { label: '值得看看', color: 'yellow' as const }
-    : { label: '探索', color: 'neutral' as const };
+  const tier = score >= 75 ? { label: 'Muy recomendado', color: 'lime' as const }
+    : score >= 50 ? { label: 'Recomendado', color: 'blue' as const }
+    : score >= 25 ? { label: 'Vale la pena', color: 'yellow' as const }
+    : { label: 'Explorar', color: 'neutral' as const };
   return { score: String(score), ...tier };
 }

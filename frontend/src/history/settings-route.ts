@@ -1,29 +1,21 @@
-import { matchesMessage, t } from '@peach/i18n';
-
-/** Msgid chino (estable); mostrar con `t(...)`. */
 export const PREFERENCE_SECTIONS = {
-  appearance: '外观与导航', playback: '浏览与播放', jav: 'JAV 与新作', search: '搜索与推荐', content: '内容显示',
+  appearance: 'Apariencia y navegación', playback: 'Navegación y reproducción', jav: 'JAV y estrenos', search: 'Búsqueda y recomendaciones', content: 'Visualización del contenido',
 } as const;
 export const CONFIGURATION_SECTIONS = {
-  library: '媒体库与入库', subscriptions: '来源与订阅', downloads: '下载渠道', network: '网络与访问', maintenance: '应用与维护',
-  diagnostics: '系统诊断',
+  library: 'Bibliotecas e importación', subscriptions: 'Fuentes y suscripciones', downloads: 'Canales de descarga', network: 'Red y acceso', maintenance: 'Aplicación y mantenimiento',
+  diagnostics: 'Diagnóstico del sistema',
 } as const;
 export type ConfigurationPath = `/settings/${keyof typeof CONFIGURATION_SECTIONS}`;
 export function configurationSection(path: string): string {
-  const id = CONFIGURATION_SECTIONS[path.split('/')[2] as keyof typeof CONFIGURATION_SECTIONS] || CONFIGURATION_SECTIONS.library;
-  return t(id);
+  return CONFIGURATION_SECTIONS[path.split('/')[2] as keyof typeof CONFIGURATION_SECTIONS] || CONFIGURATION_SECTIONS.library;
 }
 export const PREFERENCE_PATHS = ['/settings', ...Object.keys(PREFERENCE_SECTIONS).map(key => `/settings/${key}`)];
 export const isPreferencePath = (path: string): boolean => PREFERENCE_PATHS.includes(path);
 export function preferenceSection(path: string): string {
-  const id = PREFERENCE_SECTIONS[path.split('/')[2] as keyof typeof PREFERENCE_SECTIONS] || PREFERENCE_SECTIONS.appearance;
-  return t(id);
+  return PREFERENCE_SECTIONS[path.split('/')[2] as keyof typeof PREFERENCE_SECTIONS] || PREFERENCE_SECTIONS.appearance;
 }
-/** Acepta msgid chino, etiqueta traducida o clave de sección. */
 export function settingsPath(title: string): string {
-  const all = { ...PREFERENCE_SECTIONS, ...CONFIGURATION_SECTIONS };
-  if (title in all) return `/settings/${title}`;
-  const key = Object.entries(all).find(([, value]) => matchesMessage(title, value))?.[0];
+  const key = Object.entries({ ...PREFERENCE_SECTIONS, ...CONFIGURATION_SECTIONS }).find(([, value]) => value === title)?.[0];
   return `/settings/${key || 'appearance'}`;
 }
 export interface SettingsBackground {

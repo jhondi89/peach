@@ -49,7 +49,7 @@ def history_engine(db: sqlite3.Connection) -> str:
         if all(columns <= {row[1] for row in db.execute(f'PRAGMA table_info("{table}")')}
                for table, columns in required.items()):
             return engine
-    raise ValueError("浏览器历史格式不受支持，请选择包含网页访问记录的历史文件")
+    raise ValueError("Formato de historial no compatible; elige un archivo de historial con visitas a páginas web")
 
 
 def _validate(path: Path) -> str:
@@ -66,12 +66,12 @@ def _validate(path: Path) -> str:
                 if path.name == "places.sqlite" and db.execute("SELECT 1 FROM sqlite_master WHERE name='moz_bookmarks'").fetchone():
                     return "firefox"
                 if path.name == "HistoryEx":
-                    raise ValueError("HistoryEx 未包含可识别的网页访问记录；115 下载记录不能用于浏览历史，请选择 History 文件") from error
+                    raise ValueError("HistoryEx no contiene visitas a páginas web reconocibles; el historial de descargas de 115 no sirve como historial de navegación, elige el archivo History") from error
                 raise
     except sqlite3.DatabaseError as error:
         if "locked" in str(error).casefold():
-            raise ValueError("历史文件正在使用，请退出该浏览器后添加") from error
-        raise ValueError("浏览器历史文件未取得，请检查资料目录") from error
+            raise ValueError("El archivo de historial está en uso; cierra ese navegador antes de añadirlo") from error
+        raise ValueError("No se obtuvo el archivo de historial; revisa la carpeta de perfil") from error
 
 
 def _registered_browsers(store_path):
@@ -115,11 +115,11 @@ def configure_browser(store_path: Path, operation: str, body: dict) -> None:
         name = str(body.get("name") or "").strip()
         raw_path = str(body.get("path") or "").strip()
         if not name or len(name) > 80 or not raw_path or len(raw_path) > 1024:
-            raise ValueError("请填写浏览器名称和资料目录")
+            raise ValueError("Escribe el nombre del navegador y la carpeta de perfil")
         path = Path(raw_path).expanduser().resolve()
         paths = sorted(set(_paths(path) + _paths(path, bookmarks=True)))
         if not paths:
-            raise ValueError("目录中未找到浏览器历史或书签文件")
+            raise ValueError("No se encontró historial ni marcadores del navegador en la carpeta")
         # 同一资料目录可以同时包含网页历史与下载历史。
         browsing = sorted(set(_paths(path, browsing_only=True) + _paths(path, bookmarks=True)))
         engines = [_validate(history) for history in browsing or paths]
@@ -128,10 +128,10 @@ def configure_browser(store_path: Path, operation: str, body: dict) -> None:
     elif operation in ("disable", "enable", "delete_browser"):
         entry = entries.get(str(body.get("id") or ""))
         if not entry:
-            raise ValueError("浏览器来源不存在")
+            raise ValueError("La fuente del navegador no existe")
         entry["enabled"] = operation == "enable"
     else:
-        raise ValueError("浏览器操作无效")
+        raise ValueError("La acción del navegador no es válida")
     with _open_history_store(store_path, None) as (db, _, _):
         db.execute("CREATE TABLE IF NOT EXISTS browser_sync("
                    "id TEXT PRIMARY KEY,host TEXT NOT NULL,name TEXT NOT NULL,path TEXT NOT NULL,enabled INTEGER NOT NULL,engine TEXT NOT NULL DEFAULT 'auto')")

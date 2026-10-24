@@ -55,7 +55,7 @@ def _require_readable_settings() -> None:
     """
     if SETTINGS_ERROR is not None:
         raise SystemExit(
-            f"{SETTINGS_ERROR}\n修好这个文件，或者用 `peach init --force` 重新生成。")
+            f"{SETTINGS_ERROR}\nArregla este archivo o vuelve a generarlo con `peach init --force`.")
 
 
 def _serve(args: argparse.Namespace) -> int:
@@ -138,8 +138,7 @@ def _serve_token(args: argparse.Namespace) -> str:
     if getattr(args, "no_auth", False):
         if not _is_loopback(args.host):
             raise SystemExit(
-                f"拒绝启动：--no-auth 仅允许监听本机地址时使用，而 --host {args.host} 不是。\n"
-                f"在局域网地址上关掉登录，等于把整个馆藏和写接口交给同网段的任何设备。"
+                f"No se inicia: --no-auth solo se permite escuchando en la dirección local y --host {args.host} no lo es.\nQuitar el inicio de sesión en una dirección de red local entrega toda la colección y las funciones de escritura a cualquier dispositivo de la misma red."
             )
         # 直接写而不是 setdefault：走到这里就是这次启动确实要开调试口径，
         # 继承来的旧值不该把它顶掉，反过来也不该由它决定别的进程算不算调试。
@@ -150,10 +149,7 @@ def _serve_token(args: argparse.Namespace) -> str:
     if token or _is_loopback(args.host):
         return token
     raise SystemExit(
-        f"拒绝启动：--host {args.host} 允许其他设备访问，而这台机器还没有访问口令。\n"
-        f"这样起服务，同网段的任何设备都能读整个馆藏并调用写接口。\n"
-        f"先跑 `peach token` 生成并查看口令（存在 {auth.token_path(secrets_dir)}），"
-        f"再重新启动；只给本机用就改成 --host 127.0.0.1。"
+        f"No se inicia: --host {args.host} permite el acceso desde otros dispositivos y este equipo aún no tiene clave de acceso.\nAsí, cualquier dispositivo de la misma red podría leer toda la colección y usar las funciones de escritura.\nPrimero ejecuta `peach token` para generar y ver la clave (se guarda en {auth.token_path(secrets_dir)}) y vuelve a iniciar; si es solo para este equipo, usa --host 127.0.0.1."
     )
 
 
@@ -206,11 +202,11 @@ def _migrate(args: argparse.Namespace) -> int:
 #: 不适用，混进分母只会让每一行的百分比永远到不了 100。
 _PROCESSED_SCOPE = "medium='video' AND location!='online'"
 _PROCESSED_MEASURES = (
-    ("有时长 (ffprobe)", "duration IS NOT NULL"),
-    ("有九宫格", "snapshot_path IS NOT NULL"),
-    ("有哈希", "hash IS NOT NULL"),
-    ("有创作者归属", "creator IS NOT NULL AND creator!=''"),
-    ("有消费记录", "play_count>0 OR rating IS NOT NULL"),
+    ("Con duración (ffprobe)", "duration IS NOT NULL"),
+    ("Con mosaico", "snapshot_path IS NOT NULL"),
+    ("Con hash", "hash IS NOT NULL"),
+    ("Con creador asignado", "creator IS NOT NULL AND creator!=''"),
+    ("Con registros de uso", "play_count>0 OR rating IS NOT NULL"),
 )
 
 
@@ -224,7 +220,7 @@ def _status(args: argparse.Namespace) -> int:
     if not args.db.is_file():
         print(f"数据库不存在：{args.db}")
         if not args.db.parent.is_dir():
-            print("这台机器还没初始化过，先跑 `peach init`。")
+            print("Este equipo aún no se ha inicializado; ejecuta primero `peach init`.")
         return 4
     connection = open_readonly(args.db)
     try:
@@ -278,7 +274,7 @@ def _status(args: argparse.Namespace) -> int:
         local_device = (STATE_DIR / "device-id").read_text(encoding="utf-8").strip()
     except OSError:
         pass
-    whose = "本机" if owner and owner == local_device else (owner or "未确定")
+    whose = "Este equipo" if owner and owner == local_device else (owner or "Sin determinar")
     print(f"  同步：{decision.action} · {decision.reason}；写入端 {whose}")
     return 0
 
@@ -287,11 +283,11 @@ def _ledger_sync(args: argparse.Namespace) -> int:
     sync = LedgerSync(args.db, args.shared_db, device_id(STATE_DIR), interval=0)
     decision = sync.take_ownership() if args.take_ownership else sync.synchronize_now()
     completed = {
-        "pull": "已从共享副本拉取",
-        "push": "已推送到共享副本",
-        "local-ahead": "已推送到共享副本",
-        "in-sync": "两侧已经一致",
-        "take-ownership": "本机已成为唯一写入端",
+        "pull": "Obtenido de la copia compartida",
+        "push": "Enviado a la copia compartida",
+        "local-ahead": "Enviado a la copia compartida",
+        "in-sync": "Ambos lados ya coinciden",
+        "take-ownership": "Este equipo es ahora el único con permiso de escritura",
         "disabled": decision.reason,
     }
     print(f"数据库同步：{decision.action} · {completed.get(decision.action, decision.reason)}")
@@ -313,11 +309,10 @@ def _parse_mounts(
         key, separator, value = chunk.partition("=")
         key = key.strip()
         if not separator or not key:
-            raise SystemExit(f"--mount 要写成 来源ID=路径，收到：{chunk}")
+            raise SystemExit(f"--mount debe escribirse como ID=ruta; se recibió: {chunk}")
         if known and key not in known:
             raise SystemExit(
-                f"--mount 的来源 ID 未在 [media.locations] 声明：{key}"
-                f"（已知：{'、'.join(sorted(known))}）"
+                f"El ID de fuente de --mount no está declarado en [media.locations]: {key} (conocidos: {'、'.join(sorted(known))})"
             )
         mounts.setdefault(key, []).append(value.strip())
     return {key: tuple(item for item in values if item) for key, values in mounts.items()}
@@ -423,7 +418,7 @@ def _init_interactive(
                     print("要重新生成就跑 `peach init --force`；它会覆盖这个文件，不动数据。")
                     return 3
     except onboarding.OnboardingAborted as exc:
-        raise SystemExit(f"{exc}已退出，没有写任何文件。") from None
+        raise SystemExit(f"{exc}Se salió sin escribir ningún archivo.") from None
     answers = onboarding.Answers(**collected)  # type: ignore[arg-type]
     applied = onboarding.apply(config, answers, windows=windows)
     prepared = applied.config
@@ -458,7 +453,7 @@ def _scan(args: argparse.Namespace) -> int:
     _require_readable_settings()
     if not args.db.is_file():
         print(f"数据库不存在：{args.db}")
-        print("这台机器还没初始化过，先跑 `peach init`。")
+        print("Este equipo aún no se ha inicializado; ejecuta primero `peach init`.")
         return 4
     config = settings_file.active()
     mounts = {location: tuple(str(mount) for mount in points)
@@ -476,9 +471,9 @@ def _scan(args: argparse.Namespace) -> int:
             return 0
         if args.root is None:
             if args.location not in config.locations:
-                known = "、".join(sorted(config.locations)) or "（设置文件里一个都没有）"
+                known = "、".join(sorted(config.locations)) or "(no hay ninguno en el archivo de ajustes)"
                 raise scan.ScanTargetError(
-                    f"✗ 未声明的来源 {args.location!r}；[media.locations] 里已知：{known}")
+                    f"✗ Fuente no declarada {args.location!r}; conocidas en [media.locations]: {known}")
             roots = tuple(config.locations[args.location])
         else:
             roots = (scan.ledger_root_for(
@@ -501,7 +496,7 @@ def _process_library(args: argparse.Namespace) -> int:
     from .task_runs import cli_run, declared_rows
     _require_readable_settings()
     config = settings_file.active()
-    with cli_run('library-processing', args.db, label='资料处理') as handle:
+    with cli_run('library-processing', args.db, label="Procesamiento de datos") as handle:
         result = process_library(config, args.db, config.directory('generated'),
                                  config.directory('generated') / 'covers', location=args.location,
                                  database=LedgerDatabase(args.db),
@@ -514,7 +509,7 @@ def _process_library(args: argparse.Namespace) -> int:
         complete = result['status'] == 'complete'
         handle.finish('succeeded' if complete else 'failed',
                       summary={'followups': len(queued['queued'])},
-                      error='' if complete else str(result.get('error') or '资料处理未完成'))
+                      error='' if complete else str(result.get('error') or "El procesamiento de datos no terminó"))
     return 0 if complete else 1
 
 
@@ -582,7 +577,7 @@ def _tunnel(args: argparse.Namespace) -> int:
     _require_readable_settings()
     config = settings_file.load_config()
     if not config.configured:
-        raise SystemExit("这台机器还没初始化过，先跑 `peach init`。")
+        raise SystemExit("Este equipo aún no se ha inicializado; ejecuta primero `peach init`.")
     state_dir = config.directory("state")
     log_dir = config.directory("logs")
     if args.action == "status":
@@ -630,10 +625,10 @@ def _tunnel(args: argparse.Namespace) -> int:
 
 #: 留空就会改变行为的坐标。进程猜不出来，只能让人在命令行给。
 _BLANK_HINTS = (
-    ("server.review_writer_origin", "--writer-origin https://<writer 的地址>",
-     "reader 不做复核镜像"),
-    ("replication.smb_host", "--smb-host <writer 的主机名>", "不挂载共享传输点"),
-    ("replication.smb_user", "--smb-user <钥匙串里的账号>", "不挂载共享传输点"),
+    ("server.review_writer_origin", "--writer-origin https://<dirección del equipo writer>",
+     "reader no replica la revisión"),
+    ("replication.smb_host", "--smb-host <nombre de host del writer>", "sin montar el punto de transferencia compartido"),
+    ("replication.smb_user", "--smb-user <cuenta del llavero>", "sin montar el punto de transferencia compartido"),
 )
 
 
@@ -642,13 +637,12 @@ def _report_blanks(config: settings_file.PeachConfig) -> None:
     for dotted, flag, effect in _BLANK_HINTS:
         table, _, name = dotted.partition(".")
         if not getattr(getattr(config, table), name):
-            blanks.append(f"  {dotted} 留空 → {effect}；要填就重跑并加 {flag}")
+            blanks.append(f"  {dotted} vacío → {effect}; para completarlo vuelve a ejecutar con {flag}")
     if not config.mounts and os.name != "nt":
         # Windows 上盘符本身就是挂载点，空表是正常的，提示它只会让人去填没用的值。
         known = "、".join(sorted(config.locations)) or "local"
         blanks.append(
-            f"  [media.mounts] 为空 → 无法读取媒体来源的目录；"
-            f"可用 --mount <媒体来源ID>=<媒体目录> 指定目录（已知来源：{known}）"
+            f"  [media.mounts] vacío → no se pueden leer las carpetas de las fuentes; indica una con --mount <ID de fuente>=<carpeta de medios> (fuentes conocidas: {known})"
         )
     if blanks:
         print("以下坐标是空的（这不是错误，单机部署本来就该空）：")
@@ -724,7 +718,7 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument("--smb-host", help="共享传输点所在主机")
     init.add_argument("--smb-share", help="共享名")
     init.add_argument("--smb-user", help="挂载共享用的账号")
-    init.add_argument("--mount", action="append", metavar="来源ID=路径",
+    init.add_argument("--mount", action="append", metavar="ID=ruta",
                       help="媒体来源 ID 与本机媒体目录的对应关系，例如 local=/mnt/media；可重复指定")
     init.set_defaults(handler=_init)
 

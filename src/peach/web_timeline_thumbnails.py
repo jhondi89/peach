@@ -91,16 +91,16 @@ def w_thumbnail_jobs(contract, body):
     事，走数据管理页那条清理链，不在切换开关时顺手做掉。"""
     mode = str((body or {}).get('mode') or timeline_sheets.OFF)
     if mode not in timeline_sheets.MODES:
-        raise ValueError('采集密度无效')
+        raise ValueError("La densidad de extracción no es válida")
     if mode != timeline_sheets.OFF and metadata_only(contract.follow_state_root):
-        raise ValueError('视频预览生成已关闭，请先在媒体库设置中开启')
+        raise ValueError("La generación de vistas previas está desactivada; actívala primero en los ajustes de la biblioteca")
     write_mode(mode)
     if mode == timeline_sheets.OFF:
         contract.thumbnail_job.stop(resume=False)
         return q_thumbnail_jobs(contract, {})
     choice = FFmpegResolver(FFMPEG_DIR).ffmpeg()
     if choice is None:
-        raise ValueError('未找到 ffmpeg，无法采集缩略图')
+        raise ValueError("No se encontró ffmpeg, así que no se pueden extraer miniaturas")
     interval = timeline_sheets.INTERVALS[mode]
     root = contract.timeline_root
 
@@ -124,7 +124,7 @@ def w_thumbnail_jobs(contract, body):
 
     contract.thumbnail_job.start(work, restart=True, recovery={'mode': mode},
                                  initial={'mode': mode, 'interval': interval,
-                                          'stage': '采集缩略图', 'checked': 0,
+                                          'stage': "Extrayendo miniaturas", 'checked': 0,
                                           'total': 0, 'done': 0, 'made': 0,
                                           'skipped': 0, 'failed': 0, 'stopped': ''})
     return q_thumbnail_jobs(contract, {})

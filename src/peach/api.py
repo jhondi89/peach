@@ -104,8 +104,8 @@ COMPRESSION_EXCLUDED_TYPES = (
 
 #: Starlette 自己抛的那几种 HTTPException 带的是英文 detail，给人看之前换成中文。
 _DEFAULT_DETAILS = {
-    "Not Found": "这个地址下没有页面。",
-    "Method Not Allowed": "这个地址不接受这种请求。",
+    "Not Found": "No hay ninguna página en esta dirección.",
+    "Method Not Allowed": "Esta dirección no acepta este tipo de solicitud.",
 }
 
 
@@ -288,7 +288,8 @@ def create_app(
     follow_scheduler = FollowUpdateScheduler(
         settings.follow_state_root,
         lambda: web_follow.w_follow_check(contract, {"automatic": True}),
-        available=sync is None or not sync.read_only,
+        # Esta versión no sigue creadores (FANBOX, Patreon…): la revisión automática queda apagada.
+        available=False,
     )
     push_discovery = PushDiscoveryService(
         state_root=settings.follow_state_root,
@@ -324,7 +325,7 @@ def create_app(
         filename="feed-schedule.json",
         default=FollowScheduleConfig(enabled=True,
                                      interval_minutes=feeds.DEFAULT_INTERVAL_MINUTES),
-        unavailable_message="订阅源拉取只在写入端可用",
+        unavailable_message="La obtención de suscripciones solo está disponible en el equipo con permiso de escritura",
     )
     contract.feed_scheduler = feed_scheduler
     from .web_job_recovery import RecoveryService
@@ -483,7 +484,7 @@ def create_app(
 
     @app.exception_handler(AssetLoginRequired)
     def _asset_login_required_handler(request: Request, exc: AssetLoginRequired):
-        return PlainTextResponse("需要 ?t=口令", status_code=401)
+        return PlainTextResponse("Se necesita ?t=clave", status_code=401)
 
     # 挂在 Starlette 的基类上：路由没匹配到的 404 是它抛的，不是 FastAPI 子类，
     # 只挂子类的话地址栏敲错一个字母仍会看到一行 JSON。
@@ -508,7 +509,7 @@ def create_app(
     @app.exception_handler(Exception)
     def _server_exception_handler(request: Request, exc: Exception):
         headers = _server_error_headers(request, exc)
-        return JSONResponse({'error': '服务处理失败，请导出诊断报告',
+        return JSONResponse({'error': "El servicio falló; exporta un informe de diagnóstico",
                              'error_id': headers['X-Peach-Error-ID']}, status_code=500, headers=headers)
 
     # 第三方前端依赖固定版本并随 Peach 自托管；局域网断网时仍可播放。

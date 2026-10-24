@@ -2,7 +2,6 @@
  *
  * 独立包的服务端在 `redirect` 里给入口地址，过 `RESTART_REDIRECT_MS` 自己跳过去，与配置页保存后
  * 等托盘换进程的时长是同一个数。 */
-import { t } from '@peach/i18n';
 import { useEffect, useRef } from 'react';
 
 import { ButtonLink } from '@/components/base/buttons/button';
@@ -16,7 +15,7 @@ export function SetupDoneView({ done }: { done: SetupDone }) {
   const entry = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    document.title = t('Peach · 设置完成');
+    document.title = 'Peach · Configuración terminada';
     entry.current?.focus();
   }, []);
 
@@ -28,16 +27,16 @@ export function SetupDoneView({ done }: { done: SetupDone }) {
   }, [done.redirect]);
 
   return (
-    <AuthCard title={t('设置完成')} lede={t('正在启动馆藏。')}>
+    <AuthCard title="Configuración terminada" lede="Iniciando tu colección.">
       <p className="text-body-regular text-text-primary">
-        {done.restored ? t('已连接已有数据目录。') : done.scan_requested
-          ? t('首次扫描已排队，在后台整理媒体库，期间可以照常使用 Peach。')
-          : t('稍后在配置页开始扫描媒体库。')}
+        {done.restored ? 'Conectado a la carpeta de datos existente.' : done.scan_requested
+          ? 'El primer escaneo está en cola y ordenará la biblioteca en segundo plano; mientras tanto puedes usar Peach normalmente.'
+          : 'Más tarde, inicia el escaneo de la biblioteca desde la configuración.'}
       </p>
       <ButtonLink ref={entry} href={done.url} className="self-start">
-        {done.history_guide ? t('导入浏览器历史记录') : t('进入 Peach')}
+        {done.history_guide ? 'Importar historial del navegador' : 'Entrar en Peach'}
       </ButtonLink>
-      <Disclosure summary={t('运行信息')}>
+      <Disclosure summary="Información de ejecución">
         <FactList>
           {done.facts.map((fact) => (
             <Fact key={fact.term} term={fact.term}>

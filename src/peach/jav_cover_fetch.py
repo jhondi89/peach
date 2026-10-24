@@ -94,13 +94,13 @@ SMALL_MIN_WIDTH = 240
 #: DMM 缺图时 302 到「NOW PRINTING」占位图（590×800），尺寸像一张正常封面。
 PLACEHOLDER = re.compile(r"now_?printing", re.I)
 #: 官方候选一张都量不出可用尺寸时的两种说法，下标是「有没有量到过偏小的图」。
-NO_USABLE_OFFICIAL = ("官方封面地址都没有取到图片", "官方封面只有缩略图或占位图")
+NO_USABLE_OFFICIAL = ("Ninguna dirección de portada oficial devolvió una imagen", "Las portadas oficiales solo son miniaturas o imágenes provisionales")
 #: 占位图是来源自己说「没有图」：DMM 下架的作品两个版本都只剩这一张。
-PLACEHOLDER_REASON = "来源给的是「准备中」占位图"
+PLACEHOLDER_REASON = "La fuente dio una imagen provisional de “en preparación”"
 #: 官方候选里取到的只有占位图、没有偏小的真图时的说法。
-OFFICIAL_PLACEHOLDER_ONLY = "官方封面地址只回「准备中」占位图，作品多半已从官方下架"
+OFFICIAL_PLACEHOLDER_ONLY = "La dirección de la portada oficial solo devuelve la imagen provisional de “en preparación”; seguramente la obra ya se retiró del sitio oficial"
 #: 韩国 MIB 的编号不在 JAV 目录站上，封面来源一律不问；记进日志算确认落空，不重探。
-MIB_NOT_JAV = "韩国 MIB 不适用 JAV 封面来源"
+MIB_NOT_JAV = "El MIB coreano no usa fuentes de portadas JAV"
 #: 量尺寸只需要 JPEG 头部，别把整张 1 MB 的图拉下来。
 PROBE_BYTES = 64 * 1024
 # 瞬时 TLS EOF / 连接重置不能落成“官方没有封面”。按项目外网退避规则重试，
@@ -178,7 +178,7 @@ class DeadlineExceeded(RuntimeError):
 
 
 #: 候选一张都没连上时的说法。
-HOSTS_UNREACHABLE = "官方图片主机都连不上"
+HOSTS_UNREACHABLE = "No se puede conectar con ningún servidor de imágenes oficial"
 
 
 class CoverConnectError(Unavailable):
@@ -252,7 +252,7 @@ def _sleep_within(delay: float, deadline: float | None) -> None:
     """限速等待也服从截止时间，不让睡眠越过预算。"""
     remaining = _remaining(deadline)
     if remaining is not None and delay >= remaining:
-        raise DeadlineExceeded("动作预算已用尽")
+        raise DeadlineExceeded("Se agotó el presupuesto de la acción")
     time.sleep(delay)
 
 
@@ -289,7 +289,7 @@ def _fetch(transport: HttpTransport, url: str, *, referer: str,
     for attempt in range(len(NETWORK_RETRY_DELAYS) + 1):
         remaining = _remaining(deadline)
         if remaining is not None and remaining <= 0:
-            raise DeadlineExceeded("动作预算已用尽")
+            raise DeadlineExceeded("Se agotó el presupuesto de la acción")
         try:
             response = transport(request, request_timeout(url, remaining), limit)
             break
@@ -831,8 +831,8 @@ def best_cover(transport: HttpTransport, code: str, delay: float, *,
                                             deadline=deadline, record=record)])
     if not asked:
         if diagnostics.get('source_unanswered'):
-            raise Unavailable('官方目录查询未完成，尚未取得封面候选')
-        raise NotFound("所有渠道都没有候选")
+            raise Unavailable("La consulta al catálogo oficial no terminó; aún no hay candidatos de portada")
+        raise NotFound("Ningún canal tiene candidatos")
     measured = _measure(transport, asked, record, minimum_width=minimum_width,
                         delay=delay, deadline=deadline)
     if not measured:
@@ -929,8 +929,8 @@ def _download_best(transport: HttpTransport, measured, record, *, minimum_width:
             continue
         return winner, actual_size, data
     if animated == len(measured):
-        raise NotFound("官方候选都是动图")
-    raise Unavailable("可用候选完整下载都失败")
+        raise NotFound("Todos los candidatos oficiales son imágenes animadas")
+    raise Unavailable("Fallaron todas las descargas completas de los candidatos disponibles")
 
 
 FIELDS = ("code", "result", "source", "width", "height", "kb", "url", "note")
@@ -949,7 +949,7 @@ def settled_misses(log: Path) -> set[str]:
     """
     rows = logged_rows(log)
     return {str(row.get("code") or "").strip() for row in rows
-            if row.get("result") == "未取得"
+            if row.get("result") == "No obtenido"
             and not TRANSIENT.search(str(row.get("note") or ""))
             and str(row.get("code") or "").strip()}
 
@@ -993,7 +993,7 @@ def restore_logged_successes(transport: HttpTransport, log: Path, root: Path,
                 image.verify()
             expected = (int(row["width"]), int(row["height"]))
             if size != expected or size[0] < MIN_WIDTH:
-                raise Unavailable(f"尺寸变化：日志 {expected[0]}x{expected[1]}，当前 {size[0]}x{size[1]}")
+                raise Unavailable(f"Cambio de tamaño: registro {expected[0]}x{expected[1]}, ahora {size[0]}x{size[1]}")
             temporary.write_bytes(data)
             temporary.replace(target)
             restored += 1
@@ -1096,13 +1096,13 @@ def audit_state(database: Path, root: Path, log: Path) -> dict[str, object]:
         "invalid": invalid,
         "width_buckets": widths,
         "log_successes": sum(row.get("result") == "取得" for row in rows),
-        "log_misses": sum(row.get("result") == "未取得" for row in rows),
+        "log_misses": sum(row.get("result") == "No obtenido" for row in rows),
         "settled_misses": len(settled_misses(log)),
     }
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="按番号抓最高清的官方封套")
+    parser = argparse.ArgumentParser(description="Obtiene por código la carátula oficial en la mayor resolución")
     parser.add_argument("--db", type=Path, default=DATABASE_PATH)
     parser.add_argument("--out", type=Path, default=COVER_DIR)
     parser.add_argument("--log", type=Path,
@@ -1223,7 +1223,7 @@ def run(args: argparse.Namespace, handle: TaskRunHandle | None = None) -> int:
         todo = todo[:args.limit]
     selected = set(todo)
     if args.upgrade_existing:
-        width_note = (f"，当前宽度不超过 {args.upgrade_max_width}"
+        width_note = (f", el ancho actual no supera {args.upgrade_max_width}"
                       if args.upgrade_max_width else "")
         print(f"待重探已有封套 {len(todo)} 个{width_note}；只在像素更多时替换")
     else:
@@ -1288,7 +1288,7 @@ def run(args: argparse.Namespace, handle: TaskRunHandle | None = None) -> int:
                     print(f"[{index}/{len(todo)}] 保留 {code}：重探失败 "
                           f"{type(exc).__name__} {exc}", flush=True)
                 else:
-                    rows.append({"code": code, "result": "未取得", "source": "",
+                    rows.append({"code": code, "result": "No obtenido", "source": "",
                                  "width": "", "height": "", "kb": "", "url": "",
                                  "note": f"{type(exc).__name__}: {exc}"[:80]})
                     print(f"[{index}/{len(todo)}] 未取得 {code}："
@@ -1346,12 +1346,12 @@ def run(args: argparse.Namespace, handle: TaskRunHandle | None = None) -> int:
 def main(argv: list[str] | None = None) -> int:
     """入口只负责把这一趟登记进任务中心，正文在 `run` 里。"""
     args = build_parser().parse_args(argv)
-    with cli_run("jav-covers", args.db, label="封面批量抓取") as handle:
+    with cli_run("jav-covers", args.db, label="Obtención de portadas en lote") as handle:
         code = run(args, handle)
         if code:
             # 参数自检这类提前收工走不到 `run` 结尾的结算，在这里补上。
             handle.finish("cancelled", summary={"exit_code": code},
-                          error=f"提前收工，退出码 {code}")
+                          error=f"Terminó antes de tiempo, código de salida {code}")
         return code
 
 

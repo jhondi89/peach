@@ -1,7 +1,6 @@
 /* 首次运行页：取题目、画表单，成功后在同一页换成完成态。
  *
  * 题目接口只对运行 Peach 的这台电脑开放；别的设备打开时它回 403，页面不画表单，只说去哪里打开。 */
-import { t } from '@peach/i18n';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -44,14 +43,14 @@ export function SetupPage() {
     setAttempt((count) => count + 1);
   };
   return (
-    <AuthCard title={t('欢迎使用 Peach')} lede={t('添加媒体库，开始整理馆藏。')} busy={view.kind === 'loading'}>
-      {view.kind === 'denied' ? <Note tone="error">{t('请在运行 Peach 的这台电脑上打开设置。')}</Note> : null}
+    <AuthCard title="Bienvenido a Peach" lede="Añade una biblioteca para empezar a ordenar tu colección." busy={view.kind === 'loading'}>
+      {view.kind === 'denied' ? <Note tone="error">Abre la configuración en el equipo donde corre Peach.</Note> : null}
       {view.kind === 'failed'
-        ? <Note tone="error" action={<Button variant="secondary" onClick={retry}>{t('重试')}</Button>}>{view.message}</Note>
+        ? <Note tone="error" action={<Button variant="secondary" onClick={retry}>Reintentar</Button>}>{view.message}</Note>
         : null}
       {view.kind === 'form' ? <>
         <Button variant="secondary" className="self-start" onClick={() => setRestoring((current) => !current)}>
-          {restoring ? t('返回首次设置') : t('使用已有数据目录')}
+          {restoring ? 'Volver a la configuración inicial' : 'Usar una carpeta de datos existente'}
         </Button>
         {restoring
           ? <SetupRestore onDone={(done) => setView({ kind: 'done', done })} />

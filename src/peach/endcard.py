@@ -49,9 +49,9 @@ def detect_endcard(text: str) -> EndcardDetection:
     creator_source = any(url.split("/", 1)[0] in CREATOR_PLATFORMS for url in urls)
     if full_version:
         confidence = 0.98 if creator_source else 0.9
-        reason = "片尾明确写有 Full version available"
+        reason = "Los créditos finales dicen claramente “Full version available”"
         if urls:
-            reason += "；来源 " + "、".join(urls)
+            reason += "; fuente " + "、".join(urls)
         return EndcardDetection(
             "incomplete_candidate", True, tuple(urls), handles, confidence, reason,
         )
@@ -59,6 +59,6 @@ def detect_endcard(text: str) -> EndcardDetection:
         evidence = [*urls, *(f"@{handle}" for handle in handles)]
         return EndcardDetection(
             "source_evidence", False, tuple(urls), handles, 0.72,
-            "画面出现来源/水印：" + "、".join(evidence),
+            "Aparece fuente o marca de agua en la imagen:" + "、".join(evidence),
         )
     return EndcardDetection("none", False, (), (), 0.0, "")

@@ -84,9 +84,9 @@ function JunkCardView({ item, view, selected, selectMode, helpers, actions }: Ju
 
   const title = openable
     ? <button type="button" data-junk-title="" data-junk-open="" data-middle-truncate="" title={name}
-      onClick={clickTitle} dangerouslySetInnerHTML={{ __html: esc(name || '未命名资源') }} />
+      onClick={clickTitle} dangerouslySetInnerHTML={{ __html: esc(name || 'Recurso sin título') }} />
     : <span data-junk-title="" data-middle-truncate="" title={name}
-      dangerouslySetInnerHTML={{ __html: esc(name || '未命名资源') }} />;
+      dangerouslySetInnerHTML={{ __html: esc(name || 'Recurso sin título') }} />;
 
   return (
     <article ref={card} data-media-card="" data-variant="junk" data-junk-card="" data-id={item.id} data-junk-kind={kind}
@@ -106,22 +106,22 @@ function JunkCardView({ item, view, selected, selectMode, helpers, actions }: Ju
         <div data-junk-facts="">
           <span data-junk-who="">{label}</span>
           {item.why ? <span data-junk-why="">{item.why}</span> : null}
-          <span data-junk-size="">{Number(item.size) > 0 ? fmtSize(Number(item.size)) : '大小未知'}</span>
+          <span data-junk-size="">{Number(item.size) > 0 ? fmtSize(Number(item.size)) : 'Tamaño desconocido'}</span>
         </div>
       </div>
       <footer data-junk-actions="">
-        <button type="button" data-junk-action="reveal" title="在资源管理器中显示" aria-label="在资源管理器中显示"
+        <button type="button" data-junk-action="reveal" title="Mostrar en el explorador de archivos" aria-label="Mostrar en el explorador de archivos"
           {...busyAttrs('reveal')} onClick={reveal}>
-          {busy === 'reveal' ? <span data-junk-spinner="" dangerouslySetInnerHTML={{ __html: spinnerHtml('正在定位') }} /> : <Icon name="folder-open" />}
-          <span data-junk-label="">打开位置</span>
+          {busy === 'reveal' ? <span data-junk-spinner="" dangerouslySetInnerHTML={{ __html: spinnerHtml('Ubicando') }} /> : <Icon name="folder-open" />}
+          <span data-junk-label="">Abrir ubicación</span>
         </button>
         <button type="button" data-junk-action={decision.operation} title={decision.label} aria-label={decision.label}
           {...busyAttrs(decision.operation)} onClick={operate(decision.operation)}>
           <Icon name={decision.glyph} /><span data-junk-label="">{decision.label}</span>
         </button>
-        <button type="button" data-junk-action="dispose" title="移入回收站" aria-label="移入回收站"
+        <button type="button" data-junk-action="dispose" title="Mover a la papelera" aria-label="Mover a la papelera"
           {...busyAttrs('dispose')} onClick={operate('dispose')}>
-          <Icon name="trash" /><span data-junk-label="">移入回收站</span>
+          <Icon name="trash" /><span data-junk-label="">Mover a la papelera</span>
         </button>
         <span data-junk-state="" aria-live="polite">{status}</span>
       </footer>

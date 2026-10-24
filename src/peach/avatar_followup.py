@@ -48,7 +48,7 @@ from .followups import Attempts, Followup, FollowupType, attempts_root, register
 
 #: 这类后继在任务中心的身份，也是活动页上那一行的名字来源。
 TASK_KEY = "entity-avatar"
-TASK_LABEL = "补全资料图片"
+TASK_LABEL = "Completar imágenes de fichas"
 
 #: 会被派后继的实体种类。厂牌的图是标识，归 `studio_followup`；系列、标签没有头像位。
 #: 发布账号只派过 `work_portrait_predicate` 的那些（`_candidates`）。
@@ -56,7 +56,7 @@ KINDS = ("performer", "creator")
 
 #: 一次刮削最多为这么多个新实体派后继。上限本身由 `task_runs.MAX_FOLLOWUPS` 判，
 #: 这里先按作品数排好序再交出去：截断真的发生时，留下的该是库里出现得最多的那些。
-PLAN_ORDER = "作品多的在前"
+PLAN_ORDER = "Primero las que tienen más obras"
 
 #: 封面人脸最多截几张：装上的一张，加上留进挑图弹层的几张。
 MAX_KEPT_FACES = 8
@@ -77,7 +77,7 @@ SMALL_SOURCE_KIND = "gallery_small"
 PROFILE_MIN_SIDE = MIN_SHORT_SIDE
 #: 派出之后账号分类被改、不再过 `work_portrait_predicate` 时的结论。它取决于分类而不是作品，
 #: 不记进 `Attempts`：分类改回来时照常再派。
-NO_IDENTITY = "账号没有本人身份依据"
+NO_IDENTITY = "La cuenta no tiene pruebas de identidad de la persona"
 
 
 def followup_key(kind: str, entity_id: int) -> str:
@@ -89,7 +89,7 @@ def parse_key(key: str) -> tuple[str, int]:
     prefix, _, rest = str(key).partition(":")
     kind, _, raw = rest.partition(":")
     if prefix != TASK_KEY or kind not in KINDS or not raw.isdigit():
-        raise ValueError(f"认不出这条补头像后继：{key}")
+        raise ValueError(f"No se reconoce esta tarea derivada de foto: {key}")
     return kind, int(raw)
 
 
@@ -290,14 +290,14 @@ def _run(contract, key: str, handle) -> dict:
             and (_installed_record(avatar_root, kind, entity_id).get("user_selected")
                  or (cropped_px is None and not small))):
         # 重跑、或者这中间人自己换过图。两种都不该再装一次。
-        return {"outcome": "已有头像"}
+        return {"outcome": "Ya tiene foto"}
     with contract.database.read_connection() as connection:
         row = connection.execute(
             "SELECT canonical_name FROM entity WHERE id=? AND kind=?",
             (entity_id, kind)).fetchone()
         if row is None:
             # 实体被合并或删掉了。这不是失败：那件事已经不存在了。
-            return {"outcome": "档案已不存在"}
+            return {"outcome": "La ficha ya no existe"}
         name = str(row[0] or "")
         if kind == "creator":
             handle.progress(label=f"{TASK_LABEL}：{name}", throttle=0)
@@ -312,7 +312,7 @@ def _run(contract, key: str, handle) -> dict:
         if len(found) == 1:
             installed = _install(contract, connection, providers_root, avatar_root,
                                  kind, entity_id, name, found[0])
-            if installed["outcome"] == "已装上":
+            if installed["outcome"] == "Aplicado":
                 return installed
         from .avatar_face import FaceProbe
 
@@ -327,11 +327,11 @@ def _run(contract, key: str, handle) -> dict:
         fallen = {**_install_cover_face(contract, providers_root, avatar_root, kind,
                                         entity_id, name, gallery, len(found), cropped_px,
                                         covers, probe), **extra}
-        if fallen["outcome"] != "已装上" and not covers and not extra:
+        if fallen["outcome"] != "Aplicado" and not covers and not extra:
             fallen = _install_offsite(contract, connection, providers_root, avatar_root, kind,
                                       entity_id, cropped_px, probe, fallen)
         # 封面截的那张装着时不退回小图：那一档自己会判要不要换。
-        if (fallen["outcome"] == "已装上" or not found or extra or cropped_px is not None
+        if (fallen["outcome"] == "Aplicado" or not found or extra or cropped_px is not None
                 or (avatar_picker.installed_digest(avatar_root, kind, entity_id) and not small)):
             return fallen
         return _install_small(contract, connection, providers_root, avatar_root, kind,
@@ -346,18 +346,18 @@ def _preferred_gallery(contract, connection, providers_root, avatar_root, kind: 
     if len(found) > 1:
         matched = _install_matched(contract, connection, providers_root, avatar_root,
                                    kind, entity_id, name, found, covers)
-        if matched["outcome"] == "已装上":
+        if matched["outcome"] == "Aplicado":
             return matched, "", extra
         gallery = matched["outcome"]
         extra = {key: value for key, value in matched.items()
                  if key == "face_match_unavailable"}
     else:
-        gallery = "图库里没有这个名字" if not found else "图库那张太小"
+        gallery = "Este nombre no está en la galería" if not found else "La imagen de la galería es demasiado pequeña"
     if found and not extra:
         profile = _install_small(contract, connection, providers_root, avatar_root, kind,
                                  entity_id, found, covers, {"name": name, "outcome": gallery},
                                  min_side=PROFILE_MIN_SIDE)
-        if (profile["outcome"] in ("已装上", "已装着认得准的小图")
+        if (profile["outcome"] in ("Aplicado", "Ya tiene una imagen pequeña confiable")
                 or profile.get("face_match_unavailable")):
             return profile, gallery, extra
     return None, gallery, extra
@@ -419,8 +419,7 @@ def match_gallery(found: list[dict], covers: list, matcher,
         cut = avatar_cover_face.cut(face)
         vector = matcher.embedding(cut[0]) if cut is not None else None
         if matcher.unavailable:
-            return GalleryMatch(reason=f"图库 {len(found)} 张，比对模型不可用："
-                                       f"{matcher.unavailable}", unavailable=True)
+            return GalleryMatch(reason=f"{len(found)} imágenes en la galería; modelo de comparación no disponible: {matcher.unavailable}", unavailable=True)
         if vector is not None:
             references.append((face, vector))
     required = min(MATCH_REQUIRED, len(references))
@@ -447,8 +446,7 @@ def match_gallery(found: list[dict], covers: list, matcher,
             continue
         vector = matcher.embedding(candidate.body)
         if matcher.unavailable:
-            return GalleryMatch(reason=f"图库 {len(found)} 张，比对模型不可用："
-                                       f"{matcher.unavailable}", unavailable=True)
+            return GalleryMatch(reason=f"{len(found)} imágenes en la galería; modelo de comparación no disponible: {matcher.unavailable}", unavailable=True)
         if vector is None:
             continue
         row = [round(face_match.cosine(vector, reference), 3)
@@ -494,7 +492,7 @@ def _covers_corroborate(found: list[dict], compared: list, scores: dict, evidenc
                    for mine, theirs in zip(row, other_row)):
                 return GalleryMatch(winner=candidate, scores=scores, evidence=evidence(
                     row, corroborated_by={"ref": other.choice["ref"], "score": round(pair, 3)}))
-    return GalleryMatch(reason=f"图库 {len(found)} 张里比不出她", scores=scores)
+    return GalleryMatch(reason=f"No se la pudo comparar con las {len(found)} imágenes de la galería", scores=scores)
 
 
 def _directory(choice: dict) -> str:
@@ -543,8 +541,8 @@ def _gallery_agrees(found: list[dict], compared: list, scores: dict, evidence,
             row, corroborated_by={"ref": other.choice["ref"], "score": round(pair, 3)},
             agreeing=len(agreeing) + 1, faces=faces))
     if faces < 2:
-        return GalleryMatch(reason=f"图库 {len(found)} 张认不准", scores=scores)
-    return GalleryMatch(reason=f"图库 {len(found)} 张彼此认不出同一个人", scores=scores)
+        return GalleryMatch(reason=f"No se pudo confirmar con las {len(found)} imágenes de la galería", scores=scores)
+    return GalleryMatch(reason=f"Las {len(found)} imágenes de la galería no parecen ser de la misma persona", scores=scores)
 
 
 def gallery_fetcher(connection, providers_root, entity_id: int, transport,
@@ -593,8 +591,8 @@ def _install_matched(contract, connection, providers_root, avatar_root, kind: st
               "name_source": "face-match", "face_match": result.evidence}
     avatar_picker.install(providers_root, avatar_root, kind, entity_id, winner.body, origin)
     contract.cache_bust()
-    how = "按封面人脸认定" if result.evidence.get("covers") else "按图库互证认定"
-    return {**summary, "outcome": "已装上",
+    how = "Identificado por la cara en la portada" if result.evidence.get("covers") else "Identificado por coincidencia con la galería"
+    return {**summary, "outcome": "Aplicado",
             "size": f"{winner.inspected.width}×{winner.inspected.height}",
             "source": f"{winner.choice['label']}（{how}）"}
 
@@ -615,10 +613,10 @@ def _install(contract, connection, providers_root, avatar_root, kind: str,
             close()
     size = f"{inspected.width}×{inspected.height}"
     if not acceptable_avatar(inspected, MIN_LONG_SIDE, MIN_SHORT_SIDE):
-        return {"name": name, "outcome": "图太小", "matched": 1, "size": size}
+        return {"name": name, "outcome": "Imagen demasiado pequeña", "matched": 1, "size": size}
     avatar_picker.install(providers_root, avatar_root, kind, entity_id, body, origin)
     contract.cache_bust()
-    return {"name": name, "outcome": "已装上", "matched": 1, "size": size,
+    return {"name": name, "outcome": "Aplicado", "matched": 1, "size": size,
             "source": choice["label"]}
 
 
@@ -652,13 +650,13 @@ def _install_small(contract, connection, providers_root, avatar_root, kind: str,
         return fallen
     size = f"{winner.inspected.width}×{winner.inspected.height}"
     if winner.inspected.sha256 == avatar_picker.installed_digest(avatar_root, kind, entity_id):
-        return {**fallen, "outcome": "已装着认得准的小图", "size": size}
+        return {**fallen, "outcome": "Ya tiene una imagen pequeña confiable", "size": size}
     origin = {**winner.origin, "source_kind": SMALL_SOURCE_KIND,
               **({"name_source": "face-match", "face_match": evidence} if evidence else {})}
     avatar_picker.install(providers_root, avatar_root, kind, entity_id, winner.body, origin)
     contract.cache_bust()
-    return {"name": fallen.get("name", ""), "matched": len(found), "outcome": "已装上",
-            "size": size, "source": f"{winner.choice['label']}（小图兜底）"}
+    return {"name": fallen.get("name", ""), "matched": len(found), "outcome": "Aplicado",
+            "size": size, "source": f"{winner.choice['label']} (imagen pequeña de respaldo)"}
 
 
 def _install_cover_face(contract, providers_root, avatar_root, kind: str,
@@ -673,7 +671,7 @@ def _install_cover_face(contract, providers_root, avatar_root, kind: str,
     """
     summary = {"name": name, "matched": matched}
     if not found:
-        reason = f"探针不可用：{probe.unavailable}" if probe.unavailable else "封面上没有能截的脸"
+        reason = f"Detector no disponible: {probe.unavailable}" if probe.unavailable else "No hay una cara recortable en la portada"
         return {**summary, "outcome": f"{gallery}，{reason}"}
     face = found[0]
     # 装的只有脸最宽那一张；其余几张也截好留进候选缓存，挑图弹层里一点就能换，
@@ -684,17 +682,17 @@ def _install_cover_face(contract, providers_root, avatar_root, kind: str,
     if cropped_px and not avatar_cover_face.installed_face_readable(avatar_root, kind, entity_id, probe):
         cropped_px = 0
     if cropped_px is not None and face.face_px <= cropped_px:
-        return {**summary, "outcome": "已是最清楚的封面人脸", "source": face.code}
+        return {**summary, "outcome": "Ya es la cara más nítida de las portadas", "source": face.code}
     cut = avatar_cover_face.cut(face)
     if cut is None:
-        return {**summary, "outcome": "封面截不出这一块", "source": face.code}
+        return {**summary, "outcome": "No se puede recortar esta parte de la portada", "source": face.code}
     body, origin = cut
     inspected = avatar_picker.install(providers_root, avatar_root, kind, entity_id,
                                       body, origin)
     contract.cache_bust()
-    return {**summary, "outcome": "已装上",
+    return {**summary, "outcome": "Aplicado",
             "size": f"{inspected['width']}×{inspected['height']}",
-            "source": f"作品封面 {face.code}"}
+            "source": f"Portada de la obra {face.code}"}
 
 
 def _install_offsite(contract, connection, providers_root, avatar_root, kind: str,
@@ -742,16 +740,15 @@ def _install_offsite(contract, connection, providers_root, avatar_root, kind: st
                                                                     probe):
         cropped_px = 0
     if cropped_px is not None and winner.face_px <= cropped_px:
-        return {**summary, "outcome": "已是最清楚的封面人脸", "source": winner.code}
+        return {**summary, "outcome": "Ya es la cara más nítida de las portadas", "source": winner.code}
     made = offsite.origin(winner, outcome.urls.get(winner.code, ""), outcome.evidence)
     if made is None:
-        return {**summary, "outcome": "封面截不出这一块", "source": winner.code}
+        return {**summary, "outcome": "No se puede recortar esta parte de la portada", "source": winner.code}
     inspected = avatar_picker.install(providers_root, avatar_root, kind, entity_id, *made)
     contract.cache_bust()
     return {"name": fallen.get("name", ""), "matched": fallen.get("matched", 0),
-            "outcome": "已装上", "size": f"{inspected['width']}×{inspected['height']}",
-            "source": f"馆外单人作品封面 {winner.code}"
-                      f"（{len(outcome.evidence['codes'])} 部互证）"}
+            "outcome": "Aplicado", "size": f"{inspected['width']}×{inspected['height']}",
+            "source": f"Portada de obra individual externa {winner.code} ({len(outcome.evidence['codes'])} obras coinciden)"}
 
 
 def _install_account_face(contract, connection, providers_root, avatar_root, entity_id: int,
@@ -771,14 +768,14 @@ def _install_account_face(contract, connection, providers_root, avatar_root, ent
     faces = avatar_cover_face.sheet_faces(connection, contract.cover_root, entity_id, probe,
                                           contract.snapshot_file)
     if probe.unavailable:
-        return {**summary, "outcome": f"探针不可用：{probe.unavailable}",
+        return {**summary, "outcome": f"Detector no disponible: {probe.unavailable}",
                 "face_match_unavailable": True}
     if not faces:
-        return {**summary, "outcome": "作品画面上没有能截的脸"}
+        return {**summary, "outcome": "No hay una cara recortable en las imágenes de la obra"}
     matcher = face_match.FaceMatcher()
     agreed, scores = offsite.agreeing(faces, matcher)
     if matcher.unavailable:
-        return {**summary, "outcome": f"比对模型不可用：{matcher.unavailable}",
+        return {**summary, "outcome": f"Modelo de comparación no disponible: {matcher.unavailable}",
                 "face_match_unavailable": True}
     winner = agreed[0] if len({face.code for face in agreed}) >= offsite.AGREE_WORKS else None
     kept = 0
@@ -788,23 +785,23 @@ def _install_account_face(contract, connection, providers_root, avatar_root, ent
             kept += 1
     summary = {**summary, **({"kept": kept} if kept else {})}
     if winner is None:
-        return {**summary, "outcome": f"作品画面截到 {len(faces)} 张脸，凑不齐两部互证"}
+        return {**summary, "outcome": f"Se recortaron {len(faces)} caras de las imágenes de obras; no alcanzan dos obras que coincidan"}
     if cropped_px and not avatar_cover_face.installed_face_readable(avatar_root, "creator",
                                                                     entity_id, probe):
         cropped_px = 0
     if cropped_px is not None and winner.face_px <= cropped_px:
-        return {**summary, "outcome": "已是最清楚的作品画面人脸", "source": winner.code}
+        return {**summary, "outcome": "Ya es la cara más nítida de las imágenes de obras", "source": winner.code}
     cut = avatar_cover_face.cut(winner)
     if cut is None:
-        return {**summary, "outcome": "画面截不出这一块", "source": winner.code}
+        return {**summary, "outcome": "No se puede recortar esta parte de la imagen", "source": winner.code}
     body, origin = cut
     evidence = {"codes": [face.code for face in agreed], "scores": scores}
     inspected = avatar_picker.install(providers_root, avatar_root, "creator", entity_id, body,
                                       {**origin, "face_match": evidence})
     contract.cache_bust()
-    return {**summary, "outcome": "已装上",
+    return {**summary, "outcome": "Aplicado",
             "size": f"{inspected['width']}×{inspected['height']}",
-            "source": f"作品画面 {winner.code}（{len(evidence['codes'])} 部互证）"}
+            "source": f"Imagen de la obra {winner.code} ({len(evidence['codes'])} obras coinciden)"}
 
 
 #: 不写账本：这条后继只往 `avatar_root` 与候选缓存里写文件。它照样一次只跑一条——

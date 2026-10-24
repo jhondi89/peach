@@ -135,11 +135,11 @@ export function installPreferences5() {
 preferencesState.sourceOnline = {};
 preferencesState.sourceProblems = {};
 preferencesState.sourceOffline = key=>preferencesState.sourceOnline[key]===false;
-preferencesState.OFFLINE_HINT = '媒体目录无法访问，请检查目录、读取权限和网盘挂载状态';
-preferencesState.OFFLINE_REASON = {local:'无法读取媒体目录，请检查目录是否存在及读取权限。',
-  '115':'无法读取 115 媒体目录，请检查目录权限及网盘挂载工具是否正常运行。',
-  pikpak:'无法读取 PikPak 媒体目录，请检查目录权限及网盘挂载工具是否正常运行。'};
-preferencesState.offlineReason = key=>preferencesState.sourceProblems[key]||preferencesState.OFFLINE_REASON[key]||'无法读取这个来源的媒体目录，请检查目录权限及挂载状态。';
+preferencesState.OFFLINE_HINT = 'No se puede acceder a la carpeta de medios; revisa la carpeta, los permisos de lectura y el montaje de la nube';
+preferencesState.OFFLINE_REASON = {local:'No se puede leer la carpeta de medios; revisa que exista y que tengas permiso de lectura.',
+  '115':'No se puede leer la carpeta de medios de 115; revisa los permisos y que la herramienta de montaje de la nube esté funcionando.',
+  pikpak:'No se puede leer la carpeta de medios de PikPak; revisa los permisos y que la herramienta de montaje de la nube esté funcionando.'};
+preferencesState.offlineReason = key=>preferencesState.sourceProblems[key]||preferencesState.OFFLINE_REASON[key]||'No se puede leer la carpeta de medios de esta fuente; revisa los permisos y el montaje.';
 preferencesState.settingsStore = appSettingsStore();
 preferencesState.appSettings = preferencesState.settingsStore.value;
 preferencesState.saveSettings = ()=>preferencesState.settingsStore.save();
@@ -199,7 +199,7 @@ preferencesState.SRCICON = {
     [location,mark.startsWith('data:')?`<img class="source-icon" src="${mark}" alt="">`:icon(mark)])),
   online:icon('rss'),
 };
-preferencesState.srcBadge = (loc,cost,cls)=>{const label=`${LOC[loc]||loc}${cost==='metered'?' · 计费':''}`;
+preferencesState.srcBadge = (loc,cost,cls)=>{const label=`${LOC[loc]||loc}${cost==='metered'?' · de pago':''}`;
   return `<span class="${cls||'src'} ${cost==='metered'?'metered':'free'}" title="${esc(label)}" aria-label="${esc(label)}">`
     +(preferencesState.SRCICON[loc]||'')+'</span>'};
 preferencesState.emptyState = emptyStateHtml;

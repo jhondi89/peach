@@ -91,8 +91,8 @@ export type KeepRule = 'largest' | 'longest' | 'all' | (string & {});
 
 /** 确认弹层里「每组保留……」那半句。 */
 export const KEEP_LABELS: Record<string, string> = {
-  largest: '最大的一个', longest: '最长的一个',
-  '115': '115（没有则留最大）', pikpak: 'PikPak（没有则留最大）', all: '零个文件',
+  largest: 'El más grande', longest: 'El más largo',
+  '115': '115 (si no hay, el más grande)', pikpak: 'PikPak (si no hay, el más grande)', all: 'Ningún archivo',
 };
 
 /** 这一批文件里真正出现过的网盘来源。 */
@@ -153,4 +153,4 @@ export async function batchOperate(ids: readonly number[], operation: 'dispose' 
 
 /** 页头说明行与汇总块那一句。 */
 export const duplicatesLede = (data: DuplicatesData, formatSize: (bytes: number) => string) =>
-  `${data.total} 组 · ${data.files} 个文件 · 可回收 ${formatSize(data.reclaimable)}`;
+  `${data.total} grupos · ${data.files} archivos · recuperable ${formatSize(data.reclaimable)}`;

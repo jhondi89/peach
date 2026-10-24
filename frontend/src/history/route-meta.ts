@@ -12,7 +12,6 @@
  * 写法登记，参数只认数字。`routeMetaOf` 先查精确路径，再查覆盖路径，没有再按去掉空段之后的各段找：只剩一段查
  * 那一段的精确路径（`/performers/`），多于一段按第一段找模式，名字是剩下各段连起来的那一串（读者交进来的是
  * 解码过的路径，名字里的斜杠吃掉剩下全部段，空尾段不算）。 */
-import { t } from '@peach/i18n';
 import { overlayMatch } from './overlay';
 import { entityLinkName } from '../core/entity-links';
 import { PREFERENCE_SECTIONS, CONFIGURATION_SECTIONS } from './settings-route';
@@ -26,50 +25,50 @@ export interface RouteMeta {
 }
 
 export const ROUTE_META: Readonly<Record<string, RouteMeta>> = {
-  '/settings': { title: t('设置'), refresh: 'skip' },
-  ...Object.fromEntries(Object.entries(PREFERENCE_SECTIONS).map(([key, title]) => [`/settings/${key}`, { title: t(title), refresh: 'skip' }])),
-  ...Object.fromEntries(Object.entries(CONFIGURATION_SECTIONS).map(([key, title]) => [`/settings/${key}`, { title: t(title), section: 'configuration', refresh: 'reopen' }])),
+  '/settings': { title: 'Ajustes', refresh: 'skip' },
+  ...Object.fromEntries(Object.entries(PREFERENCE_SECTIONS).map(([key, title]) => [`/settings/${key}`, { title, refresh: 'skip' }])),
+  ...Object.fromEntries(Object.entries(CONFIGURATION_SECTIONS).map(([key, title]) => [`/settings/${key}`, { title, section: 'configuration', refresh: 'reopen' }])),
   '/jav': { nav: 'jav', title: 'JAV', refresh: 'reopen' },
-  '/stats': { section: 'stats', title: t('统计') },
-  '/taste': { section: 'taste', title: t('口味'), refresh: 'reopen' },
-  '/review': { section: 'review', title: t('人工复核'), refresh: 'reopen' },
-  '/data-cleanup': { section: 'cleanup', title: t('数据管理') },
-  '/duplicates': { section: 'cleanup', title: t('重复文件'), refresh: 'reopen' },
-  '/quality-goals': { section: 'quality', title: t('高清版'), refresh: 'reopen' },
-  '/sources': { section: 'cleanup', title: t('来源和凭证'), refresh: 'reopen' },
-  '/subscriptions': { section: 'follow', title: t('关注管理'), refresh: 'skip' },
-  '/settings/library': { section: 'configuration', title: t('Peach 配置'), refresh: 'reopen' },
-  '/tasks': { section: 'activity', title: t('任务中心'), refresh: 'reopen' },
+  '/stats': { section: 'stats', title: 'Estadísticas' },
+  '/taste': { section: 'taste', title: 'Gustos', refresh: 'reopen' },
+  '/review': { section: 'review', title: 'Revisión manual', refresh: 'reopen' },
+  '/data-cleanup': { section: 'cleanup', title: 'Datos' },
+  '/duplicates': { section: 'cleanup', title: 'Archivos duplicados', refresh: 'reopen' },
+  '/quality-goals': { section: 'quality', title: 'Versiones HD', refresh: 'reopen' },
+  '/sources': { section: 'cleanup', title: 'Fuentes y credenciales', refresh: 'reopen' },
+  '/subscriptions': { section: 'follow', title: 'Suscripciones JAV', refresh: 'skip' },
+  '/settings/library': { section: 'configuration', title: 'Configuración de Peach', refresh: 'reopen' },
+  '/tasks': { section: 'activity', title: 'Tareas', refresh: 'reopen' },
   // 旧直达地址，改写到数据管理页的锚点，没有自己的管理身份。
-  '/resource-sync': { title: t('数据管理') },
-  '/performers': { nav: 'performers', title: t('艺人'), reload: 'reopen' },
-  '/creators': { title: t('卖家'), reload: 'reopen' },
-  '/studios': { nav: 'studios', title: t('厂牌'), reload: 'reopen' },
-  '/agencies': { title: t('事务所'), reload: 'reopen' },
-  '/tags': { nav: 'tags', title: t('标签'), reload: 'reopen' },
+  '/resource-sync': { title: 'Datos' },
+  '/performers': { nav: 'performers', title: 'Artistas', reload: 'reopen' },
+  '/creators': { title: 'Vendedores', reload: 'reopen' },
+  '/studios': { nav: 'studios', title: 'Estudio', reload: 'reopen' },
+  '/agencies': { title: 'Agencias', reload: 'reopen' },
+  '/tags': { nav: 'tags', title: 'Etiquetas', reload: 'reopen' },
   '/performers/*': { reload: 'reopen' },
   '/studios/*': { reload: 'reopen' },
   '/creators/*': { reload: 'reopen' },
   '/series/*': { reload: 'reopen' },
   '/agencies/*': { reload: 'reopen' },
   '/tags/*': { reload: 'reopen' },
-  '/playlists': { nav: 'playlists', title: t('播放列表'), refresh: 'reopen' },
+  '/playlists': { nav: 'playlists', title: 'Listas', refresh: 'reopen' },
   // 关注页重画要联网取一遍卡面，「换一批」只由页面自己的按钮触发。
-  '/follow': { nav: 'follow', title: t('关注'), refresh: 'skip' },
+  '/follow': { nav: 'follow', title: 'Siguiendo', refresh: 'skip' },
   // 目录：首页与回收站没有自己的标签，三个筛选态与垃圾文件的侧栏键与标签同 `STATE_ROUTES`、`STATE_LABELS`。
   '/': {},
-  '/unseen': { nav: 'fresh', title: t('没看过') },
-  '/watch-later': { nav: 'later', title: t('稍后看') },
-  '/flagged': { nav: 'flagged', title: t('已标记') },
-  '/junk-files': { nav: 'ads', title: t('垃圾文件') },
+  '/unseen': { nav: 'fresh', title: 'Sin ver' },
+  '/watch-later': { nav: 'later', title: 'Ver más tarde' },
+  '/flagged': { nav: 'flagged', title: 'Marcados' },
+  '/junk-files': { nav: 'ads', title: 'Archivos basura' },
   '/trash': { section: 'trash' },
   // 覆盖：详情、四种队列与关注详情。分卷与版本队列没有自己的标签。
-  '/assets/:id': { title: t('媒体记录') },
-  '/works/:code': { nav: 'jav', title: t('JAV 作品') },
-  '/posts/:id': { title: t('关注') },
+  '/assets/:id': { title: 'Registros de medios' },
+  '/works/:code': { nav: 'jav', title: 'Obras JAV' },
+  '/posts/:id': { title: 'Siguiendo' },
   // 沉浸模式进页面组，不算覆盖。
-  '/immerse': { nav: 'immerse', title: t('沉浸模式') },
-  '/wall': { nav: 'wall', title: t('播放墙') },
+  '/immerse': { nav: 'immerse', title: 'Modo inmersivo' },
+  '/wall': { nav: 'wall', title: 'Muro de reproducción' },
 };
 
 /** 这条路径登记的元数据；没登记是 `null`。 */
@@ -83,5 +82,5 @@ export function routeMetaOf(path: string): RouteMeta | null {
   const pattern = `/${segment}/*`;
   const kinds: Record<string, string> = { performers: 'performer', studios: 'studio', creators: 'creator', agencies: 'agency', series: 'series', tags: 'tag' };
   const name = /^\d+$/.test(rest.join('/')) ? entityLinkName(kinds[segment] || '', Number(rest[0])) : rest.join('/');
-  return Object.hasOwn(ROUTE_META, pattern) ? { ...ROUTE_META[pattern], title: name || t('资料') } : null;
+  return Object.hasOwn(ROUTE_META, pattern) ? { ...ROUTE_META[pattern], title: name || 'datos' } : null;
 }

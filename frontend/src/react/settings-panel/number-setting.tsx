@@ -3,7 +3,6 @@
  * 可选的那几项（悬停放大、相关推荐、搜索记录、关注自动更新）前面有一枚开关：关掉就是 0，
  * 数字框收起来；再打开时填回关掉前的那个数。那个数记在 `peach.number.<id>`，跟着这台浏览器走。
  * 提交时机跟原生数字框的 `change` 一致：失焦或回车，打字途中不提交。 */
-import { t } from '@peach/i18n';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { boundedPreference } from '../../number-setting';
@@ -11,12 +10,12 @@ import { boundedPreference } from '../../number-setting';
 export interface NumberSpec { min: number; max: number; unit: string; optional?: boolean; fallback: number }
 
 export const NUMBER_SPECS = {
-  batchSizeSetting: { min: 1, max: 200, unit: t('个'), fallback: 60 },
-  hoverDelaySetting: { min: 1, max: 60, unit: t('秒'), optional: true, fallback: 5 },
-  seekSecondsSetting: { min: 1, max: 300, unit: t('秒'), fallback: 10 },
-  relatedLimitSetting: { min: 1, max: 60, unit: t('个'), optional: true, fallback: 20 },
-  searchHistoryLimitSetting: { min: 1, max: 50, unit: t('条'), optional: true, fallback: 10 },
-  followScheduleSetting: { min: 15, max: 10080, unit: t('分钟'), optional: true, fallback: 60 },
+  batchSizeSetting: { min: 1, max: 200, unit: 'elementos', fallback: 60 },
+  hoverDelaySetting: { min: 1, max: 60, unit: 'segundos', optional: true, fallback: 5 },
+  seekSecondsSetting: { min: 1, max: 300, unit: 'segundos', fallback: 10 },
+  relatedLimitSetting: { min: 1, max: 60, unit: 'elementos', optional: true, fallback: 20 },
+  searchHistoryLimitSetting: { min: 1, max: 50, unit: 'elementos', optional: true, fallback: 10 },
+  followScheduleSetting: { min: 15, max: 10080, unit: 'minutos', optional: true, fallback: 60 },
 } as const satisfies Record<string, NumberSpec>;
 
 export type NumberSettingId = keyof typeof NUMBER_SPECS;
@@ -26,9 +25,9 @@ const storageKey = (id: string) => `peach.number.${id}`;
 /** 以分钟计的间隔满一天时，单位旁边再说一遍是几天：「10080 分钟」读不出是一周。
  *  不满一天、不是整数或不是分钟的读数返回空串。 */
 export function dayReading(value: number, unit: string): string {
-  if (unit !== t('分钟') || !Number.isInteger(value) || value < 1440) return '';
+  if (unit !== 'minutos' || !Number.isInteger(value) || value < 1440) return '';
   const days = value / 1440;
-  return Number.isInteger(days) ? `${days.toLocaleString()} 天` : `约 ${days.toFixed(1)} 天`;
+  return Number.isInteger(days) ? `${days.toLocaleString()} días` : `unos ${days.toFixed(1)} días`;
 }
 
 export function NumberSetting({ id, label, value, disabled = false, onApply }: {
@@ -65,7 +64,7 @@ export function NumberSetting({ id, label, value, disabled = false, onApply }: {
     if (!node) return;
     if (!node.value || !node.checkValidity()) {
       node.setAttribute('aria-invalid', 'true');
-      setError(`请输入 ${min}–${max} 的整数（${unit}）`);
+      setError(`Escribe un número entero entre ${min} y ${max} (${unit})`);
       return;
     }
     node.removeAttribute('aria-invalid');
@@ -106,7 +105,7 @@ export function NumberSetting({ id, label, value, disabled = false, onApply }: {
   return (
     <div data-number-setting="">
       {optional
-        ? <input type="checkbox" data-toggle="" role="switch" aria-label={`启用${label}`}
+        ? <input type="checkbox" data-toggle="" role="switch" aria-label={`Activar ${label}`}
             checked={on} disabled={blocked} onChange={toggle} />
         : null}
       <div data-number-fields="" hidden={optional && !on}>

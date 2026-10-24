@@ -73,7 +73,7 @@ class Step:
 def _tail(completed: subprocess.CompletedProcess) -> str:
     parts = [str(part).strip() for part in (completed.stdout, completed.stderr) if part]
     text = "\n".join(part for part in parts if part)
-    return text[-OUTPUT_TAIL:] if text else f"退出码 {completed.returncode}，没有输出"
+    return text[-OUTPUT_TAIL:] if text else f"Código de salida {completed.returncode}, sin salida"
 
 
 def _quiet() -> dict:
@@ -111,14 +111,14 @@ class Dependencies:
 
     def _skip(self) -> tuple[str | None, Path | None]:
         if self._frozen:
-            return "打包进程不加载项目 venv，依赖由重启脚本核对", None
+            return "El proceso empaquetado no carga el venv del proyecto; las dependencias las comprueba el script de reinicio", None
         if not (self.root / "uv.lock").is_file():
-            return f"没有 uv.lock：{self.root}", None
+            return f"No hay uv.lock: {self.root}", None
         if not (self.root / ".venv" / "pyvenv.cfg").is_file():
-            return f"没有项目 venv：{self.root / '.venv'}", None
+            return f"No hay venv del proyecto: {self.root / '.venv'}", None
         uv = find_uv(which=self._which, environ=self._environ)
         if uv is None:
-            return "未取得 uv：PATH 与 winget 安装目录里都没有", None
+            return "No se obtuvo uv: no está en PATH ni en la carpeta de instalación de winget", None
         return None, uv
 
     def _uv(self, uv: Path, *extra: str) -> subprocess.CompletedProcess:
@@ -139,17 +139,17 @@ class Dependencies:
         try:
             completed = self._uv(uv, "--check")
         except OSError as exc:
-            return Step("dependencies", "failed", f"uv 没能运行：{exc}")
+            return Step("dependencies", "failed", f"uv no pudo ejecutarse: {exc}")
         if completed.returncode == 0:
-            return Step("dependencies", "current", "项目 venv 与 uv.lock 一致")
+            return Step("dependencies", "current", "El venv del proyecto coincide con uv.lock")
         output = f"{completed.stdout or ''}\n{completed.stderr or ''}"
         if "outdated" not in output:
-            return Step("dependencies", "failed", f"核对依赖失败：{_tail(completed)}")
+            return Step("dependencies", "failed", f"Falló la comprobación de dependencias: {_tail(completed)}")
         wanted = [line.strip()[2:] for line in output.splitlines()
                   if line.strip().startswith("+ ")]
-        listed = "、".join(wanted[:6]) + ("等" if len(wanted) > 6 else "")
+        listed = "、".join(wanted[:6]) + ("etc." if len(wanted) > 6 else "")
         return Step("dependencies", "stale",
-                    f"项目 venv 与 uv.lock 不一致，要装 {len(wanted)} 个包" + (f"：{listed}" if listed else ""))
+                    f"El venv del proyecto no coincide con uv.lock; hay que instalar {len(wanted)} paquetes" + (f"：{listed}" if listed else ""))
 
     def sync(self) -> Step:
         checked = self.check()
@@ -160,32 +160,32 @@ class Dependencies:
         try:
             completed = self._uv(uv)
         except OSError as exc:
-            return Step("dependencies", "failed", f"uv 没能运行：{exc}")
+            return Step("dependencies", "failed", f"uv no pudo ejecutarse: {exc}")
         if completed.returncode != 0:
-            return Step("dependencies", "failed", f"uv sync 失败：{_tail(completed)}")
+            return Step("dependencies", "failed", f"Falló uv sync: {_tail(completed)}")
         return Step("dependencies", "synced",
-                    f"已按 uv.lock 同步依赖（{checked.message}，用时 {self._clock() - started:.1f} 秒）")
+                    f"Dependencias sincronizadas con uv.lock ({checked.message}, en {self._clock() - started:.1f} segundos)")
 
 
 def ledger_writer(*, replication_enabled: bool, db: Path, shared_db: Path,
                   state_dir: Path) -> tuple[bool, str]:
     """本机是不是账本写入端。只读：不像 `sync.device_id` 那样在缺文件时写一个新标识。"""
     if not replication_enabled:
-        return True, "replication.enabled = false，按独立写者"
+        return True, "replication.enabled = false; se trata como escritor independiente"
     path = Path(state_dir) / "device-id"
     try:
         device = path.read_text(encoding="utf-8").strip()
     except OSError:
         device = ""
     if not device:
-        return False, "本机没有 device-id，判不出是不是写入端"
+        return False, "Este equipo no tiene device-id; no se puede saber si es el que escribe"
     from .sync import writer_device
     owner = writer_device(Path(db), Path(shared_db))
     if owner is None:
-        return False, "没有可验证的写入端"
+        return False, "No hay un equipo con escritura verificable"
     if owner != device:
-        return False, f"写入端是 {owner}，本机是只读端"
-    return True, "本机是写入端"
+        return False, f"El equipo con escritura es {owner}; este equipo es de solo lectura"
+    return True, "Este equipo tiene permiso de escritura"
 
 
 class Migrations:
@@ -211,36 +211,34 @@ class Migrations:
 
     def apply(self) -> Step:
         if not self.db.is_file():
-            return Step("migrations", "skipped", f"数据库不存在：{self.db}")
+            return Step("migrations", "skipped", f"La base de datos no existe: {self.db}")
         writer, why = self._writer()
         if not writer:
-            return Step("migrations", "skipped", f"不迁移：{why}")
+            return Step("migrations", "skipped", f"Sin migrar: {why}")
         try:
             executable = self._peach()
             status = self._migrate(executable, "status")
         except OSError as exc:
-            return Step("migrations", "failed", f"迁移没能启动：{exc}")
+            return Step("migrations", "failed", f"La migración no pudo iniciarse: {exc}")
         if status.returncode != 0:
-            return Step("migrations", "failed", f"migrate status 失败：{_tail(status)}")
+            return Step("migrations", "failed", f"Falló migrate status: {_tail(status)}")
         # `_migrate` 打的是 `migrations: <总数>, pending: <待迁移数>`。
         found = re.search(r"pending:\s*(\d+)", status.stdout or "")
         if found is None:
-            return Step("migrations", "failed", f"migrate status 没有报待迁移数：{_tail(status)}")
+            return Step("migrations", "failed", f"migrate status no informó cuántas migraciones faltan: {_tail(status)}")
         if int(found.group(1)) == 0:
-            return Step("migrations", "current", "数据库结构已是最新")
+            return Step("migrations", "current", "La estructura de la base de datos está al día")
         try:
             upgrade = self._migrate(executable, "upgrade", "--yes")
         except OSError as exc:
-            return Step("migrations", "failed", f"迁移没能启动：{exc}")
+            return Step("migrations", "failed", f"La migración no pudo iniciarse: {exc}")
         if upgrade.returncode != 0:
             return Step("migrations", "failed",
-                        f"执行 {found.group(1)} 个待迁移时失败，数据库目录里有迁移前备份："
-                        f"{_tail(upgrade)}")
+                        f"Falló al aplicar {found.group(1)} migraciones pendientes; hay una copia previa en la carpeta de la base de datos: {_tail(upgrade)}")
         applied = re.search(r"^applied:\s*(.+)$", upgrade.stdout or "", re.MULTILINE)
         backup = re.search(r"^backup:\s*(.+)$", upgrade.stdout or "", re.MULTILINE)
         return Step("migrations", "applied",
-                    f"已执行迁移 {applied.group(1).strip() if applied else found.group(1) + ' 个'}"
-                    f"，迁移前备份 {backup.group(1).strip() if backup else '未取得'}")
+                    f"Migración {applied.group(1).strip() if applied else found.group(1) + ' 个'} aplicada; copia previa en {backup.group(1).strip() if backup else '未取得'}")
 
 
 def record(state_dir: Path, steps: Iterable[Step], *, pid: int | None = None) -> dict:
@@ -297,9 +295,9 @@ class TaskGate:
 
     def refusal(self) -> str:
         if self.error is not None:
-            return f"拒绝重启：读不了任务表（{self.error}）；确认没有任务在跑后加 --force"
+            return f"No se reinicia: no se puede leer la tabla de tareas ({self.error}); confirma que no hay tareas en marcha y usa --force"
         listed = "、".join(run.describe() for run in self.blocking)
-        return f"拒绝重启：这些任务重启后续跑不了：{listed}；等它们结束，或加 --force"
+        return f"No se reinicia: estas tareas no podrían continuar tras reiniciar: {listed}; espera a que terminen o usa --force"
 
     def as_dict(self) -> dict:
         return {
@@ -315,7 +313,7 @@ def task_gate(db: Path, *, host: str, alive: Callable[[int], bool]) -> TaskGate:
     """只读查 `task_run`，把本机的活跃行分类。"""
     db = Path(db)
     if not db.is_file():
-        return TaskGate(note=f"数据库不存在：{db}")
+        return TaskGate(note=f"La base de datos no existe: {db}")
     try:
         with closing(sqlite3.connect(db.resolve().as_uri() + "?mode=ro", uri=True,
                                      timeout=2)) as connection:
@@ -326,7 +324,7 @@ def task_gate(db: Path, *, host: str, alive: Callable[[int], bool]) -> TaskGate:
                 (host,)).fetchall()
     except sqlite3.OperationalError as exc:
         if "no such table" in str(exc) or "no such column" in str(exc):
-            return TaskGate(note=f"数据库里还没有可判的任务表：{exc}")
+            return TaskGate(note=f"La base de datos aún no tiene una tabla de tareas evaluable: {exc}")
         return TaskGate(error=str(exc))
     except sqlite3.Error as exc:
         return TaskGate(error=str(exc))
@@ -370,8 +368,7 @@ class RestartPreparation:
         holding = self.holders(tray_pid)
         if holding:
             listed = "、".join(str(pid) for pid in holding)
-            return (f"拒绝重启：{self.checked.message}，但这些进程还在用项目 venv："
-                    f"PID {listed}；先停掉它们再重启")
+            return (f"No se reinicia: {self.checked.message}, pero estos procesos siguen usando el venv del proyecto: PID {listed}; detenlos antes de reiniciar")
         return None
 
     def while_stopped(self) -> tuple[bool, str | None]:

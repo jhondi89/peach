@@ -1,4 +1,3 @@
-import { t } from '@peach/i18n';
 import { StatusDot } from '@/components/base/badges/status-dot';
 import { cx } from '@/utils/cx';
 import './connection-status.css';
@@ -9,6 +8,6 @@ export function ConnectionStatus({ online }: { online: boolean | undefined }) {
     className={cx('inline-flex items-center gap-1.5 whitespace-nowrap text-body-2-medium',
       online === true ? 'text-notification-success-foreground' : online === false ? 'text-text-error-primary' : 'text-text-secondary')}>
     <StatusDot color={online === undefined ? 'indigo' : 'green'} />
-    {online === true ? t('在线') : online === false ? t('离线') : t('未检测')}
+    {online === true ? 'En línea' : online === false ? 'Sin conexión' : 'Sin comprobar'}
   </span>;
 }

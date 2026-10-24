@@ -12,7 +12,6 @@
  * 整块只有一种行：读数写在它所属那个开关的说明里，配置通过共用代码块展示与复制，
  * 前缀表排在最后。读数与配置跟着各自的开关收起：网盘通道关着时那段配置指向一件不会
  * 发生的事；本机监视在总开关关着时读作「没有运行」，分不出是没开还是坏了。 */
-import { t } from '@peach/i18n';
 import { useState, type FormEvent } from 'react';
 import { RiDeleteBinLine } from '@remixicon/react';
 
@@ -62,42 +61,42 @@ export function PushDiscoveryForm({ initial, receipt }: {
       enabled: state.enabled, watch_local: state.watch_local, cloud: state.cloud, prefixes: rows,
     };
     void action.run('save', (signal) => apiSend<PushDiscoveryState>(SAVE_URL, body, 'POST', signal),
-      (next) => settle(next, t('已保存配置')), (cause) => setFailure(errorMessage(cause)));
+      (next) => settle(next, 'Configuración guardada'), (cause) => setFailure(errorMessage(cause)));
   };
 
   const rotate = () => {
     void action.run('secret', (signal) => apiSend<PushDiscoveryState>(SECRET_URL, {}, 'POST', signal),
-      (next) => settle(next, '已更换共享密钥'), (cause) => setFailure(errorMessage(cause)));
+      (next) => settle(next, 'Clave compartida cambiada'), (cause) => setFailure(errorMessage(cause)));
   };
 
-  const ingested = `已入库 ${live.queue.ingested} 个文件`
-    + (live.queue.pending ? `，队列里还有 ${live.queue.pending} 条` : '');
+  const ingested = `${live.queue.ingested} archivos importados`
+    + (live.queue.pending ? `, quedan ${live.queue.pending} en la cola` : '');
   const watching = live.local_running
-    ? `正在监视 ${live.local_roots.join('、')}` : live.local_message || '没有运行';
+    ? `Vigilando ${live.local_roots.join('、')}` : live.local_message || 'No está en marcha';
 
   return (
-    <Section title="推送发现" onSubmit={submit}>
+    <Section title="Detección automática" onSubmit={submit}>
       <Rows>
-        <SettingsRow label="新文件落地就入库" description={live.enabled ? ingested : undefined}>
-          <Switch aria-label="新文件落地就入库" isSelected={state.enabled} isDisabled={!state.available}
+        <SettingsRow label="Importar en cuanto llegue un archivo nuevo" description={live.enabled ? ingested : undefined}>
+          <Switch aria-label="Importar en cuanto llegue un archivo nuevo" isSelected={state.enabled} isDisabled={!state.available}
             onChange={(enabled) => setState({ ...state, enabled })} />
         </SettingsRow>
-        <SettingsRow label="监视本机文件夹" description={live.enabled && live.watch_local ? watching : undefined}>
-          <Switch aria-label="监视本机文件夹" isSelected={state.watch_local}
+        <SettingsRow label="Vigilar carpetas de este equipo" description={live.enabled && live.watch_local ? watching : undefined}>
+          <Switch aria-label="Vigilar carpetas de este equipo" isSelected={state.watch_local}
             isDisabled={!state.available || !state.enabled}
             onChange={(watchLocal) => setState({ ...state, watch_local: watchLocal })} />
         </SettingsRow>
-        <SettingsRow label="接收 CloudDrive2 通知">
-          <Switch aria-label="接收 CloudDrive2 通知" isSelected={state.cloud}
+        <SettingsRow label="Recibir avisos de CloudDrive2">
+          <Switch aria-label="Recibir avisos de CloudDrive2" isSelected={state.cloud}
             isDisabled={!state.available || !state.enabled}
             onChange={(cloud) => setState({ ...state, cloud })} />
         </SettingsRow>
         {live.enabled && live.cloud ? (
-          <SettingsRow label="Webhook 配置" description={live.config_toml
-            ? '贴进 CloudDrive2「设置 → Webhooks」，需要会员；更换密钥后要重贴。'
+          <SettingsRow label="Configuración del webhook" description={live.config_toml
+            ? 'Pégala en CloudDrive2, “Ajustes → Webhooks” (requiere membresía); si cambias la clave, vuelve a pegarla.'
             : live.origin
-              ? '还没有共享密钥，保存配置后生成。'
-              : '要先有 CloudDrive2 能访问的 HTTPS 地址才能生成。'}>
+              ? 'Aún no hay clave compartida; se genera al guardar la configuración.'
+              : 'Primero necesitas una dirección HTTPS a la que CloudDrive2 pueda acceder.'}>
           </SettingsRow>
         ) : null}
       </Rows>
@@ -106,11 +105,10 @@ export function PushDiscoveryForm({ initial, receipt }: {
           <div className="flex flex-col gap-3">
             {/* 收起来是因为抄它的人不用读它：三十行里只有地址和密钥两处跟这台机器有关，
                 两处都已经填好了。展开是留给要核对推到哪儿的那一次。 */}
-            <Disclosure summary="查看配置">
-              <CodeBlock code={live.config_toml} language="toml" label="CloudDrive2 配置" bounded={false} copyLabel="复制配置"
-                onCopy={() => receipt('已复制 CloudDrive2 配置')} />
-              <Help>Windows 桌面版粘贴后显示「无效」时，把这段存成 .toml 文件，放进
-                %LOCALAPPDATA%\CloudDrive.WinUI\webhooks\ 目录。</Help>
+            <Disclosure summary="Ver configuración">
+              <CodeBlock code={live.config_toml} language="toml" label="Configuración de CloudDrive2" bounded={false} copyLabel="Copiar configuración"
+                onCopy={() => receipt('Configuración de CloudDrive2 copiada')} />
+              <Help>Si en la versión de escritorio de Windows aparece “no válido” al pegarla, guarda esto como archivo .toml en la carpeta %LOCALAPPDATA%\CloudDrive.WinUI\webhooks\.</Help>
             </Disclosure>
           </div>
         </Stack>
@@ -118,18 +116,18 @@ export function PushDiscoveryForm({ initial, receipt }: {
       {state.enabled && state.cloud ? (
         <Stack divided>
           <div className="flex flex-col gap-3">
-            <FieldLabel>云端路径前缀</FieldLabel>
-            <div role="group" aria-label="云端路径前缀" className="flex flex-col gap-3">
+            <FieldLabel>Prefijo de ruta en la nube</FieldLabel>
+            <div role="group" aria-label="Prefijo de ruta en la nube" className="flex flex-col gap-3">
               {rows.map((row, index) => (
                 <div key={index} className="flex items-start gap-2">
-                  <Input className="min-w-0 flex-1" aria-label={`云端路径前缀 ${index + 1}`}
+                  <Input className="min-w-0 flex-1" aria-label={`Prefijo de ruta en la nube ${index + 1}`}
                     placeholder="/115" autoComplete="off" maxLength={200} value={row.prefix}
                     onChange={(prefix) => edit(index, { prefix })} />
-                  <Select aria-label={`前缀 ${index + 1} 对应的媒体根`} selectedKey={row.root}
+                  <Select aria-label={`Raíz de medios para el prefijo ${index + 1}`} selectedKey={row.root}
                     onSelectionChange={(key) => { if (key !== null) edit(index, { root: String(key) }); }}>
                     {roots.map((root) => <SelectItem key={root} id={root}>{root}</SelectItem>)}
                   </Select>
-                  <Button variant="danger" iconOnly leadingIcon={RiDeleteBinLine} aria-label="移除这一条"
+                  <Button variant="danger" iconOnly leadingIcon={RiDeleteBinLine} aria-label="Quitar esta entrada"
                     onClick={() => setRows((list) => list.filter((_row, i) => i !== index))} />
                 </div>
               ))}
@@ -137,7 +135,7 @@ export function PushDiscoveryForm({ initial, receipt }: {
             <div>
               <Button variant="secondary" size="small"
                 onClick={() => setRows((list) => [...list, { prefix: '', root: roots[0] ?? '' }])}>
-                添加前缀
+                Añadir prefijo
               </Button>
             </div>
           </div>
@@ -150,10 +148,10 @@ export function PushDiscoveryForm({ initial, receipt }: {
       <Footer>
         {live.enabled && live.cloud && live.config_toml ? (
           <Button variant="secondary" onClick={rotate} disabled={!state.available}
-            {...busyProps(action.busy === 'secret')}>更换密钥</Button>
+            {...busyProps(action.busy === 'secret')}>Cambiar clave</Button>
         ) : null}
         <Button type="submit" disabled={!state.available} {...busyProps(action.busy === 'save')}>
-          {t('保存配置')}
+          Guardar configuración
         </Button>
       </Footer>
     </Section>

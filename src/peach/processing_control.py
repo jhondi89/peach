@@ -26,7 +26,7 @@ IO_INTERVALS = {
 
 def valid_mode(value):
     if value not in MODES:
-        raise ValueError('请选择低占用、标准或高强度模式')
+        raise ValueError("Elige modo de bajo consumo, normal o alta intensidad")
     return value
 
 
@@ -178,7 +178,7 @@ class ProcessingControl:
     def request(self, action, job_id=None, mode=None):
         with self.lock:
             if job_id is not None and job_id != self.job_id:
-                raise ValueError('任务已变化，请刷新页面后重试')
+                raise ValueError("La tarea cambió; recarga la página e inténtalo de nuevo")
             if action == 'set_speed':
                 self.mode = valid_mode(mode)
                 self.next_work.clear()
@@ -216,7 +216,7 @@ class ProcessingControl:
             check_pause(self.db_path)
             self.refresh()
             if not self.active():
-                raise InterruptedError('处理任务已停止')
+                raise InterruptedError("La tarea de procesamiento se detuvo")
             with self.lock:
                 paused, mode = self.paused, self.mode
                 self.event.clear()
@@ -278,10 +278,10 @@ def initial_estimate(config, db_path, stage, asset_ids=None, mode=None):
                 eta_seconds_min=max(1, math.ceil(estimate * 0.4)) if known and count else 0 if known else None,
                 eta_seconds_max=max(1, math.ceil(estimate * 2.5)) if known and count else 0 if known else None,
                 eta_kind='historical' if historical else 'estimating', eta_initial=True,
-                eta_scope='本趟处理（已登记文件，未含未知新增）' if stage in ('scan', 'all') else '本趟处理',
-                eta_basis=f'根据已登记的 {count} 个视频、{size / 1024**3:.1f} GiB'
-                          + ('及本机同类历史耗时粗估' if historical else '粗估，运行后校准')
-                          if known else '正在统计新目录的文件数量和大小',
+                eta_scope="Este proceso (archivos registrados, sin contar nuevos desconocidos)" if stage in ('scan', 'all') else "Este proceso",
+                eta_basis=f"Según {count} videos registrados, {size / 1024**3:.1f} GiB"
+                          + ("y el tiempo histórico de tareas similares en este equipo" if historical else "Estimación aproximada; se ajusta al avanzar")
+                          if known else "Contando los archivos y el tamaño de las carpetas nuevas",
                 estimate_file_count=count, estimate_bytes=size)
 
 
@@ -308,8 +308,8 @@ class ProcessingEstimate:
         known = phase in rates and total > 0
         state.update(eta_seconds_min=math.ceil(seconds * 0.4) if known else None,
                      eta_seconds_max=math.ceil(seconds * 2.5) if known else None,
-                     eta_kind='estimating', eta_initial=True, eta_scope='整趟任务',
-                     eta_basis='根据当前阶段待处理数量粗估，运行后校准')
+                     eta_kind='estimating', eta_initial=True, eta_scope="Toda la tarea",
+                     eta_basis="Estimación aproximada según lo pendiente de la etapa actual; se ajusta al avanzar")
 
     def _total_estimate(self, state, phase, done, total, now):
         """当前阶段用独立样本校准，待执行阶段保留各自的粗估范围。"""
@@ -337,7 +337,7 @@ class ProcessingEstimate:
         state.update(eta_seconds_min=math.ceil(low) if high else None,
                      eta_seconds_max=math.ceil(high) if high else None,
                      eta_kind='estimating' if rough or not high else 'measured', eta_initial=rough,
-                     eta_scope='整趟任务', eta_basis='汇总当前阶段与所有待执行阶段的剩余耗时')
+                     eta_scope="Toda la tarea", eta_basis="Suma el tiempo restante de la etapa actual y de todas las etapas pendientes")
 
     def update(self, state):
         mode = self.control.mode if self.control is not None else self.mode
@@ -393,5 +393,5 @@ class ProcessingEstimate:
         remaining = (total - done) * per_item
         state.update(eta_seconds_min=max(1, math.ceil(remaining * (1 - uncertainty))),
                      eta_seconds_max=max(1, math.ceil(remaining * (1 + uncertainty))),
-                     eta_kind='measured', eta_initial=False, eta_scope='整趟任务',
-                     eta_basis=f'根据当前阶段最近完成的 {sampled} 个视频耗时校准')
+                     eta_kind='measured', eta_initial=False, eta_scope="Toda la tarea",
+                     eta_basis=f"Ajustado según el tiempo de los últimos {sampled} videos completados en la etapa actual")

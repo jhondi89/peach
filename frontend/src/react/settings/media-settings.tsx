@@ -4,7 +4,6 @@
  * 保存成功后显示持久提示和访问地址，等待服务就绪后跳转。
  *
  * 校验原因由服务端按字段给（400 的 `errors`），页面写回原位，不在前端复制一份路径与端口的判定。 */
-import { t } from '@peach/i18n';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -61,7 +60,7 @@ const fieldErrorsOf = (cause: unknown): FieldErrors | null => {
 export function MediaSettings({ data, receipt, panel }: ConfigurationGroupProps) {
   return (
     <div {...groupRoot(panel)}>
-      {data.editable ? <MediaForm data={data} receipt={receipt} /> : <Note tone="neutral" title="只读">{data.notice}</Note>}
+      {data.editable ? <MediaForm data={data} receipt={receipt} /> : <Note tone="neutral" title="Solo lectura">{data.notice}</Note>}
       {data.editable ? null : <MountStatus data={data} />}
       {data.push_discovery
         ? <PushDiscoveryForm initial={data.push_discovery} receipt={receipt} />
@@ -106,7 +105,7 @@ function MediaForm({ data, receipt }: ConfigurationGroupProps) {
     }, 'POST', signal), (result) => {
       revision.current = result.revision;
       setRowErrors([]);
-      receipt(t('已保存配置'));
+      receipt('Configuración guardada');
       setSaved(result);
     }, (cause) => {
       const fields = fieldErrorsOf(cause);
@@ -117,10 +116,10 @@ function MediaForm({ data, receipt }: ConfigurationGroupProps) {
 
   if (saved) {
     return (
-      <Section title="媒体目录">
+      <Section title="Carpetas de medios">
         <Stack>
-          <Note tone="success" title="配置已保存">
-            Peach 正在重新启动。稍后自动跳转，或点击<LinkButton href={saved.url} size="small">进入馆藏</LinkButton>。
+          <Note tone="success" title="Configuración guardada">
+            Peach se está reiniciando. Te llevará solo en un momento, o pulsa<LinkButton href={saved.url} size="small">Ir a la colección</LinkButton>。
           </Note>
         </Stack>
       </Section>
@@ -132,13 +131,13 @@ function MediaForm({ data, receipt }: ConfigurationGroupProps) {
   const cloud = rows.some((row) => isCloudSource(row.location));
   const missing = cloud ? (data.mount_dependencies ?? []).filter((dependency) => !dependency.available) : [];
   return (
-    <Section title="媒体目录" onSubmit={submit}>
+    <Section title="Carpetas de medios" onSubmit={submit}>
       <Stack>
         <div className="flex flex-col gap-3">
-          <FieldLabel>媒体目录</FieldLabel>
-          <div role="group" aria-label="媒体目录" className="flex flex-col gap-3">
+          <FieldLabel>Carpetas de medios</FieldLabel>
+          <div role="group" aria-label="Carpetas de medios" className="flex flex-col gap-3">
             {rows.map((row, index) => (
-              <FolderRow key={index} label={`媒体目录 ${index + 1}`} path={row.path}
+              <FolderRow key={index} label={`Carpeta de medios ${index + 1}`} path={row.path}
                 onPath={(path) => edit(index, { path })} error={rowErrors[index]} inputRef={inputRef(index)}
                 picking={picking === index} onPick={() => void pick(index)}
                 onRemove={rows.length > 1 ? () => remove(index) : undefined}
@@ -146,28 +145,28 @@ function MediaForm({ data, receipt }: ConfigurationGroupProps) {
                 <SourceSelect index={index} value={row.location}
                   onChange={(location) => edit(index, { location, cost: location === 'local' ? 'free' : '' })} />
                 <MediaReadPolicy index={index} cost={row.cost} onChange={(cost) => edit(index, { cost })}
-                  error={requireReadPolicy && !row.cost ? '请选择媒体读取策略' : undefined} />
-                <Input className="min-w-40 flex-1" aria-label={`媒体库名称 ${index + 1}`} maxLength={80}
-                  placeholder="媒体库名称"
+                  error={requireReadPolicy && !row.cost ? 'Elige cómo se leen los medios' : undefined} />
+                <Input className="min-w-40 flex-1" aria-label={`Nombre de la biblioteca ${index + 1}`} maxLength={80}
+                  placeholder="Nombre de la biblioteca"
                   value={row.library} onChange={(library) => edit(index, { library })} />
-                <LibraryIconPicker label={`媒体库图标 ${index + 1}`} value={row.library_icon} kind={row.location}
+                <LibraryIconPicker label={`Icono de la biblioteca ${index + 1}`} value={row.library_icon} kind={row.location}
                   onChange={(library_icon) => edit(index, { library_icon })} />
               </FolderRow>
             ))}
           </div>
-          <Button variant="secondary" className="self-start" onClick={add}>添加文件夹</Button>
+          <Button variant="secondary" className="self-start" onClick={add}>Añadir carpeta</Button>
         </div>
         {cloud ? <><MediaReadPolicyHelp /><CloudDriveGuide /></> : null}
         {missing.map((dependency) => (
           <Help key={dependency.name}>
-            未检测到 {dependency.name}。<ExternalLink href={dependency.download_url}>下载 {dependency.name}</ExternalLink>
+            No se detectó {dependency.name}.<ExternalLink href={dependency.download_url}>Descargar {dependency.name}</ExternalLink>
           </Help>
         ))}
-        <Checkbox isSelected={scanNow} onChange={setScanNow}>保存后扫描并补全资料</Checkbox>
-        {failure ? <Note tone="error" title={t('没有保存')}>{failure}</Note> : null}
+        <Checkbox isSelected={scanNow} onChange={setScanNow}>Al guardar, escanear y completar datos</Checkbox>
+        {failure ? <Note tone="error" title="No guardado">{failure}</Note> : null}
       </Stack>
-      <Footer status="保存后 Peach 会重新启动。">
-        <Button type="submit" {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button>
+      <Footer status="Al guardar, Peach se reiniciará.">
+        <Button type="submit" {...busyProps(action.busy === 'save')}>Guardar configuración</Button>
       </Footer>
     </Section>
   );
@@ -186,17 +185,17 @@ function MountStatus({ data }: { data: ConfigurationData }) {
   const refresh = () => void action.run('refresh', (signal) => fetchConfiguration(signal),
     (result) => queryClient.setQueryData(CONFIGURATION_KEY, result));
   return (
-    <Section title="挂载状态">
+    <Section title="Estado de los montajes">
       <FactList>
         {sources.map((row, index) => (
           <Fact key={index} term={<><SourceMark mark={sourceMark(row.location)} />{sourceName(row.location)}</>}>
-            {row.path || '未配置挂载点'}<MountBadge online={row.online} />
+            {row.path || 'No hay punto de montaje configurado'}<MountBadge online={row.online} />
           </Fact>
         ))}
       </FactList>
       {action.error ? <Stack divided><ErrorText>{action.error}</ErrorText></Stack> : null}
       <Footer>
-        <Button variant="secondary" onClick={refresh} {...busyProps(action.busy === 'refresh')}>刷新挂载状态</Button>
+        <Button variant="secondary" onClick={refresh} {...busyProps(action.busy === 'refresh')}>Actualizar estado de montajes</Button>
       </Footer>
     </Section>
   );

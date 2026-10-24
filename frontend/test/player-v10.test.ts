@@ -51,11 +51,11 @@ describe('Video.js 10 播放会话', () => {
 
   it('媒体错误可补充来源状态文案，展示错误不会再次触发错误处理', () => {
     const { player, media } = mounted();
-    const callback = vi.fn(() => player.error({ code: 2, message: '媒体目录无法访问' }));
+    const callback = vi.fn(() => player.error({ code: 2, message: 'No se puede acceder a la carpeta de medios' }));
     player.on('error', callback);
     media.dispatchEvent(new Event('error'));
     expect(callback).toHaveBeenCalledOnce();
-    expect(player.error()).toEqual({ code: 2, message: '媒体目录无法访问' });
+    expect(player.error()).toEqual({ code: 2, message: 'No se puede acceder a la carpeta de medios' });
     player.dispose();
   });
 
@@ -92,7 +92,7 @@ describe('Video.js 10 播放会话', () => {
     const load = vi.spyOn(video, 'load').mockImplementation(() => {});
     const played = vi.fn(); player.on('play', played);
     video.dispatchEvent(new Event('play')); expect(played).toHaveBeenCalledOnce();
-    const track = document.createElement('track'); track.label = '中文'; video.append(track);
+    const track = document.createElement('track'); track.label = 'Chino'; video.append(track);
     player.src({ src: '/example.mpd', type: 'application/dash+xml' });
     expect(media.adapter.destroy).toHaveBeenCalledOnce();
     expect(player.el().querySelector('dash-video > video')).toBe(video);

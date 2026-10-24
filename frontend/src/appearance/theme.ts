@@ -5,12 +5,11 @@
  * 实际深浅给 <html> 加减 `dark` 类，跟随系统时也算上系统那一档。地址栏色块跟着同一次调用走——两枚
  * meta 各代表一档，选中的那枚开到 `all`、另一枚关成 `not all`，否则手机上的地址栏还留在系统那一档。
  * `index.html` 的首屏内联脚本做的是同三件事，它只负责第一帧，之后都从这里出。 */
-import { t } from '@peach/i18n';
 import { appSettingsStore } from './settings';
 
 /** `[值, 显示名, 字形]`：设置面板那一组三档。显示器那枚字形说的是「跟着这台显示器」。 */
 export const THEME_OPTIONS: readonly (readonly [value: string, label: string, icon: string])[] = [
-  ['system', t('跟随系统'), 'monitor'], ['light', t('浅色'), 'sun'], ['dark', t('深色'), 'moon'],
+  ['system', 'Según el sistema', 'monitor'], ['light', 'Claro', 'sun'], ['dark', 'Oscuro', 'moon'],
 ];
 
 let systemDark: MediaQueryList | null = null;

@@ -280,19 +280,19 @@ def search(root: Path, code: str, *, transport=None, min_size: int = 0,
                 warnings.append(f"{source.label}：{error}")
             except Exception:
                 items = []
-                warnings.append(f"{source.label}：未取得")
+                warnings.append(f"{source.label}: no obtenido")
             items = [item for item in items if min_size <= item["size"] <= max_size]
             found.extend(items)
             if stop_on_preferred and source.key == "manko" and any(item["resolution"] >= HIGH_QUALITY for item in items):
-                trace.append(f"{source.label}：取得 1080p/2160p，已短路")
+                trace.append(f"{source.label}: se obtuvo 1080p/2160p, se detiene la búsqueda")
                 break
-            trace.append(f"{source.label}：取得 {len(items)} 条" if items else f"{source.label}：无结果")
+            trace.append(f"{source.label}: {len(items)} obtenidos" if items else f"{source.label}: sin resultados")
     finally:
         fetcher.close()
     incomplete = bool(warnings) and not found
     result = {"items": rank_candidates(found, goal), "warnings": warnings, "trace": trace,
             'state': 'error' if incomplete else 'ready',
-            'error': '部分来源未取得，请稍后重试或检查来源连接。' if incomplete else '',
+            'error': "No se obtuvieron algunas fuentes; inténtalo más tarde o revisa la conexión de las fuentes." if incomplete else '',
             "next_sources": [source.label for source in CHAIN[3:]],
             "reference_only": list(REFERENCE_ONLY)}
     if not stop_on_preferred:

@@ -20,7 +20,7 @@ def _template(path: Path) -> bytes:
 
     # WS_POPUP | WS_CAPTION | WS_SYSMENU | DS_MODALFRAME | DS_CENTER | DS_SETFONT
     data = bytearray(struct.pack('<IIHhhhh', 0x80C808C0, 0, 5, 0, 0, 360, 136))
-    data.extend(b'\0\0\0\0' + text('Peach 诊断报告') + struct.pack('<H', 9) + text('Segoe UI'))
+    data.extend(b'\0\0\0\0' + text("Informe de diagnóstico de Peach") + struct.pack('<H', 9) + text('Segoe UI'))
 
     def control(identifier, class_id, label, x, y, width, height, style):
         data.extend(b'\0' * (-len(data) % 4))
@@ -28,12 +28,12 @@ def _template(path: Path) -> bytes:
                                 x, y, width, height, identifier))
         data.extend(struct.pack('<HH', 0xFFFF, class_id) + text(label) + b'\0\0')
 
-    control(0xFFFF, 0x82, '诊断报告已保存，可打开目录或文件。', 12, 12, 336, 18, 0)
+    control(0xFFFF, 0x82, "Informe de diagnóstico guardado; puedes abrir la carpeta o el archivo.", 12, 12, 336, 18, 0)
     # 只读多行 EDIT 支持选择、复制和垂直滚动，长路径不依赖标签折行。
     control(1003, 0x81, str(path), 12, 36, 336, 54, 0x00A10844)
-    control(OPEN_DIRECTORY, 0x80, '打开目录', 108, 106, 76, 18, 0x10000)
-    control(OPEN_FILE, 0x80, '打开文件', 190, 106, 76, 18, 0x10000)
-    control(CLOSE, 0x80, '关闭', 272, 106, 76, 18, 0x10001)
+    control(OPEN_DIRECTORY, 0x80, "Abrir carpeta", 108, 106, 76, 18, 0x10000)
+    control(OPEN_FILE, 0x80, "Abrir archivo", 190, 106, 76, 18, 0x10000)
+    control(CLOSE, 0x80, "Cerrar", 272, 106, 76, 18, 0x10001)
     return bytes(data)
 
 

@@ -47,7 +47,7 @@ function Flat({ read, start = async () => RUNNING, onFinish, onError }: { read: 
   return (
     <>
       <p>{snapshot(task.job, task.outcome, task.running)}</p>
-      <button type="button" onClick={() => task.start.mutate()}>启动</button>
+      <button type="button" onClick={() => task.start.mutate()}>Al iniciar</button>
     </>
   );
 }
@@ -61,7 +61,7 @@ function Nested({ read, onFinish }: { read: () => Answer<Card> } & Hooks) {
   return (
     <>
       <p>{`name=${task.query.data?.name ?? ''};${snapshot(task.job, task.outcome, task.running)}`}</p>
-      <button type="button" onClick={() => task.start.mutate()}>启动</button>
+      <button type="button" onClick={() => task.start.mutate()}>Al iniciar</button>
     </>
   );
 }
@@ -101,7 +101,7 @@ it('点下启动到重读回来之间，上一趟的终态不冒充这一趟；�
   const host = await open(<Flat read={() => answer} onFinish={onFinish} />);
   const slow = pending<Job>();
   answer = slow.answer;
-  await click(buttonNamed('启动', host));
+  await click(buttonNamed('Al iniciar', host));
   await settle();
   expect(onFinish).not.toHaveBeenCalled();
   expect(host.textContent).toContain('job=running:;outcome=;running=true');
@@ -123,7 +123,7 @@ it('缓存整张卡时只换任务那一格，卡上别的字段在重读回来�
   const host = await open(<Nested read={() => answer} onFinish={onFinish} />);
   const slow = pending<Card>();
   answer = slow.answer;
-  await click(buttonNamed('启动', host));
+  await click(buttonNamed('Al iniciar', host));
   await settle();
   expect(host.textContent).toContain('name=钉住的版本;job=running:;outcome=;running=true');
   expect(onFinish).not.toHaveBeenCalled();
@@ -139,7 +139,7 @@ it('启动被拒时交给 onError，旧终态不当成这一趟的结果', async
   const refused = new Error('已有一趟在跑');
   const host = await open(<Flat read={() => STALE} onFinish={onFinish} onError={onError}
     start={async () => { throw refused }} />);
-  await click(buttonNamed('启动', host));
+  await click(buttonNamed('Al iniciar', host));
   await settle();
   expect(onError.mock.calls).toEqual([[refused]]);
   expect(onFinish).not.toHaveBeenCalled();

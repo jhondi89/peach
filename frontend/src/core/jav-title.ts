@@ -55,16 +55,20 @@ export function javTitleParts(it:Item,value=it?.name):{code:string;title:string;
   return {code:displayCode,title,badges};
 }
 
+/** Texto visible de cada insignia de edición; la clave es el valor que manda el servidor. */
+const BADGE_TEXT:Record<string,string>={'中字':'Sub. chino','无码':'Sin censura','无码破解':'Sin censura (crack)'};
+const badgeText=(label:string)=>BADGE_TEXT[label]||label;
+
 /** 同一条目的纯文本形态，用于无障碍名称。 */
 export const javDisplayName=(it:Item,value=it?.name)=>{
   const {code,title,badges=[]}=javTitleParts(it,value);
-  return code?[code,...badges,title].filter(Boolean).join(' '):title;
+  return code?[code,...badges.map(badgeText),title].filter(Boolean).join(' '):title;
 };
 
 /** 番号 + 版次徽章 + 标题的 HTML。非 JAV 条目退化成转义后的文件名。 */
 export function javTitleHtml(it:Item,value=it?.name){
   const {code,title,badges=[]}=javTitleParts(it,value);
   if(!code)return esc(title);
-  const edition=badges.map(label=>`<small class="javedition ${label==='中字'?'subtitle':label==='无码'?'uncensored':label==='无码破解'?'cracked':'quality'}">${esc(label)}</small>`).join('');
+  const edition=badges.map(label=>`<small class="javedition ${label==='中字'?'subtitle':label==='无码'?'uncensored':label==='无码破解'?'cracked':'quality'}">${esc(badgeText(label))}</small>`).join('');
   return `<span class="ui-javidentity"><strong class="ui-javcode">${esc(code)}</strong>${edition}</span>${title?` <span class="ui-javtitle">${esc(title)}</span>`:''}`;
 }

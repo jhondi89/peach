@@ -37,39 +37,39 @@ export interface BatchDockApi {
   render(props: BatchDockProps): void;
 }
 
-const CLEAR: BatchAction = { group: 'clear', operation: 'clear', label: '取消', glyph: 'x' };
+const CLEAR: BatchAction = { group: 'clear', operation: 'clear', label: 'Cancelar', glyph: 'x' };
 
 /** 这一语境下浮条上的键，按从左到右的顺序。「取消」总在最后。 */
 export function batchActions(context: BatchContext, junkDismissed = false): BatchAction[] {
   switch (context) {
     case 'trash':
       return [
-        { group: 'batch', operation: 'restore', label: '还原', glyph: 'rotate-ccw' },
-        { group: 'batch', operation: 'delete', label: '彻底删除', glyph: 'trash', danger: true },
+        { group: 'batch', operation: 'restore', label: 'Restaurar', glyph: 'rotate-ccw' },
+        { group: 'batch', operation: 'delete', label: 'Eliminar definitivamente', glyph: 'trash', danger: true },
         CLEAR,
       ];
     case 'junk':
       return [
         junkDismissed
-          ? { group: 'junk', operation: 'reconsider-junk', label: '重新判断', glyph: 'rotate-ccw' }
-          : { group: 'junk', operation: 'dismiss-junk', label: '不是垃圾', glyph: 'check' },
-        { group: 'junk', operation: 'dispose', label: '移入回收站', glyph: 'trash', danger: true },
+          ? { group: 'junk', operation: 'reconsider-junk', label: 'Volver a evaluar', glyph: 'rotate-ccw' }
+          : { group: 'junk', operation: 'dismiss-junk', label: 'No es basura', glyph: 'check' },
+        { group: 'junk', operation: 'dispose', label: 'Mover a la papelera', glyph: 'trash', danger: true },
         CLEAR,
       ];
     case 'follow':
       return [
-        { group: 'follow', operation: 'save', label: '保存到数据库', glyph: 'bookmark-plus' },
-        { group: 'follow', operation: 'seen', label: '标记已看', glyph: 'eye' },
-        { group: 'follow', operation: 'ignored', label: '忽略', glyph: 'eye-off' },
+        { group: 'follow', operation: 'save', label: 'Guardar en la base de datos', glyph: 'bookmark-plus' },
+        { group: 'follow', operation: 'seen', label: 'Marcar como visto', glyph: 'eye' },
+        { group: 'follow', operation: 'ignored', label: 'Ignorar', glyph: 'eye-off' },
         CLEAR,
       ];
     default:
       return [
-        { group: 'batch', operation: 'like', label: '喜欢', glyph: 'thumbs-up' },
-        { group: 'batch', operation: 'seen', label: '看过', glyph: 'eye' },
-        { group: 'batch', operation: 'later', label: '稍后看', glyph: 'bookmark-plus' },
-        { group: 'region', operation: 'region', label: '判定产地', glyph: 'globe' },
-        { group: 'batch', operation: 'dispose', label: '移入回收站', glyph: 'trash', danger: true },
+        { group: 'batch', operation: 'like', label: 'Me gusta', glyph: 'thumbs-up' },
+        { group: 'batch', operation: 'seen', label: 'Vistos', glyph: 'eye' },
+        { group: 'batch', operation: 'later', label: 'Ver más tarde', glyph: 'bookmark-plus' },
+        { group: 'region', operation: 'region', label: 'Asignar origen', glyph: 'globe' },
+        { group: 'batch', operation: 'dispose', label: 'Mover a la papelera', glyph: 'trash', danger: true },
         CLEAR,
       ];
   }

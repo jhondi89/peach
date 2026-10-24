@@ -37,7 +37,7 @@ describe('共用数据表', () => {
     expect(rows()).toHaveLength(20);
     expect(buttonNamed('处理所选', host)).toBeNull();
     await click(checkbox(host, '选择 作品 23'));
-    await click(buttonNamed('下一页', host));
+    await click(buttonNamed('Página siguiente', host));
     await click(checkbox(host, '选择 作品 3'));
     await click(buttonNamed('处理所选', host));
     expect(run).toHaveBeenLastCalledWith([1, 21]);
@@ -45,13 +45,13 @@ describe('共用数据表', () => {
     expect(rows()[0]!.textContent).toContain('作品 1');
     expect(rows()[19]!.textContent).toContain('作品 20');
     expect(host.textContent).toContain('已选 2 条记录');
-    await click(buttonNamed('下一页', host));
+    await click(buttonNamed('Página siguiente', host));
     await rerender(<Fixture data={[items[0]!, items[1]!]} run={run} />);
     expect(rows()).toHaveLength(2);
     expect(host.textContent).toContain('1–2 / 2 条记录');
     await click(buttonNamed('处理所选', host));
     expect(run).toHaveBeenLastCalledWith([1]);
-    await click(buttonNamed('取消选择', host));
+    await click(buttonNamed('Quitar selección', host));
     expect(host.querySelector('[data-selection-dock]:not([aria-hidden="true"])')).toBeNull();
   });
 
@@ -61,7 +61,7 @@ describe('共用数据表', () => {
     await click(checkbox(host, '全选测试作品'));
     await click(buttonNamed('处理所选', host));
     expect(run).toHaveBeenLastCalledWith(items.map((item) => item.id));
-    await click(buttonNamed('下一页', host));
+    await click(buttonNamed('Página siguiente', host));
     expect(checkbox(host, '选择 作品 3')?.checked).toBe(true);
     await click(checkbox(host, '全选测试作品'));
     expect(host.querySelector('[data-selection-dock]:not([aria-hidden="true"])')).toBeNull();

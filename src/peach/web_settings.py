@@ -27,13 +27,13 @@ from .profiles import DEFAULT_PROFILE_ID
 #: 默认就在侧栏里的入口，顺序即默认顺序。首页之后是关注（每天有新东西的那一屏），
 #: 再是主库最常用的浏览模式 JAV，然后三个索引，回头找的已标记，管理垫底。
 DEFAULT_SIDEBAR_ORDER = (
-    "", "follow", "jav", "performers", "tags", "studios", "flagged", "manage",
+    "", "jav", "performers", "tags", "studios", "flagged", "follow-manage", "manage",
 )
 #: 可以加进侧栏、但默认不在的入口。播放列表和沉浸模式都是从一条作品或一个索引里
 #: 发起的动作，常驻一格换来的是每次都要跳过它，所以归到这里等人自己加。
 OPTIONAL_SIDEBAR_KEYS = (
     "playlists", "immerse",
-    "stats", "review", "data-cleanup", "trash", "follow-manage", "quality",
+    "stats", "review", "data-cleanup", "trash", "quality",
 )
 ALL_SIDEBAR_KEYS = frozenset(DEFAULT_SIDEBAR_ORDER) | frozenset(OPTIONAL_SIDEBAR_KEYS)
 SIDEBAR_KEY_ALIASES = {"ads": "data-cleanup", "dupes": "data-cleanup"}
@@ -201,9 +201,9 @@ def w_settings(contract: SettingsContract, body) -> dict:
         raise TypeError("settings body must be an object")
     unknown = set(body) - SYNCED_SETTING_KEYS
     if unknown:
-        raise ValueError(f"这些设置不跟数据库同步：{sorted(unknown)}")
+        raise ValueError(f"Estos ajustes no se sincronizan con la base de datos: {sorted(unknown)}")
     if not body:
-        raise ValueError("没有要写入的设置")
+        raise ValueError("No hay ajustes que escribir")
 
     merged = _stored(contract)
     if "sidebarOrder" in body:
@@ -217,12 +217,12 @@ def w_settings(contract: SettingsContract, body) -> dict:
     if "searchHistoryLimit" in body:
         limit = normalise_search_history_limit(body["searchHistoryLimit"])
         if limit is None:
-            raise ValueError(f"searchHistoryLimit 只收 0 到 {SEARCH_HISTORY_LIMIT_MAX} 的整数")
+            raise ValueError(f"searchHistoryLimit solo acepta enteros de 0 a {SEARCH_HISTORY_LIMIT_MAX}")
         merged["searchHistoryLimit"] = limit
     for key, _kind in FEED_COMPILATION_SWITCHES:
         if key in body:
             if not isinstance(body[key], bool):
-                raise ValueError(f"{key} 只收 true 或 false")
+                raise ValueError(f"{key} solo acepta true o false")
             merged[key] = body[key]
     stamp = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     with contract.write_transaction() as connection:
@@ -238,5 +238,5 @@ def w_settings(contract: SettingsContract, body) -> dict:
             (json.dumps(current, ensure_ascii=False), stamp, DEFAULT_PROFILE_ID),
         ).rowcount
         if not updated:
-            raise ValueError(f"profile {DEFAULT_PROFILE_ID} 不存在")
+            raise ValueError(f"El perfil {DEFAULT_PROFILE_ID} no existe")
     return {"ok": True, **q_settings(contract)}

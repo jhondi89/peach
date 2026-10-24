@@ -5,7 +5,6 @@ import { Input } from '@/components/base/input/input';
 
 import { busyProps } from '../../settings/busy-props';
 import { describeFailure, restoreSetup, SetupRequestError, type SetupDone } from './setup-api';
-import { t } from '@peach/i18n';
 
 export function SetupRestore({ onDone }: { onDone: (done: SetupDone) => void }) {
   const [path, setPath] = useState('');
@@ -27,10 +26,10 @@ export function SetupRestore({ onDone }: { onDone: (done: SetupDone) => void }) 
   };
   return (
     <form className="flex flex-col gap-4" onSubmit={submit} noValidate>
-      <Input label={t('已有数据目录')} value={path} onChange={setPath} isRequired autoComplete="off" spellCheck="false"
+      <Input label="Carpeta de datos existente" value={path} onChange={setPath} isRequired autoComplete="off" spellCheck="false"
         validationBehavior="aria" isInvalid={Boolean(error)}
-        hint={error ? <span role="alert">{error}</span> : t('选择包含 config.toml 和 database 文件夹的数据目录。')} />
-      <Button type="submit" className="self-start" {...busyProps(busy)}>{busy ? t('正在连接数据目录…') : t('使用此目录')}</Button>
+        hint={error ? <span role="alert">{error}</span> : 'Elige la carpeta de datos que contiene config.toml y la carpeta database.'} />
+      <Button type="submit" className="self-start" {...busyProps(busy)}>{busy ? 'Conectando con la carpeta de datos…' : 'Usar esta carpeta'}</Button>
     </form>
   );
 }

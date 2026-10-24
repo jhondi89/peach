@@ -92,7 +92,7 @@ function serve(plan: Plan = {}) {
     if (url.pathname === '/api/entity') return reply(plan.entityFor?.() ?? plan.entity ?? entity());
     if (url.pathname === '/api/items') return reply(plan.items ? plan.items(query) : items([1, 2, 3]));
     if (url.pathname === '/api/photos') return reply(plan.photos ? plan.photos(query) : photos(0));
-    if (url.pathname === '/api/photo-set') return reply(plan.set ? plan.set(query) : photos(2, { id: 9, title: '图集' }));
+    if (url.pathname === '/api/photo-set') return reply(plan.set ? plan.set(query) : photos(2, { id: 9, title: 'Álbum' }));
     if (url.pathname === '/api/follow/credentials') return reply({ providers: [] });
     if (url.pathname === '/api/follow') return reply(plan.follow ? plan.follow(query) : followPage([]));
     if (url.pathname === '/api/feeds/discoveries') return reply(plan.feed ?? { items: [] });
@@ -117,9 +117,9 @@ function shellProps(patch: Partial<EntityPageProps> = {}): EntityPageProps {
   return {
     kind: 'performer', name: NAME, filters: {}, media: { media: 'videos', set: 0 }, jav: false, seed: '42',
     revision: 0, feedRevision: 0, photoSize: 'small', photoLayout: 'masonry', followImagesOnly: false,
-    javLayout: 'small', javLayouts: [['big', '大图', 'maximize'], ['small', '小图', 'layout-grid']],
-    photoLayouts: [['fixed', '固定比例', 'layout-grid'], ['masonry', '瀑布流', 'columns-2']],
-    states: [{ k: '', label: '全部' }, { k: 'fresh', label: '没看过' }], peopleLayout: 'big',
+    javLayout: 'small', javLayouts: [['big', 'Grande', 'maximize'], ['small', 'Pequeño', 'layout-grid']],
+    photoLayouts: [['fixed', 'Proporción fija', 'layout-grid'], ['masonry', 'Mosaico', 'columns-2']],
+    states: [{ k: '', label: 'Todos' }, { k: 'fresh', label: 'Sin ver' }], peopleLayout: 'big',
     hosts: { filter: host(), feed, body: host() },
     layout: { active: false, size: 'small', portrait: false, javImage: 'cover' },
     selectMode: false, selected: new Set(), seekSeconds: 10, wireDrag: vi.fn(),
@@ -149,7 +149,7 @@ function shellProps(patch: Partial<EntityPageProps> = {}): EntityPageProps {
       feedRowHtml: (data) => `<div class="feednewrow">${(data?.items || []).map((one) => `<div data-feed-id="${one.id}"></div>`).join('')}</div>`,
       receipt: vi.fn(), failure: vi.fn(), aliasForm: vi.fn(async () => {}),
       sourceToolsHtml: () => '', wireSourceTools: vi.fn(), comboItems: () => [],
-      sortKeys: vi.fn((sort: string) => [{ key: 'new', label: '入库时间', pressed: sort === 'new', dir: '' as const, ariaLabel: '' }]),
+      sortKeys: vi.fn((sort: string) => [{ key: 'new', label: 'Fecha de importación', pressed: sort === 'new', dir: '' as const, ariaLabel: '' }]),
     },
     actions: {
       route: vi.fn(), toggleTag: vi.fn(), clearFilter: vi.fn(), clearAll: vi.fn(), setSort: vi.fn(),
@@ -299,17 +299,17 @@ describe('换筛选与视图', () => {
 
   it('名下一部视频也没有：正文是空态，下排不出排序键', async () => {
     const page = await open({ entity: entity({ asset_count: 0 }), items: () => items([]) });
-    expect(page.props.hosts.body.textContent).toContain('还没有视频');
+    expect(page.props.hosts.body.textContent).toContain('Aún no hay videos');
     expect(page.props.hosts.body.querySelector('[data-media-grid]')).toBeNull();
     expect(page.props.hosts.filter.querySelector('[data-entity-sort]')).toBeNull();
-    expect(buttonNamed('查看全部视频', page.props.hosts.body)).toBeNull();
+    expect(buttonNamed('Ver todos los videos', page.props.hosts.body)).toBeNull();
   });
 
   it('筛完一部不剩：空态给一条回到全部视频的路，撤掉观看状态与交集条上的筛选', async () => {
     const page = await open({ items: (query) => items(query.get('tag') ? [] : [1, 2, 3]) },
       { filters: { tag: '巨乳', state: 'fresh', sort: 'new' } });
-    expect(page.props.hosts.body.textContent).toContain('没有符合条件的视频');
-    await click(buttonNamed('查看全部视频', page.props.hosts.body));
+    expect(page.props.hosts.body.textContent).toContain('No hay videos que coincidan');
+    await click(buttonNamed('Ver todos los videos', page.props.hosts.body));
     expect(page.props.actions.route).toHaveBeenCalledWith(
       expect.objectContaining({ sort: 'new', tag: '', state: '', creator: '', studio: '', owner: '' }),
       expect.objectContaining({ media: 'videos' }));
@@ -482,7 +482,7 @@ describe('写操作', () => {
     await settle();
     await click(document.querySelector('[data-avatar-choice]'));
     await settle();
-    await click(buttonNamed('整张使用'));
+    await click(buttonNamed('Usar la imagen completa'));
     await settle();
     expect(page.writes.map((one) => one.url)).toEqual(['/api/avatar-frame', '/api/avatar-pick']);
     expect(portrait()).toBe('/entity-image?v=new');
@@ -501,7 +501,7 @@ describe('写操作', () => {
     await settle();
     // 换统称会重写整条实体的扁平投影：写之前让人看见换成什么、旧写法去哪；按钮与回执同一个动词。
     expect(legacyUi.confirmModal).toHaveBeenCalledWith(expect.objectContaining({
-      title: '更改统称', confirmLabel: '更改统称',
+      title: 'Cambiar nombre principal', confirmLabel: 'Cambiar nombre principal',
       body: `「しのだゆう」将成为这份档案显示的名称，「${NAME}」留作别名。作品上的署名、搜索和标签都会跟着改写。`,
     }));
     expect(page.writes[0]).toEqual({ url: '/api/entity-name', body: { kind: 'performer', name: NAME, canonical: 'しのだゆう' } });
@@ -524,7 +524,7 @@ describe('写操作', () => {
     page.fetcher.mockImplementationOnce(async () => ({ ok: false, status: 502, json: async () => ({}) }));
     await click(toggle());
     await settle();
-    expect(page.props.helpers.failure).toHaveBeenCalledWith('取消订阅新作', expect.any(Error));
+    expect(page.props.helpers.failure).toHaveBeenCalledWith('Cancelar suscripción a estrenos', expect.any(Error));
     expect(toggle().checked).toBe(true);
   });
 

@@ -35,11 +35,11 @@ import {
 const UNLINK = spriteGlyph('unlink');
 const RETRY = spriteGlyph('rotate-cw');
 
-const GONE_HINT = '站点返回 404 或 410，确认这个地址不存在。';
+const GONE_HINT = 'El sitio respondió 404 o 410; esta dirección no existe.';
 /* 这一组大多是站点拒绝程序访问或一次抖动，换个时间再问一次就通了。 */
-const UNCLEAR_HINT = '站点拒绝程序访问或一次临时故障都会落在这里。链接保留，可勾选后单独重试。';
-const PRUNE_HINT = '删除前会逐条重验一次；此操作不可撤销。';
-const DISCONNECTED = '暂时无法读取进度，正在重新连接…';
+const UNCLEAR_HINT = 'Aquí caen tanto los sitios que bloquean el acceso automático como los fallos temporales. El enlace se conserva; puedes marcarlo y reintentarlo.';
+const PRUNE_HINT = 'Antes de borrar se vuelve a comprobar cada uno; no se puede deshacer.';
+const DISCONNECTED = 'No se puede leer el progreso por ahora; reconectando…';
 
 const count = (value: number | undefined) => Number(value || 0).toLocaleString();
 
@@ -64,15 +64,15 @@ function LinkTable(
 ) {
   if (!items.length) return null;
   const columns: DataColumn<LinkRow>[] = [
-    { id: 'entity', label: '所属', value: (item) => item.entity,
+    { id: 'entity', label: 'Pertenece a', value: (item) => item.entity,
       render: (item) => <span className="block min-w-24 wrap-anywhere">{item.entity}</span> },
-    { id: 'kind', label: '类型', value: (item) => LINK_KINDS[item.link_kind] || item.link_kind,
+    { id: 'kind', label: 'Tipo', value: (item) => LINK_KINDS[item.link_kind] || item.link_kind,
       render: (item) => LINK_KINDS[item.link_kind] || item.link_kind },
-    { id: 'label', label: '标签', value: (item) => item.label || '',
+    { id: 'label', label: 'Etiquetas', value: (item) => item.label || '',
       render: (item) => <span className="block min-w-24 wrap-anywhere">{item.label || ''}</span> },
-    { id: 'note', label: '结果', value: (item) => item.note,
+    { id: 'note', label: 'Resultado', value: (item) => item.note,
       render: (item) => <div className="min-w-40 max-w-80"><ErrorExcerpt text={item.note} className="tabular-nums text-text-error-primary" /></div> },
-    { id: 'url', label: '地址', value: (item) => item.url,
+    { id: 'url', label: 'Dirección', value: (item) => item.url,
       render: (item) => <a href={item.url} target="_blank" rel="noreferrer" title={item.url}
         className="flex max-w-90 min-w-0 items-center gap-1 text-text-secondary hover:text-text-primary">
         <span data-middle-truncate className="min-w-0 truncate">{item.url}</span>
@@ -82,8 +82,8 @@ function LinkTable(
   return (
     <div className={RESULT_SECTION}>
       <DataTable label={title} items={items} columns={columns} rowId={(item) => String(item.id)}
-        description={hint} unit="条链接" panel={false} footerActions={footer}
-        rowLabel={(item) => `${item.entity} 的${item.label || item.url}`}
+        description={hint} unit="enlaces" panel={false} footerActions={footer}
+        rowLabel={(item) => `${item.label || item.url} de ${item.entity}`}
         selected={picked.map(String)} onSelected={(ids) => onPick(ids.map(Number))}
         actions={() => children} />
     </div>
@@ -134,9 +134,9 @@ export function LinkManager() {
   const removeGone = (ids?: number[]) => {
     if (removing || !gone.length) return;
     void confirmModal({
-      title: '删除失效链接',
-      body: `将删除 ${ids?.length ?? gone.length} 条失效链接。删除前会再次检查，删除后无法恢复。`,
-      confirmLabel: '删除失效链接',
+      title: 'Borrar enlaces rotos',
+      body: `Se borrarán ${ids?.length ?? gone.length} enlaces rotos. Se volverán a comprobar antes y no se podrán recuperar.`,
+      confirmLabel: 'Borrar enlaces rotos',
       danger: true,
       onConfirm: () => prune.start.mutateAsync({ checkId, ids }),
     });
@@ -148,39 +148,39 @@ export function LinkManager() {
   let progress: ReactNode = null;
   let result: ReactNode = null;
   if (pruned?.status === 'failed') {
-    result = <Note tone="error" title="链接清理未完成">{pruned.error || '请查看任务记录，核对已处理的链接。'}</Note>;
+    result = <Note tone="error" title="La limpieza de enlaces no terminó">{pruned.error || 'Revisa el registro de la tarea para ver qué enlaces se procesaron.'}</Note>;
   } else if (pruned && !gone.length && !unclear.length) {
-    result = <Note tone="success" title="完成">{pruneText(pruned)}</Note>;
+    result = <Note tone="success" title="Hecho">{pruneText(pruned)}</Note>;
   } else if (startError) {
-    result = <Note tone="error" title="检查失败">{errorMessage(startError)}</Note>;
+    result = <Note tone="error" title="Revisión fallida">{errorMessage(startError)}</Note>;
   } else if (check.query.isError && state) {
-    result = <Note tone="neutral" title="任务状态">{DISCONNECTED}</Note>;
+    result = <Note tone="neutral" title="Estado de la tarea">{DISCONNECTED}</Note>;
   } else if (state?.status === 'failed') {
-    result = <Note tone="error" title="检查失败">{state.error || '检查失败'}</Note>;
+    result = <Note tone="error" title="Revisión fallida">{state.error || 'Revisión fallida'}</Note>;
   } else if (state && state.status !== 'idle') {
     progress = <>
       {state.status === 'running'
         ? <TaskProgress embedded label={checkLine(state)} value={Math.min(state.checked || 0, state.total || 0)} total={state.total} />
         : null}
       {removing
-        ? <TaskProgress embedded label={prune.job?.message || '正在重验并删除失效链接…'}
+        ? <TaskProgress embedded label={prune.job?.message || 'Volviendo a comprobar y borrando enlaces rotos…'}
             value={Math.min(prune.job?.checked || 0, prune.job?.total || 0)} total={prune.job?.total} />
         : null}
     </>;
-    const pickedLabel = selectedRetryable.length ? `重试选中的 ${selectedRetryable.length} 条` : '重试选中的链接';
+    const pickedLabel = selectedRetryable.length ? `Reintentar los ${selectedRetryable.length} seleccionados` : 'Reintentar enlaces seleccionados';
     result = done || gone.length || unclear.length ? (
       <div className={RESULT_PANEL}>
-        {pruned?.status === 'complete' ? <Note tone="success" title="完成">{pruneText(pruned)}</Note> : null}
-        <LinkTable title="地址已失效" items={gone} hint={GONE_HINT} picked={gonePicked} onPick={setGonePicked}>
+        {pruned?.status === 'complete' ? <Note tone="success" title="Hecho">{pruneText(pruned)}</Note> : null}
+        <LinkTable title="Dirección rota" items={gone} hint={GONE_HINT} picked={gonePicked} onPick={setGonePicked}>
           <Button variant="danger" size="small" disabled={!done || !selectedGone.length}
             {...busyProps(removing)} onClick={() => removeGone(selectedGone)}>
-            {`删除所选（${selectedGone.length}）`}
+            {`Borrar seleccionados (${selectedGone.length})`}
           </Button>
         </LinkTable>
-        <LinkTable title="本次未访问成功" items={unclear} hint={UNCLEAR_HINT}
+        <LinkTable title="No se pudo acceder esta vez" items={unclear} hint={UNCLEAR_HINT}
           picked={picked} onPick={setPicked} footer={retryable.length
             ? <Button leadingIcon={RETRY} {...busyProps(running)}
-                onClick={() => run(retryable.map((item) => item.id))}>{`全部重试（${retryable.length}）`}</Button>
+                onClick={() => run(retryable.map((item) => item.id))}>{`Reintentar todos (${retryable.length})`}</Button>
             : null}>
           {retryable.length
             ? <>
@@ -192,12 +192,12 @@ export function LinkManager() {
         {done && gone.length
           ? <PanelFooter tone="error" status={PRUNE_HINT}>
               <Button variant="danger" {...busyProps(removing)} onClick={() => removeGone()}>
-                {`删除 ${gone.length} 条失效链接`}
+                {`Borrar ${gone.length} enlaces rotos`}
               </Button>
             </PanelFooter>
           : null}
         {done && !gone.length && !unclear.length
-          ? <p className={`${RESULT_SECTION} text-body-regular text-notification-success-foreground`}>全部链接均可访问。</p>
+          ? <p className={`${RESULT_SECTION} text-body-regular text-notification-success-foreground`}>Todos los enlaces funcionan.</p>
           : null}
       </div>
     ) : null;
@@ -207,24 +207,24 @@ export function LinkManager() {
     <section id="link-manager" aria-labelledby="link-manager-title" className="flex scroll-mt-20 flex-col gap-4">
       <Fieldset layout="stack" labelledBy="link-manager-title" footer={
         <Button leadingIcon={UNLINK} {...busyProps(running)} onClick={() => run()}>
-          {running ? '检查中' : done ? '重新检查' : '检查死链'}
+          {running ? 'Comprobando' : done ? 'Volver a revisar' : 'Buscar enlaces rotos'}
         </Button>
       }>
-        <FieldsetTitle id="link-manager-title" gap="small">链接管理</FieldsetTitle>
+        <FieldsetTitle id="link-manager-title" gap="small">Gestión de enlaces</FieldsetTitle>
         {stats.isError
-          ? <Note tone="error" title="链接统计读取失败">{errorMessage(stats.error)}</Note>
+          ? <Note tone="error" title="No se pudieron cargar las estadísticas de enlaces">{errorMessage(stats.error)}</Note>
           : info
             ? <>
                 <div className="link-stat-grid mt-4 gap-x-8 gap-y-3">
-                  <Stat label="链接总数" value={count(info.total)}
-                    note={`分布在 ${count(info.entities)} 个女优、厂牌与系列`} />
+                  <Stat label="Total de enlaces" value={count(info.total)}
+                    note={`Repartidos entre ${count(info.entities)} actrices, estudios y series`} />
                   {Object.entries(info.by_kind ?? {}).map(([kind, value]) => (
                     <Stat key={kind} label={LINK_KINDS[kind] || kind} value={count(value)} />
                   ))}
                 </div>
                 {hosts
                   ? <div className="mt-4 flex min-w-0 flex-col gap-0.5">
-                      <span className="text-caption-1-regular text-text-secondary">主要站点</span>
+                      <span className="text-caption-1-regular text-text-secondary">Sitios principales</span>
                       <b className="text-body-2-medium break-words text-text-primary">{hosts}</b>
                     </div>
                   : null}
