@@ -1,4 +1,5 @@
 /* 本机端口与已保存媒体配置使用同一份修订号。 */
+import { t } from '@peach/i18n';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
@@ -28,7 +29,7 @@ export function PortSettings({ data, receipt }: ConfigurationGroupProps) {
       revision: data.revision, media_dirs: data.media_dirs,
       ...(data.media_sources ? { media_sources: data.media_sources } : {}),
       port, scan_now: false,
-    }, 'POST', signal), (result) => { setSaved(result); receipt('已保存配置'); }, (cause) => {
+    }, 'POST', signal), (result) => { setSaved(result); receipt(t('已保存配置')); }, (cause) => {
       const fields = cause instanceof ApiError && cause.status === 400
         ? (cause.body as { errors?: { port?: string } } | null)?.errors : null;
       if (fields?.port) setFieldError(fields.port);
@@ -43,8 +44,8 @@ export function PortSettings({ data, receipt }: ConfigurationGroupProps) {
   return <Section title="本机访问端口" onSubmit={submit}><Stack>
     <Input id="configPort" label="端口" inputMode="numeric" value={port} onChange={setPort}
       validationBehavior="aria" isInvalid={Boolean(fieldError)} hint={fieldError || undefined} />
-    {action.error ? <Note tone="error" title="没有保存">{action.error}</Note> : null}
+    {action.error ? <Note tone="error" title={t('没有保存')}>{action.error}</Note> : null}
   </Stack><Footer status="保存后 Peach 会重启，并跳转到新地址。">
-    <Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button>
+    <Button type="submit" {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button>
   </Footer></Section>;
 }

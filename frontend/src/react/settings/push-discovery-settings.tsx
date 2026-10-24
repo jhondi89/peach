@@ -12,6 +12,7 @@
  * 整块只有一种行：读数写在它所属那个开关的说明里，配置通过共用代码块展示与复制，
  * 前缀表排在最后。读数与配置跟着各自的开关收起：网盘通道关着时那段配置指向一件不会
  * 发生的事；本机监视在总开关关着时读作「没有运行」，分不出是没开还是坏了。 */
+import { t } from '@peach/i18n';
 import { useState, type FormEvent } from 'react';
 import { RiDeleteBinLine } from '@remixicon/react';
 
@@ -61,7 +62,7 @@ export function PushDiscoveryForm({ initial, receipt }: {
       enabled: state.enabled, watch_local: state.watch_local, cloud: state.cloud, prefixes: rows,
     };
     void action.run('save', (signal) => apiSend<PushDiscoveryState>(SAVE_URL, body, 'POST', signal),
-      (next) => settle(next, '已保存配置'), (cause) => setFailure(errorMessage(cause)));
+      (next) => settle(next, t('已保存配置')), (cause) => setFailure(errorMessage(cause)));
   };
 
   const rotate = () => {
@@ -152,7 +153,7 @@ export function PushDiscoveryForm({ initial, receipt }: {
             {...busyProps(action.busy === 'secret')}>更换密钥</Button>
         ) : null}
         <Button type="submit" disabled={!state.available} {...busyProps(action.busy === 'save')}>
-          保存配置
+          {t('保存配置')}
         </Button>
       </Footer>
     </Section>

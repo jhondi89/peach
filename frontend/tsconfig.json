@@ -32,7 +32,8 @@
       "@peach/appearance": ["./src/appearance/index.ts"],
       "@peach/query": ["./src/query/index.ts"],
       "@peach/history": ["./src/history/index.ts"],
-      "@peach/shell": ["./src/shell/index.ts"]
+      "@peach/shell": ["./src/shell/index.ts"],
+      "@peach/i18n": ["./src/i18n/index.ts"]
     }
   },
   "include": ["src", "test", "vite.config.ts", "vite.pages.config.ts", "vite.agentation.config.ts", "vitest.config.ts"],

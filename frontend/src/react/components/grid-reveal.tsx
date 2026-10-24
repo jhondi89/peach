@@ -1,4 +1,5 @@
 /* 卡片网格的等待与失败：壳铺的骨架怎么退场，取数失败留下什么。馆藏卡片网格与垃圾文件队列共用。 */
+import { t } from '@peach/i18n';
 import { useEffect, useLayoutEffect, useRef, useState, type AnimationEvent, type MouseEvent } from 'react';
 import { fitSkeleton, noteHtml } from '@peach/legacy/ui';
 
@@ -41,6 +42,6 @@ export function RetryNote({ message, onRetry }: { message: string; onRetry: () =
   };
   return (
     <div data-media-error="" onClick={click}
-      dangerouslySetInnerHTML={{ __html: noteHtml(message, { variant: 'error', actionLabel: '重试' }) }} />
+      dangerouslySetInnerHTML={{ __html: noteHtml(message, { variant: 'error', actionLabel: t('重试') }) }} />
   );
 }

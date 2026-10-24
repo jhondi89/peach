@@ -2,6 +2,7 @@
  *
  * 字段是 BoardUI `Input`（React Aria TextField），开关是 BoardUI `Checkbox`，提交键是 BoardUI `Button`；
  * 新密码与确认两框是与首启页共用的 `./password-pair`，分区外框与提示用配置页共用的 `./section`。 */
+import { t } from '@peach/i18n';
 import { useRef, useState, type FormEvent } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -51,7 +52,7 @@ export function AccessSettings({ initial, receipt }: AccessSettingsProps) {
       current_password: current, password: disable ? '' : password, confirmation: disable ? '' : confirmation,
     }, 'POST', signal), (next) => {
       setState(next); setCurrent(''); setPassword(''); setConfirmation(''); setDisable(false); setFields({});
-      receipt(next.mode === 'open' ? '已关闭访问密码' : '已保存配置');
+      receipt(next.mode === 'open' ? '已关闭访问密码' : t('已保存配置'));
     }, (cause) => {
       const payload = cause instanceof ApiError ? cause.body as { errors?: FieldErrors; detail?: { errors?: FieldErrors } } : null;
       const errors = payload?.errors || payload?.detail?.errors;
@@ -88,7 +89,7 @@ export function AccessSettings({ initial, receipt }: AccessSettingsProps) {
         </Stack>
       </div>
       {editable
-        ? <Footer><Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button></Footer>
+        ? <Footer><Button type="submit" {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button></Footer>
         : null}
     </Section>
   );

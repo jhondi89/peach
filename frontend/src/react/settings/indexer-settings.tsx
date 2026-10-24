@@ -1,4 +1,5 @@
 /* 用户自配索引器；地址和 API key 分开保存，读取时只返回凭据是否存在。 */
+import { t } from '@peach/i18n';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -69,7 +70,7 @@ function IndexerForm({ initial, receipt }: { initial: State; receipt(message: st
           onClick={() => setRows([...rows, { key: crypto.randomUUID(), name: '', url: '', enabled: true, api_key_set: false }])}>
           添加索引器
         </Button>
-        <Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button>
+        <Button type="submit" {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button>
       </Footer>
     </Section>
   );

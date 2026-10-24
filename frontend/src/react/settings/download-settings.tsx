@@ -11,6 +11,7 @@
  * 令牌与密码只往本机凭据文件写，读接口只回「存没存过」，所以令牌框保存后清空、提示改成
  * 「已保存，留空不改」。PikPak 要人机验证时服务端回一个验证页地址，这里给出链接让用户在浏览器
  * 里完成，Peach 不替他过验证。 */
+import { t } from '@peach/i18n';
 import { useEffect, useState, type FormEvent } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -149,7 +150,7 @@ function DownloadForm({ state, settle, receipt, pikpakAccount }: CardProps & { p
           setSaveBlocked(false);
           setFailure('');
         }
-        receipt('已保存配置');
+        receipt(t('已保存配置'));
       }, (cause) => setFailure(errorMessage(cause)));
   };
 
@@ -218,7 +219,7 @@ function DownloadForm({ state, settle, receipt, pikpakAccount }: CardProps & { p
       {failure || action.error ? <Stack divided><ErrorText>{failure || action.error}</ErrorText></Stack> : null}
       <Footer status={state.available ? undefined : '云下载只在允许修改数据库的设备上可用。'}>
         <Button variant="secondary" onClick={check} disabled={!state.available} {...busyProps(action.busy === 'check')}>检查连接</Button>
-        <Button type="submit" disabled={!state.available} {...busyProps(action.busy === 'save')}>保存配置</Button>
+        <Button type="submit" disabled={!state.available} {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button>
       </Footer>
     </Section>
   );

@@ -6,6 +6,7 @@
  *
  * 入口出不出现不由这里决定：地址由服务端拼（`peach.entry_links`），站点 id 缺席那一枚
  * 就不在资料页上，所以这里没有开关。校验也只在服务端，前端复制一份判定只会漂。 */
+import { t } from '@peach/i18n';
 import { useState, type FormEvent } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -35,7 +36,7 @@ export function EntryLinksForm({ initial, receipt }: {
       apiSend<EntryLinksState>('/api/configuration/entry-links', body, 'POST', signal),
       (next) => {
         setSites(next.sites);
-        receipt('已保存配置');
+        receipt(t('已保存配置'));
       });
   };
 
@@ -53,7 +54,7 @@ export function EntryLinksForm({ initial, receipt }: {
         {action.error ? <ErrorText>{action.error}</ErrorText> : null}
       </Stack>
       <Footer>
-        <Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button>
+        <Button type="submit" {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button>
       </Footer>
     </Section>
   );

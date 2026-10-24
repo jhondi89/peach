@@ -1,4 +1,5 @@
 /* 「应用与维护」中的开机自启、桌面快捷方式与版本更新。 */
+import { t } from '@peach/i18n';
 import { useState, type FormEvent } from 'react';
 
 import { SettingsRow } from '@/components/application/settings/settings-rows';
@@ -44,7 +45,7 @@ export function StartupSettings({ startup, receipt }: { startup: StartupState; r
     event.preventDefault();
     if (!startup.available) return;
     void action.run('save', (signal) => apiSend('/api/configuration/startup', { enabled, silent, desktop }, 'POST', signal),
-      () => receipt('已保存配置'));
+      () => receipt(t('已保存配置')));
   };
 
   return (
@@ -67,7 +68,7 @@ export function StartupSettings({ startup, receipt }: { startup: StartupState; r
         </Stack>
       ) : null}
       <Footer>
-        <Button type="submit" disabled={!startup.available} {...busyProps(action.busy === 'save')}>保存配置</Button>
+        <Button type="submit" disabled={!startup.available} {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button>
       </Footer>
     </Section>
   );

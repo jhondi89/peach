@@ -8,6 +8,7 @@
  * React Aria 的 ComboBox 要自己画输入框、选项是 listbox 里的 option：选项里嵌的删记录键、近作
  * 小封面键和最上面那排页签都放不进去。所以这里按遗留层那一套逐条照做：上下环绕着选、回车提交、
  * Escape 先关下拉再清字、空输入回车用占位里那个推荐词。 */
+import { t } from '@peach/i18n';
 import { useLayoutEffect, useReducer, useRef, type MouseEvent, type ReactNode } from 'react';
 import { avatarInner } from '@peach/card-art';
 
@@ -118,7 +119,7 @@ export function SearchPage(props: SearchProps) {
         <a href={group.href} onMouseDown={keep} onClick={event => {
           if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
           event.preventDefault(); op.openPath(group.href!);
-        }}>{group.action || '查看全部'}</a>
+        }}>{group.action || t('查看全部')}</a>
       ) : null}</h3>
       {group.kind ? <div data-search-items="">{group.options.map(option)}</div> : group.options.map(option)}
       {group.more ? option(group.more) : null}
@@ -168,14 +169,14 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
     s.pool = [];
     const field = input();
     field.dataset.suggestion = '';
-    field.placeholder = '搜索馆藏';
+    field.placeholder = t('搜索馆藏');
     try {
       const names = await props().helpers.pool();
       if (request !== s.poolRequest) return;
       s.pool = names;
       const pick = names[Math.floor(Math.random() * names.length)] || '';
       field.dataset.suggestion = pick;
-      field.placeholder = pick || '搜索馆藏';
+      field.placeholder = pick || t('搜索馆藏');
     } catch {
       // 推荐不可用时仍可直接输入搜索。
     }
@@ -368,8 +369,8 @@ function Tabs({ tabs, kind, onPick, wire }: {
     </button>
   );
   return (
-    <div ref={row} data-search-tabs="" role="tablist" aria-label="按种类看补全">
-      {tab('', '全部')}
+    <div ref={row} data-search-tabs="" role="tablist" aria-label={t('按种类看补全')}>
+      {tab('', t('全部'))}
       {tabs.map((t) => tab(t.kind, t.label, t.total))}
     </div>
   );

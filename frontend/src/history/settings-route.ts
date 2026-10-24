@@ -1,3 +1,6 @@
+import { matchesMessage, t } from '@peach/i18n';
+
+/** Msgid chino (estable); mostrar con `t(...)`. */
 export const PREFERENCE_SECTIONS = {
   appearance: '外观与导航', playback: '浏览与播放', jav: 'JAV 与新作', search: '搜索与推荐', content: '内容显示',
 } as const;
@@ -7,15 +10,20 @@ export const CONFIGURATION_SECTIONS = {
 } as const;
 export type ConfigurationPath = `/settings/${keyof typeof CONFIGURATION_SECTIONS}`;
 export function configurationSection(path: string): string {
-  return CONFIGURATION_SECTIONS[path.split('/')[2] as keyof typeof CONFIGURATION_SECTIONS] || CONFIGURATION_SECTIONS.library;
+  const id = CONFIGURATION_SECTIONS[path.split('/')[2] as keyof typeof CONFIGURATION_SECTIONS] || CONFIGURATION_SECTIONS.library;
+  return t(id);
 }
 export const PREFERENCE_PATHS = ['/settings', ...Object.keys(PREFERENCE_SECTIONS).map(key => `/settings/${key}`)];
 export const isPreferencePath = (path: string): boolean => PREFERENCE_PATHS.includes(path);
 export function preferenceSection(path: string): string {
-  return PREFERENCE_SECTIONS[path.split('/')[2] as keyof typeof PREFERENCE_SECTIONS] || PREFERENCE_SECTIONS.appearance;
+  const id = PREFERENCE_SECTIONS[path.split('/')[2] as keyof typeof PREFERENCE_SECTIONS] || PREFERENCE_SECTIONS.appearance;
+  return t(id);
 }
+/** Acepta msgid chino, etiqueta traducida o clave de sección. */
 export function settingsPath(title: string): string {
-  const key = Object.entries({ ...PREFERENCE_SECTIONS, ...CONFIGURATION_SECTIONS }).find(([, value]) => value === title)?.[0];
+  const all = { ...PREFERENCE_SECTIONS, ...CONFIGURATION_SECTIONS };
+  if (title in all) return `/settings/${title}`;
+  const key = Object.entries(all).find(([, value]) => matchesMessage(title, value))?.[0];
   return `/settings/${key || 'appearance'}`;
 }
 export interface SettingsBackground {

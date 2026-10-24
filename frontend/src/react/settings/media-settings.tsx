@@ -4,6 +4,7 @@
  * 保存成功后显示持久提示和访问地址，等待服务就绪后跳转。
  *
  * 校验原因由服务端按字段给（400 的 `errors`），页面写回原位，不在前端复制一份路径与端口的判定。 */
+import { t } from '@peach/i18n';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -105,7 +106,7 @@ function MediaForm({ data, receipt }: ConfigurationGroupProps) {
     }, 'POST', signal), (result) => {
       revision.current = result.revision;
       setRowErrors([]);
-      receipt('已保存配置');
+      receipt(t('已保存配置'));
       setSaved(result);
     }, (cause) => {
       const fields = fieldErrorsOf(cause);
@@ -163,10 +164,10 @@ function MediaForm({ data, receipt }: ConfigurationGroupProps) {
           </Help>
         ))}
         <Checkbox isSelected={scanNow} onChange={setScanNow}>保存后扫描并补全资料</Checkbox>
-        {failure ? <Note tone="error" title="没有保存">{failure}</Note> : null}
+        {failure ? <Note tone="error" title={t('没有保存')}>{failure}</Note> : null}
       </Stack>
       <Footer status="保存后 Peach 会重新启动。">
-        <Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button>
+        <Button type="submit" {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button>
       </Footer>
     </Section>
   );

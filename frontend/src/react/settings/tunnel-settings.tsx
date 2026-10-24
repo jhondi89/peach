@@ -3,6 +3,7 @@
  * 临时链接没有稳定域名和独立身份层，服务端会在 `open` 模式下拒绝启动。命名隧道多一份
  * 隧道令牌：它只往服务端去，回来的只有「存过没有」，这里任何时候都不显示令牌本身。
  * 模式选择只在源码开发环境出现，独立包收到的 `named_available` 是 false。 */
+import { t } from '@peach/i18n';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Radio } from 'react-aria-components';
 
@@ -89,7 +90,7 @@ export function TunnelSettings({ revision: initialRevision, initial, receipt }: 
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    send('save', active, () => receipt('已保存配置'));
+    send('save', active, () => receipt(t('已保存配置')));
   };
 
   const toggle = () => send('toggle', !active, (next) => receipt(
@@ -134,7 +135,7 @@ export function TunnelSettings({ revision: initialRevision, initial, receipt }: 
           {active ? '停止公网入口' : '启动公网入口'}
         </Button>
         {state.named_available
-          ? <Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button>
+          ? <Button type="submit" {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button>
           : null}
       </Footer>
     </Section>

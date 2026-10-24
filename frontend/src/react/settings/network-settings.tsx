@@ -1,4 +1,5 @@
 /* 「网络与访问」分组：本机端口、Peach 代理、访问密码与公网入口。 */
+import { t } from '@peach/i18n';
 import { useState, type FormEvent } from 'react';
 
 import { SettingsRow } from '@/components/application/settings/settings-rows';
@@ -38,7 +39,7 @@ export function PeachProxy({ initial, receipt }: { initial: PeachProxyState; rec
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     void action.run('save', (signal) => apiSend<PeachProxyState>('/api/configuration/peach-proxy', { mode, proxy: address }, 'POST', signal),
-      (next) => { setSaved(next); setAddress(''); receipt('已保存配置'); });
+      (next) => { setSaved(next); setAddress(''); receipt(t('已保存配置')); });
   };
 
   return (
@@ -61,7 +62,7 @@ export function PeachProxy({ initial, receipt }: { initial: PeachProxyState; rec
         </Stack>
       ) : null}
       <Footer>
-        <Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button>
+        <Button type="submit" {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button>
       </Footer>
     </Section>
   );

@@ -8,6 +8,7 @@
  * 「玻璃原色」那一档没有三枚光晕：那一层整个算作 0，面上漂的是每块玻璃自带的两团反光。强度、
  * 颗粒、柔化、大小和三枚颜色于是全都管不着任何东西，这一档把它们收起来，换一句说明颜色由明暗
  * 主题给。漂移速度不收——自带那两团也在漂。「恢复默认」同样不收，任何一档下都要能一步回到出厂那一套。 */
+import { t } from '@peach/i18n';
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 
 import { closeAnchoredMenu, wireAnchoredMenu } from '@peach/legacy/ui';
@@ -25,7 +26,7 @@ type Field = 'strength' | 'noise' | 'speed' | 'soften' | 'size';
 type Spot = 'spot1' | 'spot2' | 'spot3';
 
 const FIELDS: readonly [Field, string, number][] = [
-  ['strength', '强度', 100], ['noise', '颗粒', 60], ['speed', '漂移速度', 300], ['soften', '柔化', 100], ['size', '大小', 100],
+  ['strength', t('强度'), 100], ['noise', t('颗粒'), 60], ['speed', t('漂移速度'), 300], ['soften', t('柔化'), 100], ['size', t('大小'), 100],
 ];
 
 
@@ -61,7 +62,7 @@ function StopRow({ host, spot, index, glow }: { host: SettingsPanelHost; spot: S
         <Icon name="chevron-down" />
       </button>
       <div className="popmenu" data-glow-stop-pop="" popover="manual" hidden ref={pop}>
-        <div data-glow-pills="" role="group" aria-label="色系">
+        <div data-glow-pills="" role="group" aria-label={t('色系')}>
           {GLOW_SWATCH_FAMILIES.map(([key, name]) => (
             <button type="button" key={key} data-glow-pill={key} aria-pressed={key === family}
               onClick={() => setFamily(key)}>{name}</button>
@@ -84,10 +85,10 @@ export function GlowSettings({ host }: { host: SettingsPanelHost }) {
   const glow = host.store.value.homeGlow;
   const native = isNativeGlass(glow.preset);
   return (
-    <section data-glow-setting="" id="homeGlowControls" aria-label="侧栏光晕参数" hidden={!glow.on}>
+    <section data-glow-setting="" id="homeGlowControls" aria-label={t('侧栏光晕参数')} hidden={!glow.on}>
       <section data-glow-group=""><h4>配色</h4>
         <p data-glow-current="">当前配色<b data-glow-preset-name="">{glowPresetName(glow.preset)}</b></p>
-        <GlowPresetGrid store={host.store} label="光晕配色" />
+        <GlowPresetGrid store={host.store} label={t('光晕配色')} />
         <p data-glow-native-note="" hidden={!native}>这一档用每块玻璃自带的反光，颜色跟着明暗主题走。</p>
         <div data-glow-fields="">
           {/* 拖动中只改参数、只排一帧重画；落盘留给松手那一下。其余玻璃面跟着走的只有速度，

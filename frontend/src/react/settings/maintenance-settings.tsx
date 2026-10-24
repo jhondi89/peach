@@ -1,4 +1,5 @@
 /* 「应用与维护」中的运行信息、安装教程与卸载。 */
+import { t } from '@peach/i18n';
 import { useState, type FormEvent } from 'react';
 import { confirmModal } from '@peach/legacy/ui';
 
@@ -54,7 +55,7 @@ export function AutomaticUpdates({ initial, receipt }: { initial: AutomaticUpdat
     event.preventDefault();
     if (!initial.available) return;
     void action.run('save', (signal) => apiSend<AutomaticUpdateState>('/api/configuration/automatic-updates',
-      { mode, interval_hours: hours }, 'POST', signal), () => receipt('已保存配置'));
+      { mode, interval_hours: hours }, 'POST', signal), () => receipt(t('已保存配置')));
   };
 
   const help = !initial.available
@@ -83,7 +84,7 @@ export function AutomaticUpdates({ initial, receipt }: { initial: AutomaticUpdat
       </Rows>
       {action.error ? <Stack divided><ErrorText>{action.error}</ErrorText></Stack> : null}
       <Footer>
-        <Button type="submit" disabled={!initial.available} {...busyProps(action.busy === 'save')}>保存配置</Button>
+        <Button type="submit" disabled={!initial.available} {...busyProps(action.busy === 'save')}>{t('保存配置')}</Button>
       </Footer>
     </Section>
   );

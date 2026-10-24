@@ -23,7 +23,8 @@
       "@peach/appearance": ["../appearance/index.ts"],
       "@peach/query": ["../query/index.ts"],
       "@peach/history": ["../history/index.ts"],
-      "@peach/shell": ["../shell/index.ts"]
+      "@peach/shell": ["../shell/index.ts"],
+      "@peach/i18n": ["../i18n/index.ts"]
     }
   },
   "include": ["./", "../../test/react"],
