@@ -72,8 +72,8 @@ it('按待找、未发售、暂时放弃、已入库分段，段名带条数；�
   expect([note(2), note(5), note(4), note(3), note(1)]).toEqual([
     undefined, undefined, '2026-12-01 发售', undefined, '入库于 2026-09-30',
   ]);
-  expect(buttonNamed('重新查找', host.querySelector('[data-want-id="3"]')!)).not.toBeNull();
-  expect(buttonNamed('重新查找', host.querySelector('[data-want-id="2"]')!)).toBeNull();
+  expect(buttonNamed('Buscar de nuevo', host.querySelector('[data-want-id="3"]')!)).not.toBeNull();
+  expect(buttonNamed('Buscar de nuevo', host.querySelector('[data-want-id="2"]')!)).toBeNull();
 });
 
 it('待找与暂时放弃两段每行有查找资源，原地打开带番号与标题的云下载弹层；未发售与已入库没有', async () => {
@@ -83,7 +83,7 @@ it('待找与暂时放弃两段每行有查找资源，原地打开带番号与�
     want(6, { code: null, origin: 'follow', title: '关注里的一条', follow_item_id: 9 }),
   ]));
   const { host } = await open();
-  const key = (id: number) => buttonNamed('查找资源', host.querySelector(`[data-want-id="${id}"]`)!);
+  const key = (id: number) => buttonNamed('Buscar recursos', host.querySelector(`[data-want-id="${id}"]`)!);
   expect([2, 3, 4, 1, 6].map((id) => !!key(id))).toEqual([true, true, false, false, true]);
   expect(key(2)!.className).toContain('bg-background-primary-default');
   await click(key(2));
@@ -94,7 +94,7 @@ it('待找与暂时放弃两段每行有查找资源，原地打开带番号与�
 it('一条都没有就是空态，不画空的分段', async () => {
   serve(listed([]));
   const { host } = await open();
-  expect(host.textContent).toContain('还没有想要的作品');
+  expect(host.textContent).toContain('Aún no hay obras deseadas');
   expect(host.querySelector('section[data-want-phase]')).toBeNull();
 });
 
@@ -104,7 +104,7 @@ it('待找按已有磁链状态切换，切换不发查询并重置分页', asyn
     want(index + 1, { has_magnets: index < 2 }))));
   const { host } = await open();
   const calls = fetcher.mock.calls.length;
-  await click(buttonNamed('下一页', host));
+  await click(buttonNamed('Página siguiente', host));
   await click(host.querySelector('input[value="available"]'));
   await settle();
   expect([...host.querySelectorAll('[data-want-id]')].map(node => node.getAttribute('data-want-id'))).toEqual(['1', '2']);
@@ -118,7 +118,7 @@ it('待找按已有磁链状态切换，切换不发查询并重置分页', asyn
 it('添加键是蓝色主按钮：输入框空着时是主按钮的禁用形态，填了番号就能点', async () => {
   serve(listed([]));
   const { host } = await open();
-  const addKey = () => buttonNamed('添加', host)!;
+  const addKey = () => buttonNamed('Añadir', host)!;
   expect([addKey().classList.contains('bg-button-primary'), addKey().disabled]).toEqual([true, true]);
   await type(host.querySelector<HTMLInputElement>('input[aria-label="番号"]'), 'SSIS-950');
   await settle();
@@ -146,9 +146,9 @@ it('移除与重新查找按这一条的 id 发', async () => {
   const fetcher = serve(listed([want(3, { phase: 'given_up', search_count: 3 })]));
   const { host, toast } = await open();
   const row = () => host.querySelector('[data-want-id="3"]')!;
-  await click(buttonNamed('重新查找', row()));
+  await click(buttonNamed('Buscar de nuevo', row()));
   await settle();
-  await click(buttonNamed('移除', row()));
+  await click(buttonNamed('Quitar', row()));
   await settle();
   expect(posts(fetcher)).toEqual([
     ['/api/wants', { action: 'reset', ids: [3] }], ['/api/wants', { action: 'remove', ids: [3] }],
@@ -160,9 +160,9 @@ it('只读的机器：输入框、添加与每行的键都禁用', async () => {
   serve(listed([want(2)]));
   const { host } = await open(true);
   expect(host.querySelector<HTMLInputElement>('input[aria-label="番号"]')!.disabled).toBe(true);
-  expect(buttonNamed('添加', host)!.disabled).toBe(true);
-  expect(buttonNamed('移除', host)!.disabled).toBe(true);
-  expect(buttonNamed('查找资源', host)!.disabled).toBe(false);
+  expect(buttonNamed('Añadir', host)!.disabled).toBe(true);
+  expect(buttonNamed('Quitar', host)!.disabled).toBe(true);
+  expect(buttonNamed('Buscar recursos', host)!.disabled).toBe(false);
 });
 
 it(`一段多于 ${WANT_PAGE_SIZE} 条时分页，页码各段各记各的；报错只露一行`, async () => {

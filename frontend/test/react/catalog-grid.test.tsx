@@ -200,13 +200,13 @@ describe('作品卡', () => {
 
   it('片名空着时标题与读屏名写「未命名视频」', async () => {
     const { host } = await render(item(12, { name: '' }));
-    expect(host.querySelector('[data-media-title]')?.textContent).toBe('未命名视频');
+    expect(host.querySelector('[data-media-title]')?.textContent).toBe('Video sin título');
     expect(host.querySelector('[data-media-open]')?.getAttribute('aria-label')).toBe('打开 未命名视频详情');
   });
 
   it('大小不明写「大小未知」，看过几次写出来，标签取作品自己的标签、至多三枚', async () => {
     const { host } = await render(item(11, { size: 0, play_count: 3, performers: ['甲'], tags: ['a', 'b', 'c', 'd'] }));
-    expect(host.querySelector('[data-media-size]')?.textContent).toBe('大小未知');
+    expect(host.querySelector('[data-media-size]')?.textContent).toBe('Tamaño desconocido');
     expect(host.querySelector('[data-media-watch-count]')?.textContent).toBe('看过 3');
     expect([...host.querySelectorAll('[data-media-tag]')].map((tag) => tag.textContent)).toEqual(['#a', '#b', '#c']);
   });
@@ -218,12 +218,12 @@ describe('作品卡', () => {
     expect(glyphs).toEqual([
       [expect.stringContaining('后退'), '#i-rotate-ccw'],
       [expect.stringContaining('前进'), '#i-rotate-cw'],
-      ['打开详情', '#i-expand'],
+      ['Abrir detalles', '#i-expand'],
     ]);
   });
 
   it('关注来源保存的条目用来源的缩略图和标签，标签不可点', async () => {
-    const { host } = await render(item(12, { follow_thumb_url: 'https://example.test/t.jpg', follow_item_id: 5, tags: ['本地'], follow_tags: ['来源'] }));
+    const { host } = await render(item(12, { follow_thumb_url: 'https://example.test/t.jpg', follow_item_id: 5, tags: ['Local'], follow_tags: ['Fuente'] }));
     expect(host.querySelector('[data-media-art] img')?.getAttribute('src')).toBe('https://example.test/t.jpg');
     const tag = host.querySelector<HTMLButtonElement>('[data-media-tag]');
     expect([tag?.textContent, tag?.disabled]).toEqual(['#来源', true]);
@@ -232,7 +232,7 @@ describe('作品卡', () => {
   it('看到一半的画一条进度，分卷组不画；比例写进封面格', async () => {
     const { host } = await render(item(13, { duration: 600, play_seconds: 150 }));
     const bar = host.querySelector('[data-media-progress]');
-    expect([bar?.getAttribute('role'), bar?.getAttribute('aria-label'), bar?.getAttribute('aria-valuenow')]).toEqual(['progressbar', '观看进度', '25']);
+    expect([bar?.getAttribute('role'), bar?.getAttribute('aria-label'), bar?.getAttribute('aria-valuenow')]).toEqual(['progressbar', 'Progreso visto', '25']);
     expect(host.querySelector<HTMLElement>('[data-media-pic]')!.style.getPropertyValue('--card-ratio')).toBe(String(16 / 9));
 
     const group = await render(item(14, { duration: 600, play_seconds: 150, part_group: { key: 'P', seed_id: 14, count: 2 } }));
@@ -251,7 +251,7 @@ describe('作品卡', () => {
   it('待删的作品留在原位，标上回收站', async () => {
     const { card, host } = await render(item(15, { disposal: 'trash' }));
     expect(card.hasAttribute('data-pending-delete')).toBe(true);
-    expect(host.querySelector('[data-media-trash-mark]')?.textContent).toBe('回收站');
+    expect(host.querySelector('[data-media-trash-mark]')?.textContent).toBe('Papelera');
   });
 
   it('稍后看只写这一条，不打开详情；写成后按钮按下', async () => {
@@ -264,14 +264,14 @@ describe('作品卡', () => {
 
   it('回收站里的资源按类型起名，卡上那枚键还原这一条，不打开它', async () => {
     const archive = await render(item(17, { medium: 'archive', name: '资料.zip', disposal: 'trash' }), { variant: 'resource' });
-    expect(archive.host.querySelector('[data-media-who]')?.textContent).toBe('压缩包');
+    expect(archive.host.querySelector('[data-media-who]')?.textContent).toBe('Archivos comprimidos');
     await click(archive.host.querySelector('[data-media-resource-action]'));
     expect(archive.actions.resourceOperation).toHaveBeenCalledWith(expect.objectContaining({ id: 17 }), 'restore');
     expect(archive.onOpen).not.toHaveBeenCalled();
 
     const shortcut = await render(item(18, { medium: 'other', name: '入口.URL' }), { variant: 'resource' });
-    expect(shortcut.host.querySelector('[data-media-who]')?.textContent).toBe('网址快捷方式');
-    expect(shortcut.host.querySelector('[data-media-resource-action]')?.getAttribute('title')).toBe('移入回收站');
+    expect(shortcut.host.querySelector('[data-media-who]')?.textContent).toBe('Acceso directo web');
+    expect(shortcut.host.querySelector('[data-media-resource-action]')?.getAttribute('title')).toBe('Mover a la papelera');
   });
 
   it('换大图／小图留着原来那张封面，原地换取景；换了作品才换图', async () => {

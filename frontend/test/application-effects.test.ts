@@ -52,7 +52,7 @@ it('观察者销毁后不能再次观察，晚到回调不发布', () => {
 
 it('清理异常仍释放其他资源，晚交资源立即释放一次', () => {
   const effects = new ApplicationEffects(), first = vi.fn(), last = vi.fn(), late = vi.fn();
-  effects.own(first); effects.own(() => { throw new Error('清理失败'); }); effects.own(last);
+  effects.own(first); effects.own(() => { throw new Error('Falló la limpieza'); }); effects.own(last);
   expect(() => effects.dispose()).toThrow(AggregateError);
   expect(first).toHaveBeenCalledTimes(1); expect(last).toHaveBeenCalledTimes(1);
   const release = effects.own(late); release(); effects.dispose();

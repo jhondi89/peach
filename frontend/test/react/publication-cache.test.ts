@@ -13,7 +13,7 @@ it('月底、未知日期与发行期每日更新都有明确边界', () => {
   expect(publicationLifetime('2024-01-31', date('2024-02-29'))).toBe(86_400_000);
   expect(publicationLifetime('2024-01-31', date('2024-03-01'))).toBe(Infinity);
   expect(publicationLifetime('2026-02-30', date('2026-10-13'))).toBe(86_400_000);
-  for (const released of [undefined, '', '未知', '2026-11-01', '2026-10-01']) {
+  for (const released of [undefined, '', 'Desconocido', '2026-11-01', '2026-10-01']) {
     expect(publicationFresh(date('2026-10-13'), released, date('2026-10-14') - 1)).toBe(true);
     expect(publicationFresh(date('2026-10-13'), released, date('2026-10-14'))).toBe(false);
   }

@@ -318,10 +318,10 @@ it('配置页打开返回的那一刻，页签条已经在容器里，选中的�
     return { mode: 'off', status: 'idle' };
   } })));
   await act(async () => {
-    const open = { section: '网络与访问' };
+    const open = { section: 'Red y acceso' };
     expect(await r.openManagedRoute('/settings/library', open, { container: stats, isCurrent: () => true })).toBe(true);
     const tabs = [...stats.querySelectorAll('.ui-configpage > .ui-board-local-nav[role="tablist"] > [role="tab"]')];
-    expect(tabs.map((tab) => tab.textContent)).toEqual(['媒体库与入库', '来源与订阅', '网络与访问', '应用与维护', '系统诊断']);
+    expect(tabs.map((tab) => tab.textContent)).toEqual(['Bibliotecas e importación', 'Fuentes y suscripciones', 'Red y acceso', 'Aplicación y mantenimiento', 'Diagnóstico del sistema']);
     expect(tabs.map((tab) => tab.getAttribute('aria-selected'))).toEqual(['false', 'false', 'true', 'false', 'false']);
     const active = stats.querySelector('.ui-board-group-active');
     expect(active?.id).toBe(tabs[2].getAttribute('aria-controls'));
@@ -365,10 +365,10 @@ it('诊断页先选配置分栏再导航，作品与任务交给共享入口', a
   vi.mocked(actions.requestConfigurationSection).mockImplementation(section => { order.push(section) });
   const page = element<ConfigurationProps & { diagnostics: ReactElement<DiagnosticsProps> }>('/settings/diagnostics', r, {}, actions, go);
   const props = page.diagnostics.props;
-  props.configure('网络与访问');
+  props.configure('Red y acceso');
   props.openItem(12);
   props.navigate('/tasks');
-  expect(order).toEqual(['网络与访问', '/settings/network', '/tasks']);
+  expect(order).toEqual(['Red y acceso', '/settings/network', '/tasks']);
   expect(actions.openItem).toHaveBeenCalledWith(12);
 });
 
@@ -415,7 +415,7 @@ it('复核页与关注管理页把地址写回壳，不重开', async () => {
   const actions = shellActions();
   const go = vi.fn();
   const review = element<ReviewProps>('/review', r,
-    { category: 'name', readOnly: true, readOnlyMessage: '只读', writerUrl: '' }, actions, go);
+    { category: 'name', readOnly: true, readOnlyMessage: 'Solo lectura', writerUrl: '' }, actions, go);
   expect([review.route, review.category, review.readOnly]).toEqual([actions.routeReview, 'name', true]);
   const follow = element<FollowManageProps>('/subscriptions', r, {
     tab: 'list', page: 2, sort: '', dir: '', pageSize: 20, layout: 'default', readOnly: false, readOnlyMessage: '', writerUrl: '',
@@ -438,10 +438,10 @@ it('回执、打开作品与资料页都交回壳：都走过去时回执', asyn
   const duplicates = element<DuplicatesProps>('/duplicates', r, {}, actions, vi.fn());
   duplicates.toast('已删除', { undo });
   duplicates.toast('已保留');
-  duplicates.failure('删除', 'boom');
-  const configuration = element<ConfigurationProps>('/settings/library', r, { section: '媒体库与入库' }, actions, vi.fn());
-  configuration.receipt('已保存配置');
-  expect([configuration.reopenTutorial, configuration.section]).toEqual([actions.reopenTutorial, '媒体库与入库']);
+  duplicates.failure('Borrar', 'boom');
+  const configuration = element<ConfigurationProps>('/settings/library', r, { section: 'Bibliotecas e importación' }, actions, vi.fn());
+  configuration.receipt('Configuración guardada');
+  expect([configuration.reopenTutorial, configuration.section]).toEqual([actions.reopenTutorial, 'Bibliotecas e importación']);
   const review = element<ReviewProps>('/review', r,
     { category: '', readOnly: false, readOnlyMessage: '', writerUrl: '' }, actions, vi.fn());
   review.openEntity('performer', '某人');
@@ -456,18 +456,18 @@ it('回执、打开作品与资料页都交回壳：都走过去时回执', asyn
   expect(vi.mocked(actions.openItem).mock.calls).toEqual([[3]]);
   expect(vi.mocked(actions.openEntity).mock.calls).toEqual([['performer', '某人']]);
   expect(vi.mocked(actions.openTasteSignal).mock.calls).toEqual([['tag', '痴女']]);
-  expect(vi.mocked(actions.failure).mock.calls).toEqual([['删除', 'boom']]);
+  expect(vi.mocked(actions.failure).mock.calls).toEqual([['Borrar', 'boom']]);
   expect(actions.toast).not.toHaveBeenCalled();
   expect(vi.mocked(actions.receipt).mock.calls).toEqual([
-    ['已提交离线下载'], ['已删除', { undo }], ['已保留', {}], ['已保存配置'], ['已判定'], ['已添加 1 个关注来源'], ['已导入'],
+    ['已提交离线下载'], ['已删除', { undo }], ['已保留', {}], ['Configuración guardada'], ['已判定'], ['已添加 1 个关注来源'], ['已导入'],
   ]);
 });
 
 it('采集页的提示走全站 Toast 原样', async () => {
   const r = await load();
   const actions = shellActions();
-  element<ScrapingProps>('/sources', r, {}, actions, vi.fn()).toast('已保存');
-  expect(vi.mocked(actions.toast).mock.calls).toEqual([['已保存']]);
+  element<ScrapingProps>('/sources', r, {}, actions, vi.fn()).toast('Guardado');
+  expect(vi.mocked(actions.toast).mock.calls).toEqual([['Guardado']]);
   expect(actions.receipt).not.toHaveBeenCalled();
 });
 

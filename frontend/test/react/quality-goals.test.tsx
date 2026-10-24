@@ -108,7 +108,7 @@ it('每条目标一张卡片，读数走遗留层同一套格式化口径', asyn
 it('探测失败的时长显示占位，不显示 0 也不显示负数', async () => {
   const { host } = await open(payload([goal({ duration: -1, size: 0 })]));
   expect([...host.querySelectorAll('h3 ~ p > span')].map((node) => node.textContent))
-    .toEqual(['', '本地', '—', '大小未知']);
+    .toEqual(['', 'Local', '—', 'Tamaño desconocido']);
 });
 
 it('有番号封面就用番号封面，否则退回海报', async () => {
@@ -125,7 +125,7 @@ it('封面取不到就把图摘掉，兜底文字还在，卡片其余部分照�
   const { host } = await open(payload([goal()]));
   host.querySelector('img')!.dispatchEvent(new Event('error'));
   expect(host.querySelector('img')).toBeNull();
-  expect(host.querySelector('li[data-goal-id] button')?.textContent).toBe('暂无预览');
+  expect(host.querySelector('li[data-goal-id] button')?.textContent).toBe('Sin vista previa');
 });
 
 it('封面、标题和页脚三处都打开同一部作品，无障碍名称用纯文本形态', async () => {
@@ -150,7 +150,7 @@ it('搜索资源原地打开云下载弹层，带入番号与原版本目标；�
 
 it('一条目标都没有时给空态，不是一片白', async () => {
   const { host } = await open(payload([]));
-  expect(host.querySelector('h3')?.textContent).toBe('没有标记中的高清版目标');
+  expect(host.querySelector('h3')?.textContent).toBe('No hay objetivos de versión HD marcados');
   expect(host.querySelector('li[data-goal-id]')).toBeNull();
 });
 
@@ -158,7 +158,7 @@ it('首屏取数就失败时只剩一条错误，不画空列表', async () => {
   const { host } = await open(null);
   const alert = host.querySelector('[role=alert]');
   // 文案走遗留层的 `requestErrorMessage`：服务端给了中文原因就用它，页面不另说一遍。
-  expect(alert?.textContent).toContain('读取失败');
+  expect(alert?.textContent).toContain('Error al cargar');
   expect(alert?.textContent).toContain('数据库当前只能浏览');
   expect(host.querySelector('ul')).toBeNull();
 });

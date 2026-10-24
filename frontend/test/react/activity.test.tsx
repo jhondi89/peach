@@ -128,29 +128,29 @@ it('被挡下的那一轮单独成段，不在最近完成里再出现一次', a
     result_summary: { blocked_by: 3 }, error: '与第 3 轮（手动触发）冲突，本次跳过',
   });
   const { host } = await open(payload({ skipped: [blocked], finished: [blocked] }));
-  expect(sections(host)).toEqual(['正在进行', '被挡下的']);
+  expect(sections(host)).toEqual(['En curso', 'Bloqueadas']);
   expect(host.querySelectorAll('li')).toHaveLength(1);
   // 原因落在卡片底部的说明区，状态由徽章说。
   expect(host.querySelector('[data-status=cancelled]')?.textContent).toContain('与第 3 轮');
-  expect(host.querySelector('[data-status=cancelled] span')?.textContent).toBe('已取消');
+  expect(host.querySelector('[data-status=cancelled] span')?.textContent).toBe('Cancelada');
 });
 
 it('跑完那一轮显示摘要，失败那一轮显示原因', async () => {
   const { host } = await open(payload({ finished: [
     run({ id: 2, status: 'succeeded', finished_at: '2026-09-11T10:02:00Z',
           progress_total: null, result_summary: { checked: 7, results: [1, 2] } }),
-    run({ id: 3, status: 'failed', task_label: '扫描与采集', finished_at: '2026-09-11T10:03:00Z',
+    run({ id: 3, status: 'failed', task_label: 'Escaneo y obtención de datos', finished_at: '2026-09-11T10:03:00Z',
           progress_total: null, error: 'RuntimeError: 上游挡回来了' }),
   ] }));
   expect(host.querySelector('[data-status=succeeded]')?.textContent).toContain('已检查 7');
   expect(host.querySelector('[data-status=failed]')?.textContent).toContain('上游挡回来了');
-  expect(host.querySelector('[data-status=succeeded] span')?.textContent).toBe('已完成');
+  expect(host.querySelector('[data-status=succeeded] span')?.textContent).toBe('Completada');
   // 跑成功那张没有说明区：没有原因可写时不留一条空条子。
   expect(host.querySelectorAll('[data-status=succeeded] p')).toHaveLength(2);
 });
 
 it('后继挂在派出它的那一轮下面，不另占一张卡', async () => {
-  const parent = run({ id: 4, status: 'succeeded', task_label: '扫描与采集',
+  const parent = run({ id: 4, status: 'succeeded', task_label: 'Escaneo y obtención de datos',
                        progress_total: null, finished_at: '2026-09-11T10:03:00Z',
                        result_summary: { followups: 1 } });
   const { host } = await open(payload({ finished: [parent, followup(parent.id)] }));
@@ -158,7 +158,7 @@ it('后继挂在派出它的那一轮下面，不另占一张卡', async () => {
   const row = host.querySelector('[data-followup-key]')!;
   expect(host.querySelector('[data-task-key=follow-check]')!.contains(row)).toBe(true);
   expect([...row.querySelectorAll('span')].map((node) => node.textContent))
-    .toEqual(['补全资料图片', '已完成', '涼森れむ · 结果 已装上']);
+    .toEqual(['补全资料图片', 'Completada', '涼森れむ · 结果 已装上']);
   expect(host.textContent).toContain('派出后继 1');
 });
 
@@ -197,10 +197,10 @@ it('后继还在跑时，派出它的那一轮整张卡留在正在进行，那�
     progress_label: '取新作资料：MIZD-441', progress_current: 13, progress_total: 22,
     followup_key: 'feed-scrape:MIZD-441', result_summary: {} });
   const { host } = await open(payload({ running: [scraping], finished: [parent] }));
-  expect(sections(host)).toEqual(['正在进行']);
+  expect(sections(host)).toEqual(['En curso']);
   const row = host.querySelector('[data-followup-key]')!;
   expect([...row.querySelectorAll('span')].map((node) => node.textContent))
-    .toEqual(['取新作资料', '进行中', 'MIZD-441 · 13 / 22 项']);
+    .toEqual(['取新作资料', 'En curso', 'MIZD-441 · 13 / 22 项']);
 });
 
 it('连着几轮什么也没发生的定时任务按种类各并成一张卡，有事的那一轮截断并单独摆', async () => {
@@ -230,7 +230,7 @@ it('父任务不在这一屏上时，后继照常单独摆出来', async () => {
 
 it('一条记录都没有时给空态，不是一片白', async () => {
   const { host } = await open(payload());
-  expect(host.querySelector('h3')?.textContent).toBe('还没有任务记录');
+  expect(host.querySelector('h3')?.textContent).toBe('Aún no hay tareas registradas');
   // 任务中心那三段都不画；云下载没有任务，也不画。
   expect(sections(host)).toEqual([]);
 });
@@ -268,14 +268,14 @@ it('轮询间隔跟着内容走：有东西在跑两秒一次，全是终态十�
 
 it('一轮请求失败不擦掉上一份数据，只在页内多一条原因', async () => {
   vi.useFakeTimers();
-  const fetcher = serve(payload({ finished: [run({ id: 5, status: 'succeeded', task_label: '扫描与采集' })] }), null);
+  const fetcher = serve(payload({ finished: [run({ id: 5, status: 'succeeded', task_label: 'Escaneo y obtención de datos' })] }), null);
   await prefetchTasks(new AbortController().signal);
   const host = await mount(page());
 
   await tick(10_000);
   expect(fetcher).toHaveBeenCalledTimes(2);
   expect(host.querySelector('[role=alert]')?.textContent).toContain('数据库当前只能浏览');
-  expect(host.textContent, '失败一次就把上一份结果擦掉，页面比原来知道得更少').toContain('扫描与采集');
+  expect(host.textContent, '失败一次就把上一份结果擦掉，页面比原来知道得更少').toContain('Escaneo y obtención de datos');
 });
 
 it('卸载之后不再敲库：轮询跟着这棵根一起走', async () => {
@@ -331,22 +331,22 @@ it('「加载更早」以最旧那一行为游标往后接一页，到头就不�
   const host = await mount(page());
   expect(shownIds(host)).toEqual([9, 8]);
 
-  await click(buttonNamed('加载更早', host));
+  await click(buttonNamed('Cargar anteriores', host));
   await settle();
   expect(cursorOf(fetcher, 1).get('before_id')).toBe('8');
   expect(cursorOf(fetcher, 1).get('before_finished_at')).toBe('2026-09-11T10:08:00.000Z');
   expect(shownIds(host)).toEqual([9, 8, 7, 6]);
 
-  await click(buttonNamed('加载更早', host));
+  await click(buttonNamed('Cargar anteriores', host));
   await settle();
   expect(cursorOf(fetcher, 2).get('before_id')).toBe('6');
   expect(shownIds(host)).toEqual([9, 8, 7, 6, 5]);
-  expect(buttonNamed('加载更早', host), '已经到头还留着「加载更早」').toBeNull();
+  expect(buttonNamed('Cargar anteriores', host), '已经到头还留着「加载更早」').toBeNull();
 });
 
 it('第一页之后没有更早的就不给「加载更早」', async () => {
   const { host } = await open(payload({ finished: [done(9)], finished_has_more: false }));
-  expect(buttonNamed('加载更早', host)).toBeNull();
+  expect(buttonNamed('Cargar anteriores', host)).toBeNull();
 });
 
 it('轮询刷新之后翻过的行还在，被新完成挤出第一页的那一轮也不丢、不重复', async () => {
@@ -361,7 +361,7 @@ it('轮询刷新之后翻过的行还在，被新完成挤出第一页的那一�
     [{ finished: [done(7), done(6)], finished_has_more: true }]);
   await prefetchTasks(new AbortController().signal);
   const host = await mount(page());
-  await click(buttonNamed('加载更早', host));
+  await click(buttonNamed('Cargar anteriores', host));
   await settle();
   expect(shownIds(host)).toEqual([9, 8, 7, 6]);
 
@@ -370,7 +370,7 @@ it('轮询刷新之后翻过的行还在，被新完成挤出第一页的那一�
   await tick(10_000);
   await tick(10_000);
   expect(shownIds(host)).toEqual([12, 11, 10, 9, 8, 7, 6]);
-  expect(buttonNamed('加载更早', host), '刷新一次就把往前翻的进度丢了').not.toBeNull();
+  expect(buttonNamed('Cargar anteriores', host), '刷新一次就把往前翻的进度丢了').not.toBeNull();
 });
 
 it('往前翻失败时原位说原因，已有的行不动，再点一次照常接上', async () => {
@@ -379,12 +379,12 @@ it('往前翻失败时原位说原因，已有的行不动，再点一次照常�
   await prefetchTasks(new AbortController().signal);
   const host = await mount(page());
 
-  await click(buttonNamed('加载更早', host));
+  await click(buttonNamed('Cargar anteriores', host));
   await settle();
   expect(host.querySelector('[role=alert]')?.textContent).toContain('数据库当前只能浏览');
   expect(shownIds(host)).toEqual([9]);
 
-  await click(buttonNamed('加载更早', host));
+  await click(buttonNamed('Cargar anteriores', host));
   await settle();
   expect(host.querySelector('[role=alert]')).toBeNull();
   expect(shownIds(host)).toEqual([9, 7]);
@@ -426,13 +426,13 @@ it('报错摘要平时只露一行，「查看详情」展开全文、再点收�
   const stack = 'Traceback (most recent call last):\n  File "x.py", line 1\nValueError: 坏了';
   const host = await mount(<ErrorExcerpt text={stack} />);
   expect(host.textContent).toBe('ValueError: 坏了查看详情');
-  await click(buttonNamed('查看详情', host));
+  await click(buttonNamed('Ver detalles', host));
   expect(host.textContent).toContain('File "x.py", line 1');
-  expect(buttonNamed('收起详情', host)?.getAttribute('aria-expanded')).toBe('true');
-  await click(buttonNamed('收起详情', host));
+  expect(buttonNamed('Ocultar detalles', host)?.getAttribute('aria-expanded')).toBe('true');
+  await click(buttonNamed('Ocultar detalles', host));
   expect(host.textContent).toBe('ValueError: 坏了查看详情');
 
   const single = await mount(<ErrorExcerpt text="只有一行" />);
   expect(single.textContent).toBe('只有一行');
-  expect(buttonNamed('查看详情', single)).toBeNull();
+  expect(buttonNamed('Ver detalles', single)).toBeNull();
 });

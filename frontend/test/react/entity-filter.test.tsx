@@ -12,8 +12,8 @@ import {
 import { FOLLOW_FILTERS } from '../../src/react/follow-feed/follow-feed';
 import { click, mount, settle } from './render';
 
-const STATES = [{ k: '', label: '全部' }, { k: 'fresh', label: '没看过' }, { k: 'later', label: '稍后看' }, { k: 'flagged', label: '已标记' }];
-const LAYOUTS = [['big', '大图', 'maximize'], ['small', '小图', 'layout-grid']] as const;
+const STATES = [{ k: '', label: 'Todos' }, { k: 'fresh', label: 'Sin ver' }, { k: 'later', label: 'Ver más tarde' }, { k: 'flagged', label: 'Marcados' }];
+const LAYOUTS = [['big', 'Grande', 'maximize'], ['small', 'Pequeño', 'layout-grid']] as const;
 
 function actions(patch: Partial<EntityFilterActions> = {}): EntityFilterActions {
   return {
@@ -31,15 +31,15 @@ function helpers(patch: Partial<EntityFilterHelpers> = {}): EntityFilterHelpers 
 function props(patch: Partial<EntityFilterProps> = {}): EntityFilterProps {
   return {
     kind: 'performer', name: '篠田ゆう', view: 'videos',
-    views: { label: '媒体类型', people: null, videos: { count: 24 }, photos: { count: 18 }, online: null },
+    views: { label: 'Tipo de medio', people: null, videos: { count: 24 }, photos: { count: 18 }, online: null },
     state: '', states: STATES,
     tags: [{ k: '巨乳', label: '巨乳', n: 1200, selected: false }, { k: '中出', label: '中出', n: 36, selected: true }],
     combo: [{ kind: 'untag', key: '中出', label: '中出' }, { kind: 'clear', key: 'studio', label: '厂牌 S1' }],
     readout: '视频 · 24 · 中出', busy: false,
     video: {
       sorts: [
-        { key: 'release', label: '发行时间', pressed: true, dir: 'desc', ariaLabel: '按发行时间从旧到新排序' },
-        { key: 'rating', label: '评分', pressed: false, dir: '', ariaLabel: '按评分从高到低排序' },
+        { key: 'release', label: 'Fecha de lanzamiento', pressed: true, dir: 'desc', ariaLabel: '按发行时间从旧到新排序' },
+        { key: 'rating', label: 'Puntuación', pressed: false, dir: '', ariaLabel: '按评分从高到低排序' },
       ],
       jav: { layout: 'big', options: LAYOUTS },
     },
@@ -127,7 +127,7 @@ describe('照片与名册视图', () => {
   it('照片视图收起观看状态、标签与交集条，下排只有换一批与图片布局', async () => {
     const host = await mount(<EntityFilterPage {...props({
       view: 'photos', readout: '照片 · 18 张', video: null,
-      photo: { back: false, shuffle: true, layout: 'masonry', layouts: [['fixed', '固定比例', 'layout-grid'], ['masonry', '瀑布流', 'columns-2']], setId: 0 },
+      photo: { back: false, shuffle: true, layout: 'masonry', layouts: [['fixed', 'Proporción fija', 'layout-grid'], ['masonry', 'Mosaico', 'columns-2']], setId: 0 },
     })} />);
     expect($(host, '[data-entity-states]')?.hidden).toBe(true);
     expect($$(host, '[data-entity-tag]')).toHaveLength(0);
@@ -143,7 +143,7 @@ describe('照片与名册视图', () => {
     const shell = actions({ reshuffle: vi.fn(() => new Promise<void>((resolve) => { finish = resolve; })) });
     const host = await mount(<EntityFilterPage {...props({
       view: 'photos', video: null, actions: shell,
-      photo: { back: false, shuffle: true, layout: 'fixed', layouts: [['fixed', '固定比例', 'layout-grid']], setId: 0 },
+      photo: { back: false, shuffle: true, layout: 'fixed', layouts: [['fixed', 'Proporción fija', 'layout-grid']], setId: 0 },
     })} />);
     // 换一批洗的是这一批的成员，不是把同一批重新取一遍：字形是洗牌，不是转圈的刷新。
     expect($(host, '[data-entity-batch] use')?.getAttribute('href')).toBe('#i-shuffle');
@@ -161,7 +161,7 @@ describe('照片与名册视图', () => {
     const wiring = helpers({ sourceToolsHtml: (id) => `<button type="button" data-src="${id}">定位</button>` });
     const host = await mount(<EntityFilterPage {...props({
       view: 'photos', video: null, actions: shell, helpers: wiring, readout: '夏の日 · 12 张',
-      photo: { back: true, shuffle: false, layout: 'fixed', layouts: [['fixed', '固定比例', 'layout-grid']], setId: 42 },
+      photo: { back: true, shuffle: false, layout: 'fixed', layouts: [['fixed', 'Proporción fija', 'layout-grid']], setId: 42 },
     })} />);
     expect($$(host, '[data-entity-batch]')).toHaveLength(0);
     expect($(host, '[data-entity-srctools] [data-src="42"]')).not.toBeNull();
@@ -174,11 +174,11 @@ describe('照片与名册视图', () => {
     const shell = actions();
     const host = await mount(<EntityFilterPage {...props({
       kind: 'agency', view: 'people', readout: '艺人 · 3', video: null, actions: shell,
-      views: { label: '页面视图', people: { label: '艺人', count: 3, icon: 'user-round' }, videos: { count: 24 }, photos: null, online: null },
+      views: { label: 'Vista de la página', people: { label: 'Artistas', count: 3, icon: 'user-round' }, videos: { count: 24 }, photos: null, online: null },
     })} />);
     expect($$(host, '[data-media-view]').map((key) => key.dataset.mediaView)).toEqual(['people', 'videos']);
     expect($(host, '[data-media-view="people"]')?.getAttribute('aria-pressed')).toBe('true');
-    expect($(host, '[data-entity-media]')?.getAttribute('aria-label')).toBe('页面视图');
+    expect($(host, '[data-entity-media]')?.getAttribute('aria-label')).toBe('Vista de la página');
     expect($$(host, '[data-filter-row="bottom"] > *').map((node) => node.tagName)).toEqual(['H3', 'SPAN']);
     expect($(host, '[data-filter-row="bottom"] [aria-label="我的收藏"]')).not.toBeNull();
     await click($(host, '[data-media-view="videos"]')!);
@@ -189,14 +189,14 @@ describe('照片与名册视图', () => {
 describe('在线视图', () => {
   const head = (patch: Partial<EntityOnlineHead> = {}): EntityOnlineHead => ({
     media: 'videos', mediaCounts: { videos: 4, images: 9 }, photoLayout: 'masonry',
-    photoLayouts: [['fixed', '固定比例', 'layout-grid'], ['masonry', '瀑布流', 'columns-2']], imagesOnly: false,
+    photoLayouts: [['fixed', 'Proporción fija', 'layout-grid'], ['masonry', 'Mosaico', 'columns-2']], imagesOnly: false,
     status: '', statuses: FOLLOW_FILTERS, provider: '', providers: [['rule34video', 'Rule34Video']],
     tags: [{ k: 'cum', label: 'cum', n: 3, selected: true, cat: 'general' }],
-    sorts: [{ key: 'new', label: '更新时间', pressed: true, dir: 'desc', ariaLabel: '更新时间' }], ...patch,
+    sorts: [{ key: 'new', label: 'Fecha de actualización', pressed: true, dir: 'desc', ariaLabel: 'Fecha de actualización' }], ...patch,
   });
   const online = (patch: Partial<EntityFilterProps> = {}) => props({
     kind: 'creator', name: 'Jul3D', view: 'online', readout: '在线 · 13 项更新', video: null, tags: [], combo: [],
-    views: { label: '媒体类型', people: null, videos: { count: 2 }, photos: null, online: { count: 13 } }, ...patch,
+    views: { label: 'Tipo de medio', people: null, videos: { count: 2 }, photos: null, online: { count: 13 } }, ...patch,
   });
 
   it('在线键排在最末；状态换成关注的四档，来源与标签是这一位自己的，媒体与排序各自一组', async () => {
@@ -240,7 +240,7 @@ describe('在线视图', () => {
   it('只有照片、没有别的视图键时上排整行不出', async () => {
     const host = await mount(<EntityFilterPage {...props({
       view: 'photos', views: null, readout: '照片 · 18 张', video: null,
-      photo: { back: false, shuffle: true, layout: 'masonry', layouts: [['masonry', '瀑布流', 'columns-2']], setId: 0 },
+      photo: { back: false, shuffle: true, layout: 'masonry', layouts: [['masonry', 'Mosaico', 'columns-2']], setId: 0 },
     })} />);
     expect($(host, '[data-filter-row="top"]')).toBeNull();
     expect($(host, '[data-filter-row="bottom"]')).not.toBeNull();

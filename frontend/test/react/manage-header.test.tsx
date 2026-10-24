@@ -88,7 +88,7 @@ async function connect(r: Loaded) {
   await act(async () => { r.connectManagedRoutes(Promise.resolve(r.prefetchManagedRoute)) });
 }
 
-const SECTIONS: ManageEntry[] = [['stats', '统计', 'chart'], ['cleanup', '数据管理', 'database'], ['trash', '回收站', 'trash']];
+const SECTIONS: ManageEntry[] = [['stats', 'Estadísticas', 'chart'], ['cleanup', 'Datos', 'database'], ['trash', 'Papelera', 'trash']];
 const MENU = SECTIONS.filter(([key]) => key !== 'trash');
 
 const props = (section: string, path: string, patch: Partial<ManageHeaderProps> = {}): ManageHeaderProps =>
@@ -152,7 +152,7 @@ describe('换手', () => {
       .map((el) => [el.tagName, ...[...el.attributes].map((a) => a.name).filter((name) => name.startsWith('data-') || name.startsWith('aria-')).sort()].join(' '))
       .filter((line) => !line.startsWith('USE'));
     expect(shape(host.root)).toEqual(shape(skeleton));
-    expect(title(host.root)).toBe('垃圾文件');
+    expect(title(host.root)).toBe('Archivos basura');
   });
 
   it('骨架与首帧在同一个任务里换掉：每个任务边界上宿主里要么是骨架、要么是画好的页头，宿主上不多包 .peach-react', async () => {
@@ -176,7 +176,7 @@ describe('换手', () => {
     expect(done).toBe(true);
     expect(seen).not.toContain('empty');
     expect(seen.at(-1)).toBe('header');
-    expect(title(host.root)).toBe('统计');
+    expect(title(host.root)).toBe('Estadísticas');
     expect(host.root.querySelector(':scope > .peach-react')).toBeNull();
     expect(host.root.firstElementChild?.hasAttribute('data-manage-bar')).toBe(true);
   });
@@ -212,7 +212,7 @@ describe('换手', () => {
     render(props('', '/'));
     expect(root.childElementCount).toBe(0);
     render(props('cleanup', '/data-cleanup'));
-    expect(title(root)).toBe('数据管理');
+    expect(title(root)).toBe('Datos');
     expect(root.querySelector('[data-manage-title]')!.hasAttribute('data-compact')).toBe(true);
     expect(root.querySelector('[data-manage-crumb]')).toBeNull();
   });
@@ -248,7 +248,7 @@ describe('管理条与面包屑', () => {
     const { root, host } = await setup(props('cleanup', '/duplicates'));
     const link = root.querySelector<HTMLAnchorElement>('[data-manage-crumb] a')!;
     expect(link.getAttribute('href')).toBe('/data-cleanup');
-    expect(root.querySelector('[data-manage-crumb] [aria-current="true"]')!.textContent).toBe('重复文件');
+    expect(root.querySelector('[data-manage-crumb] [aria-current="true"]')!.textContent).toBe('Archivos duplicados');
     const fire = (init: MouseEventInit) => {
       const event = new MouseEvent('click', { bubbles: true, cancelable: true, ...init });
       act(() => { link.dispatchEvent(event) });
@@ -299,9 +299,9 @@ describe('常驻组件', () => {
     /* 不包 act：act 会把 flushSync 推到它结束时，看不出句柄自己同步没有。 */
     (globalThis as ActFlag).IS_REACT_ACT_ENVIRONMENT = false;
     api.render(props('cleanup', '/junk-files'));
-    expect(title(root)).toBe('垃圾文件');
+    expect(title(root)).toBe('Archivos basura');
     api.render(props('trash', '/trash'));
-    expect([title(root), root.querySelectorAll('[data-trash-lede-skeleton]').length]).toEqual(['回收站', 2]);
+    expect([title(root), root.querySelectorAll('[data-trash-lede-skeleton]').length]).toEqual(['Papelera', 2]);
   });
 
   it('抛错只卸组件、宿主还在，批量条照画；之后句柄是空操作、不抛，这一面空到刷新为止，只报一次', async () => {

@@ -30,8 +30,8 @@ it('关闭视频预览生成时保留资料同步，并禁用单独抽帧', asyn
   vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, json: async () => ({ status: 'idle', metadata_only: true }) })));
   const host = await mount(prompt());
   await click(host.querySelector('[aria-haspopup="dialog"]'));
-  expect(buttonNamed('仅生成视频预览', document)?.disabled).toBe(true);
-  expect(buttonNamed('仅补全资料', document)?.disabled).toBe(false);
+  expect(buttonNamed('Solo generar vistas previas', document)?.disabled).toBe(true);
+  expect(buttonNamed('Solo completar datos', document)?.disabled).toBe(false);
 });
 
 it('没有缺图影片时不显示入口也不查询任务', async () => {
@@ -50,11 +50,11 @@ it('默认补全与下拉分项都只提交当前缺图影片，菜单包含主�
   }));
   const host = await mount(prompt());
   expect(host.textContent).toContain('2 部暂无预览');
-  await click(buttonNamed('同步这些影片', host));
-  for (const label of ['仅生成视频预览', '仅补全资料']) {
+  await click(buttonNamed('Sincronizar estos videos', host));
+  for (const label of ['Solo generar vistas previas', 'Solo completar datos']) {
     await click(host.querySelector('[aria-haspopup="dialog"]'));
     const menu = document.querySelector('[role="dialog"]')!;
-    expect(buttonNamed('同步这些影片', menu)).not.toBeNull();
+    expect(buttonNamed('Sincronizar estos videos', menu)).not.toBeNull();
     await click(buttonNamed(label, menu));
   }
   expect(posts).toEqual([
@@ -78,7 +78,7 @@ it('启动等待期间不重复提交，结束后刷新馆藏并给出封面与�
   queryClient.setQueryData(['catalog-grid', 'catalog', 'sample', 1], { pages: [] });
   const onComplete = vi.fn();
   const host = await mount(prompt([7], onComplete));
-  const primary = buttonNamed('同步这些影片', host)!;
+  const primary = buttonNamed('Sincronizar estos videos', host)!;
   await click(primary);
   expect(primary.getAttribute('aria-busy')).toBe('true');
   const more = host.querySelector<HTMLButtonElement>('[aria-haspopup="dialog"]')!;
@@ -105,9 +105,9 @@ it('启动失败保留入口与处理详情，不显示完成回执', async () =
     ? { ok: false, status: 400, json: async () => ({ error: '请先添加媒体目录' }) }
     : { ok: true, json: async () => ({ status: 'idle' }) }));
   const host = await mount(prompt());
-  await click(buttonNamed('同步这些影片', host));
+  await click(buttonNamed('Sincronizar estos videos', host));
   expect(host.textContent).toContain('请先添加媒体目录');
   expect(host.textContent).not.toContain('补全完成');
-  expect(host.querySelector('a[href="/data-cleanup#libraryProcessing"]')?.textContent).toBe('查看并处理');
-  expect(buttonNamed('同步这些影片', host)?.disabled).toBe(false);
+  expect(host.querySelector('a[href="/data-cleanup#libraryProcessing"]')?.textContent).toBe('Ver y resolver');
+  expect(buttonNamed('Sincronizar estos videos', host)?.disabled).toBe(false);
 });

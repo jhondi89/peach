@@ -26,7 +26,7 @@ const full = () => data({ downloads, startup: {
 }, peach_proxy: { mode: 'environment', proxy_saved: false, needs_selection: false },
   entry_links: { sites: [{ key: 'javdb', label: 'JavDB', host: '', default_host: 'javdb.com' }] },
 });
-const names = ['媒体库与入库', '来源与订阅', '下载渠道', '网络与访问', '应用与维护', '系统诊断'];
+const names = ['Bibliotecas e importación', 'Fuentes y suscripciones', 'Canales de descarga', 'Red y acceso', 'Aplicación y mantenimiento', 'Diagnóstico del sistema'];
 function serve(config: ConfigurationData, credentials: CredentialData = { root: '', providers: [] }) {
   const fetcher = vi.fn(async (url: string) => ({ ok: true, status: 200, json: async () => {
     if (url === CONFIGURATION_URL) return config;
@@ -72,39 +72,39 @@ it('方向键首尾循环，Home 与 End 选择两端并同步焦点', async () 
   const host = await open();
   chosen(host).focus();
   await press(chosen(host), 'ArrowUp');
-  expect(chosen(host).textContent).toBe('系统诊断');
+  expect(chosen(host).textContent).toBe('Diagnóstico del sistema');
   expect(document.activeElement).toBe(chosen(host));
   await press(chosen(host), 'ArrowDown');
-  expect(chosen(host).textContent).toBe('媒体库与入库');
+  expect(chosen(host).textContent).toBe('Bibliotecas e importación');
   await press(chosen(host), 'End');
-  expect(chosen(host).textContent).toBe('系统诊断');
+  expect(chosen(host).textContent).toBe('Diagnóstico del sistema');
   await press(chosen(host), 'Home');
-  expect(chosen(host).textContent).toBe('媒体库与入库');
+  expect(chosen(host).textContent).toBe('Bibliotecas e importación');
   expect(tabs(host).map(tab => tab.tabIndex)).toEqual([0, -1, -1, -1, -1, -1]);
 });
 it('分区深链打开来源与订阅，切换分类保留未保存字段', async () => {
-  const host = await open(full(), '来源与订阅');
-  expect(chosen(host).textContent).toBe('来源与订阅');
+  const host = await open(full(), 'Fuentes y suscripciones');
+  expect(chosen(host).textContent).toBe('Fuentes y suscripciones');
   await type(host.querySelector<HTMLInputElement>('#entry-link-javdb'), 'example.invalid');
   await click(tabs(host)[0]);
   await click(tabs(host)[1]);
   expect(host.querySelector<HTMLInputElement>('#entry-link-javdb')?.value).toBe('example.invalid');
   await act(async () => { queryClient.setQueryData(CONFIGURATION_KEY, { ...full(), revision: 'rev-2' }) });
-  expect(chosen(host).textContent).toBe('来源与订阅');
+  expect(chosen(host).textContent).toBe('Fuentes y suscripciones');
 });
 it.each([false, true])('来源凭据依据数据库只读状态 %s 控制写入', async (readOnly) => {
-  const host = await open(data({ ledger_read_only: readOnly }), '来源与订阅', { root: '', providers: [{
+  const host = await open(data({ ledger_read_only: readOnly }), 'Fuentes y suscripciones', { root: '', providers: [{
     provider: 'test', provider_label: '测试来源', followable: true, requirement: 'required',
     needs: ['cookie'], fields: [], missing: ['cookie'],
   }] });
   await settle();
   expect(host.querySelector<HTMLInputElement>('input[type="password"]')?.disabled).toBe(readOnly);
-  expect(buttonNamed('保存配置', host.querySelector('[aria-label="可配置凭据"]')!)?.disabled).toBe(readOnly);
+  expect(buttonNamed('Guardar configuración', host.querySelector('[aria-label="可配置凭据"]')!)?.disabled).toBe(readOnly);
 });
 it('未知分区回到媒体库，未提供下载渠道时省略对应分类', async () => {
   const host = await open(data({ editable: false }), '不存在');
-  expect(tabs(host).map(tab => tab.textContent)).toEqual(['媒体库与入库', '来源与订阅', '应用与维护', '系统诊断']);
-  expect(chosen(host).textContent).toBe('媒体库与入库');
+  expect(tabs(host).map(tab => tab.textContent)).toEqual(['Bibliotecas e importación', 'Fuentes y suscripciones', 'Aplicación y mantenimiento', 'Diagnóstico del sistema']);
+  expect(chosen(host).textContent).toBe('Bibliotecas e importación');
 });
 it('配置读取失败显示服务端原因', async () => {
   vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 503, json: async () => ({ message: '数据库正在迁移' }) })));
@@ -118,25 +118,25 @@ it('配置读取失败显示服务端原因', async () => {
 it('挂载状态只跟随已保存路径，修改文件夹时撤下读数', async () => {
   const host = await open(data({ windows: true, media_sources: [{ location: '115', path: 'B:/', root: 'B:/', online: false }] }));
   const row = host.querySelector('[data-folder-row]')!;
-  expect(row.querySelector('[data-mount="offline"]')?.textContent).toBe('离线');
+  expect(row.querySelector('[data-mount="offline"]')?.textContent).toBe('Sin conexión');
   await type(row.querySelector<HTMLInputElement>('input[aria-label^="媒体目录 "]'), 'B:/Movies');
   expect(row.querySelector('[data-mount]')).toBeNull();
 });
 it('非 Windows 文件夹只展示媒体目录，提交时保留已有路径对应关系', async () => {
   const host = await open(data({ windows: false,
-    media_sources: [{ location: 'local', path: '/old', root: 'R:\\media', library: '电影', cost: 'free' }] }));
+    media_sources: [{ location: 'local', path: '/old', root: 'R:\\media', library: 'Cine', cost: 'free' }] }));
   const row = host.querySelector('[data-folder-row]')!;
   expect(row.querySelector('details')).toBeNull();
   expect(row.querySelector('input[placeholder="自动配置"]')).toBeNull();
   await type(row.querySelector<HTMLInputElement>('input[aria-label^="媒体目录 "]'), '/new');
-  await click(buttonNamed('保存配置', row.closest('form')!));
+  await click(buttonNamed('Guardar configuración', row.closest('form')!));
 });
 it('只读媒体配置可刷新挂载状态，更新共用配置快照', async () => {
   const offline = { location: '115', path: 'B:/', root: 'B:/', online: false };
   const host = await open(data({ editable: false, notice: '只在本机可改', media_sources: [offline] }));
   serve(data({ editable: false, notice: '只在本机可改', media_sources: [{ ...offline, online: true }], revision: 'rev-2' }));
-  await click(buttonNamed('刷新挂载状态', host));
+  await click(buttonNamed('Actualizar estado de montajes', host));
   await settle();
-  expect(section(host, '挂载状态')?.textContent).toContain('在线');
+  expect(section(host, 'Estado de los montajes')?.textContent).toContain('En línea');
   expect(queryClient.getQueryData<ConfigurationData>(CONFIGURATION_KEY)?.revision).toBe('rev-2');
 });

@@ -22,7 +22,7 @@ describe('范围控件',()=>{
     const config=document.createElement('div');config.className='ui-board-local-nav';config.dataset.sectionNav='';
     document.body.append(config);
     wireBoardTabs(document);wireBoardTabs(document);
-    expect([...document.querySelectorAll('[data-board-tabs]')].map(group=>group.getAttribute('aria-label'))).toEqual(['配置分区']);
+    expect([...document.querySelectorAll('[data-board-tabs]')].map(group=>group.getAttribute('aria-label'))).toEqual(['Secciones de la configuración']);
   });
   it('范围输入把当前值换算成轨道百分比写进样式变量',()=>{
     document.body.innerHTML='<input type="range" min="0" max="180" value="45">';

@@ -141,12 +141,12 @@ it('只检查已启用的失败来源，并随清单隐藏入口', async () => {
   const data = follow({ sources: [source({ id: 1 }), source({ id: 2, last_status: 'error' }),
     source({ id: 3, last_status: 'unauthorized' }), source({ id: 4, enabled: false, last_status: 'error' })] });
   const { host, fetcher } = await open({ data });
-  await click(buttonNamed('检查失败项', host)!);
+  await click(buttonNamed('Revisar las fallidas', host)!);
   const request = fetcher.mock.calls.find(([url, init]) => url === FOLLOW_CHECK_URL && init?.method);
   expect(JSON.parse(String(request?.[1]?.body)).sources).toEqual([2, 3]);
   await act(async () => { queryClient.setQueryData(FOLLOW_MANAGE_KEY, { ...data, sources: [source({ id: 1 }),
     source({ id: 4, enabled: false, last_status: 'error' })] }) });
-  expect(buttonNamed('检查失败项', host)).toBeNull();
+  expect(buttonNamed('Revisar las fallidas', host)).toBeNull();
 });
 
 type Props = Parameters<typeof FollowManagePage>[0];
@@ -303,7 +303,7 @@ it('勾选跨页也跨视图，批量发出去的是整个 ID 集合', async () 
   }));
   const { host, fetcher } = await open({ data: follow({ sources: many }) }, { pageSize: 10 });
 
-  await click(checkboxNamed(host, '全选本页来源'));
+  await click(checkboxNamed(host, 'Seleccionar todas las fuentes de la página'));
   expect(host.textContent).toContain('已选 10 个来源');
   expect(host.querySelector('[data-selection-dock]')).not.toBeNull();
 
@@ -327,7 +327,7 @@ it('换成表格视图时勾选还是那一批', async () => {
   await click(checkboxNamed(host, '选择 甲 · Kemono'));
   expect(host.textContent).toContain('已选 1 个来源');
 
-  await click(buttonLabelled(host, '表格视图'));
+  await click(buttonLabelled(host, 'Vista de tabla'));
   expect(props.savePreference).toHaveBeenCalledWith({ layout: 'table' });
   // 版式是这台浏览器的偏好，不写进地址栏。
   for (const [params] of (props.route as ReturnType<typeof vi.fn>).mock.calls) {
@@ -339,7 +339,7 @@ it('表格视图把每条来源摊成一行，勾的还是来源 ID', async () =
   const { host, fetcher } = await open({}, { layout: 'table' });
 
   expect([...host.querySelectorAll('[role="columnheader"]')].map((cell) => cell.textContent?.trim()))
-    .toEqual(['选择', '创作者', '来源', '站点', '状态', '上次检查', '操作']);
+    .toEqual(['Seleccionar', 'Creador', 'Fuente', 'Sitio', 'Estado', 'Última revisión', 'Acción']);
   // 卡片视图是三张卡（甲有两条来源），表格摊平之后是四行。
   expect(host.querySelectorAll('[role="row"][data-key]')).toHaveLength(4);
 
@@ -364,7 +364,7 @@ it('关注表格分页和排序保留来源选择，批量操作覆盖跨页集�
     .map((row) => Number(row.getAttribute('data-key')));
   expect(rowIds()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   await click(checkboxNamed(host, '选择 来源 01'));
-  await click(buttonNamed('下一页', host));
+  await click(buttonNamed('Página siguiente', host));
   expect(rowIds()).toEqual([11, 12]);
   await click(checkboxNamed(host, '选择 来源 12'));
 
@@ -373,14 +373,14 @@ it('关注表格分页和排序保留来源选择，批量操作覆盖跨页集�
   expect(checkboxNamed(host, '选择 来源 12')?.checked).toBe(true);
   await click(checkboxNamed(host, '选择 来源 12'));
   expect(host.textContent).toContain('已选 1 个来源');
-  await click(buttonNamed('下一页', host));
+  await click(buttonNamed('Página siguiente', host));
   expect(rowIds()).toEqual([2, 1]);
   expect(checkboxNamed(host, '选择 来源 01')?.checked).toBe(true);
   await click(checkboxNamed(host, '选择 来源 02'));
 
-  await click(buttonLabelled(host, '默认视图'));
+  await click(buttonLabelled(host, 'Vista normal'));
   expect(host.textContent).toContain('已选 2 个来源');
-  await click(buttonNamed('暂停', host));
+  await click(buttonNamed('Pausa', host));
   await settle();
   expect(sentBody(fetcher, FOLLOW_SOURCE_URL).map((body) => body.id).sort((a, b) => a - b))
     .toEqual([1, 2]);
@@ -443,7 +443,7 @@ it('卡片里点来源那一行的空白处同样选中整行，点勾选框仍�
 it('表格的可排序列显示并更新排序三角', async () => {
   const { host, props } = await open({}, { layout: 'table' });
   const author = [...host.querySelectorAll<HTMLElement>('[role="columnheader"]')]
-    .find((cell) => cell.textContent?.includes('创作者'));
+    .find((cell) => cell.textContent?.includes('Creador'));
   expect(author?.querySelector('svg')).not.toBeNull();
 
   await click(author);
@@ -454,11 +454,11 @@ it('排序和页码一起写进地址栏，默认值不写', async () => {
   const { host, props } = await open();
   const route = props.route as ReturnType<typeof vi.fn>;
 
-  await choose(host.querySelector('button[aria-label="关注列表排序"]'), '创作者名称');
+  await choose(host.querySelector('button[aria-label="关注列表排序"]'), 'Nombre del creador');
   expect(route).toHaveBeenCalledWith({ tab: 'list', page: 1, sort: 'name', dir: '' });
 
   // 换回默认那一档时，`sort` 写成空串：哪一项算默认只有数据层知道。
-  await choose(host.querySelector('button[aria-label="关注列表排序"]'), '检查时间');
+  await choose(host.querySelector('button[aria-label="关注列表排序"]'), 'Fecha de revisión');
   expect(route).toHaveBeenLastCalledWith({ tab: 'list', page: 1, sort: '', dir: '' });
 });
 
@@ -477,7 +477,7 @@ it('起了检查就两秒一问，停了就不再问', async () => {
 
   // happy-dom 里量不到工具行的宽度，按最窄那一档画：带字的按钮只剩图标，得按 aria-label 找。
   state = running;
-  await click(buttonLabelled(host, '检查全部'));
+  await click(buttonLabelled(host, 'Revisar todo'));
   await settle();
   const started = polls();
 
@@ -492,7 +492,7 @@ it('起了检查就两秒一问，停了就不再问', async () => {
   await tick(JOB_RUNNING_POLL_MS);
   await settle();
   expect(props.toast).toHaveBeenCalledWith(expect.stringContaining('新增 3 条'));
-  expect(host.textContent).toContain('检查结果');
+  expect(host.textContent).toContain('Resultado de la revisión');
   expect(host.textContent).toContain('检查了 1 个来源：新增 3 条');
 
   // 终态之后不再问：轮询关掉了。
@@ -516,7 +516,7 @@ it('检查失败逐条说出是哪个站上的谁，缺哪样就往下一样取'
   let state: CheckJob = IDLE;
   const { host, fetcher } = await open({ check: () => state });
   state = { status: 'running', checked: 0, total: 3 } as CheckJob;
-  await click(buttonLabelled(host, '检查全部'));
+  await click(buttonLabelled(host, 'Revisar todo'));
   await settle();
   // 「检查全部」不点名来源，由服务端取全部启用的那几条。
   expect(sentBody(fetcher, FOLLOW_CHECK_URL)).toEqual([{ background: true }]);
@@ -583,13 +583,13 @@ it('头像先用官方的，取不下来退到镜像的，再取不下来画首�
 
 it('按状态正序先列要处理的：失败、暂停、未检查、正常', () => {
   const rows = [
-    source({ id: 1, label: '正常', last_status: 'ok' }),
-    source({ id: 2, label: '未检查', last_status: '' }),
-    source({ id: 3, label: '暂停', enabled: false, last_status: 'ok' }),
-    source({ id: 4, label: '失败', last_status: 'unauthorized' }),
+    source({ id: 1, label: 'Normal', last_status: 'ok' }),
+    source({ id: 2, label: 'Sin revisar', last_status: '' }),
+    source({ id: 3, label: 'Pausa', enabled: false, last_status: 'ok' }),
+    source({ id: 4, label: 'Fallida', last_status: 'unauthorized' }),
   ];
   expect(authorGroups(rows, 'status', 'asc').map((group) => group[0]!.label))
-    .toEqual(['失败', '暂停', '未检查', '正常']);
+    .toEqual(['Fallida', 'Pausa', 'Sin revisar', 'Normal']);
 });
 
 // ── 关注列表：写回、计数与空态 ───────────────────────────────────────────────
@@ -601,12 +601,12 @@ it('暂停只改那一条的状态，不把整张清单重取一遍', async () =
   const { host, fetcher } = await open();
   const before = listReads(fetcher);
   await click(checkboxNamed(host, '选择 甲 · Kemono'));
-  await click(buttonNamed('暂停', host));
+  await click(buttonNamed('Pausa', host));
   await settle();
   expect(listReads(fetcher)).toBe(before);
   const card = cards(host)[0]!;
   expect([...card.querySelectorAll('[data-source-divider] > *')].map((row) => row.textContent))
-    .toEqual([expect.stringContaining('已暂停'), expect.stringContaining('正常')]);
+    .toEqual([expect.stringContaining('En pausa'), expect.stringContaining('Normal')]);
 });
 
 it('卡片标题行只摆站标，站名留给读屏', async () => {
@@ -621,16 +621,16 @@ it('还有未看时卡底给出计数和三颗动作键，没有未看就整条�
   const busy = await open({ data: follow({ counts }) });
   expect(busy.host.textContent).toContain('4 个来源 · 3 条未看');
   expect(busy.host.textContent).toContain('未看 3 · 已看 1 · 已保存 0 · 已忽略 2');
-  expect(buttonNamed('全部标记已看', busy.host)).not.toBeNull();
-  expect(buttonNamed('全部忽略', busy.host)).not.toBeNull();
-  await click(buttonNamed('去看更新', busy.host));
+  expect(buttonNamed('Marcar todo como visto', busy.host)).not.toBeNull();
+  expect(buttonNamed('Ignorar todo', busy.host)).not.toBeNull();
+  await click(buttonNamed('Ver novedades', busy.host));
   expect(busy.props.openFollow).toHaveBeenCalledTimes(1);
   await busy.unmount();
   queryClient.clear();
 
   const quiet = await open();
   expect(quiet.host.textContent).not.toContain('未看 0');
-  expect(buttonNamed('全部忽略', quiet.host)).toBeNull();
+  expect(buttonNamed('Ignorar todo', quiet.host)).toBeNull();
 });
 
 it('读数、列表头与卡底的计数都带千分位，六位数起读数小一号字、七位数起再小一号', async () => {
@@ -652,10 +652,10 @@ it('报错只露一行：traceback 取最后那行的异常，「查看详情」
   const line = host.querySelector('[data-error-line]')!;
   expect(line.textContent).toBe('peach.follow_providers.ProviderError: HTTP 403');
   const toggle = host.querySelector('[data-error-line-toggle]')!;
-  expect(toggle.textContent).toBe('查看详情');
+  expect(toggle.textContent).toBe('Ver detalles');
   await click(toggle);
   expect(host.querySelector('[data-error-line]')?.textContent).toBe(trace);
-  expect(host.querySelector('[data-error-line-toggle]')?.textContent).toBe('收起详情');
+  expect(host.querySelector('[data-error-line-toggle]')?.textContent).toBe('Ocultar detalles');
 });
 
 it('报错的那一行：traceback 取异常行，别的取第一行非空', () => {
@@ -674,17 +674,17 @@ it('订阅源频率：一小时以内按分钟，两天以内按小时，再长�
 
 it('一条来源都没有时说清这里会显示什么', async () => {
   const { host } = await open({ data: follow({ sources: [] }) });
-  expect(host.textContent).toContain('还没有关注来源');
-  expect(host.textContent).toContain('关注来源及其检查状态会显示在这里。');
+  expect(host.textContent).toContain('Aún no sigues ninguna fuente');
+  expect(host.textContent).toContain('Aquí verás las fuentes que sigues y el estado de sus revisiones.');
 });
 
 it('一条来源都没有时空态给出添加关注的去处', async () => {
   const { host } = await open({ data: follow({ sources: [] }) });
   const empty = host.querySelector('[data-empty-state]')!;
   const link = empty.querySelector('a[href="/subscriptions?tab=add"]');
-  expect(link?.textContent).toBe('添加关注');
+  expect(link?.textContent).toBe('Seguir');
   // 这一屏的主动作就是它：工具条和「检查全部」只在有来源时才画。
-  expect(buttonNamed('检查全部', host)).toBeNull();
+  expect(buttonNamed('Revisar todo', host)).toBeNull();
 });
 
 // ── 页签与只读 ──────────────────────────────────────────────────────────────
@@ -692,17 +692,17 @@ it('一条来源都没有时空态给出添加关注的去处', async () => {
 it('各栏按做事的先后排，缺凭据的数挂在最后一栏上', async () => {
   const { host } = await open({ creds: { root: 'C:\\creds', providers: [credential({ provider: 'fanbox' })] } });
   expect([...host.querySelectorAll('[role="tab"]')].map((tab) => tab.textContent))
-    .toEqual(['关注列表', '添加关注', 'JAV 订阅源']);
+    .toEqual(['Lista de seguidos', 'Seguir', 'Fuentes de suscripción JAV']);
   expect(buttonNamed('来源与订阅设置（1）', host)).not.toBeNull();
 });
 
 const FEEDS: FeedsData = {
   unread: 3,
   sources: [
-    { id: 4, kind: 'performer', kind_label: 'JAV 订阅', name: '甲 的新作', url: 'https://feeds.test/a',
+    { id: 4, kind: 'performer', kind_label: 'Suscripciones JAV', name: '甲 的新作', url: 'https://feeds.test/a',
       entity_id: 41, entity_name: '甲', has_image: true, enabled: true, interval_minutes: 720,
       last_fetched_at: null, last_error: null, last_new_count: 0, seen: 2 },
-    { id: 5, kind: 'performer', kind_label: 'JAV 订阅', name: '乙 的新作', url: 'https://feeds.test/b',
+    { id: 5, kind: 'performer', kind_label: 'Suscripciones JAV', name: '乙 的新作', url: 'https://feeds.test/b',
       entity_id: 42, entity_name: '乙', has_image: false, enabled: false, interval_minutes: 30,
       last_fetched_at: null, last_error: '站点 503', last_new_count: 0, seen: 0 },
   ],
@@ -739,12 +739,12 @@ function stubConfirm(accept: boolean) {
 it('地址栏指着订阅源时首屏就带着清单，开关、移除与立即拉取都落到订阅源的接口上', async () => {
   stubConfirm(true);
   const { host, fetcher } = await open({ feeds: FEEDS }, { tab: 'feeds' });
-  expect(host.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toBe('JAV 订阅源');
+  expect(host.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toBe('Fuentes de suscripción JAV');
   expect([...host.querySelectorAll('[role="columnheader"]')].map((cell) => cell.textContent?.trim()))
-    .toEqual(['选择', '名称', '类型', '来源', '状态', '频率', '上次拉取', '上次新增', '操作']);
+    .toEqual(['Seleccionar', 'Nombre', 'Tipo', 'Fuente', 'Estado', 'Frecuencia', 'Última obtención', 'Última novedad', 'Acción']);
   const first = checkboxNamed(host, '选择 甲 的新作')!.closest('[role="row"]')!;
   expect([...first.querySelectorAll('[role="rowheader"],[role="gridcell"]')].map(shown))
-    .toEqual(['', '甲 的新作', 'JAV 订阅', 'feeds.test', '正常', '每 12 小时', '还没拉过', '0 条', '']);
+    .toEqual(['', '甲 的新作', 'Suscripciones JAV', 'feeds.test', 'Normal', '每 12 小时', 'Aún sin obtener', '0 条', '']);
   expect(first.querySelector('a')?.getAttribute('href')).toBe('https://feeds.test/a');
   // 名字前的圆框由 `card-art` 的回落链拼：身份引用带着有没有图，图有了才叠上去。
   expect(first.querySelector('[role="rowheader"] img')?.getAttribute('src'))
@@ -763,7 +763,7 @@ it('地址栏指着订阅源时首屏就带着清单，开关、移除与立即�
   await settle();
   await click(buttonLabelled(host, '移除 甲 的新作'));
   await settle();
-  await click(buttonNamed('立即拉取', host));
+  await click(buttonNamed('Obtener ahora', host));
   await settle();
   expect(sentBody(fetcher, FEED_SOURCE_URL)).toEqual([
     { action: 'enabled', id: 5, enabled: true }, { action: 'remove', id: 4 },
@@ -775,7 +775,7 @@ it('地址栏指着订阅源时首屏就带着清单，开关、移除与立即�
 
 it('同一个人的两页各一行，旧艺名那页在名字旁写出站上的名字；顶上按人数计订阅', async () => {
   const page = (id: number, pageName: string, name = '森日向子', entity = 8112) => ({
-    id, kind: 'javdb-actor', kind_label: 'JAV 订阅', name, page_name: pageName,
+    id, kind: 'javdb-actor', kind_label: 'Suscripciones JAV', name, page_name: pageName,
     url: `https://javdb.com/actors/${id}`, entity_id: entity, entity_name: name, has_image: true,
     enabled: true, interval_minutes: 360, last_fetched_at: null, last_error: null, last_new_count: 0, seen: 0,
   });
@@ -820,7 +820,7 @@ it('批量移除先弹确认并说清条数，确认后逐条移除、Toast 报�
   await click(checkboxNamed(host, '选择 甲 的新作'));
   await click(checkboxNamed(host, '选择 乙 的新作'));
   await click([...host.querySelectorAll('[data-selection-dock] button')].find((b) => b.textContent === '移除'));
-  expect(asked[0]).toMatchObject({ title: '移除 2 条订阅源', confirmLabel: '移除所选订阅源', danger: true });
+  expect(asked[0]).toMatchObject({ title: '移除 2 条订阅源', confirmLabel: 'Quitar suscripciones seleccionadas', danger: true });
   expect(await outcomes[0]).toBeNull();
   await settle();
   expect(sentBody(fetcher, FEED_SOURCE_URL)).toEqual([{ action: 'remove', id: 4 }, { action: 'remove', id: 5 }]);
@@ -834,8 +834,8 @@ it('点移除先弹确认：标题与主按钮同一个动词，正文点名这�
   await settle();
   expect(asked).toHaveLength(1);
   const [modal] = asked;
-  expect(modal).toMatchObject({ title: '移除订阅源', confirmLabel: '移除订阅源', danger: true });
-  expect(modal!.cancelLabel ?? '取消').toBe('取消');
+  expect(modal).toMatchObject({ title: 'Quitar suscripción', confirmLabel: 'Quitar suscripción', danger: true });
+  expect(modal!.cancelLabel ?? 'Cancelar').toBe('Cancelar');
   expect(modal!.body).toBe('将移除订阅源「甲 的新作」，之后不再拉取它的新作；已经拉到的新作保留。');
   expect(sentBody(fetcher, FEED_SOURCE_URL)).toEqual([]);
   expect(props.toast).not.toHaveBeenCalled();
@@ -870,8 +870,8 @@ it('订阅源页签不收地址，只读的这台查找、开关、移除与拉�
   const { host } = await open({ feeds: FEEDS }, { tab: 'feeds', readOnly: true });
   expect(host.querySelector('input[type="url"]')).toBeNull();
   expect(nameField(host).disabled).toBe(true);
-  expect(buttonNamed('查找', host)?.disabled).toBe(true);
-  expect(buttonNamed('立即拉取', host)?.disabled).toBe(true);
+  expect(buttonNamed('Buscar', host)?.disabled).toBe(true);
+  expect(buttonNamed('Obtener ahora', host)?.disabled).toBe(true);
   expect(buttonLabelled(host, '移除 甲 的新作')?.disabled).toBe(true);
   expect(host.querySelector<HTMLInputElement>('input[aria-label="启用 甲 的新作"]')?.disabled).toBe(true);
 });
@@ -891,12 +891,12 @@ it('JAV 订阅分页保留跨页选择', FULL_PAGE, async () => {
   expect(rows()).toHaveLength(20);
   expect(host.textContent).toContain('1–20 / 21 个订阅源');
   await click(checkboxNamed(host, '选择 来源 1'));
-  await click(buttonNamed('下一页', host));
+  await click(buttonNamed('Página siguiente', host));
   expect(rows()).toHaveLength(1);
   expect(host.textContent).toContain('21–21 / 21 个订阅源');
   expect(host.textContent).toContain('已选 1 条订阅源');
   await click(checkboxNamed(host, '选择 来源 21'));
-  await click(buttonNamed('上一页', host));
+  await click(buttonNamed('Página anterior', host));
   expect(checkboxNamed(host, '选择 来源 1')?.checked).toBe(true);
   expect(host.textContent).toContain('已选 2 条订阅源');
 });
@@ -906,7 +906,7 @@ it('JAV 订阅频率按分钟数对全集排序并回到首页', FULL_PAGE, asyn
   feeds.sources = feeds.sources.map((source, index) => ({ ...source, interval_minutes: (21 - index) * 15 }));
   const { host } = await open({ feeds }, { tab: 'feeds' });
   await click(checkboxNamed(host, '选择 来源 1'));
-  await click(buttonNamed('下一页', host));
+  await click(buttonNamed('Página siguiente', host));
   await click(host.querySelector('th[data-key="interval"]'));
   const table = host.querySelector('[aria-label="JAV 订阅源"]')!;
   const rows = table.querySelectorAll('tbody tr');
@@ -919,7 +919,7 @@ it('JAV 订阅频率按分钟数对全集排序并回到首页', FULL_PAGE, asyn
 
 it('JAV 订阅换页容量回到首页，状态栏照全集计数', FULL_PAGE, async () => {
   const { host } = await open({ feeds: twoPagesOfFeeds(81) }, { tab: 'feeds' });
-  await click(buttonNamed('下一页', host));
+  await click(buttonNamed('Página siguiente', host));
   await choose(host.querySelector('button[aria-label="每页显示数量"]'), '每页 10 条');
   expect(host.querySelectorAll('[role="row"][data-key]')).toHaveLength(10);
   expect(host.textContent).toContain('1–10 / 21 个订阅源');
@@ -934,7 +934,7 @@ it('移除末页的最后一个订阅源会显示有效页', FULL_PAGE, async ()
     return ok({ ok: true });
   } };
   const { host } = await open(plan, { tab: 'feeds' });
-  await click(buttonNamed('下一页', host));
+  await click(buttonNamed('Página siguiente', host));
   await click(buttonLabelled(host, '移除 来源 21'));
   await settle();
   expect(host.querySelectorAll('[role="row"][data-key]')).toHaveLength(20);
@@ -944,11 +944,11 @@ it('移除末页的最后一个订阅源会显示有效页', FULL_PAGE, async ()
 it('订阅列表卡片包含标题、空态和状态栏', async () => {
   const { host } = await open({}, { tab: 'feeds' });
   const panel = host.querySelector('[role="tabpanel"]')!;
-  expect([...panel.querySelectorAll('h3')].map((h) => h.textContent)).toEqual(['添加 JAV 订阅', 'JAV 订阅源', '还没有订阅源']);
-  expect(panel.textContent).toContain('在上面按女优名添加，或在人物页点「订阅新作」。');
+  expect([...panel.querySelectorAll('h3')].map((h) => h.textContent)).toEqual(['Añadir suscripción JAV', 'Fuentes de suscripción JAV', 'Aún no hay suscripciones']);
+  expect(panel.textContent).toContain('Añádelas arriba por nombre de actriz, o pulsa “Suscribirse a estrenos” en la página de una persona.');
   expect(panel.querySelector('section[aria-label="JAV 订阅列表"]')).not.toBeNull();
   expect(panel.querySelector('footer')?.textContent).toContain('未看 0 · 已启用 0 / 0');
-  expect(buttonNamed('立即拉取', host)).not.toBeNull();
+  expect(buttonNamed('Obtener ahora', host)).not.toBeNull();
 });
 
 // ── 添加 JAV 订阅：按名字搜演员卡、勾选、登记 ─────────────────────────────
@@ -978,9 +978,9 @@ it('按名字查找列出每张演员卡，同一个人的两张先勾上；说�
   const feedWrite = vi.fn(() => ok({ ok: true, entity_id: 9, entity_name: '瀬戸環奈', created: true, sources: [7, 8] }));
   const { host, fetcher, props } = await open({ feeds: FEEDS, lookup, feedWrite }, { tab: 'feeds' });
   const before = feedReads(fetcher);
-  expect(buttonNamed('查找', host)?.disabled).toBe(true);
+  expect(buttonNamed('Buscar', host)?.disabled).toBe(true);
   await type(nameField(host), ' 瀬戸環奈 ');
-  await click(buttonNamed('查找', host));
+  await click(buttonNamed('Buscar', host));
   await settle();
   expect(lookup).toHaveBeenCalledWith('瀬戸環奈');
   expect(boxNamed(host, '瀬戸環奈、瀨戶環奈')?.checked).toBe(true);
@@ -1026,7 +1026,7 @@ it('回车也是查找；勾的卡已在数据库里谁名下就说会挂给谁�
 it('查找被服务端挡回时原因摆在卡里，没有候选时直说', async () => {
   const first = await open({ feeds: FEEDS, lookup: () => refuse('JavDB 回的是登入页') }, { tab: 'feeds' });
   await type(nameField(first.host), '甲');
-  await click(buttonNamed('查找', first.host));
+  await click(buttonNamed('Buscar', first.host));
   await settle();
   expect(first.host.textContent).toContain('JavDB 回的是登入页');
   await first.unmount();
@@ -1034,20 +1034,20 @@ it('查找被服务端挡回时原因摆在卡里，没有候选时直说', asyn
 
   const none = await open({ feeds: FEEDS }, { tab: 'feeds' });
   await type(nameField(none.host), '乙');
-  await click(buttonNamed('查找', none.host));
+  await click(buttonNamed('Buscar', none.host));
   await settle();
-  expect(none.host.textContent).toContain('JavDB 上没有搜到这个名字。');
-  expect(buttonNamed('关闭', none.host)).not.toBeNull();
+  expect(none.host.textContent).toContain('No se encontró este nombre en JavDB.');
+  expect(buttonNamed('Desactivado', none.host)).not.toBeNull();
 });
 
 it('只读的这台说清楚、指向写入端，写操作一律停用', async () => {
   const writer = 'https://writer.example/follow-manage';
   const list = await open({}, { readOnly: true, readOnlyMessage: '本机是只读副本', writerUrl: writer });
-  expect(list.host.textContent).toContain('本机只能浏览');
+  expect(list.host.textContent).toContain('Este equipo solo puede ver');
   expect(list.host.textContent).toContain('本机是只读副本');
-  expect([...list.host.querySelectorAll('a')].find((a) => a.textContent?.includes('前往写入端管理关注'))
+  expect([...list.host.querySelectorAll('a')].find((a) => a.textContent?.includes('Ve al equipo con permiso de escritura para gestionar seguimientos'))
     ?.getAttribute('href')).toBe(writer);
-  expect(buttonLabelled(list.host, '检查全部')?.disabled).toBe(true);
+  expect(buttonLabelled(list.host, 'Revisar todo')?.disabled).toBe(true);
   expect(buttonLabelled(list.host, '移除 甲 · Kemono')?.disabled).toBe(true);
   await list.unmount();
   queryClient.clear();
@@ -1115,7 +1115,7 @@ it('回车和「查找」键走同一趟查找，查找框是一行字不是一�
 
   await lookUp(host, '  kou  ');
   await type(lookupField(host), 'https://kemono.test/kou');
-  await click(buttonNamed('查找', host));
+  await click(buttonNamed('Buscar', host));
   await settle();
   expect(lookups(fetcher)).toEqual([
     { lines: ['kou'], background: true },
@@ -1128,7 +1128,7 @@ it('一趟查找没跑完时不起第二趟，按钮进忙态', async () => {
   const { host, fetcher } = await open({ resolve: job.resolve }, { tab: 'add' });
   job.set(RUNNING);
   await lookUp(host, 'kou');
-  expect(buttonNamed('查找', host)?.getAttribute('aria-busy')).toBe('true');
+  expect(buttonNamed('Buscar', host)?.getAttribute('aria-busy')).toBe('true');
   await lookUp(host, 'kou again');
   expect(lookups(fetcher)).toHaveLength(1);
 });
@@ -1172,7 +1172,7 @@ it('等待时说的话跟着这一趟查的是名字还是链接走', async () =
   };
   // 按名字查的第一趟要下载创作者索引，几十秒没有动静得先说一声；贴链接不走索引。
   expect(await hint('kou')).toContain('首次按名字查要下载创作者索引');
-  expect(await hint('https://kemono.test/kou')).toBe('识别中…');
+  expect(await hint('https://kemono.test/kou')).toBe('Identificando…');
 });
 
 it('说得出进度的查找画进度条', async () => {
@@ -1191,13 +1191,13 @@ it('查完先列候选、默认勾上，已经关注的列出来但勾不动，�
 
   // 结果留在「添加关注」这一张卡里，不另起标题。
   const panel = [...host.querySelectorAll('h3')].find((h) => h.textContent === '添加关注')!.parentElement!;
-  expect(panel.textContent).toContain('查找结果');
+  expect(panel.textContent).toContain('Resultados');
   expect(panel.querySelectorAll('h3')).toHaveLength(1);
 
   expect(candidateBox(panel, 'kou · Kemono')?.checked).toBe(true);
   expect(candidateBox(panel, 'kou · Fanbox')?.disabled).toBe(true);
   expect(candidateBox(panel, 'kou · Fanbox')?.checked).toBe(false);
-  expect(candidateBox(panel, 'kou · Fanbox')?.closest('label')?.textContent).toContain('已经关注');
+  expect(candidateBox(panel, 'kou · Fanbox')?.closest('label')?.textContent).toContain('Ya lo sigues');
   expect(sentBody(fetcher, FOLLOW_SOURCE_URL)).toEqual([]);
 
   await click(candidateBox(panel, 'kou · Pawchive'));
@@ -1225,7 +1225,7 @@ it('登记失败的那几条原因留在页面上，清单重取也冲不掉', a
   await click(buttonNamed('添加选中（2）', host));
   await settle();
   expect(listReads(fetcher)).toBeGreaterThan(before);
-  expect(host.textContent).toContain('这一次没有完成');
+  expect(host.textContent).toContain('Esta vez no se completó');
   expect(host.textContent).toContain('kou · Pawchive：站点拒绝');
   expect(sentBody(fetcher, FOLLOW_CHECK_URL)).toEqual([{ sources: [9], background: true }]);
   expect(props.toast).not.toHaveBeenCalled();
@@ -1243,7 +1243,7 @@ it('站内查不到时先说为什么，再给一条能点的外部搜索', asyn
     }],
   }]);
   await lookUp(host, 'kou');
-  expect(host.textContent).toContain('站内没有查到来源');
+  expect(host.textContent).toContain('No se encontró la fuente en el sitio');
   const link = [...host.querySelectorAll('a')].find((a) => a.textContent?.includes('Google：site:f95zone.to kou'))!;
   expect(link.getAttribute('href')).toBe('https://www.google.com/search?q=kou');
   const why = [...host.querySelectorAll('small')].find((node) => node.textContent === 'F95 站内搜索要登录')!;
@@ -1263,22 +1263,22 @@ it('来源筛选按钮写着筛到哪几个站，筛掉的站既不显示也不�
   job.finish([CANDIDATES]);
   await lookUp(host, 'kou');
 
-  await click(buttonLabelled(host, '全部来源'));
-  await click(buttonNamed('全不选'));
+  await click(buttonLabelled(host, 'Todas las fuentes'));
+  await click(buttonNamed('Desmarcar todo'));
   expect(buttonLabelled(host, '0/2 个来源')).not.toBeNull();
   expect(candidateBox(host, 'kou · Kemono')).toBeNull();
   expect(buttonNamed('添加选中（0）', host)?.disabled).toBe(true);
 
-  await click(buttonNamed('全选'));
-  expect(buttonLabelled(host, '全部来源')).not.toBeNull();
+  await click(buttonNamed('Seleccionar todo'));
+  expect(buttonLabelled(host, 'Todas las fuentes')).not.toBeNull();
   expect(buttonNamed('添加选中（2）', host)).not.toBeNull();
 });
 
 it('筛选里撞见缺凭据的站，一步跳到凭据那一栏', async () => {
   const creds = { root: 'C:\\creds', providers: [credential({ provider: 'fanbox', provider_label: 'Fanbox' })] };
   const { host, props } = await open({ creds }, { tab: 'add' });
-  await click(buttonLabelled(host, '全部来源'));
-  await click(buttonNamed('需要配置凭据'));
+  await click(buttonLabelled(host, 'Todas las fuentes'));
+  await click(buttonNamed('Requiere credenciales'));
   expect(props.openServiceConfiguration).toHaveBeenCalledOnce();
 });
 
@@ -1301,8 +1301,8 @@ const SUGGESTED: SuggestData = {
     { kind: 'archive', label: '归档站的创作者', items: [{ value: 'Mr_Strauz', n: 0, matched: 'kemono' }] },
     {
       kind: 'tag', label: 'Rule34.xxx 标签', items: [
-        { value: 'strauss', n: 1234, matched: '角色' },
-        { value: 'strausberg', n: 56, matched: '标签' },
+        { value: 'strauss', n: 1234, matched: 'Personaje' },
+        { value: 'strausberg', n: 56, matched: 'Etiquetas' },
       ],
     },
   ],
@@ -1384,7 +1384,7 @@ it('中文和日文合成期间不请求建议或查找，定字后只请求完�
   const { host, fetcher } = await open({}, { tab: 'add' });
   const input = lookupField(host);
   await focus(input);
-  for (const [draft, word] of [['chuangzuozhe', '创作者'], ['さくら', '桜']]) {
+  for (const [draft, word] of [['chuangzuozhe', 'Creador'], ['さくら', '桜']]) {
     await act(async () => { input.dispatchEvent(new CompositionEvent('compositionstart', { bubbles: true })) });
     await type(input, draft!);
     await tick(SUGGEST_DEBOUNCE_MS);
@@ -1398,14 +1398,14 @@ it('中文和日文合成期间不请求建议或查找，定字后只请求完�
     await tick(SUGGEST_DEBOUNCE_MS);
     await settle();
   }
-  expect(suggestCalls(fetcher).map(url => new URL(url, 'http://peach.test').searchParams.get('q'))).toEqual(['创作者', '桜']);
+  expect(suggestCalls(fetcher).map(url => new URL(url, 'http://peach.test').searchParams.get('q'))).toEqual(['Creador', '桜']);
 });
 
 it('站点还没回话时下拉里是一行等待，回车查的是框里敲的字', async () => {
   vi.useFakeTimers();
   const { host, fetcher } = await open({ suggest: () => new Promise<SuggestData>(() => {}) }, { tab: 'add' });
   await typeAndWait(host, 'strau');
-  expect(suggestMenu()?.textContent).toContain('正在查找建议');
+  expect(suggestMenu()?.textContent).toContain('Buscando sugerencias');
   await press(lookupField(host), 'ArrowDown');
   await press(lookupField(host), 'Enter');
   await settle();
@@ -1465,14 +1465,14 @@ const credentialRow = (root: ParentNode, label: string) =>
   [...root.querySelectorAll('b')].find((b) => b.textContent === label)!.closest('div')!;
 
 const chipText = (row: Element) => [...row.querySelectorAll('span')]
-  .map((span) => span.textContent).filter((text) => ['需要', '已配置', '接不进来', '不需要', '可选'].includes(text!));
+  .map((span) => span.textContent).filter((text) => ['Necesarias', 'Configurado', 'No se puede conectar', 'No necesarias', 'Opcionales'].includes(text!));
 
 it('每个站说清自己的处境：需要、已配置、接不进来、不需要', async () => {
   const { host } = await open({ creds: CREDENTIAL_CAST }, { tab: 'source' });
   expect(['Fanbox', 'Patreon', 'OnlyFans', 'Kemono'].map((label) => chipText(credentialRow(host, label))))
-    .toEqual([['需要'], ['已配置'], ['接不进来'], ['不需要']]);
+    .toEqual([['Necesarias'], ['Configurado'], ['No se puede conectar'], ['No necesarias']]);
   expect(host.textContent).toContain('1 个待配置');
-  const groupNames = ['可配置凭据', '不需要凭据', '暂不支持'];
+  const groupNames = ['Admiten credenciales', 'No necesitan credenciales', 'Sin soporte por ahora'];
   expect(groupNames.map(name => [...host.querySelectorAll(`section[aria-label="${name}"] b`)]
     .map(node => node.textContent))).toEqual([['Fanbox', 'Patreon'], ['Kemono'], ['OnlyFans']]);
   expect(host.querySelector('section[aria-label="不需要凭据"] input')).toBeNull();
@@ -1484,14 +1484,14 @@ it('缺什么、为什么要、去哪儿取都写在那一行上，非配不可�
   expect(fanbox.textContent).toContain('缺 FANBOXSESSID、cf_clearance');
   expect(fanbox.textContent).toContain('会员内容要登录后才看得到。');
   expect(fanbox.textContent).toContain('从浏览器开发者工具里复制。');
-  expect([...fanbox.querySelectorAll('a')].find((a) => a.textContent?.includes('获取凭据'))?.getAttribute('href'))
+  expect([...fanbox.querySelectorAll('a')].find((a) => a.textContent?.includes('Obtener credenciales'))?.getAttribute('href'))
     .toBe('https://www.fanbox.cc/');
   expect(fanbox.querySelector('details')?.open).toBe(true);
-  expect(fanbox.querySelector('summary')?.textContent).toContain('填写凭据');
+  expect(fanbox.querySelector('summary')?.textContent).toContain('Escribir credenciales');
 
   const patreon = credentialRow(host, 'Patreon');
   expect(patreon.querySelector('details')?.open).toBe(false);
-  expect(patreon.querySelector('summary')?.textContent).toContain('修改凭据');
+  expect(patreon.querySelector('summary')?.textContent).toContain('Cambiar credenciales');
   // 接不进来的站没有表单可填，只说为什么。
   const blocked = credentialRow(host, 'OnlyFans');
   expect(blocked.querySelector('details')).toBeNull();
@@ -1504,20 +1504,20 @@ it('凭据填在页面上，保存后输入框清空，空着点保存会被拦�
   const fields = [...fanbox.querySelectorAll<HTMLInputElement>('input[type="password"]')];
   expect(fields).toHaveLength(2);
 
-  await click(buttonNamed('保存配置', fanbox));
-  expect(fanbox.textContent).toContain('没有填写内容');
+  await click(buttonNamed('Guardar configuración', fanbox));
+  expect(fanbox.textContent).toContain('No escribiste nada');
   expect(sentBody(fetcher, FOLLOW_CREDENTIAL_URL)).toEqual([]);
 
   await type(fields[0], '  secret  ');
-  await click(buttonNamed('保存配置', fanbox));
+  await click(buttonNamed('Guardar configuración', fanbox));
   await settle();
   expect(sentBody(fetcher, FOLLOW_CREDENTIAL_URL))
     .toEqual([{ provider: 'fanbox', values: { FANBOXSESSID: 'secret' } }]);
   expect(fields[0]!.value).toBe('');
-  expect(props.toast).toHaveBeenCalledWith('已保存来源凭据');
+  expect(props.toast).toHaveBeenCalledWith('Credenciales de la fuente guardadas');
   // 已经配好的那一行才给「清除」。
-  expect(buttonNamed('清除', fanbox)).toBeNull();
-  expect(buttonNamed('清除', credentialRow(host, 'Patreon'))).not.toBeNull();
+  expect(buttonNamed('Borrar', fanbox)).toBeNull();
+  expect(buttonNamed('Borrar', credentialRow(host, 'Patreon'))).not.toBeNull();
 });
 
 it('凭据文件路径可展开，权限过宽警告在凭据收起时可见', async () => {
@@ -1525,7 +1525,7 @@ it('凭据文件路径可展开，权限过宽警告在凭据收起时可见', a
   const patreon = credentialRow(host, 'Patreon');
   expect(patreon.querySelector('details')?.open).toBe(false);
   const warning = patreon.querySelector('[role="alert"]')!;
-  expect(warning.textContent).toContain('凭据文件权限过宽');
+  expect(warning.textContent).toContain('El archivo de credenciales tiene permisos demasiado abiertos');
   expect(warning.closest('details')).toBeNull();
   const file = [...credentialRow(host, 'Fanbox').querySelectorAll('details')]
     .find(node => node.querySelector('summary')?.textContent === '凭据文件')!;

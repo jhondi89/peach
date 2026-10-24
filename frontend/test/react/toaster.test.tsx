@@ -19,22 +19,22 @@ const toastsWith = (text: string) => [...host.querySelectorAll<HTMLElement>('[da
 it('撤销的结果写回同一条，栈里不另起一条', async () => {
   const run = vi.fn();
   await act(async () => showToast('undo', {
-    html: '已删除标签「<b>剧情</b>」', alert: false, timeout: 8000, action: { label: '撤销', run },
+    html: '已删除标签「<b>剧情</b>」', alert: false, timeout: 8000, action: { label: 'Deshacer', run },
   }));
   await vi.waitFor(() => expect(toastsWith('已删除标签')).toHaveLength(1));
   const [receipt] = toastsWith('已删除标签');
   const button = receipt.querySelector<HTMLButtonElement>('[data-action]')!;
-  expect(button.textContent).toBe('撤销');
+  expect(button.textContent).toBe('Deshacer');
   await act(async () => button.click());
   // 点了不关：请求还在路上，结果要写回这一条。
   expect(run).toHaveBeenCalledWith(button);
   expect(receipt.dataset.removed).toBe('false');
 
-  await act(async () => showToast('undo', { html: '已撤销', alert: false, timeout: 4000, action: null }));
-  await vi.waitFor(() => expect(toastsWith('已撤销')).toHaveLength(1));
+  await act(async () => showToast('undo', { html: 'Deshecho', alert: false, timeout: 4000, action: null }));
+  await vi.waitFor(() => expect(toastsWith('Deshecho')).toHaveLength(1));
   expect(toastsWith('已删除标签')).toHaveLength(0);
   // 同一个节点换了内容，撤销键跟着走掉。
-  expect(toastsWith('已撤销')[0]).toBe(receipt);
+  expect(toastsWith('Deshecho')[0]).toBe(receipt);
   expect(receipt.querySelector('[data-action]')).toBeNull();
 });
 

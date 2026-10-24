@@ -47,7 +47,7 @@ it('系统口令可直接转为可选密码且关闭需要明确提交', async (
   vi.stubGlobal('fetch', fetcher);
   const host = await mount({ mode: 'legacy', revision: 'legacy' }, receipt);
   expect(host.querySelector('[autocomplete="current-password"]')).toBeNull();
-  expect(host.querySelector('button[type="submit"]')?.textContent).toBe('保存配置');
+  expect(host.querySelector('button[type="submit"]')?.textContent).toBe('Guardar configuración');
   await click(checkbox(host));
   expect(newPasswords(host)).toHaveLength(2);
   expect(newPasswords(host).every((input) => input.disabled)).toBe(true);
@@ -55,8 +55,8 @@ it('系统口令可直接转为可选密码且关闭需要明确提交', async (
   expect(fetcher).not.toHaveBeenCalled();
   await submit(host);
   expect(sentBody(fetcher)).toMatchObject({ action: 'disable', confirm_disable: true });
-  expect(receipt).toHaveBeenCalledWith('已关闭访问密码');
-  expect(host.querySelector('[role="note"]')?.textContent).toContain('未设置访问密码');
+  expect(receipt).toHaveBeenCalledWith('Contraseña de acceso desactivada');
+  expect(host.querySelector('[role="note"]')?.textContent).toContain('No hay contraseña de acceso');
 });
 
 it('关闭选项位于输入上方且保留草稿并要求当前密码验证', async () => {
@@ -101,7 +101,7 @@ it('没有密码时画成警示，提交不合法内容变为字段错误且不�
   const fetcher = vi.fn();
   vi.stubGlobal('fetch', fetcher);
   const host = await mount({ mode: 'open', revision: 'one' });
-  expect(host.querySelector('[role="note"]')?.textContent).toContain('未设置访问密码');
+  expect(host.querySelector('[role="note"]')?.textContent).toContain('No hay contraseña de acceso');
   expect(host.textContent).toContain('至少 8 个字符');
   const [password, confirm] = newPasswords(host) as [HTMLInputElement, HTMLInputElement];
   await type(password, 'short');
@@ -109,7 +109,7 @@ it('没有密码时画成警示，提交不合法内容变为字段错误且不�
   await submit(host);
   expect(password.getAttribute('aria-invalid')).toBe('true');
   expect(confirm.getAttribute('aria-invalid')).toBe('true');
-  expect(host.textContent).toContain('访问密码需为 8–256 个字符');
-  expect(host.textContent).toContain('两次输入的密码不一致');
+  expect(host.textContent).toContain('La contraseña de acceso debe tener entre 8 y 256 caracteres');
+  expect(host.textContent).toContain('Las dos contraseñas no coinciden');
   expect(fetcher).not.toHaveBeenCalled();
 });

@@ -125,7 +125,7 @@ describe('计数行', () => {
     const p = props();
     await open(p);
     const nav = p.countRow!.querySelector('nav[data-junk-filters]');
-    expect(nav?.getAttribute('aria-label')).toBe('垃圾文件分类');
+    expect(nav?.getAttribute('aria-label')).toBe('Tipos de archivos basura');
     expect(nav?.getAttribute('role')).toBeNull();
     expect([...nav!.querySelectorAll('a use')].map((use) => use.getAttribute('href'))).toEqual([
       '#i-layout-grid', '#i-play', '#i-pics', '#i-file-archive', '#i-file-audio', '#i-globe', '#i-hard-drive', '#i-eye-off',
@@ -143,7 +143,7 @@ describe('计数行', () => {
       '/junk-files?type=archive&view=dismissed', '/junk-files?type=audio&view=dismissed',
       '/junk-files?type=url&view=dismissed', '/junk-files?type=other&view=dismissed', '/junk-files',
     ]);
-    expect(links.at(-1)?.textContent).toBe('返回待判断');
+    expect(links.at(-1)?.textContent).toBe('Volver a pendientes');
     expect(links.at(-1)?.getAttribute('aria-current')).toBe('page');
     await click(links[2]);
     expect(navigate).toHaveBeenCalledWith('/junk-files?type=image&view=dismissed');
@@ -159,7 +159,7 @@ describe('计数行', () => {
     const { host } = await open(p);
     expect(p.countRow!.querySelector('[data-skeleton]')).toBeNull();
     expect(p.countRow!.querySelector('[data-collection-summary] strong')?.textContent).toBe('—');
-    expect(host.querySelector('[data-media-error] [data-note-action]')?.textContent).toBe('重试');
+    expect(host.querySelector('[data-media-error] [data-note-action]')?.textContent).toBe('Reintentar');
     expect(cards(host)).toHaveLength(0);
   });
 });
@@ -187,8 +187,8 @@ describe('一张卡', () => {
     expect(video!.querySelector('[data-junk-facts]')?.textContent).toBe('视频文件名像推广2 MB');
     expect(archive!.querySelector('[data-junk-title]')?.tagName).toBe('SPAN');
     expect(archive!.querySelector('[data-media-art]')).toBeNull();
-    expect(archive!.querySelector('[data-media-glyph]')?.textContent).toBe('压缩包');
-    expect(archive!.querySelector('[data-junk-size]')?.textContent).toBe('大小未知');
+    expect(archive!.querySelector('[data-media-glyph]')?.textContent).toBe('Archivos comprimidos');
+    expect(archive!.querySelector('[data-junk-size]')?.textContent).toBe('Tamaño desconocido');
     await click(video!.querySelector('button[data-junk-title]'));
     expect(open_).toHaveBeenCalledWith(expect.objectContaining({ id: 1 }), video);
   });
@@ -197,10 +197,10 @@ describe('一张卡', () => {
     vi.stubGlobal('fetch', fetchMock(200, answer([junk(1)])));
     const { host, update } = await open(props());
     const labels = () => [...cards(host)[0]!.querySelectorAll('[data-junk-action] [data-junk-label]')].map((el) => el.textContent);
-    expect(labels()).toEqual(['打开位置', '不是垃圾', '移入回收站']);
+    expect(labels()).toEqual(['Abrir ubicación', 'No es basura', 'Mover a la papelera']);
     await update({ view: 'dismissed' });
     await settle();
-    expect(labels()).toEqual(['打开位置', '重新判断', '移入回收站']);
+    expect(labels()).toEqual(['Abrir ubicación', 'Volver a evaluar', 'Mover a la papelera']);
   });
 
   it('处置交给壳：请求期间那颗键忙，失败后恢复成可点', async () => {
@@ -258,10 +258,10 @@ describe('一屏卡片', () => {
   it('为空时按视图说明为什么是空的', async () => {
     vi.stubGlobal('fetch', fetchMock(200, answer([])));
     const { host, update } = await open(props());
-    expect(host.querySelector('h3')?.textContent).toBe('没有待判断的垃圾文件');
+    expect(host.querySelector('h3')?.textContent).toBe('No hay archivos basura pendientes');
     await update({ view: 'dismissed' });
     await settle();
-    expect(host.querySelector('h3')?.textContent).toBe('没有已排除的文件');
+    expect(host.querySelector('h3')?.textContent).toBe('No hay archivos excluidos');
   });
 
   it('整批在手上，按每批条数一段段露，露完不留哨兵', async () => {

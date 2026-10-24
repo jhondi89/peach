@@ -110,8 +110,8 @@ it('首屏一次取回分组和来源可达性，页面挂上去不再补取', a
 it('组头说清判据：sha1 齐全才写「一致」，否则只是时长推断；跨盘的组写出盘符', async () => {
   vi.stubGlobal('fetch', fetchMock(200, {}));
   const { host } = await open();
-  expect(card(host, 'ABC-001').textContent).toContain('sha1 一致');
-  expect(card(host, 'ABC-002').textContent).toContain('时长推断');
+  expect(card(host, 'ABC-001').textContent).toContain('sha1 idéntico');
+  expect(card(host, 'ABC-002').textContent).toContain('Deducido por duración');
   expect(card(host, 'ABC-002').textContent).toContain('跨盘 R: B:');
   expect(card(host, 'ABC-001').textContent).not.toContain('跨盘');
 });
@@ -134,7 +134,7 @@ it('批量保留最大先确认，弹层点名条数与字节数；确认后进�
   const fetcher = fetchMock(200, { ok: true });
   vi.stubGlobal('fetch', fetcher);
   const { host, toast } = await open();
-  await click(buttonNamed('全部保留最大', host));
+  await click(buttonNamed('Conservar siempre el más grande', host));
   await settle();
   expect(seen).toHaveLength(1);
   expect(seen[0]!.body).toContain('将把 2 个重复文件的馆藏记录移入回收站，每组保留最大的一个。');
@@ -154,7 +154,7 @@ it('一次最多 200 条，超过的分批发', async () => {
   vi.stubGlobal('fetch', fetcher);
   const many = Array.from({ length: 251 }, (_, index) => file(index + 1, { is_largest: index === 0 }));
   const { host } = await open({ total: 1, files: 251, reclaimable: 250 * GB, groups: [group('BIG-001', many)] });
-  await click(buttonNamed('留最大', card(host, 'BIG-001')));
+  await click(buttonNamed('Conservar el más grande', card(host, 'BIG-001')));
   await settle();
   const batches = fetcher.mock.calls.flatMap((call, index) => (call[0] === '/api/batch' ? [sentBody(fetcher, index)] : []));
   expect(batches.map((body: { ids: number[] }) => body.ids.length)).toEqual([200, 50]);
@@ -165,7 +165,7 @@ it('取消确认就什么都不发', async () => {
   const fetcher = fetchMock(200, { ok: true });
   vi.stubGlobal('fetch', fetcher);
   const { host } = await open();
-  await click(buttonNamed('整组回收', card(host, 'ABC-001')));
+  await click(buttonNamed('Mandar todo el grupo a la papelera', card(host, 'ABC-001')));
   await settle();
   expect(fetcher.mock.calls.some((call) => call[0] === '/api/batch')).toBe(false);
 });
@@ -181,8 +181,8 @@ it('点封面或文件名打开那一项', async () => {
 it('没有重复组时是一张空态，不画批量条', async () => {
   vi.stubGlobal('fetch', fetchMock(200, {}));
   const { host } = await open({ total: 0, files: 0, reclaimable: 0, groups: [] });
-  expect(host.textContent).toContain('没有找到重复文件');
-  expect(buttonNamed('全部保留最大', host)).toBeNull();
+  expect(host.textContent).toContain('No se encontraron archivos duplicados');
+  expect(buttonNamed('Conservar siempre el más grande', host)).toBeNull();
 });
 
 it('同组副本只在中段不同时，名字去掉共有开头、退到断词处，差别留在显示的那一段里', () => {

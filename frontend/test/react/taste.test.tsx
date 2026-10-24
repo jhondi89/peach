@@ -154,9 +154,9 @@ it('首屏读 prefetch 落进缓存的那一份，两套证据是页签不是并
   expect(tasteGets(fetcher)).toHaveLength(1);
   expect(tasteGets(fetcher)[0]?.[0]).toBe(`${TASTE_URL}?window=all`);
   expect([...host.querySelectorAll('[role=tab]')].map((tab) => tab.textContent).slice(0, 2))
-    .toEqual(['浏览器记录', 'Peach 内部']);
+    .toEqual(['Registros del navegador', 'Dentro de Peach']);
   expect(host.textContent).toContain('900');
-  expect(host.textContent).not.toContain('个作品有内部行为证据');
+  expect(host.textContent).not.toContain('obras con pruebas de comportamiento en Peach');
 });
 
 it('口味维度取分数最高的几个：雷达三到六个，排行条最多八条', () => {
@@ -172,7 +172,7 @@ it('「口味维度」读数只数分数为正的维度，和雷达、排行条�
 });
 
 it('数据源与名次底下的数加千分位，没有起止日期时只读数据源数', () => {
-  expect(historySpan({ history_sources: 12345 })).toBe(`${(12345).toLocaleString()} 个数据源`);
+  expect(historySpan({ history_sources: 12345 })).toBe(`${(12345).toLocaleString()} fuentes de datos`);
   expect(historySpan({ history_sources: 2, range_start: '2026-01-01', range_end: '2026-09-01' }))
     .toMatch(/^2 个数据源 · .+–.+$/);
   expect(rankDetail({ name: '甲', web_visits: 12345, peach_items: 6789 }))
@@ -206,8 +206,8 @@ it('没有名次的榜给一句怎么补，不重复「暂无足够证据」', a
   await click([...host.querySelectorAll('[role=tab]')].find((tab) => tab.textContent === 'Peach 内部') ?? null);
   await click([...host.querySelectorAll('[role=tab]')].find((tab) => tab.textContent === '创作者') ?? null);
   const panel = [...host.querySelectorAll('[role=tabpanel]')].at(-1)!;
-  expect(panel.textContent).toContain('暂无足够证据');
-  expect(panel.textContent).toContain('在 Peach 里播放或评价作品后，这里会列出对应的创作者。');
+  expect(panel.textContent).toContain('Aún no hay pruebas suficientes');
+  expect(panel.textContent).toContain('Cuando reproduzcas o puntúes obras en Peach, aquí verás sus creadores.');
 });
 
 it('雷达半径按平方根刻度：最大的维度落在外圈，浮层读的仍是原始次数', async () => {
@@ -219,7 +219,7 @@ it('雷达半径按平方根刻度：最大的维度落在外圈，浮层读的�
   }));
   const counts = [657, 68, 56, 4, 1];
   const host = await mount(
-    <TasteRadar rows={counts.map((score, index) => ({ name: `维度${index}`, score }))} label="主要口味维度" />);
+    <TasteRadar rows={counts.map((score, index) => ({ name: `维度${index}`, score }))} label="Dimensiones principales de gustos" />);
   const points = (path: Element | null | undefined) =>
     [...(path?.getAttribute('d') ?? '').matchAll(/(-?[\d.]+),\s*(-?[\d.]+)/g)]
       .map(([, x, y]) => ({ x: Number(x), y: Number(y) }));
@@ -241,7 +241,7 @@ it('雷达半径按平方根刻度：最大的维度落在外圈，浮层读的�
   });
   const tip = host.querySelector('.recharts-tooltip-wrapper')!;
   expect(tip.textContent).toContain('维度0');
-  expect([...tip.querySelectorAll('span')].map((span) => span.textContent)).toEqual(['标签命中', '657']);
+  expect([...tip.querySelectorAll('span')].map((span) => span.textContent)).toEqual(['Coincidencias de etiquetas', '657']);
 });
 
 it('浏览器画像的雷达、排行与浏览活跃热力图都按这一份数画', async () => {
@@ -251,13 +251,13 @@ it('浏览器画像的雷达、排行与浏览活跃热力图都按这一份数�
     .toBe('主要口味维度：维度甲，维度乙，维度丙');
   expect(portrait.querySelector('section[aria-label="口味维度排名"]')).not.toBeNull();
   const heats = [...host.querySelectorAll('svg[role=img]')].map((heat) => heat.getAttribute('aria-label'));
-  expect(heats).toEqual(expect.arrayContaining(['浏览活跃时间', '每日活跃']));
+  expect(heats).toEqual(expect.arrayContaining(['Horas de navegación', 'Actividad diaria']));
   expect(host.querySelector('rect[aria-label="周一 21:00，5 次访问"]')).not.toBeNull();
 });
 
 it('换分析范围时留住上一份：这一屏不退回等待态，只等新的数回来', async () => {
   const { fetcher, host } = await open({ taste: [payload(), HOLD] });
-  await choose(host.querySelector('[aria-haspopup="listbox"]'), '最近 7 天');
+  await choose(host.querySelector('[aria-haspopup="listbox"]'), 'Últimos 7 días');
   await settle();
   expect(tasteGets(fetcher).map(([input]) => String(input)))
     .toEqual([`${TASTE_URL}?window=all`, `${TASTE_URL}?window=7d`]);
@@ -288,7 +288,7 @@ it('本次亲眼见过它在跑，跑完才发回执并重取 dashboard', async 
   expect(host.querySelector('[data-task-progress]')).not.toBeNull();
   await tick(JOB_RUNNING_POLL_MS);
   await settle();
-  expect(props.toast.mock.calls).toEqual([['已更新口味分析']]);
+  expect(props.toast.mock.calls).toEqual([['Análisis de gustos actualizado']]);
   expect(tasteGets(fetcher).length).toBeGreaterThan(1);
 });
 
@@ -306,7 +306,7 @@ it('导入按 octet-stream 发原文件，文件名走请求头，回来的那�
   expect(init?.method).toBe('POST');
   expect(headers['Content-Type']).toBe('application/octet-stream');
   expect(headers['X-Peach-Filename']).toBe(encodeURIComponent('历史.zip'));
-  expect(props.toast.mock.calls).toEqual([['已导入口味数据']]);
+  expect(props.toast.mock.calls).toEqual([['Datos de gustos importados']]);
   // 换进缓存就够了，不为一次导入再问一遍 `/api/taste`。
   expect(host.textContent).toContain('4,321');
   expect(tasteGets(fetcher)).toHaveLength(1);
@@ -321,7 +321,7 @@ it('书签文件上传后显示独立计数与来源', async () => {
     new File(['<!DOCTYPE NETSCAPE-Bookmark-file-1>'], '书签.html'));
   await settle();
   expect(callTo(fetcher, TASTE_IMPORT_URL)).toHaveLength(1);
-  expect(host.textContent).toContain('浏览器书签');
+  expect(host.textContent).toContain('Marcadores del navegador');
   expect(host.textContent).toContain('27 枚书签');
 });
 
@@ -336,7 +336,7 @@ it('导入之后回到导入前看过的范围，读的是导入后的数', asyn
     ],
     imported: { dashboard: payload({ summary: { history_visits: 4321, history_sources: 3 } }) },
   });
-  await choose(host.querySelector('[aria-haspopup="listbox"]'), '最近 90 天');
+  await choose(host.querySelector('[aria-haspopup="listbox"]'), 'Últimos 90 días');
   await settle();
   expect(host.textContent).toContain('111');
 
@@ -345,7 +345,7 @@ it('导入之后回到导入前看过的范围，读的是导入后的数', asyn
   await settle();
   expect(host.textContent).toContain('4,321');
 
-  await choose(host.querySelector('[aria-haspopup="listbox"]'), '最近 90 天');
+  await choose(host.querySelector('[aria-haspopup="listbox"]'), 'Últimos 90 días');
   await settle();
   /* 换范围一律重取：缓存里那份是导入前的，直接拿来用就是把导入的结果藏起来。
      导入之后那一趟 `window=all` 也在这里——回的是同一份，它确认的是服务端也已经落地。 */
@@ -374,7 +374,7 @@ it('移除数据源用回来的那一份就地换掉，不为一次移除重取�
   expect(sent).toHaveLength(1);
   expect(JSON.parse(String(sent[0]?.[1]?.body)))
     .toEqual({ operation: 'remove', source_key: 'a1', window: 'all' });
-  expect(props.toast.mock.calls).toEqual([['已移除口味数据源']]);
+  expect(props.toast.mock.calls).toEqual([['Fuente de datos de gustos quitada']]);
   expect(host.textContent).not.toContain('桌面 Chrome');
   expect(tasteGets(fetcher)).toHaveLength(1);
 });

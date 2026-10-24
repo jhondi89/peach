@@ -9,7 +9,7 @@ notifyManager.setScheduler((notify) => notify());
 afterEach(() => { queryClient.clear() });
 const empty: Shortcuts = { favorites: [], filters: [] };
 
-describe('我的收藏', () => {
+describe('Mi colección', () => {
   it('资料页的规范收藏状态不受旧身份缓存影响', async () => {
     queryClient.setQueryData(SHORTCUTS_KEY, { favorites: [
       { entity_id: 2, kind: 'performer', name: '旧人物' },
@@ -35,7 +35,7 @@ describe('我的收藏', () => {
       return { ok: true, json: async () => calls.length === 1 ? answer.answer : empty };
     }));
     const host = await mount(<QueryClientProvider client={queryClient}>
-      <FavoriteButton item={{ entity_id: 1, kind: 'studio', name: '厂牌' }} />
+      <FavoriteButton item={{ entity_id: 1, kind: 'studio', name: 'Estudio' }} />
     </QueryClientProvider>);
     await click(host.querySelector('[aria-label="收藏厂牌"]'));
     const button = host.querySelector('button')!;
@@ -43,7 +43,7 @@ describe('我的收藏', () => {
     expect(button.getAttribute('aria-busy')).toBe('true');
     await click(button);
     expect(calls).toHaveLength(1);
-    await answer.release({ favorites: [{ key: 'entity:1', entity_id: 1, kind: 'studio', name: '厂牌' }], filters: [] });
+    await answer.release({ favorites: [{ key: 'entity:1', entity_id: 1, kind: 'studio', name: 'Estudio' }], filters: [] });
     await settle();
     expect(button.getAttribute('aria-pressed')).toBe('true');
     await click(host.querySelector('[aria-label="取消收藏厂牌"]'));
@@ -67,8 +67,8 @@ describe('我的收藏', () => {
     </QueryClientProvider>);
     await click(document.querySelector('[aria-label="我的收藏"]'));
     await settle();
-    expect(document.querySelector('nav[aria-label="收藏作品清单"] a[href="/flagged"]')?.textContent).toBe('已标记');
-    expect(document.querySelector('nav[aria-label="收藏作品清单"] a[href="/watch-later"]')?.textContent).toBe('稍后看');
+    expect(document.querySelector('nav[aria-label="收藏作品清单"] a[href="/flagged"]')?.textContent).toBe('Marcados');
+    expect(document.querySelector('nav[aria-label="收藏作品清单"] a[href="/watch-later"]')?.textContent).toBe('Ver más tarde');
     expect(document.querySelector('form[aria-label="保存当前筛选"]')).toBeNull();
     await click(document.querySelector('[role="tab"][aria-label="保存的筛选"]'));
     await type(document.querySelector('form[aria-label="保存当前筛选"] input'), 'VR 待看');
@@ -101,6 +101,6 @@ describe('我的收藏', () => {
     expect(document.querySelectorAll('[data-shortcuts-row]')).toHaveLength(1);
     expect(document.querySelector('[data-shortcuts-row] a')?.getAttribute('href')).toBe('/studios/3');
     await type(document.querySelector('input[aria-label="搜索收藏"]'), 'missing');
-    expect(document.querySelector('[data-empty-state] h3')?.textContent).toBe('没有匹配的收藏');
+    expect(document.querySelector('[data-empty-state] h3')?.textContent).toBe('No hay favoritos que coincidan');
   });
 });

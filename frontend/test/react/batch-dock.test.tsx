@@ -112,11 +112,11 @@ describe('每种语境的键', () => {
   it('从左到右的顺序，「取消」总在最后，危险操作只有移出与彻底删除', () => {
     const shape = (context: Parameters<typeof batchActions>[0], dismissed = false) =>
       batchActions(context, dismissed).map((action) => `${action.label}${action.danger ? '!' : ''}`);
-    expect(shape('catalog')).toEqual(['喜欢', '看过', '稍后看', '判定产地', '移入回收站!', '取消']);
-    expect(shape('trash')).toEqual(['还原', '彻底删除!', '取消']);
-    expect(shape('junk')).toEqual(['不是垃圾', '移入回收站!', '取消']);
-    expect(shape('junk', true)).toEqual(['重新判断', '移入回收站!', '取消']);
-    expect(shape('follow')).toEqual(['保存到数据库', '标记已看', '忽略', '取消']);
+    expect(shape('catalog')).toEqual(['Me gusta', 'Vistos', 'Ver más tarde', 'Asignar origen', '移入回收站!', 'Cancelar']);
+    expect(shape('trash')).toEqual(['Restaurar', '彻底删除!', 'Cancelar']);
+    expect(shape('junk')).toEqual(['No es basura', '移入回收站!', 'Cancelar']);
+    expect(shape('junk', true)).toEqual(['Volver a evaluar', '移入回收站!', 'Cancelar']);
+    expect(shape('follow')).toEqual(['Guardar en la base de datos', 'Marcar como visto', 'Ignorar', 'Cancelar']);
   });
 
   it('「忽略」用划掉的眼睛，不借「取消」那枚叉', () => {
@@ -131,12 +131,12 @@ describe('浮条', () => {
     expect(root.querySelector('[data-selection-dock]')).toBeNull();
     await render({ count: 2, context: 'trash', junkDismissed: false });
     const shown = root.querySelector('[data-selection-dock]')!;
-    expect(shown.getAttribute('aria-label')).toBe('所选项目操作');
+    expect(shown.getAttribute('aria-label')).toBe('Acciones para los seleccionados');
     expect(shown.querySelector('[role="status"]')!.textContent).toBe('已选 2 项');
-    expect(labels(root)).toEqual(['还原', '彻底删除', '取消']);
+    expect(labels(root)).toEqual(['Restaurar', 'Eliminar definitivamente', 'Cancelar']);
     await render({ count: 3, context: 'junk', junkDismissed: true });
     expect(root.querySelector('[data-selection-dock] [role="status"]')!.textContent).toBe('已选 3 项');
-    expect(labels(root)).toEqual(['重新判断', '移入回收站', '取消']);
+    expect(labels(root)).toEqual(['Volver a evaluar', 'Mover a la papelera', 'Cancelar']);
     expect(root.querySelector('[data-batch-scope]')!.getAttribute('data-context')).toBe('junk');
   });
 

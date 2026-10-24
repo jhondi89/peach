@@ -10,7 +10,7 @@ import { mount, mountRoot, pending, settle } from './render';
 function props(patch: Partial<CatalogFilterProps> = {}): CatalogFilterProps {
   return {
     tiers: { key: 'k', performers: [], studios: [] }, empty: false, tags: [], tagFirst: 0,
-    views: [{ k: '', label: '全部', href: '/' }], state: '', count: { total: 0, shown: 0 }, trash: false,
+    views: [{ k: '', label: 'Todos', href: '/' }], state: '', count: { total: 0, shown: 0 }, trash: false,
     sorts: [], layout: null, refreshing: false, offscreen: false, combo: [], comboHidden: true, comboHost: null,
     actions: {
       openEntity: vi.fn(), setView: vi.fn(), toggleTag: vi.fn(), clearFilter: vi.fn(), clearAll: vi.fn(),

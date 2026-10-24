@@ -12,13 +12,13 @@ const questions = (over: Partial<SetupQuestions> = {}): SetupQuestions => ({
   windows: true,
   standalone: false,
   questions: [
-    { key: 'data_root', label: '数据目录', help: ['Peach 数据库、缓存和设置文件都放在这里。'], default: 'C:\\peach-data',
+    { key: 'data_root', label: 'Carpeta de datos', help: ['Peach 数据库、缓存和设置文件都放在这里。'], default: 'C:\\peach-data',
       required: true, advanced: true, input: 'text', prefix: '', suffix: '' },
-    { key: 'media_dir', label: '媒体库', help: ['Peach 从媒体库读取视频和图片。'], default: 'D:\\Videos',
+    { key: 'media_dir', label: 'Biblioteca', help: ['Peach 从媒体库读取视频和图片。'], default: 'D:\\Videos',
       required: true, advanced: false, input: 'folders', prefix: '', suffix: '' },
     { key: 'host', label: '谁可以访问', help: [], default: '2', required: false, advanced: true, input: 'choice',
       prefix: '', suffix: '', options: [{ value: '2', label: '同一局域网的设备' }, { value: '1', label: '只有这台电脑' }] },
-    { key: 'port', label: '端口', help: ['浏览器地址里冒号后面的数字，一般不用改。'], default: '8900',
+    { key: 'port', label: 'Puerto', help: ['浏览器地址里冒号后面的数字，一般不用改。'], default: '8900',
       required: true, advanced: true, input: 'number', prefix: 'localhost:', suffix: '' },
     { key: 'mdns_name', label: '局域网访问地址', help: [], default: 'peach', required: true, advanced: true,
       input: 'text', prefix: 'https://', suffix: '.local', visible_when: { host: '2' } },
@@ -26,7 +26,7 @@ const questions = (over: Partial<SetupQuestions> = {}): SetupQuestions => ({
   media_sources: MEDIA_SOURCE_OPTIONS.map(([value, label]) => ({ value, label })),
   media_source_default: 'local',
   media_root: null,
-  cloud: { help: '先在 CloudDrive 登录网盘并完成挂载。', link: { url: 'https://www.clouddrive2.com/help.html', label: '挂载帮助' },
+  cloud: { help: '先在 CloudDrive 登录网盘并完成挂载。', link: { url: 'https://www.clouddrive2.com/help.html', label: 'Ayuda de montaje' },
     dependencies: [{ name: 'WinFsp', message: '未检测到 WinFsp。', download_url: 'https://winfsp.dev/rel/',
       download_label: '下载 WinFsp' }] },
   access_enabled: true,
@@ -37,7 +37,7 @@ const questions = (over: Partial<SetupQuestions> = {}): SetupQuestions => ({
 
 const done = (over: Partial<SetupDone> = {}): SetupDone => ({
   url: 'http://127.0.0.1:8900/?onboarding=1', scan_requested: true, history_guide: false, standalone: false,
-  redirect: null, facts: [{ term: '版本', value: '0.9.0' }, { term: '数据目录', value: 'C:\\peach-data' }], ...over,
+  redirect: null, facts: [{ term: 'Versiones', value: '0.9.0' }, { term: 'Carpeta de datos', value: 'C:\\peach-data' }], ...over,
 });
 
 type Reply = { status: number; body: unknown };
@@ -69,7 +69,7 @@ const field = (root: ParentNode, key: string) => root.querySelector<HTMLInputEle
 const radio = (root: ParentNode, label: string) =>
   [...root.querySelectorAll('label')].find((node) => node.textContent?.trim() === label);
 const advanced = (root: ParentNode) => [...root.querySelectorAll('summary')].find((node) => node.textContent === '高级设置');
-const submitForm = async (root: ParentNode) => { await click(buttonNamed('完成设置', root)); await settle(); };
+const submitForm = async (root: ParentNode) => { await click(buttonNamed('Terminar configuración', root)); await settle(); };
 const alertsWith = (root: ParentNode, message: string) =>
   [...root.querySelectorAll('[role="alert"]')].filter((node) => node.textContent?.includes(message));
 const occurrences = (root: HTMLElement, message: string) => (root.textContent ?? '').split(message).length - 1;
@@ -99,7 +99,7 @@ function expectAnnounced(root: HTMLElement, input: Element | null | undefined, m
 
 it('题目、默认值与题面来自读题接口：媒体库一行在外面，其余折进高级设置', async () => {
   const { host } = await open();
-  expect(host.querySelector('h1')?.textContent).toBe('欢迎使用 Peach');
+  expect(host.querySelector('h1')?.textContent).toBe('Bienvenido a Peach');
   expect(paths(host).map((input) => input.value)).toEqual(['D:\\Videos']);
   expect(advanced(host)?.getAttribute('aria-expanded')).toBe('false');
   expect(field(host, 'port')?.value).toBe('8900');
@@ -123,7 +123,7 @@ it('选「只有这台电脑」时局域网地址整项消失，也不随提交�
   expect(body.port).toBe('8900');
 });
 
-describe('访问密码', () => {
+describe('Contraseña de acceso', () => {
   it('开关初始按读题接口；关掉后两框收起，提交不带密码', async () => {
     const { host, sent } = await open({}, { [SETUP_URL]: { status: 200, body: done() } });
     expect(host.querySelector('#access-password')).not.toBeNull();
@@ -148,15 +148,15 @@ describe('访问密码', () => {
   });
 });
 
-describe('媒体库', () => {
+describe('Biblioteca', () => {
   it('首次设置网盘时必须明确选择读取策略', async () => {
     const { host, sent } = await open({}, { [SETUP_URL]: { status: 200, body: done() } });
     await choose(rows(host)[0]!.querySelector('[aria-haspopup="listbox"]'), 'OneDrive');
     const policy = rows(host)[0]!.querySelector('[data-media-read-policy] [aria-haspopup="listbox"]');
-    expect(policy?.textContent).toContain('选择读取策略');
+    expect(policy?.textContent).toContain('Elige la forma de lectura');
     await submitForm(host);
-    expect(host.textContent).toContain('请选择媒体读取策略');
-    await choose(policy, '正常读取');
+    expect(host.textContent).toContain('Elige cómo se leen los medios');
+    await choose(policy, 'Lectura normal');
     await submitForm(host);
     expect(sent(SETUP_URL).media_dir).toEqual([
       { path: 'D:\\Videos', location: 'onedrive', root: '', cost: 'free' },
@@ -165,7 +165,7 @@ describe('媒体库', () => {
 
   it('加一行、删一行，扫描说明跟着行数走，提交按行带上来源', async () => {
     const { host, sent } = await open({}, { [SETUP_URL]: { status: 200, body: done() } });
-    await click(buttonNamed('添加媒体库', host));
+    await click(buttonNamed('Añadir biblioteca', host));
     expect(rows(host)).toHaveLength(2);
     expect(document.activeElement).toBe(paths(host)[1]);
     await type(paths(host)[1], 'E:\\More');
@@ -187,12 +187,12 @@ describe('媒体库', () => {
 
   it('任一行选了云盘才出挂载说明与缺的软件', async () => {
     const { host } = await open();
-    expect(host.textContent).not.toContain('挂载帮助');
+    expect(host.textContent).not.toContain('Ayuda de montaje');
     await choose(rows(host)[0]!.querySelector('[aria-haspopup="listbox"]'), 'CloudDrive · 115');
     expect(host.textContent).toContain('先在 CloudDrive 登录网盘并完成挂载。');
     expect(host.querySelector('a[href="https://winfsp.dev/rel/"]')?.textContent).toContain('下载 WinFsp');
     await choose(rows(host)[0]!.querySelector('[aria-haspopup="listbox"]'), '本地磁盘');
-    expect(host.textContent).not.toContain('挂载帮助');
+    expect(host.textContent).not.toContain('Ayuda de montaje');
   });
 
   it('非 Windows 首启只填写媒体目录即可提交', async () => {
@@ -228,7 +228,7 @@ describe('填错时原位标错', () => {
   it('整表不成立的那一句写在目录区上方，不挂到某一行', async () => {
     const { host } = await open({}, { [SETUP_URL]: { status: 400, body: {
       error: '有几项需要修改', errors: { media_dir: ['请添加 1 到 100 个媒体目录'] } } } });
-    await click(buttonNamed('添加媒体库', host));
+    await click(buttonNamed('Añadir biblioteca', host));
     await submitForm(host);
     const [alert, ...more] = alertsWith(host, '请添加 1 到 100 个媒体目录');
     expect(alert).toBeDefined();
@@ -259,22 +259,22 @@ describe('完成态', () => {
   it('成功后同一页换成完成态：扫描说明、入口链接、运行信息默认收起', async () => {
     const { host } = await open({}, { [SETUP_URL]: { status: 200, body: done() } });
     await submitForm(host);
-    expect(host.querySelector('h1')?.textContent).toBe('设置完成');
-    expect(host.textContent).toContain('正在启动馆藏。');
-    expect(host.textContent).toContain('首次扫描已排队，在后台整理媒体库，期间可以照常使用 Peach。');
+    expect(host.querySelector('h1')?.textContent).toBe('Configuración terminada');
+    expect(host.textContent).toContain('Iniciando tu colección.');
+    expect(host.textContent).toContain('El primer escaneo está en cola y ordenará la biblioteca en segundo plano; mientras tanto puedes usar Peach normalmente.');
     const entry = [...host.querySelectorAll('a')].find((link) => link.textContent === '进入 Peach');
     expect(entry?.getAttribute('href')).toBe('http://127.0.0.1:8900/?onboarding=1');
     expect(document.activeElement).toBe(entry);
     const facts = [...host.querySelectorAll('summary')].find((node) => node.textContent === '运行信息');
     expect(facts?.getAttribute('aria-expanded')).toBe('false');
-    expect(document.title).toBe('Peach · 设置完成');
+    expect(document.title).toBe('Peach · Configuración terminada');
   });
 
   it('选了导入浏览器历史又没扫描时，入口换成导入历史', async () => {
     const { host } = await open({}, { [SETUP_URL]: { status: 200, body: done({
       url: 'http://127.0.0.1:8900/taste?onboarding=1', scan_requested: false, history_guide: true }) } });
     await submitForm(host);
-    expect(host.textContent).toContain('稍后在配置页开始扫描媒体库。');
+    expect(host.textContent).toContain('Más tarde, inicia el escaneo de la biblioteca desde la configuración.');
     const entry = [...host.querySelectorAll('a')].find((link) => link.textContent === '导入浏览器历史记录');
     expect(entry?.getAttribute('href')).toBe('http://127.0.0.1:8900/taste?onboarding=1');
   });
@@ -308,7 +308,7 @@ it('别的设备打开时读题接口回 403，只说去哪里打开、不画表
   const host = await mount(<SetupPage />);
   await settle();
   expect(host.querySelector('form')).toBeNull();
-  expect(host.querySelector('[role="alert"]')?.textContent).toBe('请在运行 Peach 的这台电脑上打开设置。');
+  expect(host.querySelector('[role="alert"]')?.textContent).toBe('Abre la configuración en el equipo donde corre Peach.');
 });
 
 it('读题失败时给原因和重试', async () => {
@@ -317,7 +317,7 @@ it('读题失败时给原因和重试', async () => {
   const host = await mount(<SetupPage />);
   await settle();
   expect(host.querySelector('[role="alert"]')?.textContent).toContain('服务出错了');
-  await click(buttonNamed('重试', host));
+  await click(buttonNamed('Reintentar', host));
   await settle();
   expect(fetcher).toHaveBeenCalledTimes(2);
   expect(paths(host)).toHaveLength(1);

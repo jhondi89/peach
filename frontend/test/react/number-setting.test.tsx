@@ -12,7 +12,7 @@ beforeEach(() => { localStorage.clear() });
 afterEach(() => { for (const unmount of unmounts.splice(0)) act(unmount) });
 
 /** 挂一枚控件，`rerender` 换一个外部值（数据库对账、请求回来）。 */
-async function setup(id: NumberSettingId, value: number | null, label = '搜索记录') {
+async function setup(id: NumberSettingId, value: number | null, label = 'Historial de búsqueda') {
   const host = document.createElement('div');
   document.body.append(host);
   const root = createRoot(host);
@@ -87,10 +87,10 @@ it('还没取到值时整块禁用，取回来之后按档位开合', async () =
 });
 
 it('必填的那几项没有开关', async () => {
-  const { host, input } = await setup('batchSizeSetting', 60, '每批作品');
+  const { host, input } = await setup('batchSizeSetting', 60, 'Obras por carga');
   expect(host.querySelector('[role=switch]')).toBeNull();
   expect(input().value).toBe('60');
-  expect(host.querySelector('[data-number-control] span')!.textContent).toBe('个');
+  expect(host.querySelector('[data-number-control] span')!.textContent).toBe('elementos');
 });
 
 it('读回的偏好只认区间内的整数', () => {
@@ -100,8 +100,8 @@ it('读回的偏好只认区间内的整数', () => {
 });
 
 it('以分钟计的间隔满一天时在单位旁换算成天，不满一天或不是分钟时不说', () => {
-  expect(dayReading(10080, '分钟')).toBe('7 天');
-  expect(dayReading(2160, '分钟')).toBe('约 1.5 天');
-  expect(dayReading(1439, '分钟')).toBe('');
-  expect(dayReading(10080, '秒')).toBe('');
+  expect(dayReading(10080, 'minutos')).toBe('7 天');
+  expect(dayReading(2160, 'minutos')).toBe('约 1.5 天');
+  expect(dayReading(1439, 'minutos')).toBe('');
+  expect(dayReading(10080, 'segundos')).toBe('');
 });

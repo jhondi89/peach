@@ -71,7 +71,7 @@ describe('排版用的纯函数', () => {
   });
   it('真人账号与女优共用资料、别名和图标行', async () => {
     const host = await open(props({ kind: 'creator', name: 'RiaKurumi', entity: performer({
-      canonical_name: 'RiaKurumi', identity_labels: ['女优','网黄博主'],
+      canonical_name: 'RiaKurumi', identity_labels: ['Actriz','Creadora web'],
       profile: { height: 149 }, name_groups: { shown: ['Ria Kurumi', '百田くるみ'], total: 2 },
     }) }));
     expect(host.querySelector('[data-entity-facts]')?.textContent).toContain('T149');
@@ -89,7 +89,7 @@ describe('排版用的纯函数', () => {
   });
   it('分类带图标位于身份行最左侧，资料保留跨角色身份入口', async () => {
     const given = props({ entity: performer({
-      identity_labels: ['女优','西方'],
+      identity_labels: ['Actriz','Occidental'],
       related_identities: [{ id: 2, kind: 'creator', canonical_name: '本人账号', relation: 'operates_account' }],
     }) });
     const host = await open(given);
@@ -118,7 +118,7 @@ describe('排版用的纯函数', () => {
       birth_date: '1990-08-14', age: 36, height: 163, bust: 88, cup: 'E',
       debut_date: '2012-03-01', debut_title: '很长的出道片名', active: { from: '2012', ongoing: true }, tags: ['巨乳'],
     });
-    expect(rows.map((row) => row.label)).toEqual(['生日', '身材', '出道', '生涯', '标签']);
+    expect(rows.map((row) => row.label)).toEqual(['Cumpleaños', 'Medidas', 'Debut', 'Carrera', 'Etiquetas']);
     // 一枚字形只代表一个意思：标签那一项与标签页同一枚。
     expect(rows.map((row) => row.glyph)).toEqual(['cake', 'ruler', 'flag', 'calendar-range', 'tags']);
     expect(rows[1]?.parts.map((part) => part.text)).toEqual(['T163 · B88', '· E 罩杯']);
@@ -196,7 +196,7 @@ describe('画出什么', () => {
     expect(agency.querySelector('[data-entity-alias]')?.textContent).toContain('12 位艺人');
     expect(agency.querySelector('[data-entity-foot]')).toBeNull();
     const performerLine = (await open(props())).querySelector('[data-entity-alias]')?.textContent ?? '';
-    expect(performerLine).not.toContain('事务所');
+    expect(performerLine).not.toContain('Agencias');
   });
 
   it('公司别名先列三个，余下的收进「+N」，浮层里一个名字一行', async () => {
@@ -352,7 +352,7 @@ describe('关注里的来源', () => {
   });
 });
 
-describe('订阅新作', () => {
+describe('Suscribirse a estrenos', () => {
   const toggle = (host: HTMLElement) => host.querySelector<HTMLInputElement>('input[data-entity-feed]')!;
 
   it('写回成功才拨过去，发带撤销的回执并等这一轮拉取；撤销是另一次写回', async () => {
@@ -365,7 +365,7 @@ describe('订阅新作', () => {
     expect(toggle(host).checked).toBe(true);
     expect(acts.refreshFeedAfterCheck).toHaveBeenCalledTimes(1);
     const [message, options] = vi.mocked(help.receipt).mock.calls[0]!;
-    expect(message).toBe('已订阅新作');
+    expect(message).toBe('Suscrito a estrenos');
     await act(async () => { await options?.undo?.() });
     expect(acts.follow).toHaveBeenLastCalledWith(false);
     expect(toggle(host).checked).toBe(false);
@@ -432,11 +432,11 @@ describe('新作那一行', () => {
     await click(key());
     await settle();
     expect(acts.feedAction).toHaveBeenLastCalledWith(13, 'want');
-    expect([key().dataset.feedAction, key().getAttribute('aria-pressed'), key().title]).toEqual(['unwant', 'true', '取消想要']);
+    expect([key().dataset.feedAction, key().getAttribute('aria-pressed'), key().title]).toEqual(['unwant', 'true', 'Ya no lo quiero']);
     await click(key());
     await settle();
     expect(acts.feedAction).toHaveBeenLastCalledWith(13, 'unwant');
-    expect([key().dataset.feedAction, key().getAttribute('aria-pressed'), key().title]).toEqual(['want', 'false', '想要']);
+    expect([key().dataset.feedAction, key().getAttribute('aria-pressed'), key().title]).toEqual(['want', 'false', 'Lo quiero']);
     expect(feedHost.querySelector('[data-feed-id="13"]')?.classList.contains('isread')).toBe(false);
     expect(feedHost.hidden).toBe(false);
   });

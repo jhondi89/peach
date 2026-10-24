@@ -50,7 +50,7 @@ it('不能编辑时只说原因，不画表单', async () => {
   expect(host.querySelector('[role="note"]')?.textContent).toContain('请在运行 Peach 的电脑上打开配置');
 });
 
-describe('媒体目录', () => {
+describe('Carpetas de medios', () => {
   it.each([['guangya', '光鸭云盘'], ['onedrive', 'OneDrive'], ['mounted', '其他已挂载网盘']])(
     '%s 来源回填名称、挂载帮助和现有图标，保存带上来源', async (location, label) => {
     const fetcher = fetchMock(200, { saved: true, url: '/', revision: 'rev-2' });
@@ -74,9 +74,9 @@ describe('媒体目录', () => {
   it('Windows 只填本机路径，选了网盘才出 CloudDrive 帮助', async () => {
     const host = await open({ windows: true, media_sources: [{ location: 'local', root: 'D:/', path: 'D:/' }] });
     expect(host.textContent).not.toContain('Windows 中的对应路径');
-    expect(host.textContent).not.toContain('挂载帮助');
+    expect(host.textContent).not.toContain('Ayuda de montaje');
     await choose(rows(host)[0]?.querySelector('[aria-haspopup="listbox"]'), 'CloudDrive · 115');
-    expect(host.textContent).toContain('挂载帮助');
+    expect(host.textContent).toContain('Ayuda de montaje');
   });
 
   it('其它系统每行只展示媒体目录和各自的访问状态', async () => {
@@ -90,8 +90,8 @@ describe('媒体目录', () => {
     const internalPaths = [...host.querySelectorAll('input[placeholder="自动配置"]')];
     expect(internalPaths).toHaveLength(0);
     expect(rows(host).map((row) => [row.querySelector('[data-mount]')?.getAttribute('data-mount'), row.querySelector('[data-mount]')?.textContent]))
-      .toEqual([['online', '在线'], ['offline', '离线'], ['unknown', '未检测']]);
-    expect(section(host, '挂载状态')).toBeNull();
+      .toEqual([['online', 'En línea'], ['offline', 'Sin conexión'], ['unknown', 'Sin comprobar']]);
+    expect(section(host, 'Estado de los montajes')).toBeNull();
   });
 
   /* 只读时单列的「挂载状态」与它的刷新键在 `configuration.test.tsx` 里：刷新换进的是整页那一个
@@ -101,14 +101,14 @@ describe('媒体目录', () => {
     const fetcher = fetchMock(200, { saved: true, url: '/', revision: 'rev-2' });
     vi.stubGlobal('fetch', fetcher);
     const host = await open({ windows: false, media_sources: [
-      { location: '115', root: 'B:\\', path: '/Volumes/115', online: false, library: '收藏', library_icon: 'heart' },
+      { location: '115', root: 'B:\\', path: '/Volumes/115', online: false, library: 'Favorito', library_icon: 'heart' },
       { location: 'pikpak', root: 'A:\\', path: '/Volumes/PikPak', online: true },
     ] });
     expect(paths(host).map((input) => input.value)).toEqual(['/Volumes/115', '/Volumes/PikPak']);
     await submit(host.querySelector('form'));
     await settle();
     expect(sentBody(fetcher).media_sources).toEqual([
-      { location: '115', root: 'B:\\', path: '/Volumes/115', library: '收藏', library_icon: 'heart', cost: 'free' },
+      { location: '115', root: 'B:\\', path: '/Volumes/115', library: 'Favorito', library_icon: 'heart', cost: 'free' },
       { location: 'pikpak', root: 'A:\\', path: '/Volumes/PikPak', library: '', library_icon: '', cost: 'metered' },
     ]);
   });
@@ -120,8 +120,8 @@ describe('媒体目录', () => {
       { location: 'onedrive', root: 'O:\\Movies', path: 'O:\\Movies', cost: 'metered' },
     ] });
     const policy = rows(host)[0]?.querySelector('[data-media-read-policy] [aria-haspopup="listbox"]');
-    expect(policy?.textContent).toContain('代理流量保护');
-    await choose(policy, '正常读取');
+    expect(policy?.textContent).toContain('Protección del tráfico del proxy');
+    await choose(policy, 'Lectura normal');
     await submit(host.querySelector('form'));
     expect(sentBody(fetcher).media_sources).toEqual([
       { location: 'onedrive', root: 'O:\\Movies', path: 'O:\\Movies', library: '', library_icon: '', cost: 'free' },
@@ -136,11 +136,11 @@ describe('媒体目录', () => {
     ] });
     await choose(rows(host)[0]?.querySelector('[aria-haspopup="listbox"]'), 'CloudDrive · PikPak');
     const policy = rows(host)[0]?.querySelector('[data-media-read-policy] [aria-haspopup="listbox"]');
-    expect(policy?.textContent).toContain('选择读取策略');
+    expect(policy?.textContent).toContain('Elige la forma de lectura');
     await submit(host.querySelector('form'));
     expect(fetcher).not.toHaveBeenCalled();
-    expect(host.textContent).toContain('请选择媒体读取策略');
-    await choose(policy, '正常读取');
+    expect(host.textContent).toContain('Elige cómo se leen los medios');
+    await choose(policy, 'Lectura normal');
     await submit(host.querySelector('form'));
     expect(sentBody(fetcher).media_sources[0]).toMatchObject({ location: 'pikpak', cost: 'free' });
   });
@@ -153,7 +153,7 @@ describe('媒体目录', () => {
 
   it('新加的一行接过焦点，之后每行都能移除', async () => {
     const host = await open();
-    await click(buttonNamed('添加文件夹', host));
+    await click(buttonNamed('Añadir carpeta', host));
     expect(paths(host)).toHaveLength(2);
     expect(document.activeElement).toBe(paths(host)[1]);
     const removes = host.querySelectorAll('[aria-label="移除这个文件夹"]');
@@ -163,7 +163,7 @@ describe('媒体目录', () => {
   });
 });
 
-describe('选择文件夹', () => {
+describe('Elegir carpeta', () => {
   it('让这台电脑弹系统对话框，选中的路径填回这一行', async () => {
     const fetcher = fetchMock(200, { path: 'E:\\Movies' });
     vi.stubGlobal('fetch', fetcher);
@@ -194,7 +194,7 @@ describe('选择文件夹', () => {
   });
 });
 
-describe('保存', () => {
+describe('Guardar', () => {
   it('提交带上指纹、全部文件夹、端口与是否扫描，成功后回执并留下新地址', async () => {
     const fetcher = fetchMock(200, { saved: true, url: 'http://127.0.0.1:9124/', revision: 'rev-2' });
     vi.stubGlobal('fetch', fetcher);
@@ -207,9 +207,9 @@ describe('保存', () => {
     expect(url).toBe(CONFIGURATION_URL);
     expect(init?.method).toBe('POST');
     expect(sentBody(fetcher)).toEqual({ revision: 'rev-1', media_dirs: ['D:\\Media'], port: '9123', scan_now: false });
-    expect(receipt).toHaveBeenCalledWith('已保存配置');
+    expect(receipt).toHaveBeenCalledWith('Configuración guardada');
     expect(host.querySelector('[role="status"]')?.textContent).toContain('正在重新启动');
-    expect(host.querySelector('a[href="http://127.0.0.1:9124/"]')?.textContent).toBe('进入馆藏');
+    expect(host.querySelector('a[href="http://127.0.0.1:9124/"]')?.textContent).toBe('Ir a la colección');
     expect(host.querySelector('form'), '保存后表单不再留在页面上').toBeNull();
   });
 
@@ -226,7 +226,7 @@ describe('保存', () => {
     expect(rows(host)[1]?.textContent).toContain('和上面的文件夹重复了');
     expect(host.querySelector('#configPort')).toBeNull();
     expect(receipt).not.toHaveBeenCalled();
-    expect(host.textContent, '字段级原因不再叠一条整体提示').not.toContain('没有保存');
+    expect(host.textContent, '字段级原因不再叠一条整体提示').not.toContain('No guardado');
   });
 
   it('其它失败留在表单里等重试', async () => {
@@ -236,7 +236,7 @@ describe('保存', () => {
     await settle();
     expect(host.querySelector('[role="alert"]')?.textContent).toContain('配置已变更');
     expect(host.querySelector('form')).not.toBeNull();
-    expect(buttonNamed('保存配置', host)?.getAttribute('aria-busy'), '失败后忙态要撤掉').toBeNull();
+    expect(buttonNamed('Guardar configuración', host)?.getAttribute('aria-busy'), '失败后忙态要撤掉').toBeNull();
   });
 });
 
@@ -245,7 +245,7 @@ it('CloudDrive 建议按硬盘分三档，页内只留怎么填，原理链到�
   const tiers = host.querySelectorAll('[aria-label="按缓存所在硬盘分档"] > li');
   expect(tiers).toHaveLength(3);
   expect([...tiers[0]!.querySelectorAll('dt')].map((dt) => dt.textContent))
-    .toEqual(['缓存上限', '读取长度（默认 / 最小）', '同时处理视频']);
+    .toEqual(['Límite de caché', 'Longitud de lectura (predeterminada / mínima)', 'Videos procesados a la vez']);
   expect(host.textContent).toContain('256 / 128 KB');
   expect(host.textContent).toContain('上限不要填 0');
   expect(host.querySelector('details')?.open).toBe(false);

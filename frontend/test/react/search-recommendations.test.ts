@@ -8,11 +8,11 @@ describe('搜索图片推荐', () => {
     const request = vi.fn(async (url: string) => {
       if (url.startsWith('/api/items')) return { items: [{ id: 11, name: '本地作品' }] };
       if (url.startsWith('/api/jav/')) return { items: [{ id: 12, asset_id: 12, code: 'ABW-101',
-        performer_refs: [{ id: 15, name: '女优', has_image: true }] }] };
+        performer_refs: [{ id: 15, name: 'Actriz', has_image: true }] }] };
       if (url.startsWith('/api/feeds/')) return { items: [{ id: 12, code: 'ABW-102', cover_url: '/release-cover' }] };
       if (url.startsWith('/api/follow/authors')) return { items: [{ k: '作者', key: source.author_key, entity_id: 20 }] };
       return { sources: [source], groups: [{
-        primary: { id: 12, source_id: 8, title: '关注作品', thumb_url: '/post-cover', media_kind: 'video', status: 'saved' },
+        primary: { id: 12, source_id: 8, title: 'Obras seguidas', thumb_url: '/post-cover', media_kind: 'video', status: 'saved' },
         variants: [{ id: 13, source_id: 8, title: '图片作品', status: 'seen', media_kind: 'image',
           media_items: [{ index: 2, media_kind: 'image', thumb_url: '/photo-cover' }] }], duplicates: [],
       }] };
@@ -39,7 +39,7 @@ describe('搜索图片推荐', () => {
 
   it('一类读取失败不会丢失其他推荐，无实体的作者进入自己的关注筛选', async () => {
     const groups = await searchRecommendations(async url => {
-      if (url.startsWith('/api/jav/')) throw new Error('离线');
+      if (url.startsWith('/api/jav/')) throw new Error('Sin conexión');
       if (url.startsWith('/api/follow/authors')) return { items: [{ k: '作者', key: 'name:作者' }] };
       return { items: [{ id: 11, name: '本地作品' }] };
     });
@@ -47,6 +47,6 @@ describe('搜索图片推荐', () => {
     expect(groups.find(group => group.kind === 'jav')!.items).toEqual([]);
     expect(groups.find(group => group.kind === 'author')!.items[0]!.href).toBe('/follow?author=name%3A%E4%BD%9C%E8%80%85');
     expect(groups.find(group => group.kind === 'release')!.items).toEqual([]);
-    expect(groups.find(group => group.kind === 'performer')!.action).toBe('订阅新作');
+    expect(groups.find(group => group.kind === 'performer')!.action).toBe('Suscribirse a estrenos');
   });
 });

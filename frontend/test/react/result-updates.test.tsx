@@ -26,7 +26,7 @@ it('运行中的任务发布确认结果时更新列表，状态与凭据查询�
   queryClient.setQueryData(['follow-feed'], '首项');
   queryClient.setQueryData(['follow-manage', 'check'], 'running');
   queryClient.setQueryData(['follow-manage', 'credentials'], '凭据');
-  queryClient.setQueryData(['catalog-grid'], '馆藏');
+  queryClient.setQueryData(['catalog-grid'], 'Colección');
   queryClient.setQueryData(['index', 'performers'], '旧名册');
   let current = '首项';
   const read = vi.fn(async () => current);
