@@ -1,7 +1,7 @@
-/* 本机AccederContraseña, 由 BoardUI Original版组件组合; 表单值SoloDejaEn提交期间组件interior存en proceso. 
+/* 本机访问密码，由 BoardUI 原版组件组合；表单值只留在提交期间的组件内存中。
  *
- * 字段es BoardUI `Input`(React Aria TextField), 开关es BoardUI `Checkbox`, 提交Clavees BoardUI `Button`; 
- * NuevoContraseñayConfirmar两框esyprimero启página共用 `./password-pair`, 分区exterior框ySugerencia用Configuraciónpágina共用 `./section`.  */
+ * 字段是 BoardUI `Input`（React Aria TextField），开关是 BoardUI `Checkbox`，提交键是 BoardUI `Button`；
+ * 新密码与确认两框是与首启页共用的 `./password-pair`，分区外框与提示用配置页共用的 `./section`。 */
 import { useRef, useState, type FormEvent } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -18,9 +18,9 @@ import { busyProps, useAction } from './use-action';
 type FieldErrors = Partial<Record<'current_password' | 'password' | 'confirmation', string>>;
 
 const HELP: Partial<Record<AccessState['mode'], string>> = {
-  legacy: 'Actual使用Sistema生成Acceso口令. 改设自己Contraseña, 或DesactivarIniciar sesión要求. ',
-  locked: 'AccesoConfiguraciónNinguno法读取, Por favorEnEsta máquinaVerificarArchivo de configuración. ',
-  password: 'YaConfiguraciónContraseña. NuevoDispositivoInicio de sesión requerido, Iniciar sesión时勾选"保持Iniciar sesión"puede保持 30 día(s). ',
+  legacy: '当前使用系统生成的访问口令。改设自己的密码，或关闭登录要求。',
+  locked: '访问设置无法读取，请在本机检查配置文件。',
+  password: '已设置密码。新设备需要登录，登录时勾选「保持登录」可保持 30 天。',
 };
 
 export function AccessSettings({ initial, receipt }: AccessSettingsProps) {
@@ -36,10 +36,10 @@ export function AccessSettings({ initial, receipt }: AccessSettingsProps) {
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const issues: FieldErrors = {};
-    if (state.mode === 'password' && !current) issues.current_password = 'Por favorIntroducirActualContraseña de acceso';
+    if (state.mode === 'password' && !current) issues.current_password = '请输入当前访问密码';
     if (!disable) {
-      if (password.length < 8 || password.length > 256) issues.password = 'Contraseña de acceso需Como 8–256 字符';
-      if (password !== confirmation) issues.confirmation = 'Las contraseñas no coinciden';
+      if (password.length < 8 || password.length > 256) issues.password = '访问密码需为 8–256 个字符';
+      if (password !== confirmation) issues.confirmation = '两次输入的密码不一致';
     }
     setFields(issues);
     if (Object.keys(issues).length) {
@@ -51,7 +51,7 @@ export function AccessSettings({ initial, receipt }: AccessSettingsProps) {
       current_password: current, password: disable ? '' : password, confirmation: disable ? '' : confirmation,
     }, 'POST', signal), (next) => {
       setState(next); setCurrent(''); setPassword(''); setConfirmation(''); setDisable(false); setFields({});
-      receipt(next.mode === 'open' ? 'YaDesactivarContraseña de acceso' : 'Configuración guardada');
+      receipt(next.mode === 'open' ? '已关闭访问密码' : '已保存配置');
     }, (cause) => {
       const payload = cause instanceof ApiError ? cause.body as { errors?: FieldErrors; detail?: { errors?: FieldErrors } } : null;
       const errors = payload?.errors || payload?.detail?.errors;
@@ -62,33 +62,33 @@ export function AccessSettings({ initial, receipt }: AccessSettingsProps) {
   const help = HELP[state.mode];
   const editable = state.mode !== 'locked';
   return (
-    <Section title="Contraseña de acceso" onSubmit={submit}>
+    <Section title="访问密码" onSubmit={submit}>
       <div ref={body}>
         <Stack>
           {help ? <Help>{help}</Help> : null}
           {state.mode === 'open'
-            ? <Note tone="warning" title="NoConfiguraciónContraseña de acceso">能Conectar到 Peach DispositivoAbrirDirección就能verColección, NoInicio de sesión requerido. </Note>
+            ? <Note tone="warning" title="未设置访问密码">能连接到 Peach 的设备打开地址就能看馆藏，不需要登录。</Note>
             : null}
           {state.mode === 'password' || state.mode === 'legacy'
-            ? <Checkbox isSelected={disable} onChange={setDisable}>DesactivarContraseña de acceso</Checkbox>
+            ? <Checkbox isSelected={disable} onChange={setDisable}>关闭访问密码</Checkbox>
             : null}
           {state.mode === 'password'
-            ? <Input id="access-current" type="password" label="ActualContraseña de acceso" autoComplete="current-password" maxLength={256}
+            ? <Input id="access-current" type="password" label="当前访问密码" autoComplete="current-password" maxLength={256}
                 value={current} onChange={setCurrent} isRequired validationBehavior="aria"
                 isInvalid={Boolean(fields.current_password)} hint={fields.current_password} />
             : null}
           {editable
-            ? <PasswordPair label={state.mode === 'password' ? 'NuevoContraseña de acceso' : 'ConfiguraciónContraseña de acceso'}
+            ? <PasswordPair label={state.mode === 'password' ? '新访问密码' : '设置访问密码'}
                 password={password} confirmation={confirmation} onPassword={setPassword} onConfirmation={setConfirmation}
                 disabled={disable} passwordError={fields.password} confirmationError={fields.confirmation}
-                passwordHint={disable ? 'DesactivarContraseña de acceso时Ninguno需Introduce写. ' : '至menos 8 字符. GuardarposteriorOtroDispositivoNecesariopesadoNuevoIniciar sesión. '} />
+                passwordHint={disable ? '关闭访问密码时无需填写。' : '至少 8 个字符。保存后其他设备需要重新登录。'} />
             : null}
-          {disable ? <Note tone="warning" title="Alcance de acceso">Guardarposterior, 能Conectar到 Peach Dispositivo将直continuarAccesoColección. </Note> : null}
+          {disable ? <Note tone="warning" title="访问范围">保存后，能连接到 Peach 的设备将直接访问馆藏。</Note> : null}
           {action.error ? <ErrorText>{action.error}</ErrorText> : null}
         </Stack>
       </div>
       {editable
-        ? <Footer><Button type="submit" {...busyProps(action.busy === 'save')}>Guardar configuración</Button></Footer>
+        ? <Footer><Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button></Footer>
         : null}
     </Section>
   );

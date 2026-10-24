@@ -1,4 +1,4 @@
-/** página面持续读取ya提交Resultado; 仅使发生变化资料缓存Inválido.  */
+/** 页面持续读取已提交结果；仅使发生变化的资料缓存失效。 */
 import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 

@@ -1,13 +1,13 @@
-/* 人工复核páginaDatos契约, Agrupar分página纯函数y写操作. tres端点En `frontend/src` dentro都SoloEnaquí
- * 声明uno次(`tests/test_frontend_build.py` 盯着). 
+/* 人工复核页的数据契约、分组分页纯函数与写操作。三条端点在 `frontend/src` 里都只在这里
+ * 声明一次（`tests/test_frontend_build.py` 盯着）。
  *
- * `['review']` esCompleto复核Cola. Interfazuno次给出TodoCategoría(实测 4.6 MB, 1300 行, 本机读
- *   0.1 秒), nueveCategoría合EnunoRespuestadentro, 所以也Solo用uno `queryKey`: CategoríaCambiares翻esteuno
- *   No同段落, Noes另uno真相. 判定写回来时Soloese几行从缓存dentro摘掉(`dropReviewRows`), 
- *   NoComouno次判定CompletoColapesado取uno遍. 
+ * `['review']` 是整条复核队列。接口一次给出全部分类（实测 4.6 MB、1300 行，本机读
+ *   0.1 秒），九个分类合在一个响应里，所以也只用一个 `queryKey`：分类切换是翻这一份的
+ *   不同段落，不是另一份真相。判定写回来时只把那几行从缓存里摘掉（`dropReviewRows`），
+ *   不为一次判定把整条队列重取一遍。
  *
- * Agrupar, Filtrar, 分página都es纯函数: 工具en la计数说esCompletoCola, 卡片Solo画当anterioresteunopágina, 两边
- * 用同uno套判据算, 各写uno迟早对Noarriba.  */
+ * 分组、筛选、分页都是纯函数：工具条上的计数说的是整条队列，卡片只画当前这一页，两边
+ * 用同一套判据算，各写一份迟早对不上。 */
 import { apiGet, apiSend } from '../../api';
 import { clampPage, pageCount } from '../../pagination';
 import { selectRange } from '../../selection';
@@ -18,20 +18,20 @@ export const REVIEW_URL = '/api/review';
 export const REVIEW_DECISION_URL = '/api/review/decision';
 export const REVIEW_GENRE_URL = '/api/review/genre';
 
-/** Completo复核Cola.  */
+/** 整条复核队列。 */
 export const REVIEW_KEY = ['review'] as const;
 
-/** 复核Categoríay它们En界面en la名字. 次序就espágina签次序.  */
+/** 复核分类与它们在界面上的名字。次序就是页签次序。 */
 export const REVIEW_LABELS = {
-  metadata_fields: 'Campos de metadatos',
-  creator_tags: 'Etiquetas de creador',
-  studio_logos: 'Logo de sello',
-  performer_avatars: 'Avatar de actriz',
-  western_identity: 'Reasignación de identidad occidental',
-  code_creators: 'Directorio de códigos JAV en duda',
-  fc2_markings: 'Marcas de comentarios FC2',
-  fc2_similarity: 'Similitudes entre códigos FC2',
-  video_endcards: 'Evidencia de créditos/fuente',
+  metadata_fields: '元数据字段',
+  creator_tags: '创作者标签',
+  studio_logos: '厂牌 Logo',
+  performer_avatars: '女优头像',
+  western_identity: '西方身份回配',
+  code_creators: '番号目录存疑',
+  fc2_markings: 'FC2 评论标记',
+  fc2_similarity: 'FC2 跨号相似',
+  video_endcards: '片尾/出处证据',
 } as const;
 
 export type ReviewCategory = keyof typeof REVIEW_LABELS;
@@ -43,19 +43,19 @@ export const DEFAULT_CATEGORY: ReviewCategory = 'metadata_fields';
 export const isReviewCategory = (value: unknown): value is ReviewCategory =>
   typeof value === 'string' && Object.hasOwn(REVIEW_LABELS, value);
 
-/** 主体es实体而Noes单ObrasCategoría, 值就es实体 kind. este表y `web_review.py` 
- *  `ENTITY_REVIEW_KINDS` 必须逐字uno致: este边判成 creator, 取Imagen按 performer, 
- *  就es标志说ConImagen而Por favor求照样 404.  */
+/** 主体是实体而不是单条作品的分类，值就是实体 kind。这张表与 `web_review.py` 的
+ *  `ENTITY_REVIEW_KINDS` 必须逐字一致：这边判成 creator、取图按 performer，
+ *  就是标志说有图而请求照样 404。 */
 export const ENTITY_REVIEW_KINDS: Partial<Record<ReviewCategory, string>> = {
   creator_tags: 'creator', western_identity: 'creator',
 };
 
-/** unopágina 20 . Interfazuno次给CompletoCola, 卡es几cien候选表单uno次画进 DOM.  */
+/** 一页 20 张。接口一次给整条队列，卡的是把几百张候选表单一次画进 DOM。 */
 export const REVIEW_PAGE_SIZE = 20;
 
 export interface CatalogEvidence { display_value?: string; warnings?: string[] }
 
-/** uno来源给出候选值. 选en proceso它就es `display_value` 写进DatosBiblioteca.  */
+/** 一个来源给出的候选值。选中它就是把 `display_value` 写进数据库。 */
 export interface ReviewCandidate {
   candidate_key: string;
   source?: string;
@@ -64,13 +64,13 @@ export interface ReviewCandidate {
   provider_id?: string;
   display_value?: string;
   warnings?: string[];
-  /** 同uno来源顺带交回来其它字段, Solo作判断依据.  */
+  /** 同一来源顺带交回来的其它字段，只作判断依据。 */
   catalog_evidence?: Record<string, CatalogEvidence>;
-  /** 静态词表还没收录 genre.  */
+  /** 静态词表还没收录的 genre。 */
   unmapped_genres?: string[];
 }
 
-/** 卡片arribaese几Imagen背posteriorObras.  */
+/** 卡片上那几张图背后的作品。 */
 export interface ReviewAsset {
   id: number;
   name?: string;
@@ -79,8 +79,8 @@ export interface ReviewAsset {
   has_preview?: boolean;
 }
 
-/** Colaen launo行. 字段以 `src/peach/web_review.py`  `_review_rows` Como准, 各Categoría共用esteuno
- *  形状, 用Noen la项缺席.  */
+/** 队列里的一行。字段以 `src/peach/web_review.py` 的 `_review_rows` 为准，各分类共用这一份
+ *  形状，用不上的项缺席。 */
 export interface ReviewRow {
   item_key: string;
   decision?: string;
@@ -96,9 +96,9 @@ export interface ReviewRow {
   name?: string;
   board?: string;
   source?: string;
-  /** DatosBibliotecaNormalizar名当Título时, 来源自己写法DejaEnaquí.  */
+  /** 数据库规范名当标题时，来源自己的写法留在这里。 */
   source_name?: string;
-  /** 竖线分隔候选Etiqueta.  */
+  /** 竖线分隔的候选标签。 */
   tags?: string;
   reason?: string;
   evidence?: string;
@@ -127,7 +127,7 @@ export interface ReviewRow {
   profile_url?: string;
 }
 
-/** Solo读端读到es写入端Cola镜像, página面要说清esteunoes实时还es缓存.  */
+/** 只读端读到的是写入端队列的镜像，页面要说清这一份是实时的还是缓存的。 */
 export interface ReviewMirror {
   state?: string;
   origin?: string | null;
@@ -139,30 +139,30 @@ export interface ReviewMirror {
 export interface ReviewData {
   sections: Partial<Record<ReviewCategory, ReviewRow[]>>;
   counts: Partial<Record<ReviewCategory, number>>;
-  /** 收录 genre 时候选词表: 静态表ya经投影到ese批contenidoEtiqueta.  */
+  /** 收录 genre 时的候选词表：静态表已经投影到的那批内容标签。 */
   genre_tags?: string[];
   mirror?: ReviewMirror | null;
 }
 
-/* ── Agrupar, Filtrar, 分página ── */
+/* ── 分组、筛选、分页 ── */
 
 export type ReviewGrouping = 'candidates' | 'source' | 'field';
 
 export interface ReviewGroup { key: string; title: string; rows: ReviewRow[] }
 
-/** esteuno批Cola能按什么Agrupar. 按来源, 按字段两档要Coladentro真Coneseuno项才出现.  */
+/** 这一批队列能按什么分组。按来源、按字段两档要队列里真有那一项才出现。 */
 export function reviewGroupingOptions(rows: ReviewRow[], metadata: boolean): [ReviewGrouping, string][] {
   const options: [ReviewGrouping, string][] = [
-    ['candidates', metadata ? '按FuenteCantidad' : 'TodoPendiente复核'],
+    ['candidates', metadata ? '按来源数量' : '全部待复核'],
   ];
   if (rows.some((row) => row.source || row.candidates?.some((candidate) => candidate.source))) {
-    options.push(['source', '按Fuente']);
+    options.push(['source', '按来源']);
   }
-  if (rows.some((row) => row.field)) options.push(['field', 'Por campo']);
+  if (rows.some((row) => row.field)) options.push(['field', '按字段']);
   return options;
 }
 
-/** 按来源组合Agrupar, 每Obras字段Solo出现uno次.  */
+/** 按来源组合分组，每个作品字段只出现一次。 */
 export function groupReviewRows(rows: ReviewRow[], by: ReviewGrouping): ReviewGroup[] {
   const groups = new Map<string, ReviewGroup>();
   for (const row of rows) {
@@ -170,15 +170,15 @@ export function groupReviewRows(rows: ReviewRow[], by: ReviewGrouping): ReviewGr
     let title: string;
     if (by === 'field') {
       key = row.field || '__unspecified_field';
-      title = row.field_label || row.field || 'No标注字段';
+      title = row.field_label || row.field || '未标注字段';
     } else if (by === 'source') {
       const sources = [...new Set((row.candidates?.map((candidate) => candidate.source || '')
         || [row.source || '']).filter(Boolean))].sort();
       key = JSON.stringify(sources);
-      title = sources.join(' / ') || 'No标注Fuente';
+      title = sources.join(' / ') || '未标注来源';
     } else {
       key = row.candidates ? (row.candidates.length === 1 ? 'single' : 'multiple') : 'pending';
-      title = key === 'single' ? '单unoFuente' : key === 'multiple' ? '需SeleccionarFuente' : 'Pendiente复核';
+      title = key === 'single' ? '单一来源' : key === 'multiple' ? '需选择来源' : '待复核';
     }
     if (!groups.has(key)) groups.set(key, { key, title, rows: [] });
     groups.get(key)!.rows.push(row);
@@ -186,7 +186,7 @@ export function groupReviewRows(rows: ReviewRow[], by: ReviewGrouping): ReviewGr
   return [...groups.values()];
 }
 
-/** 先按Agrupar筛, 再切página. 顺序反过来话, Filtrar说就成"esteuno屏dentroque cumpleese几".  */
+/** 先按分组筛，再切页。顺序反过来的话，筛选说的就成了「这一屏里符合的那几条」。 */
 export function filterReviewRows(
   rows: ReviewRow[], by: ReviewGrouping, filter: string,
 ): ReviewRow[] {
@@ -196,7 +196,7 @@ export function filterReviewRows(
 
 export interface ReviewWindow { page: number; pages: number; rows: ReviewRow[] }
 
-/** 当anterioresteunopáginaes哪dosdiez行. página码越界时收回到最posteriorunopágina, No画空Lista.  */
+/** 当前这一页是哪二十行。页码越界时收回到最后一页，不画空列表。 */
 export function reviewWindow(rows: ReviewRow[], page: number): ReviewWindow {
   const pages = pageCount(rows.length, REVIEW_PAGE_SIZE);
   const current = clampPage(page, pages);
@@ -207,8 +207,8 @@ export function reviewWindow(rows: ReviewRow[], page: number): ReviewWindow {
   };
 }
 
-/** 所Opciones目都Con, 且各自Solo出现uno次来源. Unificado选来源Solo能Eneste些dentro选: 同uno来源Enuno行dentro
- *  给两值时, "Unificado选 javdb"就Sin唯uno答案.  */
+/** 所选项目都有、且各自只出现一次的来源。统一选来源只能在这些里选：同一来源在一行里
+ *  给了两个值时，「统一选 javdb」就没有唯一答案。 */
 export function commonReviewSources(rows: ReviewRow[]): string[] {
   if (!rows.length) return [];
   return [...new Set(rows.flatMap((row) => row.candidates?.map((candidate) => candidate.source || '') || []))]
@@ -216,7 +216,7 @@ export function commonReviewSources(rows: ReviewRow[]): string[] {
       (row) => row.candidates?.filter((candidate) => candidate.source === source).length === 1));
 }
 
-/** Shift 按当anterior显示顺序扩展Seleccionar, y馆藏página同uno套语义. 返回Nuevo锚点.  */
+/** Shift 按当前显示顺序扩展选择，与馆藏页同一套语义。返回新的锚点。 */
 export function selectReviewRange(
   selected: Set<string>, keys: string[], anchor: string | null,
   key: string, range: boolean, checked: boolean,
@@ -224,16 +224,16 @@ export function selectReviewRange(
   return selectRange(selected, keys, anchor, key, range, checked);
 }
 
-/* ── uno行能做什么 ── */
+/* ── 一行能做什么 ── */
 
-/** esteuno行能No能通过. Metadatos字段要Con候选; 创作者EtiquetaSolo判 `candidate` Estadoese些.  */
+/** 这一行能不能通过。元数据字段要有候选；创作者标签只判 `candidate` 状态的那些。 */
 export function canApprove(category: ReviewCategory, row: ReviewRow): boolean {
   if (category === 'metadata_fields') return (row.candidates?.length || 0) > 0;
   if (category === 'creator_tags') return String(row.status || '').trim() === 'candidate';
   return true;
 }
 
-/** esteuno行Título读作"问es什么". 字段名es问题本身, Obras标识Soloes它问对象.  */
+/** 这一行的标题读作「问的是什么」。字段名是问题本身，作品标识只是它问的对象。 */
 export function rowSubject(category: ReviewCategory, row: ReviewRow): string {
   if (category === 'metadata_fields') return String(row.query || row.code || '');
   return String(row.creator || row.studio || row.current_name || row.name || row.item_key);
@@ -254,14 +254,14 @@ export const rowEvidence = (row: ReviewRow): string =>
 export const rowTags = (row: ReviewRow): string[] =>
   String(row.tags || '').split('|').filter(Boolean);
 
-/** esteuno行etc.着被收录 genre. 同uno词En几来源dentro各出现uno次时Solo问uno遍.  */
+/** 这一行等着被收录的 genre。同一个词在几个来源里各出现一次时只问一遍。 */
 export const pendingGenres = (row: ReviewRow): string[] =>
   [...new Set((row.candidates || []).flatMap((candidate) => candidate.unmapped_genres || []))];
 
-/** uno行此刻Seleccionar: 选哪来源值, 勾哪几Obras.  */
+/** 一行此刻的选择：选了哪个来源值、勾了哪几条作品。 */
 export interface RowChoice { candidateKey: string; assets: number[] }
 
-/** 还没动过行按Predeterminado值算: SoloConuno候选时它就es选en procesoese, Obras样本PredeterminadoTodo勾.  */
+/** 还没动过的行按默认值算：只有一个候选时它就是选中的那个，作品样本默认全勾。 */
 export function defaultChoice(row: ReviewRow): RowChoice {
   const candidates = row.candidates || [];
   return {
@@ -272,10 +272,10 @@ export function defaultChoice(row: ReviewRow): RowChoice {
 
 export type DecisionStatus = 'approved' | 'rejected' | 'skipped';
 
-/** 交给 `/api/review/decision` eseuno. 
+/** 交给 `/api/review/decision` 的那一份。
  *
- *  乐观y发SoloEnesteuno行钉死uno资产时带arriba: 按Código JAV命en procesomás组Sin单uno revision puede报, 
- *  Grave报unoSolo会En同Código JAV分卷arriba换来uno串假冲突.  */
+ *  乐观并发只在这一行钉死了一条资产时带上：按番号命中多条的组没有单一 revision 可报，
+ *  硬报一个只会在同番号分卷上换来一串假冲突。 */
 export function decisionPayload(
   category: ReviewCategory, row: ReviewRow, status: DecisionStatus, choice: RowChoice,
 ): Record<string, unknown> {
@@ -296,9 +296,9 @@ export function decisionPayload(
 }
 
 export const decisionReceipt = (status: DecisionStatus): string =>
-  (status === 'approved' ? 'YaAceptarDetalles' : status === 'rejected' ? 'YaRechazarDetalles' : 'YaOmitirDetalles');
+  (status === 'approved' ? '已通过资料' : status === 'rejected' ? '已拒绝资料' : '已跳过资料');
 
-/* ── 取数y写操作 ── */
+/* ── 取数与写操作 ── */
 
 export const fetchReview = (signal?: AbortSignal) => apiGet<ReviewData>(REVIEW_URL, signal);
 
@@ -327,24 +327,24 @@ export async function submitDecision(payload: Record<string, unknown>): Promise<
   return result;
 }
 
-/** 批量Cola保Deja行身; y发Credenciales来自共享缓存en la最Nuevo回执.  */
+/** 批量队列保留行身份；并发凭据来自共享缓存里的最新回执。 */
 export function currentReviewRow(category: ReviewCategory, row: ReviewRow): ReviewRow {
   return queryClient.getQueryData<ReviewData>(REVIEW_KEY)?.sections[category]
     ?.find((item) => item.item_key === row.item_key) || row;
 }
 
-/** 收录uno genre(给en proceso文名)或它判成非contenido(`tag` Deja空).  */
+/** 收录一个 genre（给中文名）或把它判成非内容（`tag` 留空）。 */
 export const recordGenre = (genre: string, tag: string) =>
   apiSend<DecisionResult>(REVIEW_GENRE_URL, { genre, tag });
 
-/** primero屏Solo读复核Cola. que cumple ADR-0018 候选yaEnescaneary资料ProcesarTerminar时落Biblioteca.  */
+/** 首屏只读复核队列。符合 ADR-0018 的候选已在扫描与资料处理结束时落库。 */
 export async function prefetchReview(signal: AbortSignal): Promise<void> {
   await queryClient.fetchQuery({ queryKey: REVIEW_KEY, queryFn: () => fetchReview(signal) });
 }
 
-/** 判过行从缓存dentro摘掉ySincronizar计数. DejaEnColaen la话, ver起来就像esteuno次判定没生效. 
+/** 判过的行从缓存里摘掉并同步计数。留在队列里的话，看起来就像这一次判定没生效。
  *
- *  Falloese几No动: 它们还要DejaEn屏幕arriba供Reintentar.  */
+ *  失败的那几条不动：它们还要留在屏幕上供重试。 */
 export function dropReviewRows(category: ReviewCategory, keys: string[]): void {
   const gone = new Set(keys);
   if (!gone.size) return;
@@ -361,17 +361,17 @@ export function dropReviewRows(category: ReviewCategory, keys: string[]): void {
   });
 }
 
-/** 收录uno genre 改es词表, Noes某uno候选: 服务端按Nuevo词表pesadoNuevo折uno遍CompletoCola
- *  (`_fold_genre_decisions`), 所以aquípesado取Cola而NoesEnanterior端自己折. 同uno判据写两遍
- *  迟早对Noarriba, 而对Noen la表现es"página面arribaEtiquetamásuno, 批准写abajo去还esantiguo".  */
+/** 收录一个 genre 改的是词表，不是某一条候选：服务端按新词表重新折一遍整条队列
+ *  （`_fold_genre_decisions`），所以这里重取队列而不是在前端自己折。同一份判据写两遍
+ *  迟早对不上，而对不上的表现是「页面上标签多了一个，批准写下去的还是旧的」。 */
 export const reloadReview = (): Promise<void> =>
   queryClient.invalidateQueries({ queryKey: REVIEW_KEY, exact: true });
 
-/** Solo读端ese句话: 实时镜像, 缓存rápido照, 还es连镜像都没取到.  */
+/** 只读端那句话：实时镜像、缓存快照，还是连镜像都没取到。 */
 export function mirrorText(
   mirror: ReviewMirror | null | undefined, readOnlyMessage: string,
 ): string {
-  if (mirror?.state === 'live') return 'ProcesandoMostrar写入端实时复核Cola';
-  if (mirror?.state === 'cached') return `写入端暂时Nopuede达, Mostrar ${localTime(mirror.fetched_at)} Caché`;
+  if (mirror?.state === 'live') return '正在显示写入端的实时复核队列';
+  if (mirror?.state === 'cached') return `写入端暂时不可达，显示 ${localTime(mirror.fetched_at)} 的缓存`;
   return mirror?.error || readOnlyMessage;
 }

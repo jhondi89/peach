@@ -1,7 +1,7 @@
-/* 媒体修复Datos层: Tarearápido照ypuede选媒体Biblioteca, 两都进共用 Query 缓存. 
+/* 媒体修复的数据层：任务快照与可选的媒体库，两份都进共用的 Query 缓存。
  *
- * uno轮要跑几diez分钟到几pequeño时, 跑到哪uno步由服务自己记, página面关掉再回来照样continuar得arriba. 
- * primero屏两uno起取, 卡片挂arriba去直continuar读缓存.  */
+ * 一轮要跑几十分钟到几小时，跑到哪一步由服务自己记，页面关掉再回来照样接得上。
+ * 首屏两份一起取，卡片挂上去直接读缓存。 */
 import { apiGet } from '../../api';
 import { queryClient } from '../query';
 
@@ -27,7 +27,7 @@ export interface MediaRepairState {
 export interface RepairLibrary {
   id: string;
   name: string;
-  /** 媒体BibliotecaImagen标: 来源名(`115`, `pikpak`, `local`)或雪碧Imagen字形名, y侧栏媒体BibliotecaCambiarDispositivo同uno.  */
+  /** 媒体库图标：来源名（`115`、`pikpak`、`local`）或雪碧图字形名，与侧栏媒体库切换器同一份。 */
   icon: string;
   metered: boolean;
 }
@@ -51,22 +51,22 @@ export async function prefetchMediaRepair(signal: AbortSignal): Promise<void> {
 
 const count = (value: number) => Number(value).toLocaleString();
 
-/** uno句话说清此刻En干什么: escanear报Progreso, 修复报Progreso加当anterioreste部片.  */
+/** 一句话说清此刻在干什么：扫描报进度，修复报进度加当前这部片。 */
 export function statusLine(state: MediaRepairState): string {
   if (state.status === 'running') {
-    // 服务端偶尔报出超过Total数ya查数, 按Total数封顶. 
-    const where = state.total ? `${count(Math.min(state.checked || 0, state.total))} / ${count(state.total)}` : '准备En proceso';
-    return state.stage === 'Reparar' && state.message
-      ? `Reparar ${where} · ${state.message}`
-      : `${state.stage || 'Escanear'} ${where}`;
+    // 服务端偶尔报出超过总数的已查数，按总数封顶。
+    const where = state.total ? `${count(Math.min(state.checked || 0, state.total))} / ${count(state.total)}` : '准备中';
+    return state.stage === '修复' && state.message
+      ? `修复 ${where} · ${state.message}`
+      : `${state.stage || '扫描'} ${where}`;
   }
   if (state.status === 'complete' && (state.repaired || state.failed)) {
     return state.failed
-      ? `修bien ${count(state.repaired)}  título(s), ${count(state.failed)}  título(s)修No`
-      : `修bien ${count(state.repaired)}  título(s)`;
+      ? `修好 ${count(state.repaired)} 部，${count(state.failed)} 部修不了`
+      : `修好 ${count(state.repaired)} 部`;
   }
   return '';
 }
 
 export const missingToolText = (state: MediaRepairState) =>
-  `${count(state.missing_tool)}  título(s)缺Indexar片子要装arriba untrunc 才修得, Descargas入口EnConfiguraciónpágina"Información de ejecución"dentro. `;
+  `${count(state.missing_tool)} 部缺索引的片子要装上 untrunc 才修得了，下载入口在配置页的「运行信息」里。`;

@@ -1,8 +1,8 @@
-/* Detalles浮窗derecha侧eseuno列Cola(Mix, 分卷, Versión, ReproducirLista, 关注合集ymás媒体). 
+/* 详情浮窗右侧那一列队列（Mix、分卷、版本、播放列表、关注的合集与多媒体）。
  *
- * Cola, 行yEntrada各挂uno `data-mix-*`, 样En
- * `stage/stage.css`, ObrasDetallesy关注Detalles共用. uno列diez几要能拖着横滚(estrecho屏abajoColaes横排), 
- * 拖动借壳 `wireDrag`, 由调用方经 `listRef` continuararriba.  */
+ * 队列、行与条目各挂一枚 `data-mix-*`，样式在
+ * `stage/stage.css`，作品详情与关注详情共用。一列十几条要能拖着横滚（窄屏下队列是横排），
+ * 拖动借壳的 `wireDrag`，由调用方经 `listRef` 接上。 */
 import { useCallback, useLayoutEffect, useRef, type ButtonHTMLAttributes, type ReactNode, type Ref } from 'react';
 import { icon } from '@peach/legacy/core';
 
@@ -11,7 +11,7 @@ export function MixQueue({ kind, title, summary, onClose, actions, listRef, chil
   title: string;
   summary: string;
   onClose(): void;
-  /** CerrarClaveanterior面动作Clave(Guardar comoReproducirLista之类).  */
+  /** 关闭键前面的动作键（保存为播放列表之类）。 */
   actions?: ReactNode;
   listRef?: Ref<HTMLDivElement>;
   children: ReactNode;
@@ -22,8 +22,8 @@ export function MixQueue({ kind, title, summary, onClose, actions, listRef, chil
     if (typeof listRef === 'function') listRef(node);
     else if (listRef) listRef.current = node;
   }, [listRef]);
-  /* 换时Detalles按Entradapesado建, Cola跟着从头挂: En cursovereseuno行滚进Listapuede见处. Solo动Lista自己滚动, 
-     `scrollIntoView` 会连浮窗 y página面uno起滚.  */
+  /* 换条时详情按条目重建，队列跟着从头挂：把正在看的那一行滚进列表可见处。只动列表自己的滚动，
+     `scrollIntoView` 会连浮窗和页面一起滚。 */
   useLayoutEffect(() => {
     const box = list.current;
     const row = box?.querySelector<HTMLElement>('[data-mix-item][aria-current="true"]');
@@ -36,12 +36,12 @@ export function MixQueue({ kind, title, summary, onClose, actions, listRef, chil
   return (
     <aside data-mix-queue="" data-queue-kind={kind} {...data}>
       <div data-mix-queue-head="">
-        {/* 作用域 Preflight Título字pesado清成 inherit, aquí按字pesadotres档取 semibold.  */}
+        {/* 作用域 Preflight 把标题字重清成 inherit，这里按字重三档取 semibold。 */}
         <div><h2 className="font-semibold">{title}</h2><span>{summary}</span></div>
         <div data-mix-queue-actions="">
           {actions}
-          {/* Detalles底部Cola头No放CerrarClave, 关舞用媒体框arribaeseuno(`stage.css`).  */}
-          <button type="button" data-queue-close="" title="Desactivar" aria-label="Desactivar" onClick={onClose}
+          {/* 详情底部的队列头不放关闭键，关舞台用媒体框上那一枚（`stage.css`）。 */}
+          <button type="button" data-queue-close="" title="关闭" aria-label="关闭" onClick={onClose}
             dangerouslySetInnerHTML={{ __html: icon('x') }} />
         </div>
       </div>
@@ -50,9 +50,9 @@ export function MixQueue({ kind, title, summary, onClose, actions, listRef, chil
   );
 }
 
-/** Colaen launo行: izquierda边缩略Imagen(Duración角标由调用方放进 `pic`), derecha边两行字. ObrasCola字anterior面还Con
- *  uno署名Avatar(`lead`,  y 卡片署名层同uno套); ReproducirLista行尾másuno组抓手y移出(`after`), 
- *  拖动Ordenar认es行en la `row` 属性.  */
+/** 队列里的一行：左边缩略图（时长角标由调用方放进 `pic`），右边两行字。作品队列的字前面还有
+ *  一枚署名头像（`lead`，和卡片的署名层同一套）；播放列表的行尾多一组抓手与移出（`after`），
+ *  拖动排序认的是行上的 `row` 属性。 */
 export function MixQueueRow({ current, pic, lead, after, row, children, ...button }: {
   current: boolean;
   pic: ReactNode;
@@ -73,7 +73,7 @@ export function MixQueueRow({ current, pic, lead, after, row, children, ...butto
   );
 }
 
-/** 网盘AgruparpequeñoTítulo: 组名加数.  */
+/** 网盘分组的小标题：组名加条数。 */
 export const MixGroupLabel = ({ label, count }: { label: string; count: number }) => (
   <h3 data-mix-group-label="">{label} <span>{count}</span></h3>
 );

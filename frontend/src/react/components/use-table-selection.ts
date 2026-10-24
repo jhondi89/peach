@@ -2,7 +2,7 @@ import { useCallback, useEffect, useId, useRef } from 'react';
 
 const tables = new Map<string, () => void>();
 
-/** 同unopágina面Solo让当anterior表格保DejaSeleccionar, 批量操作栏因此SoloConuno.  */
+/** 同一页面只让当前表格保留选择，批量操作栏因此只有一份。 */
 export function useTableSelection(clear: () => void) {
   const id = useId();
   const latest = useRef(clear);

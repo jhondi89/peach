@@ -1,41 +1,41 @@
-/* Pasar el ratónuno叠卡片时它dentro面anterior几逐翻走, Descripción它esuno叠而Noes某uno视频. 
+/* 悬停一叠卡片时把它里面的前几张逐张翻走，说明它是一叠而不是某一个视频。
  *
- * 时序y门槛(`frontend/test/react/use-stack-flip.test.tsx`): 指针停 340ms 才Empezar, 面板建bien
- * 420ms posterior翻No.unoabajo, 之posterior每 1100ms 翻uno; 翻出去ese演完(间隔减 120ms)才卸掉离场态, 
- * 否则会当场弹回Original. más选, 遮挡, 减menos动效y滚动en proceso都No启动, este些判据归壳, 经 `canFlip`
- * 递进来; 取Imagenanteriorposterior各再问uno次. 离开即停y还Original静止Portada. 
+ * 时序与门槛（`frontend/test/react/use-stack-flip.test.tsx`）：指针停 340ms 才开始，面板建好
+ * 420ms 后翻第一下，之后每 1100ms 翻一张；翻出去的那张演完（间隔减 120ms）才卸掉离场态，
+ * 否则会当场弹回原位。多选、遮挡、减少动效与滚动中都不启动，这些判据归壳，经 `canFlip`
+ * 递进来；取图前后各再问一次。离开即停并还原静止封面。
  *
- * 翻哪些由调用方给: ReproducirLista翻它自己Portada, primeropágina Mix 现拉相关Obras. 能用Imagenmenos于两就
- * No翻: unoImagen翻过去还es它自己.  */
+ * 翻哪些由调用方给：播放列表翻它自己的封面，首页 Mix 现拉相关作品。能用的图少于两张就
+ * 不翻：一张图翻过去还是它自己。 */
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-/** uno停más久再翻走.  */
+/** 一张停多久再翻走。 */
 export const MIX_FLIP_MS = 1100;
-/** 面板建bien到No.uno次翻动. 直continuar用 1.1 秒间隔etc.No.uno, 指针停abajo到Con反应要continuar近两秒.  */
+/** 面板建好到第一次翻动。直接用 1.1 秒间隔等第一张，指针停下到有反应要接近两秒。 */
 export const MIX_FLIP_LEAD_MS = 420;
-/** 最más预备几, uno次Pasar el ratónNo拉unoCompleto批Portada.  */
+/** 最多预备几张，一次悬停不拉一整批封面。 */
 export const MIX_FLIP_FACES = 9;
-/** 指针停más久才算"Enveresteuno叠", 扫过去No启动.  */
+/** 指针停多久才算「在看这一叠」，扫过去的不启动。 */
 const MIX_FLIP_ARM_MS = 340;
-/** unoImagenetc.más久还没解码bien就No要它.  */
+/** 一张图等多久还没解码好就不要它。 */
 const MIX_FLIP_READY_MS = 5000;
 
 export interface StackFlipOptions {
-  /** esteuno叠要翻Imagen地址, 按翻动顺序.  */
+  /** 这一叠要翻的图地址，按翻动顺序。 */
   load(): Promise<readonly string[]>;
-  /** 此刻能No能翻: más选, 遮挡, 减menos动效, 滚动en proceso都回 false.  */
+  /** 此刻能不能翻：多选、遮挡、减少动效、滚动中都回 false。 */
   canFlip(): boolean;
-  /** 预取解码时带来路策略, 要 y arribaese几 `<img>` uno致, 否则解码 y 显示es两次Por favor求. 
-   *  关注páginaexterior站ImagenNo带来路.  */
+  /** 预取解码时带的来路策略，要和台上那几张 `<img>` 一致，否则解码的和显示的是两次请求。
+   *  关注页的外站图不带来路。 */
   referrerPolicy?: ReferrerPolicy;
 }
 
 export interface StackFlip {
-  /** ya经解码bienese几; 空数组就esNoEn翻, 静止Portada照常露着.  */
+  /** 已经解码好的那几张；空数组就是不在翻，静止封面照常露着。 */
   faces: readonly string[];
-  /** En cursoen laeseuno.  */
+  /** 正在台上的那一张。 */
   current: number;
-  /** 刚翻出去, 还En演离场eseuno.  */
+  /** 刚翻出去、还在演离场的那一张。 */
   leaving: number | null;
   onPointerEnter(): void;
   onPointerLeave(): void;
@@ -47,13 +47,13 @@ interface Run {
   timers: Set<ReturnType<typeof setTimeout>>;
   cycle: ReturnType<typeof setInterval> | null;
   cancels: Set<() => void>;
-  /** 指针进来posterioreseuno段 340ms Esperando.  */
+  /** 指针进来后那一段 340ms 的等待。 */
   armed: ReturnType<typeof setTimeout> | null;
   count: number;
   at: number;
 }
 
-/** etc.unoImagen载入y解码. 取No到, anchoComo 0 或Tiempo de espera都算No能用.  */
+/** 等一张图载入并解码。取不到、宽为 0 或超时都算不能用。 */
 function readyImage(url: string, run: Run, referrerPolicy?: ReferrerPolicy): Promise<boolean> {
   return new Promise((resolve) => {
     const image = new Image();
@@ -88,7 +88,7 @@ export function useStackFlip({ load, canFlip, referrerPolicy }: StackFlipOptions
   const run = useRef<Run>({
     live: false, generation: 0, timers: new Set(), cycle: null, cancels: new Set(), armed: null, count: 0, at: 0,
   });
-  /* 回调dentro读es最Nuevo `load`/`canFlip`: 卡片pesado画时换闭包, En curso进行eseuno次也跟着换.  */
+  /* 回调里读的是最新的 `load`／`canFlip`：卡片重画时换了闭包，正在进行的那一次也跟着换。 */
   const latest = useRef({ load, canFlip });
   latest.current = { load, canFlip };
 
@@ -162,7 +162,7 @@ export function useStackFlip({ load, canFlip, referrerPolicy }: StackFlipOptions
     setLeaving(null);
   };
 
-  /* Desinstalar时Solo收计时DispositivoyEn途Imagen, No再改Estado.  */
+  /* 卸载时只收计时器与在途的图，不再改状态。 */
   useEffect(() => clear, [clear]);
 
   return { faces, current, leaving, onPointerEnter, onPointerLeave };

@@ -1,13 +1,13 @@
-/* 侧栏光晕详细Configuración, 照 feralui.dev/gradients 工作面板来: Parámetro行es"84px Etiqueta + 自绘拉 +
- * derecha侧etc.ancho读数", Color行点开En自己abajo方弹uno色板. 
- * 取证见 docs/reference-snapshots/feralui-studio-boardui-accent-measured.md. 
+/* 侧栏光晕的详细设置，照 feralui.dev/gradients 的工作台面板来：参数行是「84px 标签 + 自绘拉条 +
+ * 右侧等宽读数」，颜色行点开在自己下方弹一张色板。
+ * 取证见 docs/reference-snapshots/feralui-studio-boardui-accent-measured.md。
  *
- * 预设色Enesteuno屏 y 侧栏底部ese配色卡arribaes同uno组色, 同uno写入(`GlowPresetGrid`), 两处读都es
- * 壳eseuno store, 点哪uno边另uno边当场对齐. 当anterior档名, 预设色 y cincoParámetro同属"配色"esteuno组. 
+ * 预设色块在这一屏和侧栏底部那张配色卡上是同一组色块、同一份写入（`GlowPresetGrid`），两处读的都是
+ * 壳那一份 store，点哪一边另一边当场对齐。当前档名、预设色块和五条参数同属「配色」这一组。
  *
- * "玻璃Original色"eseuno档Sintres光晕: eseuno层Completo算作 0, 面arriba漂es每玻璃自带两团反光. 强度, 
- * 粒, 柔化, Tamaño y tresColor于esTodo都管No着任何东西, esteuno档它们收起来, 换uno句DescripciónColor由明暗
- * Tema给. 漂移Velocidad度No收—自带ese两团也En漂. "RestaurarPredeterminado"同样No收, 任何uno档abajo都要能uno步回到出厂eseuno套.  */
+ * 「玻璃原色」那一档没有三枚光晕：那一层整个算作 0，面上漂的是每块玻璃自带的两团反光。强度、
+ * 颗粒、柔化、大小和三枚颜色于是全都管不着任何东西，这一档把它们收起来，换一句说明颜色由明暗
+ * 主题给。漂移速度不收——自带那两团也在漂。「恢复默认」同样不收，任何一档下都要能一步回到出厂那一套。 */
 import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 
 import { closeAnchoredMenu, wireAnchoredMenu } from '@peach/legacy/ui';
@@ -25,7 +25,7 @@ type Field = 'strength' | 'noise' | 'speed' | 'soften' | 'size';
 type Spot = 'spot1' | 'spot2' | 'spot3';
 
 const FIELDS: readonly [Field, string, number][] = [
-  ['strength', 'Intensidad', 100], ['noise', 'Grano', 60], ['speed', '漂移Velocidad', 300], ['soften', 'Suavizar', 100], ['size', 'Tamaño', 100],
+  ['strength', '强度', 100], ['noise', '颗粒', 60], ['speed', '漂移速度', 300], ['soften', '柔化', 100], ['size', '大小', 100],
 ];
 
 
@@ -35,8 +35,8 @@ function StopRow({ host, spot, index, glow }: { host: SettingsPanelHost; spot: S
   const toggle = useRef<HTMLButtonElement | null>(null);
   const pop = useRef<HTMLDivElement | null>(null);
   const [family, setFamily] = useState('all');
-  /* 弹层izquierdaderecha贴齐esteuno行: ancho度No跟着行走话, uno比行estrecho色板verNo出es从哪uno行开出来. 
-     este要排En wireAnchoredMenu 之anterior, 它按当anteriorancho度算izquierda缘.  */
+  /* 弹层左右贴齐这一行：宽度不跟着行走的话，一张比行窄的色板看不出是从哪一行开出来的。
+     这条要排在 wireAnchoredMenu 之前，它按当前宽度算左缘。 */
   useLayoutEffect(() => {
     const [mount, button, menu] = [row.current, toggle.current, pop.current];
     if (!mount || !button || !menu) return;
@@ -61,13 +61,13 @@ function StopRow({ host, spot, index, glow }: { host: SettingsPanelHost; spot: S
         <Icon name="chevron-down" />
       </button>
       <div className="popmenu" data-glow-stop-pop="" popover="manual" hidden ref={pop}>
-        <div data-glow-pills="" role="group" aria-label="Paleta de colores">
+        <div data-glow-pills="" role="group" aria-label="色系">
           {GLOW_SWATCH_FAMILIES.map(([key, name]) => (
             <button type="button" key={key} data-glow-pill={key} aria-pressed={key === family}
               onClick={() => setFamily(key)}>{name}</button>
           ))}
         </div>
-        <div data-glow-palette="" role="radiogroup" aria-label={`${label}Color`}>
+        <div data-glow-palette="" role="radiogroup" aria-label={`${label}颜色`}>
           {GLOW_SWATCHES.map(([swatchFamily, name, hex]) => (
             <button type="button" key={hex} role="radio" aria-checked={hex === color} data-glow-swatch={hex}
               data-glow-family={swatchFamily} style={{ '--glow-swatch': hex } as CSSProperties}
@@ -84,14 +84,14 @@ export function GlowSettings({ host }: { host: SettingsPanelHost }) {
   const glow = host.store.value.homeGlow;
   const native = isNativeGlass(glow.preset);
   return (
-    <section data-glow-setting="" id="homeGlowControls" aria-label="Parámetros de resplandor de barra lateral" hidden={!glow.on}>
-      <section data-glow-group=""><h4>Esquema de color</h4>
-        <p data-glow-current="">ActualEsquema de color<b data-glow-preset-name="">{glowPresetName(glow.preset)}</b></p>
-        <GlowPresetGrid store={host.store} label="Colores de resplandor" />
-        <p data-glow-native-note="" hidden={!native}>esteuno档用每玻璃自带反光, Color跟着明暗Tema走. </p>
+    <section data-glow-setting="" id="homeGlowControls" aria-label="侧栏光晕参数" hidden={!glow.on}>
+      <section data-glow-group=""><h4>配色</h4>
+        <p data-glow-current="">当前配色<b data-glow-preset-name="">{glowPresetName(glow.preset)}</b></p>
+        <GlowPresetGrid store={host.store} label="光晕配色" />
+        <p data-glow-native-note="" hidden={!native}>这一档用每块玻璃自带的反光，颜色跟着明暗主题走。</p>
         <div data-glow-fields="">
-          {/* 拖动en procesoSolo改Parámetro, Solo排uno帧pesado画; 落盘Deja给松手eseunoabajo. 其余玻璃面跟着走SoloConVelocidad度, 
-              而它ese两变量Solo能写En根arriba, 所以拖动期间SoloCon侧栏eseuno层En变, 松手才铺到Completopágina.  */}
+          {/* 拖动中只改参数、只排一帧重画；落盘留给松手那一下。其余玻璃面跟着走的只有速度，
+              而它那两枚变量只能写在根上，所以拖动期间只有侧栏那一层在变，松手才铺到整页。 */}
           {FIELDS.map(([field, label, max]) => (
             <DialRow key={field} field={field} label={label} max={max} value={glow[field]} hidden={native && field !== 'speed'}
               onStep={(value) => { host.store.value.homeGlow[field] = value; host.changed('glowFrame') }}
@@ -99,14 +99,14 @@ export function GlowSettings({ host }: { host: SettingsPanelHost }) {
           ))}
         </div>
       </section>
-      <section data-glow-group="" data-glow-colours="" hidden={native}><h4>Color</h4>
+      <section data-glow-group="" data-glow-colours="" hidden={native}><h4>颜色</h4>
         <div data-glow-stops="">
           {HOME_GLOW_SPOTS.map((spot, index) => <StopRow key={spot} host={host} spot={spot as Spot} index={index} glow={glow} />)}
         </div>
       </section>
       <div data-glow-actions="">
         <button type="button" className="geist-button" data-glow-reset=""
-          onClick={() => { host.store.value.homeGlow = normalizeHomeGlow(null); host.store.save(); host.changed('glow') }}>Restaurar predeterminado</button>
+          onClick={() => { host.store.value.homeGlow = normalizeHomeGlow(null); host.store.save(); host.changed('glow') }}>恢复默认</button>
       </div>
     </section>
   );

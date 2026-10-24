@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 
-/** 按真实Título行框显示展开入口.  */
+/** 按真实标题行框显示展开入口。 */
 export function useFoldedTitle(textKey: string) {
   const text = useRef<HTMLSpanElement>(null);
   const [expanded, setExpanded] = useState(false);

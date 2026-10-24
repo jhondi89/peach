@@ -1,11 +1,11 @@
-/* "exterior部入口": 人物资料páginaarriba通向 みんなのAV, JavDB y MISSAV ese几直达入口. 
+/* 「外部入口」：人物资料页上通向 みんなのAV、JavDB 与 MISSAV 的那几枚直达入口。
  *
- * aquíSoloCon JavDB y MISSAV 两地址框, este两站主域名连Noarriba时Enaquí换成能Abrir镜像; 
- * みんなのAV Solo此uno家, Sinpuede换东西, 它No出现Enesteunopáginaarriba. 框Predeterminadoes空, 占符写着
- * 当anteriorEn用ese域名—Predeterminado值No需要使用者先抄uno遍, 清空就回到它. 
+ * 这里只有 JavDB 与 MISSAV 两个地址框，这两站主域名连不上时在这里换成能打开的镜像；
+ * みんなのAV 只此一家，没有可换的东西，它不出现在这一页上。框默认是空的，占位符写着
+ * 当前在用的那个域名——默认值不需要使用者先抄一遍，清空就回到它。
  *
- * 入口出No出现No由aquí决定: 地址由服务端拼(`peach.entry_links`), 站点 id 缺席eseuno
- * 就NoEn资料páginaarriba, 所以aquíSin开关. 校验也SoloEn服务端, anterior端Copiaruno判定Solo会漂.  */
+ * 入口出不出现不由这里决定：地址由服务端拼（`peach.entry_links`），站点 id 缺席那一枚
+ * 就不在资料页上，所以这里没有开关。校验也只在服务端，前端复制一份判定只会漂。 */
 import { useState, type FormEvent } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -35,16 +35,16 @@ export function EntryLinksForm({ initial, receipt }: {
       apiSend<EntryLinksState>('/api/configuration/entry-links', body, 'POST', signal),
       (next) => {
         setSites(next.sites);
-        receipt('Configuración guardada');
+        receipt('已保存配置');
       });
   };
 
   return (
-    <Section title="Sitio de información de obras点" onSubmit={submit}>
+    <Section title="作品资料站点" onSubmit={submit}>
       <Stack>
         <Help>{ENTRY_LINKS_HELP}</Help>
         {sites.map((site) => (
-          <Input key={site.key} id={`entry-link-${site.key}`} label={<SiteLabel site={site.key} label={`${site.label} Dirección`} />}
+          <Input key={site.key} id={`entry-link-${site.key}`} label={<SiteLabel site={site.key} label={`${site.label} 地址`} />}
             autoComplete="off" maxLength={100} value={site.host}
             placeholder={site.default_host}
             onChange={(host) => change(site.key, host)}
@@ -53,7 +53,7 @@ export function EntryLinksForm({ initial, receipt }: {
         {action.error ? <ErrorText>{action.error}</ErrorText> : null}
       </Stack>
       <Footer>
-        <Button type="submit" {...busyProps(action.busy === 'save')}>Guardar configuración</Button>
+        <Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button>
       </Footer>
     </Section>
   );

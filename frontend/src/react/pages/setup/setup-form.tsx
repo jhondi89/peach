@@ -1,9 +1,9 @@
-/* primero次Configuración表单. 题目, Predeterminado值, 显隐y随Plataforma变化文案来自 `GET /api/setup/questions`; 
- * AgruparTítulo, 按钮y"CompletadoConfiguraciónposterior"eseuno组espágina面骨架, 写Enaquí. 
+/* 首次设置表单。题目、默认值、显隐与随平台变化的文案来自 `GET /api/setup/questions`；
+ * 分组标题、按钮与「完成设置后」那一组是页面骨架，写在这里。
  *
- * 提交走 `POST /api/setup`. 400  `errors` 按题目 key 写回Original: 媒体Directorio按行对齐, Completo表No成立
- * eseuno句放EnDirectorio区arriba方; alto级Configuracióndentro任uno项出错就展开它; AccederContraseña出错时开关保持Abrir. yaIntroduce
- * contenido都DejaEnOriginal地, 焦点落到No.uno标错框.  */
+ * 提交走 `POST /api/setup`。400 的 `errors` 按题目 key 写回原位：媒体目录按行对齐，整表不成立
+ * 的那一句放在目录区上方；高级设置里任一项出错就展开它；访问密码出错时开关保持打开。已填的
+ * 内容都留在原地，焦点落到第一个标错的框。 */
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Radio } from 'react-aria-components';
 import { RiAddLine } from '@remixicon/react';
@@ -26,10 +26,10 @@ import {
   type SetupDone, type SetupErrors, type SetupFolder, type SetupQuestion, type SetupQuestions, type SetupSubmission,
 } from './setup-api';
 
-/** este几项出错时"alto级Configuración"自己展开: 错En折叠en la框, 人verNo见.  */
+/** 这几项出错时「高级设置」自己展开：错在折叠里的框，人看不见。 */
 const ADVANCED_KEYS = ['data_root', 'host', 'port', 'mdns_name'];
 
-/** 媒体Directorioeseuno项Error: y行数对得arriba就按行写回, 否则esCompleto表uno句.  */
+/** 媒体目录那一项的错误：与行数对得上就按行写回，否则是整表一句。 */
 function folderErrors(value: SetupErrors[string], count: number): { rows: string[]; table: string } {
   if (Array.isArray(value)) {
     return value.length === count ? { rows: value, table: '' } : { rows: [], table: value.filter(Boolean).join(' ') };
@@ -38,9 +38,9 @@ function folderErrors(value: SetupErrors[string], count: number): { rows: string
 }
 
 function scanLabel(paths: string[]): string {
-  if (!paths.length) return 'FinalizarConfiguraciónposteriorEscanearyCompletar detalles';
-  if (paths.length === 1) return `FinalizarConfiguraciónposteriorEscanearyCompletar detalles: ${paths[0]}`;
-  return `FinalizarConfiguraciónposteriorEscaneareste ${paths.length} CarpetayCompletar detalles`;
+  if (!paths.length) return '完成设置后扫描并补全资料';
+  if (paths.length === 1) return `完成设置后扫描并补全资料：${paths[0]}`;
+  return `完成设置后扫描这 ${paths.length} 个文件夹并补全资料`;
 }
 
 const text = (value: SetupErrors[string]) => (Array.isArray(value) ? value.filter(Boolean).join(' ') : value ?? '');
@@ -67,19 +67,19 @@ export function SetupForm({ setup, onDone }: { setup: SetupQuestions; onDone: (d
   const [failure, setFailure] = useState('');
   const [busy, setBusy] = useState(false);
   const [requireReadPolicy, setRequireReadPolicy] = useState(false);
-  // 每次因ComoError要展开就换uno key: 折叠按初始Estado展开, yaIntroduce值都Enesteuno层 state dentro. 
+  // 每次因为错误要展开就换一个 key：折叠按初始状态展开，已填的值都在这一层的 state 里。
   const [advancedOpenings, setAdvancedOpenings] = useState(0);
   const form = useRef<HTMLFormElement>(null);
   const addButton = useRef<HTMLButtonElement>(null);
-  // 写回之posterior焦点交给No.uno标错框. ErrorEn await 之posterior才到, React NoEn点击eseuno刻Sincronizar提交, 
-  // 所以etc.esteuno轮落到 DOM arriba再找, No赌Siguiente帧之anterioruno定画完. 
+  // 写回之后焦点交给第一个标错的框。错误在 await 之后才到，React 不在点击那一刻同步提交，
+  // 所以等这一轮落到 DOM 上再找，不赌下一帧之前一定画完。
   const [errorRound, setErrorRound] = useState(0);
   useEffect(() => {
     if (errorRound) form.current?.querySelector<HTMLElement>('input[aria-invalid="true"]')?.focus();
   }, [errorRound]);
-  // 写回Error放进框abajoSugerencia: `role="alert"` 让读屏En它出现时播报uno次, Sugerencia本身仍由
-  // `aria-describedby` 挂En框arriba, 文字Enpágina面arribaSoloConesteuno. `key` 跟着提交轮次换, 同uno句Error
-  // 再提交uno次也会pesadoNuevo播报. 
+  // 写回的错误放进框下的提示：`role="alert"` 让读屏在它出现时播报一次，提示本身仍由
+  // `aria-describedby` 挂在框上，文字在页面上只有这一份。`key` 跟着提交轮次换，同一句错误
+  // 再提交一次也会重新播报。
   const announce = (message: string | undefined) =>
     message ? <span key={errorRound} role="alert">{message}</span> : undefined;
 
@@ -102,7 +102,7 @@ export function SetupForm({ setup, onDone }: { setup: SetupQuestions; onDone: (d
       media_dir: folders.rows, access_enabled: accessOn, scan_now: scanNow, history_guide: historyGuide,
       ...(reporting ? { remote_reporting: { usage: reporting.usage, errors: reporting.errors } } : {}),
     };
-    // 隐藏题No提交, 服务端按题目Predeterminado值补arriba. 
+    // 隐藏的题不提交，服务端按题目默认值补上。
     for (const question of others) if (visible(question)) submission[question.key] = values[question.key] ?? '';
     if (accessOn) Object.assign(submission, { access_password: password, access_confirm: confirmation });
     try {
@@ -178,13 +178,13 @@ export function SetupForm({ setup, onDone }: { setup: SetupQuestions; onDone: (d
                 <SourceSelect index={index} value={row.location} options={sources}
                   onChange={(location) => folders.edit(index, { location, cost: location === 'local' ? 'free' : '' })} />
                 <MediaReadPolicy index={index} cost={row.cost ?? ''}
-                  error={requireReadPolicy && !row.cost ? 'Por favor selecciona la estrategia de lectura de medios' : undefined}
+                  error={requireReadPolicy && !row.cost ? '请选择媒体读取策略' : undefined}
                   onChange={(cost) => folders.edit(index, { cost })} />
               </FolderRow>
             ))}
           </div>
           <Button ref={addButton} variant="secondary" leadingIcon={RiAddLine} className="self-start" onClick={folders.add}>
-            添加媒体Biblioteca
+            添加媒体库
           </Button>
           {cloud ? (
             <>
@@ -204,49 +204,49 @@ export function SetupForm({ setup, onDone }: { setup: SetupQuestions; onDone: (d
       <CardGroup labelledBy="setup-access-title">
         <div className="flex items-start justify-between gap-4">
           <div className="flex min-w-0 flex-col gap-0.5">
-            <GroupTitle id="setup-access-title">Contraseña de acceso</GroupTitle>
-            <p id="setup-access-description" className="text-body-2-regular text-text-secondary">Activarposterior, Acceso Peach Necesario先Iniciar sesión. </p>
+            <GroupTitle id="setup-access-title">访问密码</GroupTitle>
+            <p id="setup-access-description" className="text-body-2-regular text-text-secondary">开启后，访问 Peach 需要先登录。</p>
           </div>
           <Switch aria-labelledby="setup-access-title" aria-describedby="setup-access-description"
             isSelected={accessOn} onChange={setAccessOn} />
         </div>
-        <Help>NoConfiguraciónContraseña时, 能Conectar到 Peach Dispositivopuede直continuar进入. </Help>
+        <Help>未设置密码时，能连接到 Peach 的设备可直接进入。</Help>
         {accessOn
-          ? <PasswordPair label="Contraseña de acceso" password={password} confirmation={confirmation}
+          ? <PasswordPair label="访问密码" password={password} confirmation={confirmation}
               onPassword={setPassword} onConfirmation={setConfirmation}
-              passwordError={announce(text(errors.access_password))} passwordHint="Por favorIntroducir 8–256 字符. "
+              passwordError={announce(text(errors.access_password))} passwordHint="请输入 8–256 个字符。"
               confirmationInvalid={Boolean(errors.access_password)} />
           : null}
       </CardGroup>
 
       <CardGroup>
-        <Disclosure key={advancedOpenings} summary="alto级Configuración" defaultOpen={advancedOpenings > 0}>
+        <Disclosure key={advancedOpenings} summary="高级设置" defaultOpen={advancedOpenings > 0}>
           <div className="flex flex-col gap-4">{others.filter(visible).map(field)}</div>
         </Disclosure>
       </CardGroup>
 
       <CardGroup labelledBy="setup-options-title">
-        <GroupTitle id="setup-options-title">FinalizarConfiguraciónposterior</GroupTitle>
+        <GroupTitle id="setup-options-title">完成设置后</GroupTitle>
         <div className="flex flex-col gap-1.5">
           <Checkbox isSelected={scanNow} onChange={setScanNow}>{scanLabel(filled)}</Checkbox>
-          <Help>读取YaCon NFO  y Portada, Recolectar缺失Detalles. que cumpleAutomáticoReglaDetalles会EnProcesamiento completadoposteriorGuardar en base de datos, 其余DetallesDejaPendienteConfirmar. </Help>
+          <Help>读取已有 NFO 和封面，采集缺失资料。符合自动规则的资料会在处理完成后保存到数据库，其余资料留待确认。</Help>
         </div>
         <section aria-labelledby="setup-history-title" className="flex flex-col gap-1.5 border-t border-separator-border pt-4">
           <h3 id="setup-history-title" className="flex items-center gap-2 text-body-medium text-text-primary">
-            Explorar dispositivoHistorialRegistro<span className="text-body-2-regular text-text-tertiary">Opcional</span>
+            浏览器历史记录<span className="text-body-2-regular text-text-tertiary">可选</span>
           </h3>
-          <Checkbox isSelected={historyGuide} onChange={setHistoryGuide}>continuarabajo来ImportarExplorar dispositivoHistorialRegistro</Checkbox>
-          <Help>用于生成PreferenciasAnálisis. FinalizarConfiguraciónposteriorSeleccionar读取este电脑, 或ImportarOtroDispositivoRegistro; 也puedeMás tarde从"Preferencias"进入. </Help>
+          <Checkbox isSelected={historyGuide} onChange={setHistoryGuide}>接下来导入浏览器历史记录</Checkbox>
+          <Help>用于生成口味分析。完成设置后选择读取这台电脑，或导入其他设备的记录；也可稍后从「口味」进入。</Help>
         </section>
       </CardGroup>
 
       {failure ? <ErrorText>{failure}</ErrorText> : null}
       {reporting ? <CardGroup>
-        <GroupTitle>VersiónEstadísticasyDiagnóstico de errores</GroupTitle>
+        <GroupTitle>版本统计与错误诊断</GroupTitle>
         <ReportingChoices value={reporting} onChange={setReporting} />
-        <Help>ColecciónyPreferencias明细SubirPredeterminadoDesactivar, puedeEn"App y mantenimiento"verySeleccionar. </Help>
+        <Help>馆藏与口味明细上传默认关闭，可在「应用与维护」查看并选择。</Help>
       </CardGroup> : null}
-      <Button type="submit" className="self-start" {...busyProps(busy)}>FinalizarConfiguración</Button>
+      <Button type="submit" className="self-start" {...busyProps(busy)}>完成设置</Button>
     </form>
   );
 }

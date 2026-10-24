@@ -30,7 +30,7 @@ export const prefetchJavDetail = (props: JavDetailProps, signal: AbortSignal) =>
   queryClient.ensureQueryData({ queryKey: javDetailKey(props.code), queryFn: () => fetchJavDetail(props.code, signal),
     staleTime: 6 * 3600_000, revalidateIfStale: true });
 
-/** 同uno评论身Solo呈现uno次; RepetirpáginaTerminar翻página.  */
+/** 同一评论身份只呈现一次；重复页结束翻页。 */
 export function nextReviewPage(last: JavReviews, pages: JavReviews[]): number | undefined {
   if (!last.ok || !last.more) return undefined;
   const seen = new Set(pages.slice(0, -1).flatMap(page => page.items.map(item => item.id)));

@@ -1,7 +1,7 @@
-/* Listaen launo段报错: 平时Solo露uno行(`errorHeadline`), "verDetalles"展开Todo文. 
+/* 列表里的一段报错：平时只露一行（`errorHeadline`），「查看详情」展开全文。
  *
- * posterior端回常esCompleto段 traceback 或Completopágina HTML, 铺开会uno卡撑成几屏alto; Solo露uno行又verNo到Todo文, 
- * 所以Todo文收EnClaveposterior面, 展开posterior保DejaOriginalCon换行, largo URL 就地折断, 太largo时En自己框dentro滚.  */
+ * 后端回的常是整段 traceback 或整页 HTML，铺开会把一张卡撑成几屏高；只露一行又看不到全文，
+ * 所以全文收在键后面，展开后保留原有换行、长 URL 就地折断，太长时在自己的框里滚。 */
 import { useId, useState } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -23,7 +23,7 @@ export function ErrorExcerpt({ text, className = '' }: { text: string; className
       {more
         ? <Button variant="ghost" size="xs" className="-ml-2" aria-expanded={open} aria-controls={open ? id : undefined}
             onClick={() => setOpen(!open)}>
-            {open ? 'Ocultar detalles' : 'Ver detalles'}
+            {open ? '收起详情' : '查看详情'}
           </Button>
         : null}
     </div>

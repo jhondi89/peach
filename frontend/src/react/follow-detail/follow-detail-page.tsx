@@ -1,12 +1,12 @@
-/* 关注Detalles(ADR-0031): 舞dentroeseunoCompleto—媒体区, derecha侧Colay侧栏. 
+/* 关注详情（ADR-0031）：舞台里那一整块——媒体区、右侧队列与侧栏。
  *
- * 舞(`<dialog id="stage">`), 它进出场, pequeño窗y Video.js 都归舞岛(`../stage/`), JAV Detalles
- * 也En用; aquíSolo画舞en lacontenido, 视频媒体框画bien之posterior经 `actions.mountPlayer` 交给舞挂ReproducirDispositivo. 媒体区, 侧栏yCola结构照
- * JAV Detalleseseuno套(`[data-stage-grid]` / `[data-stage-media]` / `[data-stage-side]` / `[data-mix-queue]`, 两边共用, 
- * 样En `../stage/stage.css`); 关注自己más出来几样En `follow-detail.css`. 
+ * 舞台（`<dialog id="stage">`）、它的进出场、小窗与 Video.js 都归舞台岛（`../stage/`），JAV 详情
+ * 也在用；这里只画舞台里的内容，视频的媒体框画好之后经 `actions.mountPlayer` 交给舞台挂播放器。媒体区、侧栏与队列的结构照
+ * JAV 详情那一套（`[data-stage-grid]` / `[data-stage-media]` / `[data-stage-side]` / `[data-mix-queue]`，两边共用，
+ * 样式在 `../stage/stage.css`）；关注自己多出来的几块样式在 `follow-detail.css`。
  *
- * 换uno媒体(轮播, más媒体Cola)Solo改岛interiorEstado: 媒体区按"Entrada:媒体"换uno, ReproducirDispositivo随之拆pesado挂. 
- * 换到组dentro另uno经壳(`actions.openItem`): 地址要换; 舞取齐eseunoposteriorOriginal地换contenido, 浮窗Nopesado开.  */
+ * 换一份媒体（轮播、多媒体队列）只改岛内状态：媒体区按「条目:媒体」换一块，播放器随之拆了重挂。
+ * 换到组里另一条经壳（`actions.openItem`）：地址要换；舞台取齐那一条后原地换内容，浮窗不重开。 */
 import { useCallback, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { esc, fmtDur, foldName, icon, requestErrorMessage } from '@peach/legacy/core';
@@ -43,11 +43,11 @@ import { fetchFollowRelated, followRelatedGroups, followRelatedKey } from './fol
 
 const realDuration = (value: unknown) => Number(value) > 0;
 
-/** 字形Original样取壳eseuno `icon()`: 骨架y遗DejaDetalles画就es它, 换成别字形continuar管eseuno拍会跳.  */
+/** 字形原样取壳那一份 `icon()`：骨架与遗留详情画的就是它，换成别的字形接管那一拍会跳。 */
 const Glyph = ({ name }: { name: string }) => (
   <span className="contents" dangerouslySetInnerHTML={{ __html: icon(name) }} />
 );
-/** exterior链eseuno: 描边由Todo站 `svg.ui-externalmark`(`core/core.css`)给, esteunopágina 18px 尺寸En `follow-detail.css`.  */
+/** 外链那一枚：描边由全站 `svg.ui-externalmark`（`core/core.css`）给，这一页的 18px 尺寸在 `follow-detail.css`。 */
 const EXTERNAL_MARK = icon('external-link', 'ui-externalmark');
 
 export function FollowDetailPage(props: FollowDetailProps) {
@@ -84,18 +84,18 @@ export function FollowDetailPage(props: FollowDetailProps) {
 
 const gone = (error: unknown) => error instanceof FollowItemGone || (error instanceof ApiError && error.status === 404);
 
-/** Entradaya经NoEn: Reintentar取No回来, Solo给uno回到关注página路.  */
+/** 条目已经不在了：重试取不回来，只给一条回到关注页的路。 */
 function GoneNote({ onBack }: { onBack(): void }) {
   return (
     <div data-follow-detail-gone="" onClick={(event) => {
       if ((event.target as HTMLElement).closest('[data-note-action]')) onBack();
-    }} dangerouslySetInnerHTML={{ __html: noteHtml('esteResultadoSeguircontenidoYaNo存En, puede能Ya被FuenteEliminar或YaLimpiar. ', { actionLabel: '回到Seguir' }) }} />
+    }} dangerouslySetInnerHTML={{ __html: noteHtml('这条关注内容已不存在，可能已被来源删除或已清理。', { actionLabel: '回到关注' }) }} />
   );
 }
 
-/** CerrarClave. `id` Deja着: Escape, 点浮窗exterior面y壳兜底都按 `#closeStage` 找它再点unoabajo.  */
+/** 关闭键。`id` 留着：Escape、点浮窗外面与壳的兜底都按 `#closeStage` 找它再点一下。 */
 const CloseStage = ({ onClose }: { onClose(): void }) => (
-  <button type="button" data-stage-close="" id="closeStage" title="Desactivar" aria-label="Desactivar" onClick={onClose}
+  <button type="button" data-stage-close="" id="closeStage" title="关闭" aria-label="关闭" onClick={onClose}
     dangerouslySetInnerHTML={{ __html: icon('x') }} />
 );
 
@@ -105,7 +105,7 @@ function Detail({ data, context, mediaIndex, onMedia, mediaView, relatedLimit, h
   const { item, group } = data;
   const media = detailMedia(item, group, mediaIndex, mediaView);
   const write = useDetailWrite(item, actions, onMedia);
-  /* 媒体没取回ese两句SugerenciaSolo说esteuno媒体区: 换uno媒体就从头来.  */
+  /* 媒体没取回的那两句提示只说这一块媒体区：换一份媒体就从头来。 */
   const frameKey = `${item.id}:${media.selected?.index ?? ''}`;
   const [issue, setIssue] = useState<{ key: string; kind: MediaIssue }>({ key: '', kind: '' });
   const issues: MediaIssues = {
@@ -146,7 +146,7 @@ function Related({ data, media, limit, context, helpers, actions }: {
 }) {
   const result = useQuery({ queryKey: followRelatedKey(data.item.id, media, limit),
     queryFn: ({ signal }) => fetchFollowRelated(data, media, limit, signal) });
-  const [skeleton] = useState(() => pageSkeletonHtml('Cargando recomendaciones', { cards: true, className: 'related-skeleton' }));
+  const [skeleton] = useState(() => pageSkeletonHtml('正在读取推荐', { cards: true, className: 'related-skeleton' }));
   const cardActions = useMemo(() => ({
     openDetail: actions.openItem, openAuthor: actions.openAuthor, canFlip: () => false,
   }), [actions]);
@@ -155,7 +155,7 @@ function Related({ data, media, limit, context, helpers, actions }: {
   const relatedContext = { ...context, sources, aliases: result.data?.pages.at(-1)?.author_aliases || context.aliases };
   return <RelatedSection data-follow-related="" wireDrag={helpers.wireDrag} busy={result.isPending}
     empty={!!result.data && !groups.length}
-    error={result.isError ? `读取Continuar viendoFallido: ${requestErrorMessage(result.error)}` : undefined}
+    error={result.isError ? `读取接着看失败：${requestErrorMessage(result.error)}` : undefined}
     onRetry={() => { void result.refetch() }}>
     {result.data ? groups.map(group => <FollowCard key={group.primary.id} variant="next" group={group} media={media}
       authorSources={authorSources(group.primary, sources)} context={relatedContext} selected={false} selectMode={false}
@@ -173,17 +173,17 @@ function MediaFrame({ item, media, actions, onMedia, issues }: {
   const { kind, selected, src, images, position, carousel, frameRatio } = media;
   const frame = useRef<HTMLDivElement>(null);
   const slides = detailSlides(item, media);
-  /* OriginalImagen经Proxy取, 缩略Imagen由Explorar dispositivo直continuar读公开Anfitrión: 归档站OriginalArchivoAnfitrión会拦abajo服务端(pawchive 
-     file. 子域挂着 ddos-guard, uno律 403), 缩略ImagenAnfitrión照常给.  */
+  /* 原图经代理取，缩略图由浏览器直接读公开主机：归档站的原文件主机会拦下服务端（pawchive 的
+     file. 子域挂着 ddos-guard，一律 403），缩略图主机照常给。 */
   const thumb = selected?.thumb_url || item.thumb_url || '';
   const playable = item.playable && kind === 'video';
   const imageSrc = item.playable && kind === 'image' ? src : item.thumb_url || '';
   const fallback = item.playable && kind === 'image' && thumb && thumb !== src ? thumb : '';
   const [shown, setShown] = useState(imageSrc);
 
-  /* ReproducirDispositivoSolo随esteuno媒体区挂uno次, 卸uno次: 写完Estado换es同unoNuevo对象, No能因此拆pesado挂. 
-     esteuno本身按"Entrada:媒体"换, 换Entrada或换媒体时Completopesado建, Limpiar就Eneseuno刻跑. `<video>` 由舞
-     建Eneste框dentro(同ObrasDetalles), 报错时回到aquíDescripción.  */
+  /* 播放器只随这一块媒体区挂一次、卸一次：写完状态换的是同一条的新对象，不能因此拆了重挂。
+     这一块本身按「条目:媒体」换，换条目或换媒体时整块重建，清理就在那一刻跑。`<video>` 由舞台
+     建在这块框里（同作品详情），报错时回到这里说明。 */
   const mounting = useRef({ item, selected });
   const failed = useRef(issues.failed);
   failed.current = issues.failed;
@@ -195,7 +195,7 @@ function MediaFrame({ item, media, actions, onMedia, issues }: {
 
   return (
     <div ref={frame} data-stage-media="" data-follow-detail-media={kind || 'none'} data-framed={frameRatio ? '' : undefined}
-      // oxlint-disable-next-line shadcn/no-inline-styles -- 画框Relación取esteuno组Imagen尺寸
+      // oxlint-disable-next-line shadcn/no-inline-styles -- 画框比例取这一组图的尺寸
       style={{ '--follow-frame-ratio': frameRatio ? frameRatio.toFixed(4) : undefined } as CSSProperties}>
       <CloseStage onClose={actions.close} />
       {playable ? null : imageSrc ? (
@@ -209,27 +209,27 @@ function MediaFrame({ item, media, actions, onMedia, issues }: {
       ) : (
         <div data-follow-detail-placeholder="">
           <span className="contents" dangerouslySetInnerHTML={{ __html: sourceIcon(item.resource_provider || item.provider) }} />
-          <span>SinDisponibleVista previa</span>
+          <span>没有可用预览</span>
         </div>
       )}
       {carousel ? <MediaCarousel items={images} position={position} onSelect={onMedia} below renderThumbnail={entry => {
         const image = images.find(image => image.index === entry.index)!;
         const thumbnail = image.thumb_url || (item.playable ? `/follow-stream?id=${item.id}&media=${entry.index}` : item.thumb_url);
-        return thumbnail ? <img src={thumbnail} alt="" referrerPolicy="no-referrer" /> : <span>Vista previa no disponible</span>;
+        return thumbnail ? <img src={thumbnail} alt="" referrerPolicy="no-referrer" /> : <span>预览未取得</span>;
       }} /> : null}
     </div>
   );
 }
 
-/* ── Cola ── */
+/* ── 队列 ── */
 
-/** ColadentroSinImageneseuno格放en proceso性Imagen形, No放站点Imagen标: 格子en laImagenuno律按Imagen铺满, 48px  favicon
- *  会被拉成Completo格, verarriba去就像este视频缩略Imagen.  */
+/** 队列里没有画面的那一格放中性图形，不放站点图标：格子里的图一律按画面铺满，48px 的 favicon
+ *  会被拉成整格，看上去就像这条视频的缩略图。 */
 const NoThumb = ({ kind }: { kind: string }) => (
   <span data-follow-nothumb="" dangerouslySetInnerHTML={{ __html: icon(kind === 'image' ? 'image-off' : 'play') }} />
 );
 
-/** 缩略Imagen取No到就撤掉, 同遗Deja层 `data-drop="self"`.  */
+/** 缩略图取不到就撤掉，同遗留层 `data-drop="self"`。 */
 function QueueThumb({ src }: { src: string }) {
   const [broken, setBroken] = useState(false);
   if (broken) return null;
@@ -246,12 +246,12 @@ function CollectionQueue({ group, itemId, helpers, actions }: {
   const items = videoItems(group) as FollowDetailItem[];
   const listRef = useDragRow(helpers);
   return (
-    <MixQueue kind="collection" data-follow-queue="" title="VideosColección" onClose={actions.close} listRef={listRef}
-      summary={`${followTitle(group.primary)} · ${items.length}  video(s)`}>
+    <MixQueue kind="collection" data-follow-queue="" title="视频合集" onClose={actions.close} listRef={listRef}
+      summary={`${followTitle(group.primary)} · ${items.length} 个视频`}>
       {items.map((member) => {
         const duplicate = group.duplicates.includes(member);
         const copy = collectionCopy(group, member, duplicate ? member.provider_label : '');
-        /* 另uno站同uno由站点Imagen标报出处, Imagen标 alt 就es站名; 没登记Imagen标站仍写站名.  */
+        /* 另一站的同一条由站点图标报出处，图标的 alt 就是站名；没登记图标的站仍写站名。 */
         const siteIcon = duplicate ? sourceIcon(member.provider, member.provider_label) : '';
         return (
           <MixQueueRow key={member.id} current={member.id === itemId} data-follow-queue-item={member.id}
@@ -274,8 +274,8 @@ function CollectionQueue({ group, itemId, helpers, actions }: {
   );
 }
 
-/** más媒体Cola: uno帖子en laTodoImageny视频, 按网盘Agrupar. `currentId` es舞arriba正ver着eseuno—
- *  合集改列组dentro挂着网盘Agrupareseuno时, 它 y Cola主人Noes同uno.  */
+/** 多媒体队列：一条帖子里的全部图与视频，按网盘分组。`currentId` 是舞台上正看着的那一条——
+ *  合集改列组里挂着网盘分组的那一条时，它和队列的主人不是同一条。 */
 function MediaQueue({ item, current, currentId = item.id, helpers, actions, onMedia }: {
   item: FollowDetailItem; current: number | null; currentId?: number; helpers: FollowFeedHelpers;
   actions: FollowDetailActions; onMedia(index: number | null): void;
@@ -291,8 +291,8 @@ function MediaQueue({ item, current, currentId = item.id, helpers, actions, onMe
   });
   const pick = (media: FollowDetailMedia) => (item.id === currentId ? onMedia(media.index) : actions.openItem(item.id, media.index));
   return (
-    <MixQueue kind="media" data-follow-queue="" title="Multimedia" onClose={actions.close} listRef={listRef}
-      summary={`${followTitle(item)} · ${items.length}  medio(s)`}>
+    <MixQueue kind="media" data-follow-queue="" title="多媒体" onClose={actions.close} listRef={listRef}
+      summary={`${followTitle(item)} · ${items.length} 个媒体`}>
       {groups.map((row) => [
         row.label ? <MixGroupLabel key={`label:${row.key}`} label={row.label} count={row.items.length} /> : null,
         ...row.items.map((media) => (
@@ -300,7 +300,7 @@ function MediaQueue({ item, current, currentId = item.id, helpers, actions, onMe
             data-follow-media-item={media.index} data-media-kind={media.media_kind || ''} onClick={() => pick(media)}
             pic={media.thumb_url ? <QueueThumb src={media.thumb_url} /> : <NoThumb kind={media.media_kind || ''} />}>
             <b data-middle-truncate="">{mediaName(media)}</b>
-            <span data-truncate-end="">{media.media_kind === 'image' ? 'Imágenes' : 'Videos'}</span>
+            <span data-truncate-end="">{media.media_kind === 'image' ? '图片' : '视频'}</span>
           </MixQueueRow>
         )),
       ])}
@@ -333,7 +333,7 @@ function Side({ item, data, context, media, write, issue, helpers, actions }: {
             dangerouslySetInnerHTML={{ __html: followTitleMarks(single, item) + esc(followTitle(item)) }} />
           {item.url ? (
             <a data-follow-origin="" href={item.url} target="_blank" rel="noreferrer noopener"
-              title="Abrir página de fuente" aria-label="Abrir página de fuente"
+              title="打开来源页面" aria-label="打开来源页面"
               dangerouslySetInnerHTML={{ __html: EXTERNAL_MARK }} />
           ) : null}
         </div>
@@ -344,11 +344,11 @@ function Side({ item, data, context, media, write, issue, helpers, actions }: {
         </div>
         <div data-item-identity="" data-follow-detail-identity="">
           <section data-id-group="creator">
-            <h5 data-id-label="">Creador</h5>
+            <h5 data-id-label="">创作者</h5>
             <div data-id-row="">
               {identity.entityName ? <FollowAuthorLink name={identity.entityName} actions={actions}
                 data-id-cell="creator" data-entity-kind="creator" data-follow-source-avatar=""
-                title={identity.author} aria-label={`ver ${identity.author} 作者página`}>
+                title={identity.author} aria-label={`查看 ${identity.author} 的作者页`}>
                 <span data-id-face="" dangerouslySetInnerHTML={{ __html: identity.avatar }} />
                 <span data-id-name="">{identity.author}</span>
               </FollowAuthorLink> : <span data-id-cell="creator" data-follow-source-avatar="">
@@ -358,19 +358,19 @@ function Side({ item, data, context, media, write, issue, helpers, actions }: {
             </div>
           </section>
           {postedBy || identity.credited ? <div data-follow-detail-credit="">
-            {postedBy ? <span>Publicar者 {postedBy}</span> : null}
+            {postedBy ? <span>发布者 {postedBy}</span> : null}
             {identity.credited ? <span>署名含 {identity.credited}</span> : null}
           </div> : null}
         </div>
         {item.summary ? <Summary key={item.id} text={item.summary} /> : null}
         {mediaIssue ? <p data-follow-media-issue="">{mediaIssue}</p> : null}
-        {/* arriba游没给出媒体时, ProxySolo会回unoNo含缘由Fallo. Con缩略Imagen就换arriba缩略ImagenyDescripciónestees缩略Imagen; 
-            连缩略Imagen也取No到, 才说"este次没取到, másmedioes限流"—别让人对着uno空画布猜.  */}
+        {/* 上游没给出媒体时，代理只会回一个不含缘由的失败。有缩略图就换上缩略图并说明这是缩略图；
+            连缩略图也取不到，才说「这次没取到、多半是限流」——别让人对着一块空画布猜。 */}
         <p data-follow-media-issue="" data-media-load-issue="" hidden={issue !== 'failed'}>
-          媒体no取回: arriba游esteuno次Sin返回contenido, másmedioes站点限流, 过uno阵再Abrir. 
+          媒体未取回：上游这一次没有返回内容，多半是站点限流，过一阵再打开。
         </p>
         <p data-follow-media-issue="" data-media-thumb-fallback="" hidden={issue !== 'thumb'}>
-          OriginalImagenno取回, 先显示缩略Imagen: arriba游拦abajoesteuno次Por favor求. 
+          原图未取回，先显示缩略图：上游拦下了这一次请求。
         </p>
         {item.resource_urls?.length ? (
           <div data-follow-resources="">
@@ -382,42 +382,42 @@ function Side({ item, data, context, media, write, issue, helpers, actions }: {
           </div>
         ) : null}
         <div data-stage-actions="" data-follow-detail-actions="">
-          <button type="button" data-stage-action="later" data-follow-detail-save="" aria-label={saved ? 'Guardado' : 'Guardar en base de datos'}
-            title={saved ? 'Guardado' : 'Guardar en base de datos'} disabled={saved} {...busyAttrs('save')}
+          <button type="button" data-stage-action="later" data-follow-detail-save="" aria-label={saved ? '已保存' : '保存到数据库'}
+            title={saved ? '已保存' : '保存到数据库'} disabled={saved} {...busyAttrs('save')}
             onClick={write.save} dangerouslySetInnerHTML={{ __html: icon(saved ? 'check' : 'bookmark-plus') }} />
           <button type="button" data-stage-action="later" data-follow-detail-want="" aria-pressed={!!write.want}
-            aria-label={write.want ? 'Quitar de deseados' : 'Deseado'} title={write.want ? 'Quitar de deseados' : 'Deseado'}
+            aria-label={write.want ? '取消想要' : '想要'} title={write.want ? '取消想要' : '想要'}
             {...busyAttrs('want')} onClick={write.toggleWant} dangerouslySetInnerHTML={{ __html: icon('star') }} />
-          <button type="button" data-stage-action="seen" data-follow-detail-status="seen" aria-label="Marcar como visto" title="Marcar como visto"
+          <button type="button" data-stage-action="seen" data-follow-detail-status="seen" aria-label="标记已看" title="标记已看"
             aria-pressed={item.status === 'seen'} {...busyAttrs('seen')} onClick={() => write.status('seen')}
             dangerouslySetInnerHTML={{ __html: icon('eye') }} />
-          <button type="button" data-stage-action="dislike" data-follow-detail-status="ignored" aria-label="Ignorar" title="Ignorar"
+          <button type="button" data-stage-action="dislike" data-follow-detail-status="ignored" aria-label="忽略" title="忽略"
             aria-pressed={item.status === 'ignored'} {...busyAttrs('ignored')} onClick={() => write.status('ignored')}
             dangerouslySetInnerHTML={{ __html: icon('eye-off') }} />
           {item.status === 'seen' || item.status === 'ignored' ? (
-            <button type="button" data-follow-detail-status="new" aria-label="Restaurar no vistos" title="Restaurar no vistos"
+            <button type="button" data-follow-detail-status="new" aria-label="恢复未看" title="恢复未看"
               {...busyAttrs('new')} onClick={() => write.status('new')}
               dangerouslySetInnerHTML={{ __html: icon('rotate-ccw') }} />
           ) : null}
           {kind === 'image' && selected ? (
-            <button type="button" data-stage-action="dislike" data-follow-media-hide={selected.index} aria-label="Ocultar esta(s) imagen(es)"
-              title="Ocultar esta(s) imagen(es)" {...busyAttrs(`hide:${selected.index}`)} onClick={() => write.hide(selected.index)}
+            <button type="button" data-stage-action="dislike" data-follow-media-hide={selected.index} aria-label="隐藏这张图"
+              title="隐藏这张图" {...busyAttrs(`hide:${selected.index}`)} onClick={() => write.hide(selected.index)}
               dangerouslySetInnerHTML={{ __html: icon('image-off') }} />
           ) : null}
           {src ? (
             <a data-stage-action-link="" data-follow-download="" href={`${src}${src.includes('?') ? '&' : '?'}download=1`} download=""
-              aria-label="Descargar localmente" title="Descargar localmente" dangerouslySetInnerHTML={{ __html: icon('download') }} />
+              aria-label="下载到本地" title="下载到本地" dangerouslySetInnerHTML={{ __html: icon('download') }} />
           ) : null}
         </div>
-        {/* 被隐藏Imagen退到esteRestaurar带arriba: 缩略Imagen加unoDeshacerClave, 点就回到轮播. No占媒体Cola, 也No进
-            角标数—它们ya经es"NoEnver"ese部分.  */}
+        {/* 被隐藏的图退到这条恢复带上：缩略图加一枚撤销键，点了就回到轮播。不占媒体队列，也不进
+            角标数——它们已经是「不在看」的那部分。 */}
         {item.hidden_media?.length ? (
           <div data-follow-hidden-media="">
-            <span data-follow-hidden-label="">ya隐藏 {item.hidden_media.length} </span>
+            <span data-follow-hidden-label="">已隐藏 {item.hidden_media.length} 张</span>
             <div data-follow-hidden-thumbs="">
               {item.hidden_media.map((hidden) => (
                 <button type="button" key={hidden.index} data-follow-media-restore={hidden.index}
-                  title={`RestaurarMostrar ${hidden.name || ''}`} aria-label={`RestaurarMostrar ${hidden.name || ''}`}
+                  title={`恢复显示 ${hidden.name || ''}`} aria-label={`恢复显示 ${hidden.name || ''}`}
                   {...busyAttrs(`restore:${hidden.index}`)} onClick={() => write.restore(hidden.index)}>
                   {hidden.thumb_url ? <QueueThumb src={hidden.thumb_url} /> : <Glyph name="image-off" />}
                   <i dangerouslySetInnerHTML={{ __html: icon('rotate-ccw') }} />
@@ -440,7 +440,7 @@ function Side({ item, data, context, media, write, issue, helpers, actions }: {
   );
 }
 
-/** 摘要Predeterminado收Enocho行interior, 量出来确实被截才给"展开"; 展开posterior同unoClave收回.  */
+/** 摘要默认收在八行内，量出来确实被截了才给「展开」；展开后同一枚键收回。 */
 function Summary({ text }: { text: string }) {
   const node = useRef<HTMLParagraphElement>(null);
   const [open, setOpen] = useState(false);
@@ -459,7 +459,7 @@ function Summary({ text }: { text: string }) {
       <p ref={node} data-follow-detail-summary="" data-clamped={open ? undefined : ''}>{text}</p>
       {overflows || open ? (
         <Button variant="ghost" size="small" data-follow-summary-toggle="" aria-expanded={open} onClick={() => setOpen(!open)}>
-          {open ? 'Colapsar' : 'Expandir'}
+          {open ? '收起' : '展开'}
         </Button>
       ) : null}
     </>
@@ -467,9 +467,9 @@ function Summary({ text }: { text: string }) {
 }
 
 /* ── 写操作 ──
- * Guardar, Estado, 想要, 隐藏yRestauraresteImagen都En岛dentro发. EstadoyGuardarÉxitoposteriorEn两处缓存dentro换同uno(Detallesestey
- * 关注páginaListadentroeseuno, 卡面Estadouno起变), Nopesado读Lista: 关掉Detalles回ListaNo该再etc.uno网络往返. 
- * 隐藏yRestaurar换掉esCompleto媒体清单, pesado取uno次esteuno, 服务端投影给出Nuevopuede见集合y缩略Imagen.  */
+ * 保存、状态、想要、隐藏与恢复这张图都在岛里发。状态与保存成功后在两处缓存里换同一条（详情这条与
+ * 关注页列表里那一条，卡面状态一起变），不重读列表：关掉详情回列表不该再等一个网络往返。
+ * 隐藏与恢复换掉的是整份媒体清单，重取一次这一条，服务端投影给出新的可见集合与缩略图。 */
 type MediaIssue = '' | 'failed' | 'thumb';
 type MediaIssues = { failed(): void; thumbFallback(): void };
 type DetailWrite = ReturnType<typeof useDetailWrite>;
@@ -489,15 +489,15 @@ function useDetailWrite(item: FollowDetailItem, actions: FollowDetailActions, on
     setFollowItemStatus(id, to);
   };
   const failed = (error: unknown) => {
-    setFailure(requestErrorMessage(error) || 'Operación fallida');
-    actions.failure('Actualizar estado de seguimiento', error);
+    setFailure(requestErrorMessage(error) || '操作失败');
+    actions.failure('更新关注状态', error);
   };
   const statusMutation = useMutation({
     mutationFn: ({ to }: { to: string; was: string }) => apiSend(FOLLOW_STATUS_URL, { item: id, to }),
     onSuccess: (_result, { to, was }) => {
       apply(to);
       setFailure('');
-      // 忽略会esteuno从想要dentro撤掉(两者互斥), 想要eseClave要跟着弹起. 
+      // 忽略会把这一条从想要里撤掉（两者互斥），想要那颗键要跟着弹起。
       if (to === 'ignored') void invalidateWants();
       actions.toast(statusReceipt(to), {
         undo: was !== 'saved' ? async () => { await apiSend(FOLLOW_STATUS_URL, { item: id, to: was }); apply(was) } : undefined,
@@ -508,7 +508,7 @@ function useDetailWrite(item: FollowDetailItem, actions: FollowDetailActions, on
   });
   const saveMutation = useMutation({
     mutationFn: () => apiSend(FOLLOW_SAVE_URL, { item: id }),
-    onSuccess: () => { apply('saved'); setFailure(''); actions.toast('Guardado en la base de datos') },
+    onSuccess: () => { apply('saved'); setFailure(''); actions.toast('已保存到数据库') },
     onError: failed,
     onSettled: () => mark('save', false),
   });
@@ -522,12 +522,12 @@ function useDetailWrite(item: FollowDetailItem, actions: FollowDetailActions, on
       if (data) replaceFollowItem(data.item);
       onMedia(next);
       setFailure('');
-      actions.toast(hidden ? 'YaOcultar esta(s) imagen(es)' : 'YaRestaurarMostrar');
+      actions.toast(hidden ? '已隐藏这张图' : '已恢复显示');
     },
     onError: failed,
     onSettled: (_result, _error, { index, hidden }) => mark(`${hidden ? 'hide' : 'restore'}:${index}`, false),
   });
-  /* 想要按Entrada问uno次服务端: 同unoEn关注Gestionar"想要"página签dentroQuitarposterior, esteClave也要弹起.  */
+  /* 想要按条目问一次服务端：同一条在关注管理的「想要」页签里移除后，这颗键也要弹起。 */
   const wantKey = wantFollowKey(id);
   const wanted = useQuery({ queryKey: wantKey, queryFn: ({ signal }) => fetchFollowWant(id, signal) });
   const want = wanted.data?.want ?? null;
@@ -539,7 +539,7 @@ function useDetailWrite(item: FollowDetailItem, actions: FollowDetailActions, on
     },
     onSuccess: (added) => {
       setFailure('');
-      actions.toast(added ? 'Añadido a deseados' : 'Quitado de deseados');
+      actions.toast(added ? '已加入想要' : '已取消想要');
       void invalidateWants();
     },
     onError: failed,

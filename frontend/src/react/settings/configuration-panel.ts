@@ -1,6 +1,6 @@
-/* Configuraciónpáginauno组根节点: uno竖排, 组interiorEspaciado 24px. Configuraciónpágina按página签切Agrupar时, 根节点同时eseseuno格página签面板
- * (`data-board-group`, `role="tabpanel"`, `aria-labelledby`), 选en procesoeseuno组másuno `ui-board-group-active`: 
- * 同Directorio `configuration-page.css` Solo显示带它eseuno组.  */
+/* 配置页一组的根节点：一条竖排，组内块间距 24px。配置页按页签切分组时，根节点同时是那一格页签面板
+ * （`data-board-group`、`role="tabpanel"`、`aria-labelledby`），选中的那一组多一个 `ui-board-group-active`：
+ * 同目录 `configuration-page.css` 只显示带它的那一组。 */
 import type { ConfigurationPanel } from '../bundle';
 
 const GROUP = 'flex flex-col gap-6';

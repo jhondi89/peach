@@ -8,7 +8,7 @@ import { useLibraryProcessingJob } from './use-library-processing';
 
 const TASK_TOAST = 'peach-library-processing';
 
-/** 路由根持续观察, Tarea浮层No随换páginaDesinstalar; 普通回执使用ConIndependiente目标栈.  */
+/** 路由根持续观察，任务浮层不随换页卸载；普通回执使用有独立目标的栈。 */
 export function LibraryProcessingDock({ toast: receipt }: Pick<LibraryProcessingProps, 'toast'>) {
   const { job, settled } = useLibraryProcessingJob({ toast: receipt, mode: 'notice' });
   const dismissed = useRef('');

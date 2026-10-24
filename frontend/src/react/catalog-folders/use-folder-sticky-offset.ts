@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react';
 
-/** Directorio栏吸顶边界跟随primeropáginaFiltrar浮层实际alto度.  */
+/** 目录栏的吸顶边界跟随首页筛选浮层的实际高度。 */
 export function useFolderStickyOffset(active: boolean) {
   useLayoutEffect(() => {
     if (!active) return;

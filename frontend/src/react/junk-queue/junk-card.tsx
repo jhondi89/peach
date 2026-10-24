@@ -1,13 +1,13 @@
-/* 垃圾Colaen launo卡: arriba面 16:9 Vista previa格(SinVista previa时esTipo字形), abajo面名字, Tipo, 理由y
- * Tamaño, 底部tresetc.anchoClave: AbrirUbicación, 判断(Noes垃圾/pesadoNuevo判断), 移入回收站, 再uno行Estado. 
+/* 垃圾队列里的一张卡：上面 16:9 的预览格（没有预览时是类型字形），下面名字、类型、理由与
+ * 大小，底部三颗等宽的键：打开位置、判断（不是垃圾／重新判断）、移入回收站，再一行状态。
  *
- * 卡片盒复用馆藏Obras卡钩子(`data-media-card`/`data-media-pic`/`data-media-badge`/
- * `data-media-check`): Vista previa格, 来源角标, 选en proceso描边y勾es同uno套, Shift 连选时壳按
- * `[data-media-grid] > [data-media-card]` 数本página卡, 垃圾卡也En其en proceso. 垃圾卡自己几何
- * (描边面, 元Información区, Clave行)写En `./junk-queue.css`, 钩子es `data-junk-*`. 
+ * 卡片盒复用馆藏作品卡的钩子（`data-media-card`／`data-media-pic`／`data-media-badge`／
+ * `data-media-check`）：预览格、来源角标、选中描边与勾是同一套，Shift 连选时壳按
+ * `[data-media-grid] > [data-media-card]` 数本页的卡，垃圾卡也在其中。垃圾卡自己的几何
+ * （描边面、元信息区、键行）写在 `./junk-queue.css`，钩子是 `data-junk-*`。
  *
- * Título照遗Deja层写成转义posterior HTML: `data-middle-truncate` 由en proceso段截断(`src/ui-kit/middle-truncate.ts`)按ancho度
- * 从en proceso间截断, 它直continuar改写esteuno格文字, 交给 React 管话Siguiente次pesado画会 y 它互相覆盖.  */
+ * 标题照遗留层写成转义后的 HTML：`data-middle-truncate` 由中段截断（`src/ui-kit/middle-truncate.ts`）按宽度
+ * 从中间截断，它直接改写这一格的文字，交给 React 管的话下一次重画会和它互相覆盖。 */
 import { memo, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
 import { esc, fmtSize } from '@peach/legacy/core';
 import { spinnerHtml } from '@peach/legacy/ui';
@@ -18,7 +18,7 @@ import {
 } from './junk-queue';
 import { suppressShiftTextSelection } from '../components/row-click';
 
-/** 雪碧Imagenen launo字形, 写法同遗Deja层 `icon()`: 尺寸y描边由样表按Ubicación给.  */
+/** 雪碧图里的一枚字形，写法同遗留层 `icon()`：尺寸与描边由样式表按位置给。 */
 function Icon({ name }: { name: string }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><use href={`#i-${name}`} /></svg>;
 }
@@ -47,7 +47,7 @@ function JunkCardView({ item, view, selected, selectMode, helpers, actions }: Ju
   const preview = kind === 'video' ? `/thumb?id=${item.id}&c=4` : kind === 'image' ? `/photo-thumb?id=${item.id}` : '';
   const openable = kind === 'video' || kind === 'image';
 
-  /* más选y修饰Clave优先: 点En卡arriba任何地方(Clave行除exterior)都esCambiar选en proceso.  */
+  /* 多选与修饰键优先：点在卡上任何地方（键行除外）都是切换选中。 */
   const clickCard = (event: MouseEvent<HTMLElement>) => {
     if ((event.target as HTMLElement).closest('[data-junk-actions]')) return;
     if (!picking(selectMode, event)) return;
@@ -71,7 +71,7 @@ function JunkCardView({ item, view, selected, selectMode, helpers, actions }: Ju
     setStatus('');
     void actions.reveal(item).then(setStatus, () => {}).finally(() => setBusy(''));
   };
-  /* 写 ledger tresClave. Éxitoposterior壳pesado读Cola, este卡随之离开; Fallo由壳报, ClaveRestaurar成puede点.  */
+  /* 写 ledger 的三颗键。成功后壳重读队列，这张卡随之离开；失败由壳报，键恢复成可点。 */
   const operate = (operation: JunkOperation) => (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
@@ -84,9 +84,9 @@ function JunkCardView({ item, view, selected, selectMode, helpers, actions }: Ju
 
   const title = openable
     ? <button type="button" data-junk-title="" data-junk-open="" data-middle-truncate="" title={name}
-      onClick={clickTitle} dangerouslySetInnerHTML={{ __html: esc(name || 'Recurso sin nombre') }} />
+      onClick={clickTitle} dangerouslySetInnerHTML={{ __html: esc(name || '未命名资源') }} />
     : <span data-junk-title="" data-middle-truncate="" title={name}
-      dangerouslySetInnerHTML={{ __html: esc(name || 'Recurso sin nombre') }} />;
+      dangerouslySetInnerHTML={{ __html: esc(name || '未命名资源') }} />;
 
   return (
     <article ref={card} data-media-card="" data-variant="junk" data-junk-card="" data-id={item.id} data-junk-kind={kind}
@@ -106,22 +106,22 @@ function JunkCardView({ item, view, selected, selectMode, helpers, actions }: Ju
         <div data-junk-facts="">
           <span data-junk-who="">{label}</span>
           {item.why ? <span data-junk-why="">{item.why}</span> : null}
-          <span data-junk-size="">{Number(item.size) > 0 ? fmtSize(Number(item.size)) : 'Tamaño desconocido'}</span>
+          <span data-junk-size="">{Number(item.size) > 0 ? fmtSize(Number(item.size)) : '大小未知'}</span>
         </div>
       </div>
       <footer data-junk-actions="">
-        <button type="button" data-junk-action="reveal" title="Mostrar en explorador" aria-label="Mostrar en explorador"
+        <button type="button" data-junk-action="reveal" title="在资源管理器中显示" aria-label="在资源管理器中显示"
           {...busyAttrs('reveal')} onClick={reveal}>
-          {busy === 'reveal' ? <span data-junk-spinner="" dangerouslySetInnerHTML={{ __html: spinnerHtml('Localizando') }} /> : <Icon name="folder-open" />}
-          <span data-junk-label="">AbrirPosición</span>
+          {busy === 'reveal' ? <span data-junk-spinner="" dangerouslySetInnerHTML={{ __html: spinnerHtml('正在定位') }} /> : <Icon name="folder-open" />}
+          <span data-junk-label="">打开位置</span>
         </button>
         <button type="button" data-junk-action={decision.operation} title={decision.label} aria-label={decision.label}
           {...busyAttrs(decision.operation)} onClick={operate(decision.operation)}>
           <Icon name={decision.glyph} /><span data-junk-label="">{decision.label}</span>
         </button>
-        <button type="button" data-junk-action="dispose" title="Mover a papelera" aria-label="Mover a papelera"
+        <button type="button" data-junk-action="dispose" title="移入回收站" aria-label="移入回收站"
           {...busyAttrs('dispose')} onClick={operate('dispose')}>
-          <Icon name="trash" /><span data-junk-label="">Mover a papelera</span>
+          <Icon name="trash" /><span data-junk-label="">移入回收站</span>
         </button>
         <span data-junk-state="" aria-live="polite">{status}</span>
       </footer>
@@ -129,5 +129,5 @@ function JunkCardView({ item, view, selected, selectMode, helpers, actions }: Ju
   );
 }
 
-/** uno屏arribacien, Seleccionar之exteriorpesado画No该连带每uno: 比较都es引用, 壳递进来助手y动作身No变.  */
+/** 一屏上百张，选择之外的重画不该连带每一张：比较的都是引用，壳递进来的助手与动作身份不变。 */
 export const JunkCard = memo(JunkCardView);

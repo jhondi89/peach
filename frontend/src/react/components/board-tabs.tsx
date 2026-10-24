@@ -1,4 +1,4 @@
-/* página面分区 Tabs: en proceso性Introduce充选en proceso态, 支持方向Claveyestrecho屏横向滚动.  */
+/* 页面分区 Tabs：中性填充选中态，支持方向键与窄屏横向滚动。 */
 import { useLayoutEffect, useRef, type KeyboardEvent } from 'react';
 
 import { spriteGlyph } from './sprite-glyph';
@@ -7,12 +7,12 @@ import { useHorizontalScroller } from './use-horizontal-scroller';
 export interface BoardTab<V extends string> {
   value: V;
   label: string;
-  /** 遗Deja雪碧Imagenen la字形名, SoloEn它指向对象(Sello, Agencia, 本地, 订阅源)时给.  */
+  /** 遗留雪碧图里的字形名，只在它指向对象（厂牌、事务所、本地、订阅源）时给。 */
   symbol?: string;
 }
 
-/** página签yAgruparTítuloposterior面挂ese计数徽标(遗Deja层 `.ui-board-tab-count` 同款): 12/16 medio档字pesado, 主文字色
- *  10% 底, Completo降到cinco成, es附注Noes读数. 口径由调用方给, 徽标自己No算数.  */
+/** 页签与分组标题后面挂的那个计数徽标（遗留层 `.ui-board-tab-count` 的同款）：12/16 半档字重、主文字色
+ *  10% 的底，整块降到五成，是附注不是读数。口径由调用方给，徽标自己不算数。 */
 export function TabCount({ value }: { value: number }) {
   return (
     <span data-tab-count=""
@@ -41,7 +41,7 @@ export function BoardTabs<V extends string>(
     const measure = () => {
       const selected = host.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]');
       if (!selected || !selected.offsetWidth) return;
-      /* estrecho屏esteuno排横着滚: 选en procesoeseuno落Enpuede见区exterior时esteuno排挪到它露Todo, Solo动esteuno排, No动página面.  */
+      /* 窄屏这一排横着滚：选中那一枚落在可见区外时把这一排挪到它露全，只动这一排，不动页面。 */
       const left = selected.offsetLeft, right = left + selected.offsetWidth;
       if (left < host.scrollLeft) host.scrollLeft = left;
       else if (right > host.scrollLeft + host.clientWidth) host.scrollLeft = right - host.clientWidth;
@@ -49,8 +49,8 @@ export function BoardTabs<V extends string>(
     measure();
   }, [value]);
 
-  /* izquierdaderechaClaveEn同uno排dentro挪, Home/End 到两头, 挪到哪uno就es选哪uno: esteuno排每uno都esuno
-     地址, 焦点停En哪儿, página面就摆哪儿,  y 侧栏导航同uno说法.  */
+  /* 左右键在同一排里挪，Home／End 到两头，挪到哪一枚就是选了哪一枚：这一排每一枚都是一个
+     地址，焦点停在哪儿、页面就摆哪儿，和侧栏导航同一个说法。 */
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     const at = tabs.findIndex((tab) => tab.value === value);
     const next = event.key === 'ArrowRight' ? at + 1 : event.key === 'ArrowLeft' ? at - 1

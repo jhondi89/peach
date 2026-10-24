@@ -1,21 +1,21 @@
-/* 索引cincopáginay资料página路由元素(ADR-0031"索引páginay资料página同样由路由树按匹配Abrir"): página面组匹配到
- * `INDEX_ROUTES` 或 `ENTITY_ROUTES` 时挂arriba, 从地址读出esteunopáginaes谁, 带什么Parámetro, 再按地址Abrireseunopágina. 
+/* 索引五页与资料页的路由元素（ADR-0031「索引页与资料页同样由路由树按匹配打开」）：页面组匹配到
+ * `INDEX_ROUTES` 或 `ENTITY_ROUTES` 时挂上，从地址读出这一页是谁、带什么参数，再按地址打开那一页。
  *
- * 元素自己什么都No画: página面经 `openManagedRoute` 登记进 `#index`, 由 `ManagedSurface` 画. Abriranterior先报
- * `surfaceChanged` 让壳收起别面, 铺开primeropáginaeseuno侧, 再铺骨架, primero屏取齐eseuno刻骨架yCompletopáginauno起换掉. 
+ * 元素自己什么都不画：页面经 `openManagedRoute` 登记进 `#index`，由 `ManagedSurface` 画。打开前先报
+ * `surfaceChanged` 让壳收起别的面、铺开首页那一侧，再铺骨架，首屏取齐那一刻骨架与整页一起换掉。
  *
- * 什么时候Abrir: 
- * - 索引元素按página面Abrir序号(`useOpenEpoch()`)挂 key: posterior退anterior进yNo认领Saltar a各领uno代次, 就pesado挂, 按地址pesado开; 
- *   páginainterior写地址(Filtrar词, página签)由壳认领, 代次No变, Nopesado挂. 
- * - 资料página元素按类y名字挂 key: 换uno就pesado挂; 同uno领Nuevo代次(posterior退anterior进到另unoFiltrar)Solo地址en laNuevoFiltrar
- *   推给画着eseunopágina, eseunopágina没画着才Completopáginapesado开. 
- * - 壳要求按当anterior地址从头pesado开(`@peach/shell`  `pageOpens` 加uno: 批量写回之posterior, 点开正es画着eseuno)时, 
- *   两元素都Completopáginapesado开. `pageOpens` 还es 0 时壳没Empezar路由, 元素Solo挂着. 
- * - 挂arriba或领代次eseuno刻esteunopágina被Detalles压着(página面组按Fondo匹配): Nopesado开. 关掉Detalles时esteunopágina要es没开过, abajo面也没画着
- *   (posterior退落到压En别处之en laDetalles才挂arriba), 按地址CompletopáginaAbrir; 画着就No动. 
+ * 什么时候打开：
+ * - 索引元素按页面打开序号（`useOpenEpoch()`）挂 key：后退前进与不认领的跳转各领一个代次，就重挂、按地址重开；
+ *   页内写地址（过滤词、页签）由壳认领，代次不变，不重挂。
+ * - 资料页元素按种类与名字挂 key：换一位就重挂；同一位领了新代次（后退前进到另一份筛选）只把地址上的新筛选
+ *   推给画着的那一页，那一页没画着才整页重开。
+ * - 壳要求按当前地址从头重开（`@peach/shell` 的 `pageOpens` 加一：批量写回之后、点开的正是画着的那一位）时，
+ *   两种元素都整页重开。`pageOpens` 还是 0 时壳没开始路由，元素只挂着。
+ * - 挂上或领代次那一刻这一页被详情压着（页面组按背景匹配）：不重开。关掉详情时这一页要是没开过、下面也没画着
+ *   （后退落到压在别处之上的详情才挂上），按地址整页打开；画着就不动。
  *
- * Abrir排进微Tarea: 路由根EnHistorial变化同uno次调用dentroSincronizar提交, Abrir时收起Anteriorpáginay画primero帧都要Sincronizar提交, En提交阶段dentro
- * 做会出 flushSync 告警. 壳订阅Historial早于路由根, 它写Títuloy侧栏eseuno轮排Enanterior面.  */
+ * 打开排进微任务：路由根在历史变化的同一次调用里同步提交，打开时收起上一页与画首帧都要同步提交，在提交阶段里
+ * 做会出 flushSync 告警。壳订阅历史早于路由根，它写标题与侧栏的那一轮排在前面。 */
 import { useContext, useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import { useLocation } from 'react-router';
 
@@ -36,20 +36,20 @@ const readOpens = () => pageOpens;
 const readSelectMode = () => selectMode;
 const indexHost = () => document.getElementById('index');
 
-/** `usePageOpen` 两puede选判断. `shown()`: esteunopágina此刻画着Sin, 没开过元素EnDetalles关掉时据此决定要No要Abrir. 
- *  `onCovered()`: 挂arriba或领代次eseuno刻被Detalles压着时调uno次.  */
+/** `usePageOpen` 的两个可选判断。`shown()`：这一页此刻画着没有，没开过的元素在详情关掉时据此决定要不要打开。
+ *  `onCovered()`：挂上或领代次那一刻被详情压着时调一次。 */
 export interface PageOpenOptions {
   readonly shown?: () => boolean;
   readonly onCovered?: () => void;
 }
 
-/** esteuno格什么时候按地址Abrir. `run(fresh, live)`: `fresh` Como真esCompletopáginaAbrir(挂arriba, 壳要求pesado开), Como假es同uno
- *  元素领Nuevo代次; `live()` En元素卸abajo或又开uno次之posterior回 false. 关注páginayReproducirListapágina元素也用它.  */
+/** 这一格什么时候按地址打开。`run(fresh, live)`：`fresh` 为真是整页打开（挂上、壳要求重开），为假是同一个
+ *  元素领了新代次；`live()` 在元素卸下或又开了一次之后回 false。关注页与播放列表页的元素也用它。 */
 export function usePageOpen(
   epoch: number, run: (fresh: boolean, live: () => boolean) => void, options: PageOpenOptions = {},
 ): void {
   const opens = useSyncExternalStore(subscribeShell, readOpens);
-  /* 每次导航都pesado渲染uno次, Detalles压arriba来, 撤abajo去都ver得见. página面组给esFondoeseuno地址, 压没压着ver真实地址.  */
+  /* 每次导航都重渲染一次，详情压上来、撤下去都看得见。页面组给的是背景那一份地址，压没压着看真实地址。 */
   useLocation();
   const covered = isOverlayPath(peachHistory.navigation.location.pathname);
   const seen = useRef({ mounted: true, epoch: -1, opens: -1, run: 0, opened: false });
@@ -65,7 +65,7 @@ export function usePageOpen(
     queueMicrotask(() => {
       const mark = seen.current;
       if (!mark.mounted) return;
-      /* 读esteuno刻 `pageOpens`: 壳写地址挂arribaesteuno格, 紧continuar着要求pesado开时, 两边合成uno次Abrir.  */
+      /* 读这一刻的 `pageOpens`：壳写地址挂上这一格、紧接着要求重开时，两边合成一次打开。 */
       const stale = mark.epoch !== epoch || mark.opens !== pageOpens;
       let fresh = mark.opens !== pageOpens;
       mark.epoch = epoch;
@@ -98,14 +98,14 @@ async function openIndex(actions: ShellActions, kind: IndexPageKind, search: str
   const params = indexParams(kind, search);
   const layout = peopleLayoutOf(appSettingsStore().value.peopleLayout);
   paintIndexSkeleton(host, params, layout);
-  /* páginainterior换档, 存版, Cerrar sesiónSeleccionar, Avatary去处都En `ShellActions` dentro, 跟着Abrir走SoloCon地址arribaesecuatro项y此刻版, 
-     SeleccionarClave y ConfiguraciónPermisos.  */
+  /* 页内换档、存版式、退出选择、头像与去处都在 `ShellActions` 里，跟着打开走的只有地址上那四项与此刻的版式、
+     选择键和配置权限。 */
   const painted = await openManagedRoute(path,
     { ...params, layout, selectMode, configurable: !!actions.configurable?.() }, { container: host, isCurrent: live });
   if (painted && live()) actions.surfaceShown?.('index', path);
 }
 
-/* `#index` dentro画着, 露着esesteunopágina索引.  */
+/* `#index` 里画着、露着的是这一页索引。 */
 function indexShown(path: string): boolean {
   const host = indexHost();
   const entry = host ? managedEntry(host) : null;
@@ -122,7 +122,7 @@ function IndexOpen({ epoch }: { epoch: number }) {
   return null;
 }
 
-/** 索引cincopágina共用元素. SeleccionarClave归壳: 开关uno变就推给画着Etiquetapágina, página面关掉时随之清空所选.  */
+/** 索引五页共用的元素。选择键归壳：开关一变就推给画着的标签页，页面关掉时随之清空所选。 */
 export function IndexMatch() {
   const epoch = useOpenEpoch();
   const on = useSyncExternalStore(subscribeShell, readSelectMode);
@@ -137,7 +137,7 @@ export function IndexMatch() {
 
 /* ── 资料 ── */
 
-/** 地址en laesteuno: 先Completo段解码再按段切开(名字en la斜杠吃掉剩abajoTodo段, 空段No算), 同壳 `matchPath`.  */
+/** 地址上的这一位：先整段解码再按段切开（名字里的斜杠吃掉剩下全部段，空段不算），同壳的 `matchPath`。 */
 export function entityTarget(pathname: string): { segment: string; kind: string; name: string } | null {
   let path: string;
   try { path = decodeURIComponent(pathname) } catch { return null }
@@ -147,8 +147,8 @@ export function entityTarget(pathname: string): { segment: string; kind: string;
   return kind && name ? { segment, kind, name } : null;
 }
 
-/* 卡片助手y动作就esDirectorioeseuno, 名册uno格取Imagen同索引página, 照片Muromásuno样: 灯箱dentro定本地Imagen片源Archivo. 按壳交进来
-   eseuno组记uno, 每次Abrir交出去es同uno对象.  */
+/* 卡片的助手与动作就是目录那一份，名册一格的取图同索引页，照片墙多一样：灯箱里定位本地图片的源文件。按壳交进来的
+   那一组记一份，每次打开交出去的是同一个对象。 */
 const cards = new WeakMap<ShellActions, EntityPageProps['card']>();
 function entityCard(actions: ShellActions): EntityPageProps['card'] {
   let card = cards.get(actions);
@@ -162,7 +162,7 @@ function entityCard(actions: ShellActions): EntityPageProps['card'] {
   return card;
 }
 
-/* `#index` dentro画着es资料página.  */
+/* `#index` 里画着的是资料页。 */
 function entityShown(): boolean {
   const host = indexHost();
   const entry = host ? managedEntry(host) : null;
@@ -180,13 +180,13 @@ async function openEntity(
   await shell.loading(kind, name, live);
   if (!live()) return;
   writeShell({ entityJavLayout: false });
-  /* 卡exterior面依次es交集y玻璃浮层, Nuevas obras y 正文, 顶到底uno线. cuatro宿主先EnDocumentaciónexterior排bien, primero屏取齐eseuno刻才换掉骨架
-     (`place`): 换掉y画出Completopágina落En同unoTareadentro. 资料卡, 浮层y正文各带uno层 `.peach-react`(React 子树样
-     Rango); Nuevas obraseseuno行es遗Deja层卡片, 宿主No进esteRango.  */
+  /* 卡外面依次是交集条与玻璃浮层、新作和正文，顶到底一条线。四块宿主先在文档外排好，首屏取齐那一刻才换掉骨架
+     （`place`）：换掉与画出整页落在同一个任务里。资料卡、浮层与正文各带一层 `.peach-react`（React 子树的样式
+     范围）；新作那一行是遗留层的卡片，宿主不进这个范围。 */
   const frame = document.createElement('template');
   frame.innerHTML = `<div data-entity-hero><div class="peach-react"></div></div>
     <div data-entity-filter><div class="peach-react"></div></div>
-    <section class="feednew" data-feed-new aria-label="No入BibliotecaNuevas obras" hidden></section>
+    <section class="feednew" data-feed-new aria-label="未入库的新作" hidden></section>
     <div data-entity-body><div class="peach-react"></div></div>`;
   const parts = [...frame.content.childNodes];
   const hero = frame.content.querySelector('[data-entity-hero]')!;
@@ -196,7 +196,7 @@ async function openEntity(
     body: frame.content.querySelector('[data-entity-body]>.peach-react')!,
   };
   const open = shell.props(kind, name, search);
-  /* esteunopáginaesNoes JAV 语境由página面按No.unopáginaObras推出来, 写回壳Estado: 壳Ordenar项, 侧栏取数y卡片版都读它.  */
+  /* 这一页是不是 JAV 语境由页面按第一页作品推出来，写回壳的状态：壳的排序项、侧栏取数与卡片版式都读它。 */
   const props: EntityPageProps = {
     ...open, hosts, card: entityCard(actions), resolvedEntity,
     actions: { ...open.actions, javContext: (on) => { writeShell({ entityJavLayout: !!on }) } },
@@ -243,7 +243,7 @@ function EntityOpen({ target }: { target: { segment: string; kind: string; name:
   return null;
 }
 
-/** 资料páginacincoModo共用元素: 按类y名字挂 key, 同uno换FiltrarNopesado挂.  */
+/** 资料页五个模式共用的元素：按种类与名字挂 key，同一位换筛选不重挂。 */
 export function EntityMatch() {
   const target = entityTarget(useLocation().pathname);
   return target ? <EntityOpen key={JSON.stringify([target.kind, target.name])} target={target} /> : null;

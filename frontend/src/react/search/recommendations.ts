@@ -5,7 +5,7 @@ import type { SuggestCard, SuggestGroup, SuggestItem } from './search';
 
 type Request = (url: string) => Promise<any>;
 
-/** Buscar入口复用馆藏, 口味Recomendado, 关注 y Nuevas obras本机读Interfaz.  */
+/** 搜索入口复用馆藏、口味推荐、关注和新作的本机读接口。 */
 export async function searchRecommendations(request: Request): Promise<SuggestGroup[]> {
   const results = await Promise.allSettled([
     request('/api/items?sort=rand&limit=5'),
@@ -20,7 +20,7 @@ export async function searchRecommendations(request: Request): Promise<SuggestGr
   const follow: FollowPage | null = data[2];
   const releases: Discovery[] = data[3]?.items || [];
   const work = (card: SuggestCard, href?: string): SuggestItem => ({
-    value: String(card.code || card.display_title || card.title || card.name || 'Obra sin nombre'),
+    value: String(card.code || card.display_title || card.title || card.name || '未命名作品'),
     id: card.id, code: card.code, title: String(card.display_title || card.title || ''),
     who: String(card.performers || card.creator || ''), card, href,
   });
@@ -45,7 +45,7 @@ export async function searchRecommendations(request: Request): Promise<SuggestGr
   const authors: SuggestItem[] = (data[4]?.items || []).map((row: { k: string; key: string; entity_id?: number }) => ({
     value: row.k, href: row.entity_id ? `/creators/${row.entity_id}` : `/follow?author=${encodeURIComponent(row.key)}`,
     avatarHtml: authorAvatarHtml(context.sources.filter(source => source.author_key === row.key), row.k),
-    subtitle: 'Siguiendo作者',
+    subtitle: '关注中的作者',
   }));
   const people = new Map<string, SuggestItem>();
   for (const card of jav) {
@@ -54,17 +54,17 @@ export async function searchRecommendations(request: Request): Promise<SuggestGr
       people.set(ref.name, { value: ref.name, entity_id: ref.id, has_image: ref.has_image,
         href: `/performers/${ref.id}`,
         image_version: ref.image_version, avatar_focus: ref.avatar_focus, rep: ref.has_avatar ? ref.rep : null,
-        works: [card], subtitle: 'verObraySuscribirse a nuevas obras',
+        works: [card], subtitle: '查看作品与订阅新作',
       });
     }
   }
   return [
-    { kind: 'performer', label: 'ActrizyNuevas obras', items: [...people.values()].slice(0, 3), href: '/subscriptions?tab=feeds', action: 'Suscribirse a nuevas obras' },
-    { kind: 'author', label: 'Seguir作者', items: authors, href: '/subscriptions?tab=add', action: 'Agregar seguimiento' },
-    { kind: 'asset', label: 'ObraRecomendado', items: library.map(card => work(card)), href: '/', action: 'Todo obra(s)' },
-    { kind: 'jav', label: 'Recomendaciones JAV', items: jav.map(card => work(card, `/assets/${card.asset_id || card.id}`)), href: '/jav?tab=discover', action: 'Descubrir JAV' },
-    { kind: 'post', label: 'SeguirObra', items: posts.slice(0, 5), href: '/follow', action: 'TodoSeguirObra' },
-    { kind: 'photo', label: 'SeguirImágenes', items: photos.slice(0, 5), href: '/follow?media=images', action: 'TodoSeguirImágenes' },
-    { kind: 'release', label: 'Suscribirse a nuevas obras', items: releases.filter(card => card.code).map(card => work({ ...card, sourceWork: true }, `/works/${encodeURIComponent(card.code)}`)), href: '/subscriptions?tab=feeds', action: 'GestionarSuscribirse' },
+    { kind: 'performer', label: '艺人与新作', items: [...people.values()].slice(0, 3), href: '/subscriptions?tab=feeds', action: '订阅新作' },
+    { kind: 'author', label: '关注作者', items: authors, href: '/subscriptions?tab=add', action: '添加关注' },
+    { kind: 'asset', label: '作品推荐', items: library.map(card => work(card)), href: '/', action: '全部作品' },
+    { kind: 'jav', label: 'JAV 推荐', items: jav.map(card => work(card, `/assets/${card.asset_id || card.id}`)), href: '/jav?tab=discover', action: '发现 JAV' },
+    { kind: 'post', label: '关注作品', items: posts.slice(0, 5), href: '/follow', action: '全部关注作品' },
+    { kind: 'photo', label: '关注图片', items: photos.slice(0, 5), href: '/follow?media=images', action: '全部关注图片' },
+    { kind: 'release', label: '订阅新作', items: releases.filter(card => card.code).map(card => work({ ...card, sourceWork: true }, `/works/${encodeURIComponent(card.code)}`)), href: '/subscriptions?tab=feeds', action: '管理订阅' },
   ];
 }

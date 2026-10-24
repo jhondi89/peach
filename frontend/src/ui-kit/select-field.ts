@@ -2,26 +2,26 @@ import { esc, icon } from '../core';
 
 import { wireAnchoredMenu } from './anchored-menu';
 
-/** uno项: 值, 显示文字, puede选站标(雪碧Imagen字形名或interior嵌 PNG  data URL).  */
+/** 一项：值、显示文字，可选的站标（雪碧图字形名或内嵌 PNG 的 data URL）。 */
 export type SelectOption = readonly [value: string, text: string, mark?: string | undefined];
-/** `wireSelectField` continuarbien根元素: `value`, `disabled` 按Original生 select 写法读写.  */
+/** `wireSelectField` 接好的根元素：`value`、`disabled` 按原生 select 的写法读写。 */
 export type SelectField = HTMLElement & { value: string; disabled: boolean };
 
-/* Geist Select: 站interior每unoabajo拉都es它, Sinuno走Explorar dispositivo自带 select Controles. 
+/* Geist Select：站内每一个下拉都是它，没有一个走浏览器自带的 select 控件。
 
-   Original生abajo拉弹出层由操作系统画, No认站interior色板: superficial色Temaabajo它要么跟着系统换成另uno套灰白, 
-   要么Solo能用 `color-scheme` Completo按回profundo色—Configuración面板dentroesesiete此anterior就es被按成profundo色, 
-   白底página面arribasiete黑. 2026-09-04 实测 vercel.com posterior: Completo站SinunoOriginal生abajo拉, 触发Dispositivoes
-   button, 面板es自绘 listbox, 面板底色就espágina面底色(superficial色abajo纯白 --ds-background-100), 
-   行alto 36px, 圆角 6px, 行Relleno 0 8px, Pasar el ratóny选en proceso都es 5% en proceso性Introduce充, 选en proceso项Sin勾. Peach
-   行alto走站interioryaCon --control-h(38px), 面板y定复用 .popmenu  y  wireAnchoredMenu. 
+   原生下拉的弹出层由操作系统画，不认站内色板：浅色主题下它要么跟着系统换成另一套灰白，
+   要么只能用 `color-scheme` 整个按回深色——设置面板里那七个此前就是被按成深色的，
+   白底页面上七块黑。2026-09-04 实测 vercel.com 后台：整站没有一个原生下拉，触发器是
+   button，面板是自绘 listbox，面板底色就是页面底色（浅色下纯白 --ds-background-100），
+   行高 36px、圆角 6px、行内边距 0 8px，悬停与选中都是 5% 中性填充，选中项没有勾。Peach
+   的行高走站内已有的 --control-h（38px），面板与定位复用 .popmenu 和 wireAnchoredMenu。
 
-   选en proceso态SoloConIntroduce充, 行interior也就Sinuno勾要占: 行primero腾出来eseuno格正bien让每uno项站标 y 
-   触发Dispositivodentroeseuno落En同uno列arriba. 面板izquierdaRelleno(.popmenu  6px 加行 6px)按触发Dispositivo
-   12px 凑, 两处Imagen标于es对齐到uno像素. 
+   选中态只有填充，行内也就没有一枚勾要占位：行首腾出来的那一格正好让每一项的站标和
+   触发器里那一枚落在同一列上。面板的左内边距（.popmenu 的 6px 加行的 6px）按触发器的
+   12px 凑，两处图标于是对齐到一像素。
 
-   `value`, `disabled`  y  `change` tres样按Original生 select 写法DejaEn根元素arriba: 调用方读写它跟
-   读写Original生abajo拉uno样, 换掉Soloes画法.  */
+   `value`、`disabled` 和 `change` 三样按原生 select 的写法留在根元素上：调用方读写它跟
+   读写原生下拉一样，换掉的只是画法。 */
 export function selectOptionIconHtml(mark?: string): string {
   return !mark?'':mark.startsWith('data:image/png;base64,')
     ?`<img class="gselectmark" src="${esc(mark)}" alt="" width="16" height="16">`:icon(mark,'gselectmark');
@@ -41,14 +41,14 @@ export function selectFieldHtml(
     <div class="popmenu gselectmenu" role="listbox" aria-label="${esc(label)}" popover="manual" data-select-menu hidden>${rows}</div></div>`;
 }
 
-/** continuararriba selectFieldHtml 画出来unoabajo拉; 返回就es根元素, 带 value / disabled.  */
+/** 接上 selectFieldHtml 画出来的一个下拉；返回的就是根元素，带 value / disabled。 */
 export function wireSelectField(root: HTMLElement): SelectField {
   const trigger=root.querySelector<HTMLButtonElement>('[data-select-trigger]')!;
   const menu=root.querySelector<HTMLElement>('[data-select-menu]')!,label=root.querySelector('[data-select-label]')!;
   const options=()=>[...menu.querySelectorAll<HTMLElement>('[data-select-option]')];
   const current=()=>menu.querySelector<HTMLElement>('[aria-selected="true"]');
-  /* 面板至menos y 触发Dispositivouno样ancho. 菜单es fixed , ancho度No会自己跟着触发Dispositivo走, 而uno比触发Dispositivo
-     还estrecho面板ver着No像同unoControles. este要continuarEn wireAnchoredMenu 之anterior: 它按当anteriorancho度定.  */
+  /* 面板至少和触发器一样宽。菜单是 fixed 的，宽度不会自己跟着触发器走，而一个比触发器
+     还窄的面板看着不像同一个控件。这条要接在 wireAnchoredMenu 之前：它按当前宽度定位。 */
   trigger.addEventListener('click',()=>{
     const width=`${trigger.getBoundingClientRect().width}px`;
     menu.style.minWidth=width;

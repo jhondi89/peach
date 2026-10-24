@@ -1,12 +1,12 @@
-/* 活动página"云Descargar"段: 提交过离线DescargarTarea. 提交En各páginaOriginal地弹层dentro(`cloud-download-dialog.tsx`). 
+/* 活动页「云下载」段：提交过的离线下载任务。提交在各页原地的弹层里（`cloud-download-dialog.tsx`）。
  *
- * Tarea表es `/api/downloads` 自己uno, Noy进 `/api/tasks`: 离线Tarea跑En网盘ese头, uno跑
- * 几pequeño时到几天, esuno带远端编号提交Registro, Noeseste电脑en launo轮批Procesar. 所以esteuno段自己取数, 
- * 自己轮询: ConTarea还En远端跑或etc.着落盘时cinco秒uno次, Todoes终态tresdiez秒uno次. posterior对账节律由
- * 服务端定(提交posterior约diez秒查uno次, 之posterior退避), aquíSoloes它查到Resultado读出来. 
+ * 任务表是 `/api/downloads` 自己的一份，不并进 `/api/tasks`：离线任务跑在网盘那头，一跑
+ * 几小时到几天，是一条带远端编号的提交记录，不是这台电脑上的一轮批处理。所以这一段自己取数、
+ * 自己轮询：有任务还在远端跑或等着落盘时五秒一次，全是终态三十秒一次。后台的对账节律由
+ * 服务端定（提交后约十秒查一次，之后退避），这里只是把它查到的结果读出来。
  *
- * unoTarea都Sin时Completo段No画. FalloTarea给en proceso文Original因; Fallo, Cancelary停滞puede以pesadoNuevo提交, 被判
- * 违规No给(服务端也会拒). 每卡都能Copiar磁力: InterfazInválido时退回手动添加.  */
+ * 一条任务都没有时整段不画。失败的任务给中文原因；失败、取消与停滞的可以重新提交，被判
+ * 违规的不给（服务端也会拒）。每张卡都能复制磁力：接口失效时退回手动添加。 */
 import { useId, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -39,7 +39,7 @@ const taskName = (task: DownloadTask) =>
   task.title || task.display_name || task.remote_name || task.code || `磁力 ${task.info_hash?.slice(0, 8) ?? task.id}`;
 
 export const failureText = (task: DownloadTask) =>
-  task.failure_label ? [task.failure_label, task.failure_detail].filter(Boolean).join(': ') : '';
+  task.failure_label ? [task.failure_label, task.failure_detail].filter(Boolean).join('：') : '';
 
 export function DownloadsPanel() {
   const id = useId();
@@ -52,7 +52,7 @@ export function DownloadsPanel() {
   if (!data?.tasks.length && !query.error) return null;
   return (
     <section aria-labelledby={id} className="flex min-w-0 flex-col gap-3">
-      <h3 id={id} className="text-title-2-semibold text-text-primary">Descarga en la nube</h3>
+      <h3 id={id} className="text-title-2-semibold text-text-primary">云下载</h3>
       {query.error ? <Note tone="error">{errorMessage(query.error)}</Note> : null}
       {data?.tasks.length
         ? <ul aria-live="polite" className="flex min-w-0 flex-col gap-3">
@@ -106,7 +106,7 @@ function TaskCard({ task, writable }: { task: DownloadTask; writable: boolean })
         </div>
         <div className="flex min-w-0 flex-wrap items-center gap-2 text-caption-1-regular text-text-secondary"><SourceLabel source={task.provider} label={task.provider_label} /><span className="break-words">{meta}</span></div>
         {task.state === 'remote_running' && task.progress != null
-          ? <Progress label="远端DescargasProgreso" value={Math.round(task.progress * 100)} max={100} />
+          ? <Progress label="远端下载进度" value={Math.round(task.progress * 100)} max={100} />
           : null}
         {task.ledger_path
           ? <p className="min-w-0 break-all text-caption-1-regular text-text-secondary">{task.ledger_path}</p>
@@ -114,16 +114,16 @@ function TaskCard({ task, writable }: { task: DownloadTask; writable: boolean })
         {action.error ? <ErrorText>{action.error}</ErrorText> : null}
         <div className="flex flex-wrap items-center gap-2 pt-1">
           {writable && task.cancellable
-            ? <Button variant="secondary" size="small" {...busyProps(action.busy === 'cancel')} onClick={cancel}>Cancelar</Button>
+            ? <Button variant="secondary" size="small" {...busyProps(action.busy === 'cancel')} onClick={cancel}>取消</Button>
             : null}
           {writable && task.resubmittable
-            ? <Button variant="secondary" size="small" {...busyProps(action.busy === 'resubmit')} onClick={resubmit}>pesadoNuevoEnviar</Button>
+            ? <Button variant="secondary" size="small" {...busyProps(action.busy === 'resubmit')} onClick={resubmit}>重新提交</Button>
             : null}
           {writable && task.postprocess_retryable
             ? <Button variant="secondary" size="small" {...busyProps(action.busy === 'postprocess')}
-                onClick={retryPostprocess}>ReintentarposteriorProcesar</Button>
+                onClick={retryPostprocess}>重试后处理</Button>
             : null}
-          <Button variant="ghost" size="small" onClick={copy}>{copied ? 'Copiado磁力' : 'Copiar磁力'}</Button>
+          <Button variant="ghost" size="small" onClick={copy}>{copied ? '已复制磁力' : '复制磁力'}</Button>
         </div>
       </div>
       {reason || task.postprocess_detail

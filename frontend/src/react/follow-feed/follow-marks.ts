@@ -1,11 +1,11 @@
-/* 关注página卡片, 两排yDetalles共用署名, Avatar, 来源Imagen标 y Títuloanteriorposteriorese几处字样. 
+/* 关注页卡片、两排与详情共用的署名、头像、来源图标和标题前后那几处字样。
  *
- * 都es拼bien HTML 串, 卡片yDetalles用 `dangerouslySetInnerHTML` 摆进去. Imagen取No到时回落由壳
- * `wireImageFallbacks()` 委托监听按 `data-drop` Serie属性continuar手(`frontend/src/card-art/image-fallback.ts`), 
- * aquíSolo写属性. 创作者名, primero字母yAvatar取舍 y 关注Gestionarpáginaes同uno(`follow-manage.ts`). 
+ * 都是拼好的 HTML 串，卡片与详情用 `dangerouslySetInnerHTML` 摆进去。图取不到时的回落由壳的
+ * `wireImageFallbacks()` 委托监听按 `data-drop` 系列属性接手（`frontend/src/card-art/image-fallback.ts`），
+ * 这里只写属性。创作者名、首字母与头像的取舍和关注管理页是同一份（`follow-manage.ts`）。
  *
- * 站点Imagen标, Versión字样y另见徽章按 `data-follow-*` 认, 样En `follow-feed.css`. 创作者圆框仍挂
- * `favatar`: Imagen坏时回落脚本按 `data-drop-class` 换AnteriorSolo带类名primero字母, continuarNo住属性.  */
+ * 站点图标、版本字样与另见徽章按 `data-follow-*` 认，样式在 `follow-feed.css`。创作者圆框仍挂
+ * `favatar`：图坏了时回落脚本按 `data-drop-class` 换上一枚只带类名的首字母，接不住属性。 */
 import { api, esc, registerEntityLink } from '@peach/legacy/core';
 
 import {
@@ -17,8 +17,8 @@ import type { FollowContext, FollowGroup, FollowIdentity, FollowItem, FollowSour
 const text = (value: unknown): string => (typeof value === 'string' ? value : '');
 const aliasesOf = (context: FollowContext) => context.aliases as readonly AliasGroup[];
 
-/** Con站点Imagen标来源出uno `<img>`, 没登记站es空串. Imagen标独自代表站名时传 `label`, alt y
- *  title 写站名; exterior层ya经带名字传空, ImagenSolo作装饰. 取No到时撤掉, 退回exterior层文字.  */
+/** 有站点图标的来源出一枚 `<img>`，没登记的站是空串。图标独自代表站名时传 `label`，alt 与
+ *  title 写站名；外层已经带名字的传空，图只作装饰。取不到时撤掉，退回外层的文字。 */
 export function sourceIcon(provider: string, label = ''): string {
   const url = sourceIconUrl(provider);
   return url
@@ -26,9 +26,9 @@ export function sourceIcon(provider: string, label = ''): string {
     : '';
 }
 
-/** 站标eseuno格SoloConImagen标, 旁边Sin文字时用它: Filtrar来源Clave, 卡角来源角标, 没缩略Imagen卡面. 
- *  没登记Imagen标站直continuar写站名primero字; Imagen标取No到时由回落脚本换成同unoprimero字, eseuno格No会空着. 
- *  名字由exterior层 `aria-label`/`title` 说, esteen la字yImagen都Solo作装饰.  */
+/** 站标那一格只有图标、旁边没有文字时用它：筛选条的来源键、卡角的来源角标、没缩略图的卡面。
+ *  没登记图标的站直接写站名首字；图标取不到时由回落脚本换成同一枚首字，那一格不会空着。
+ *  名字由外层的 `aria-label`／`title` 说，这里的字与图都只作装饰。 */
 export function sourceMark(provider: string, label = ''): string {
   const initial = esc(authorInitial(label || provider));
   const url = sourceIconUrl(provider);
@@ -37,15 +37,15 @@ export function sourceMark(provider: string, label = ''): string {
     : `<span class="follow-site-initial" aria-hidden="true">${initial}</span>`;
 }
 
-/** TítuloComo空时卡片, DetallesyCola都写esteuno句.  */
-export const FOLLOW_UNTITLED = 'No命名contenido';
+/** 标题为空时卡片、详情与队列都写这一句。 */
+export const FOLLOW_UNTITLED = '未命名内容';
 export const followTitle = (item: { title?: unknown }): string => text(item.title).trim() || FOLLOW_UNTITLED;
 
-/** esteuno版Listadentrouno创作者名字(别名合yposterior统称优先).  */
+/** 这一版列表里一位创作者的名字（别名合并后的统称优先）。 */
 export const followAuthorName = (sources: readonly FollowSource[], context: FollowContext): string =>
   authorName(sources, aliasesOf(context));
 
-/** 作者入口Solo认来源ya经绑定唯uno实体.  */
+/** 作者入口只认来源已经绑定的唯一实体。 */
 export function followAuthorEntity(sources: readonly FollowSource[]): string {
   const bound = sources.filter((source) => source.entity_id && source.entity_name);
   const ids = new Set(bound.map((source) => source.entity_id));
@@ -56,19 +56,19 @@ export function followAuthorEntity(sources: readonly FollowSource[]): string {
   return name;
 }
 
-/** 创作者圆框dentroese段: OficialAvatar优先, 归档站回退, 都取No到时换成primero字母.  */
+/** 创作者圆框里那段：官方头像优先，归档站回退，都取不到时换成首字母。 */
 export function authorAvatarHtml(sources: readonly FollowSource[], name: string): string {
   const { src, fallback } = authorAvatar(sources);
   const initial = authorInitial(name);
-  if (!src) return `<span class="favatar none" title="No hay avatar disponible">${esc(initial)}</span>`;
+  if (!src) return `<span class="favatar none" title="没有可用头像">${esc(initial)}</span>`;
   const fallbacks = fallback ? ` data-fallbacks="${esc(fallback)}"` : '';
   return `<img class="favatar" src="${esc(src)}" alt="" loading="lazy" referrerpolicy="no-referrer" `
     + `data-drop="initial"${fallbacks} data-initial="${esc(initial)}" data-drop-class="favatar none">`;
 }
 
-/** 卡片yDetalles署名. booru 帖子由服务端认出真正Publicar者时(`item.credit`), 名字 y Avatar都换成
- *  Publicar者: 也关注este就用ese来源, 否则Solo出primero字母, No借被关注者Avatar; 被关注者退成uno行
- *  "署名含", DescripciónesteComo什么出现Enaquí. 认No出照常署被关注者.  */
+/** 卡片与详情的署名。booru 帖子由服务端认出真正的发布者时（`item.credit`），名字和头像都换成
+ *  发布者：也关注了这位就用那位的来源，否则只出首字母，不借被关注者的头像；被关注者退成一行
+ *  「署名含」，说明这条为什么出现在这里。认不出的照常署被关注者。 */
 export function followIdentity(item: FollowItem, authorSources: readonly FollowSource[],
   context: FollowContext): FollowIdentity {
   const aliases = aliasesOf(context);
@@ -76,7 +76,7 @@ export function followIdentity(item: FollowItem, authorSources: readonly FollowS
   const poster = credit?.poster;
   if (!poster) {
     const name = authorName(authorSources, aliases);
-    return { author: name || text(item.author) || text(item.source_label) || 'CreadorNo disponible',
+    return { author: name || text(item.author) || text(item.source_label) || '创作者未取得',
       avatar: authorAvatarHtml(authorSources, name), credited: '', entityName: followAuthorEntity(authorSources) };
   }
   const key = (value: unknown) => String(value || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -86,83 +86,83 @@ export function followIdentity(item: FollowItem, authorSources: readonly FollowS
   return { author, avatar: authorAvatarHtml(group, author), credited: credit.credited || '', entityName: followAuthorEntity(group) };
 }
 
-/** 说"esteunoes哪Versión"字样, 排EnTítuloanterior面, y主páginaTítuloen la版次字样同unoControles. WIP 说es
- *  esteuno, Noesesteuno组: 同组还Conuno `[WIP]` 时说成"含 WIP". 声音Versión说es卡面esteuno: 
- *  配音版着色, Sin声版弱化加虚线框.  */
+/** 说「这一条是哪个版本」的字样，排在标题前面，与主页标题里的版次字样同一个控件。WIP 说的是
+ *  这一条，不是这一组：同组还有一条 `[WIP]` 时说成「含 WIP」。声音版本说的是卡面这一条：
+ *  配音版着色、无声版弱化加虚线框。 */
 export function followTitleMarks(group: FollowGroup, shown: FollowItem = group.primary): string {
   const marks: string[] = [];
   const mark = (edition: string, label: string) =>
     `<small class="javedition" data-follow-edition="${edition}">${label}</small>`;
   if (group.primary.variant_kind === 'wip') marks.push(mark('wip', 'WIP'));
-  else if (group.has_wip) marks.push(mark('has-wip', 'Incluye WIP'));
+  else if (group.has_wip) marks.push(mark('has-wip', '含 WIP'));
   const version = text(group.primary.version);
   if (version) marks.push(mark('version', esc(version)));
   const audio = text(shown.audio);
-  const label = audio === 'voiced' ? 'Versión doblada' : audio === 'silent' ? 'Ninguno声版' : '';
+  const label = audio === 'voiced' ? '配音版' : audio === 'silent' ? '无声版' : '';
   if (label) marks.push(mark(audio, label));
   return marks.join('');
 }
 
-/** 另见站用站点Imagen标列出, 站名落EnImagen标 alt y徽章 title arriba; 没登记Imagen标站写站名. 
- *  "另见"相对卡面esteuno(`shown`)说: 卡面换成组dentro别站ese时, 主Entrada站才es另见.  */
+/** 另见的站用站点图标列出，站名落在图标的 alt 与徽章的 title 上；没登记图标的站写站名。
+ *  「另见」相对卡面这一条（`shown`）说：卡面换成组里别的站那条时，主条目的站才是另见。 */
 export function followBadges(group: FollowGroup, shown: FollowItem = group.primary): string {
   const sites = new Map([group.primary, ...group.variants, ...group.duplicates]
     .filter((member) => member.provider !== shown.provider)
     .map((member) => [member.provider, member.provider_label || member.provider] as const));
   if (!sites.size) return '';
   const marks = [...sites].map(([provider, label]) => sourceIcon(provider, label) || `<span>${esc(label)}</span>`).join('');
-  return `<span data-follow-seealso="" title="Ver también ${esc([...sites.values()].join(', '))}"><span data-follow-seealso-label="">Ver también</span> ${marks}</span>`;
+  return `<span data-follow-seealso="" title="另见 ${esc([...sites.values()].join('、'))}"><span data-follow-seealso-label="">另见</span> ${marks}</span>`;
 }
 
-/** "媒体no取得"eseuno句, Sin就es空串.  */
+/** 「媒体未取得」那一句，没有就是空串。 */
 export function followMediaIssue(item: FollowItem, context: FollowContext): string {
   const error = text(item.media_error);
-  if (error) return `MediosNo disponible: ${error}`;
+  if (error) return `媒体未取得：${error}`;
   if (item.media_needs_credential && !context.credentials.has(item.provider)) {
-    return item.playable ? 'ParcialMediosNo disponible: Necesario F95 Iniciar sesión会话解析' : 'MediosNo disponible: Necesario F95 Iniciar sesión会话解析';
+    return item.playable ? '部分媒体未取得：需要 F95 登录会话解析' : '媒体未取得：需要 F95 登录会话解析';
   }
   return '';
 }
 
-/** 晚于此刻uno天以en laPublicarTiempo: 来源时钟或时区写错, 照实标出来, No当作正常最Nuevouno.  */
+/** 晚于此刻一天以上的发布时间：来源的时钟或时区写错了，照实标出来，不当作正常的最新一条。 */
 const FUTURE_SLACK_MS = 24 * 3600_000;
 const isFuture = (iso: string, now: number): boolean => {
   const at = new Date(/[Zz]|[+-]\d\d:?\d\d$/.test(iso) ? iso : `${iso}Z`).getTime();
   return Number.isFinite(at) && at - now > FUTURE_SLACK_MS;
 };
 
-/** PublicarTiempotres段: 精度anterior缀, 按ver人所En时区写Tiempo, 晚于现EnEtiqueta. 来源Solo给相对Tiempo
- *  (`published_precision` Como `approximate`, 如"3 years ago"换算来)时Solo写到日y加"约", 
- *  时分es换算出来, 写出来就es假精度.  */
+/** 发布时间的三段：精度前缀、按看的人所在时区写的时间、晚于现在的标记。来源只给了相对时间
+ *  （`published_precision` 为 `approximate`，如「3 years ago」换算来的）时只写到日并加「约」，
+ *  时分是换算出来的，写出来就是假精度。 */
 function whenParts(item: FollowItem, now: number) {
   const iso = text(item.published_at);
   if (!iso) return null;
   const approximate = item.published_precision === 'approximate';
   const full = localTime(iso);
   return {
-    prefix: approximate ? 'Aprox. ' : '',
+    prefix: approximate ? '约 ' : '',
     full: approximate ? full.slice(0, 10) : full,
-    suffix: isFuture(iso, now) ? ' · Más tarde que ahora' : '',
+    suffix: isFuture(iso, now) ? ' · 晚于现在' : '',
   };
 }
 
-/** PublicarTiempo, 按ver人所En时区显示; 来源没给就明说.  */
+/** 发布时间，按看的人所在时区显示；来源没给就明说。 */
 export function followWhen(item: FollowItem, now = Date.now()): string {
   const parts = whenParts(item, now);
-  return parts ? `${parts.prefix}${parts.full}${parts.suffix}` : 'HoraNo disponible';
+  return parts ? `${parts.prefix}${parts.full}${parts.suffix}` : '时间未取得';
 }
 
-/** ListadentroTiempoSolo写到日: 今年去掉年, 往年Deja着. Pasar el ratón读得到 `followWhen` 完Completo写法.  */
+/** 列表里时间只写到日：今年的去掉年份，往年的留着。悬停读得到 `followWhen` 的完整写法。 */
 export function followCompactWhen(item: FollowItem, now = Date.now()): string {
   const parts = whenParts(item, now);
-  if (!parts) return 'HoraNo disponible';
+  if (!parts) return '时间未取得';
   if (!/^\d{4}-/.test(parts.full)) return `${parts.prefix}${parts.full}${parts.suffix}`;
   const day = parts.full.startsWith(String(new Date(now).getFullYear())) ? parts.full.slice(5, 10) : parts.full.slice(0, 10);
   return `${parts.prefix}${day}${parts.suffix}`;
 }
 
-/* este次会话dentroya经回写过Imagen, `Entrada:媒体序号`. 回写Solo补空缺, 服务端本来就会忽略yaCon尺寸
-   Entrada, pero每次pesado渲染都同uno批再发uno遍es白跑. 攒 800ms uno批, uno批至más 200 .  */
+/* 这次会话里已经回写过的图，`条目:媒体序号`。回写只补空缺，服务端本来就会忽略已有尺寸的
+   条目，但每次重渲染都把同一批再发一遍是白跑。攒 800ms 一批、一批至多 200 条。 */
 interface DimsEntry { item: number; width: number; height: number; media?: number }
 const reported = new Set<string>();
 let queue: DimsEntry[] = [];
@@ -172,13 +172,13 @@ function flushDims() {
   timer = null;
   if (!queue.length) return;
   const entries = queue.splice(0, 200);
-  /* 静predetermina: estees顺手学习, Noes用户动作; Solo读端 409  y 网络抖动都No该弹Sugerencia.  */
+  /* 静默：这是顺手学习，不是用户的动作；只读端 409 和网络抖动都不该弹提示。 */
   (api('/api/follow/image-dims', { method: 'POST', body: JSON.stringify({ entries }) }) as Promise<unknown>)
     .catch(() => {});
   if (queue.length) timer = setTimeout(flushDims, 800);
 }
 
-/** Imagen片视ImagendentroSin尺寸卡面ImagenCargar完, 固Con尺寸回写给它主人(`/api/follow/image-dims`).  */
+/** 图片视图里没有尺寸的卡面图加载完，把固有尺寸回写给它的主人（`/api/follow/image-dims`）。 */
 export function learnFollowDims(item: number, media: number | null, width: number, height: number): void {
   const key = `${item}:${media ?? ''}`;
   if (reported.has(key)) return;

@@ -1,8 +1,8 @@
-/* 资料páginaEn线视Imagen取数yFiltrar(ADR-0096): Estado, 来源, Etiqueta, Ordenary视频/Imagen片, 判定同关注páginaeseunopágina. 
+/* 资料页在线视图的取数与筛选（ADR-0096）：状态、来源、标签、排序与视频／图片，判定同关注页那一页。
  *
- * FiltrarSolo活Enesteunopáginadentro, No进地址栏: 地址en la `media=online` Solo说"EnverEn线". 取数En资料páginaesteuno层, 
- * 浮层(读数, 两排Controles)y正文eseuno格读同uno. 来源yEtiqueta取 `author_facets`: TodoBiblioteca口径 `facets`
- * 摆到uno创作者páginaarriba会混进别人.  */
+ * 筛选只活在这一页里、不进地址栏：地址上的 `media=online` 只说「在看在线」。取数在资料页这一层，
+ * 浮层（读数、两排控件）与正文那一格读同一份。来源与标签取 `author_facets`：全库口径的 `facets`
+ * 摆到一位创作者页上会混进别人的。 */
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { tagLabel } from '@peach/legacy/tags';
@@ -23,9 +23,9 @@ export function useEntityOnline(author: string, active: boolean, wall: {
   photoLayout: string; photoLayouts: readonly SegmentOption[]; imagesOnly: boolean; setImagesOnly(on: boolean): void;
 }) {
   const [view, setView] = useState<FollowView>(() => entityFollowView(author));
-  /* 换uno创作者(同unopágina面实例换名字)时Filtrar从头来.  */
+  /* 换了一位创作者（同一个页面实例换名字）时筛选从头来。 */
   if (view.author !== author) setView(entityFollowView(author));
-  /* 视频还esImagen片: 没点过时按No.uno屏哪uno档组más定abajo来(SoloConImagen片创作者进来就es照片Muro), 定No再随Filtrar跳.  */
+  /* 视频还是图片：没点过时按第一屏哪一档的组多定下来（只有图片的创作者进来就是照片墙），定了不再随筛选跳。 */
   const [selection, setSelection] = useState<{ author: string; media: FollowMedia | '' }>({ author, media: '' });
   if (selection.author !== author) setSelection({ author, media: '' });
   const picked = selection.author === author ? selection.media : '';
@@ -90,9 +90,9 @@ export function useEntityOnline(author: string, active: boolean, wall: {
   };
   return {
     view, media, result, data, visible, context, head, actions, busy: active && pending,
-    /** 读数: esteuno档EstadoabajoEntrada数, 同关注página口径(`counts` 随来源, EtiquetaFiltrar变).  */
+    /** 读数：这一档状态下的条目数，同关注页的口径（`counts` 随来源、标签筛选变）。 */
     total: data ? total : null,
-    /** 正文eseuno格Clave: 换Filtrar换uno骨架. 媒体No进Clave, 换视频/Imagen片Nopesado取.  */
+    /** 正文那一格的键：换筛选换一份骨架。媒体不进键，换视频／图片不重取。 */
     key: query.queryKey.join('\u0000'),
   };
 }

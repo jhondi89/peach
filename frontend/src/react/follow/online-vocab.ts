@@ -1,26 +1,26 @@
-/* 关注来源en la两词表: 来源dentro出现过创作者, yarriba游 booru 给Entrada打Etiqueta. 
+/* 关注来源上的两份词表：来源里出现过的创作者，与上游 booru 给条目打的标签。
  *
- * 两都归关注eseuno侧: 它们数es还没入BibliotecaEn线Actualizar, 点开去也es关注página. 艺人yEtiqueta两
- * 索引páginaSoloes它们摆成名册 y 字母表, 所以Clave建Enaquí, No建En索引模dentro: 哪天关注página也要摆
- * 同uno词表, 读就es同uno `queryKey`. 
+ * 两份都归关注那一侧：它们数的是还没入库的在线更新，点开去的也是关注页。艺人与标签两张
+ * 索引页只是把它们摆成名册和字母表，所以键建在这里，不建在索引模块里：哪天关注页也要摆
+ * 同一份词表，读的就是同一个 `queryKey`。
  *
- * 分página照 `/api/index` 形状: `limit`/`offset` 翻página, Respuesta带 `has_more`.  */
+ * 分页照 `/api/index` 的形状：`limit`／`offset` 翻页，响应带 `has_more`。 */
 import { apiGet } from '../../api';
 
 export const FOLLOW_AUTHORS_URL = '/api/follow/authors';
 export const FOLLOW_TAGS_URL = '/api/follow/tags';
 
-/** 来源en launo创作者. `key` es关注páginaFiltrar用ese套创作者Clave: 建过档es `entity:<id>`, 
- *  还没建档按名字归组. `held_by` esDatosBibliotecadentro同名ese创作者, etc.用户Eneseunopágina认过才绑定.  */
+/** 来源上的一位创作者。`key` 是关注页筛选用的那套创作者键：建过档的是 `entity:<id>`，
+ *  还没建档的按名字归组。`held_by` 是数据库里同名的那位创作者，等用户在那一页认过才绑定。 */
 export interface OnlineAuthor {
   k: string;
   key: string;
   n: number;
   entity_id: number | null;
   held_by: string;
-  /** Oficial主páginaen laAvatar; 取No到时es空串.  */
+  /** 官方主页上的头像；取不到时是空串。 */
   avatar: string;
-  /** 归档站Avatar, 主páginaeseFallo时换它.  */
+  /** 归档站的头像，主页那张失败时换它。 */
   avatar_fallback: string;
   providers: string[];
 }
@@ -31,7 +31,7 @@ export interface OnlineAuthorsPage {
   total?: number;
 }
 
-/** arriba游 booru unoEtiqueta. `cat` esarriba游 tag_type(general/artist/character/copyright/metadata).  */
+/** 上游 booru 的一枚标签。`cat` 是上游的 tag_type（general／artist／character／copyright／metadata）。 */
 export interface OnlineTag {
   k: string;
   n: number;
@@ -53,7 +53,7 @@ export function onlineAuthorsUrl(q: string, limit: number, offset: number): stri
   return `${FOLLOW_AUTHORS_URL}?${params}`;
 }
 
-/** `type` Como `all` 时No带esteuno项: 服务端缺省就esTodoTipo.  */
+/** `type` 为 `all` 时不带这一项：服务端缺省就是全部类型。 */
 export function onlineTagsUrl(q: string, type: string, limit: number, offset: number): string {
   const params = new URLSearchParams({ types: 'all', limit: String(limit), offset: String(offset) });
   if (type && type !== 'all') params.set('type', type);

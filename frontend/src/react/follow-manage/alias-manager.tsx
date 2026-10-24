@@ -1,6 +1,6 @@
-/* 创作者别名: 同uno人En几站arriba用几名字, 合y之posterior按uno创作者归组. 
+/* 创作者别名：同一个人在几个站上用几个名字，合并之后按一位创作者归组。
  *
- * 待合yes带依据候选, 合y永远由人点: 服务端No自行Actualizar a, página面也No替他勾.  */
+ * 待合并是带依据的候选，合并永远由人点：服务端不自行升级，页面也不替他勾。 */
 import { useMemo, useRef, useState } from 'react';
 import { RiCloseLine, RiUserLine } from '@remixicon/react';
 import { useMutation } from '@tanstack/react-query';
@@ -34,7 +34,7 @@ import {
 } from './follow-manage';
 import { AuthorAvatar } from './source-view';
 
-const REMOVE_BODY = (alias: string) => `将QuitarAlias"${alias}", 对应FuenteRestaurarComoIndependienteCreadorGrupo. `;
+const REMOVE_BODY = (alias: string) => `将移除别名「${alias}」，对应来源恢复为独立创作者组。`;
 const suggestionFeatures = tableFeatures({ rowSelectionFeature, rowSortingFeature, rowPaginationFeature,
   sortedRowModel: createSortedRowModel(), paginatedRowModel: createPaginatedRowModel() });
 const savedFeatures = suggestionFeatures;
@@ -47,11 +47,11 @@ export interface AliasManagerProps {
   toast(message: string): void;
 }
 
-/** uno待合y身: uno别名Solopuede能归进unoNormalizar名, 所以用别名本身当Clave.  */
+/** 一条待合并的身份：一个别名只可能归进一个规范名，所以用别名本身当键。 */
 const suggestionKey = (item: AliasSuggestion) => item.alias;
 
 function authorSources(sources: FollowSource[], name: string, canonicalKey?: string) {
-  /* 建过档作者Clavees `entity:<id>`, 别名表arriba记仍es名字Clave: 按名字Clave找No到就按名字认.  */
+  /* 建过档的作者键是 `entity:<id>`，别名表上记的仍是名字键：按名字键找不到就按名字认。 */
   const expected = canonicalKey ? `name:${canonicalKey}` : '';
   const anchor = (expected && sources.find((source) => source.author_key === expected))
     || sources.find((source) => source.author_name === name || source.entity_name === name);
@@ -84,8 +84,8 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
   const [canonical, setCanonical] = useState('');
   const [alias, setAlias] = useState('');
 
-  /* 合y按顺序unouno发: uno次Fallo要报出"还Con几组没合", 而y发发出去话, 说No清
-     停En哪dentro.  */
+  /* 合并按顺序一条一条发：一次失败要报出「还有几组没合」，而并发发出去的话，说不清
+     停在了哪里。 */
   const merge = useMutation({
     mutationFn: async (items: AliasSuggestion[]) => {
       let done = 0;
@@ -93,9 +93,9 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
         try {
           await addAlias(item.canonical, item.alias);
         } catch (cause) {
-          /* medio路断要说清停En哪儿: ya经合en laese几组先落回Listadentro去掉, 再点uno次Solo发剩abajo.  */
+          /* 半路断了要说清停在哪儿：已经合上的那几组先落回列表里去掉，再点一次只发剩下的。 */
           if (done) void reloadFollowManage();
-          throw new Error(`${errorMessage(cause)}(还Con ${items.length - done} GrupoSinFusionar)`);
+          throw new Error(`${errorMessage(cause)}（还有 ${items.length - done} 组没有合并）`);
         }
         done += 1;
       }
@@ -105,7 +105,7 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
       setProblem('');
       setRowSelection({});
       void reloadFollowManage();
-      toast(`YaFusionar ${result.done} GrupoCreadorAlias`);
+      toast(`已合并 ${result.done} 组创作者别名`);
     },
     onError: (cause) => setProblem(errorMessage(cause)),
   });
@@ -117,7 +117,7 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
       setCanonical('');
       setAlias('');
       void reloadFollowManage();
-      toast('GuardadoCreadorAlias');
+      toast('已保存创作者别名');
     },
     onError: (cause) => setProblem(errorMessage(cause)),
   });
@@ -129,27 +129,27 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
       try {
         for (const name of pending) { await removeAlias(name); done += 1; }
       } catch (cause) {
-        throw new Error(`${errorMessage(cause)}(YaQuitar ${done} Alias, 还Con ${pending.length - done} NoQuitar)`);
+        throw new Error(`${errorMessage(cause)}（已移除 ${done} 个别名，还有 ${pending.length - done} 个未移除）`);
       } finally { void reloadFollowManage(); }
     },
-    onSuccess: () => { setProblem(''); setSavedSelection({}); toast('YaQuitarCreadorAlias') },
+    onSuccess: () => { setProblem(''); setSavedSelection({}); toast('已移除创作者别名') },
     onError: (cause) => setProblem(errorMessage(cause)),
   });
 
   const mergeSome = (items: AliasSuggestion[], all: boolean) => {
     if (!items.length) return;
     void confirmModal({
-      title: all ? 'FusionarTodoCreadorAlias' : 'Fusionar所选CreadorAlias',
-      body: `将Fusionar以abajo ${items.length} GrupoCreador: ${items.map(
-        (item) => `"${item.alias}"归入"${item.canonical}"`).join('; ')}. `,
-      confirmLabel: all ? 'FusionarTodoAlias' : 'Fusionar所选Alias',
+      title: all ? '合并全部创作者别名' : '合并所选创作者别名',
+      body: `将合并以下 ${items.length} 组创作者：${items.map(
+        (item) => `「${item.alias}」归入「${item.canonical}」`).join('；')}。`,
+      confirmLabel: all ? '合并全部别名' : '合并所选别名',
       onConfirm: () => merge.mutateAsync(items),
     });
   };
 
   const removeSome = (name: string) => void confirmModal({
-    title: 'QuitarCreadorAlias', body: REMOVE_BODY(name),
-    confirmLabel: 'QuitarCreadorAlias',
+    title: '移除创作者别名', body: REMOVE_BODY(name),
+    confirmLabel: '移除创作者别名',
     onConfirm: () => drop.mutateAsync(name),
   });
   const handlers = useRef({ sources, readOnly, merging: merge.isPending,
@@ -165,30 +165,30 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
         header: (context) => (
           <Checkbox slot={null} isSelected={context.table.getIsAllRowsSelected()}
             isIndeterminate={context.table.getSelectedRowModel().rows.length > 0 && !context.table.getIsAllRowsSelected()}
-            aria-label="Seleccionar todoPendienteFusionarAlias"
+            aria-label="全选待合并别名"
             onChange={(on) => context.table.toggleAllRowsSelected(on)} />
         ),
         cell: (context) => (
           <Checkbox slot={null} isSelected={context.row.getIsSelected()}
-            aria-label={`SeleccionarAlias ${context.row.original.alias}, 归入 ${context.row.original.canonical}`}
+            aria-label={`选择别名 ${context.row.original.alias}，归入 ${context.row.original.canonical}`}
             onChange={(on) => context.row.toggleSelected(on)} />
         ),
       }),
       column.accessor('canonical', {
-        header: 'Normalizar creador',
+        header: '规范创作者',
         cell: (context) => <AuthorIdentity sources={handlers.current.sources} name={context.getValue()} />,
       }),
-      column.accessor('alias', { header: 'Alias de plataforma', cell: (context) => context.getValue() }),
+      column.accessor('alias', { header: '平台别名', cell: (context) => context.getValue() }),
       column.accessor('evidence', {
-        header: 'Criterio',
+        header: '依据',
         cell: (context) => <span className="text-body-2-regular text-text-secondary">{context.getValue()}</span>,
       }),
       column.display({
-        id: 'actions', header: 'Acción',
+        id: 'actions', header: '操作',
         cell: (context) => (
           <Button variant="secondary" size="small" disabled={handlers.current.readOnly}
             {...busyProps(handlers.current.merging)}
-            onClick={() => handlers.current.merge([context.row.original], false)}>Fusionar</Button>
+            onClick={() => handlers.current.merge([context.row.original], false)}>合并</Button>
         ),
       }),
     ]);
@@ -197,21 +197,21 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
     const column = createColumnHelper<typeof savedFeatures, AliasGroup>();
     return column.columns([
       column.display({ id: 'select', header: ({ table }) => (
-        <Checkbox slot={null} aria-label="Seleccionar todoGuardadoAlias" isSelected={table.getIsAllRowsSelected()}
+        <Checkbox slot={null} aria-label="全选已保存别名" isSelected={table.getIsAllRowsSelected()}
           isIndeterminate={table.getIsSomeRowsSelected()} onChange={(on) => table.toggleAllRowsSelected(on)} />
       ), cell: ({ row }) => (
-        <Checkbox slot={null} aria-label={`SeleccionarGuardadoAlias ${row.original.canonical_name}`}
+        <Checkbox slot={null} aria-label={`选择已保存别名 ${row.original.canonical_name}`}
           isSelected={row.getIsSelected()} onChange={(on) => row.toggleSelected(on)} />
       ) }),
       column.accessor('canonical_name', {
-        id: 'canonical', header: 'Normalizar creador',
+        id: 'canonical', header: '规范创作者',
         cell: (context) => (
           <AuthorIdentity sources={handlers.current.sources} name={context.getValue()}
             canonicalKey={context.row.original.canonical_key} />
         ),
       }),
       column.accessor('aliases', {
-        header: 'Alias de plataforma',
+        header: '平台别名',
         sortFn: (a, b) => a.original.aliases.map((item) => item.name).join(' ').localeCompare(b.original.aliases.map((item) => item.name).join(' '), 'zh-CN'),
         cell: (context) => (
           <span className="flex flex-wrap items-center gap-1.5">
@@ -220,7 +220,7 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
                 className="inline-flex items-center gap-1 rounded-md bg-background-secondary-default px-1.5 py-1 text-caption-1-medium text-text-secondary">
                 {item.name}
                 <Button variant="ghost" size="xs" iconOnly leadingIcon={RiCloseLine}
-                  aria-label={`QuitarAlias ${item.name}`} disabled={handlers.current.readOnly}
+                  aria-label={`移除别名 ${item.name}`} disabled={handlers.current.readOnly}
                   {...busyProps(handlers.current.removing)}
                   onClick={() => handlers.current.remove(item.name)} />
               </span>
@@ -257,19 +257,19 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
 
   return (
     <div className={cardClass({ padding: 'none', className: 'flex flex-col gap-4 px-6 py-5 max-sm:px-4' })}>
-      <h3 className="text-title-2-medium text-text-primary">CreadorAlias</h3>
+      <h3 className="text-title-2-medium text-text-primary">创作者别名</h3>
 
       <div className="flex flex-col gap-2">
-        <FieldLabel>ManualAñadirAlias</FieldLabel>
+        <FieldLabel>手动添加别名</FieldLabel>
         <div className="flex flex-wrap items-end gap-2">
-          <Input aria-label="Normalizar nombre de creador" placeholder="Normalizar nombre de creador" value={canonical}
+          <Input aria-label="规范创作者名" placeholder="规范创作者名" value={canonical}
             onChange={setCanonical} isDisabled={readOnly} className="w-56" />
-          <Input aria-label="Alias de plataforma" placeholder="Alias de plataforma" value={alias}
+          <Input aria-label="平台别名" placeholder="平台别名" value={alias}
             onChange={setAlias} isDisabled={readOnly} className="w-56" />
           <Button variant="primary" disabled={readOnly || !canonical.trim() || !alias.trim()}
             {...busyProps(save.isPending)}
             onClick={() => save.mutate({ canonical: canonical.trim(), alias: alias.trim() })}>
-            Guardar别名
+            保存别名
           </Button>
         </div>
       </div>
@@ -279,23 +279,23 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
       {suggestions.length ? (
         <div className="flex flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2">
-            <FieldLabel>PendienteFusionar</FieldLabel>
+            <FieldLabel>待合并</FieldLabel>
             <span className="mr-auto text-body-2-regular text-text-secondary">
-              {`${suggestions.length} Grupo`}
+              {`${suggestions.length} 组`}
             </span>
             <Button variant="primary" size="small" disabled={readOnly} {...busy}
-              onClick={() => mergeSome(suggestions, true)}>{`TodoFusionar(${suggestions.length})`}</Button>
-            <DataTableSort label="PendienteFusionarCreadorAlias" sorting={sorting}
-              options={[{ id: 'canonical', label: 'Normalizar creador' }, { id: 'alias', label: 'Alias de plataforma' }, { id: 'evidence', label: 'Criterio' }]}
+              onClick={() => mergeSome(suggestions, true)}>{`全部合并（${suggestions.length}）`}</Button>
+            <DataTableSort label="待合并创作者别名" sorting={sorting}
+              options={[{ id: 'canonical', label: '规范创作者' }, { id: 'alias', label: '平台别名' }, { id: 'evidence', label: '依据' }]}
               onChange={(next) => { setSorting(next); setPagination((now) => ({ ...now, pageIndex: 0 })); }} />
           </div>
-          <SelectionDock label="PendienteFusionarAliasOperación en lote" visible={chosen.length > 0} count={`Ya选 ${chosen.length} Grupo`}>
+          <SelectionDock label="待合并别名批量操作" visible={chosen.length > 0} count={`已选 ${chosen.length} 组`}>
             <Button variant="secondary" size="small" disabled={readOnly} {...busy}
-              onClick={() => mergeSome(chosen, false)}>{`Fusionar所选(${chosen.length})`}</Button>
-            <Button variant="ghost" size="small" onClick={() => setRowSelection({})}>Deseleccionar</Button>
+              onClick={() => mergeSome(chosen, false)}>{`合并所选（${chosen.length}）`}</Button>
+            <Button variant="ghost" size="small" onClick={() => setRowSelection({})}>取消选择</Button>
           </SelectionDock>
           <DataTableFrame follow>
-            <Table aria-label="PendienteFusionarCreadorAlias" size="sm"
+            <Table aria-label="待合并创作者别名" size="sm"
               sortDescriptor={sorting[0] ? { column: sorting[0].id, direction: sorting[0].desc ? 'descending' : 'ascending' } : undefined}
               onSortChange={(sort) => suggestionTable.getColumn(String(sort.column))?.toggleSorting(sort.direction === 'descending')}>
             <TableHeader>
@@ -319,32 +319,32 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
             </TableBody>
             </Table>
           </DataTableFrame>
-          <DataTableFooter label="PendienteFusionarCreadorAlias" unit="Grupo" total={suggestions.length} pagination={suggestionPage} onChange={setPagination} />
+          <DataTableFooter label="待合并创作者别名" unit="组" total={suggestions.length} pagination={suggestionPage} onChange={setPagination} />
         </div>
       ) : null}
 
       <div className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-2">
-          <FieldLabel>GuardadoAlias</FieldLabel>
-          <span className="mr-auto text-body-2-regular text-text-secondary">{`${groups.length} Grupo`}</span>
-          <DataTableSort label="GuardadoCreadorAlias" sorting={savedSorting}
-            options={[{ id: 'canonical', label: 'Normalizar creador' }, { id: 'aliases', label: 'Alias de plataforma' }]}
+          <FieldLabel>已保存别名</FieldLabel>
+          <span className="mr-auto text-body-2-regular text-text-secondary">{`${groups.length} 组`}</span>
+          <DataTableSort label="已保存创作者别名" sorting={savedSorting}
+            options={[{ id: 'canonical', label: '规范创作者' }, { id: 'aliases', label: '平台别名' }]}
             onChange={(next) => { setSavedSorting(next); setSavedPagination((now) => ({ ...now, pageIndex: 0 })); }} />
         </div>
-        <SelectionDock label="GuardadoAliasOperación en lote" visible={savedNames.length > 0} count={`Ya选 ${savedNames.length} Alias`}>
+        <SelectionDock label="已保存别名批量操作" visible={savedNames.length > 0} count={`已选 ${savedNames.length} 个别名`}>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(drop.isPending)}
-            onClick={() => void confirmModal({ title: 'Quitar所选CreadorAlias',
-              body: `将Quitar以abajo ${savedNames.length} Alias, 对应FuenteRestaurarComoIndependienteCreadorGrupo. `,
+            onClick={() => void confirmModal({ title: '移除所选创作者别名',
+              body: `将移除以下 ${savedNames.length} 个别名，对应来源恢复为独立创作者组。`,
               items: savedNames,
-              confirmLabel: 'Quitar所选Alias', onConfirm: () => drop.mutateAsync(savedNames) })}>
-            {`Quitar所选Alias(${savedNames.length})`}
+              confirmLabel: '移除所选别名', onConfirm: () => drop.mutateAsync(savedNames) })}>
+            {`移除所选别名（${savedNames.length}）`}
           </Button>
-          <Button variant="ghost" size="small" onClick={() => setSavedSelection({})}>Deseleccionar</Button>
+          <Button variant="ghost" size="small" onClick={() => setSavedSelection({})}>取消选择</Button>
         </SelectionDock>
         {groups.length ? (
           <>
           <DataTableFrame follow>
-            <Table aria-label="GuardadoCreadorAlias" size="sm"
+            <Table aria-label="已保存创作者别名" size="sm"
               sortDescriptor={savedSorting[0] ? { column: savedSorting[0].id, direction: savedSorting[0].desc ? 'descending' : 'ascending' } : undefined}
               onSortChange={(sort) => savedTable.getColumn(String(sort.column))?.toggleSorting(sort.direction === 'descending')}>
             <TableHeader>
@@ -368,11 +368,11 @@ export function AliasManager({ groups, suggestions, sources = [], readOnly, toas
             </TableBody>
             </Table>
           </DataTableFrame>
-          <DataTableFooter label="GuardadoCreadorAlias" unit="Grupo" total={groups.length} pagination={savedPage} onChange={setSavedPagination} />
+          <DataTableFooter label="已保存创作者别名" unit="组" total={groups.length} pagination={savedPage} onChange={setSavedPagination} />
           </>
         ) : (
-          <EmptyState shell="plain" icon={RiUserLine} title="Aún no hayGuardarCreadorAlias">
-            Introduce写Normalizar创作者名 y Plataforma别名以添加. 
+          <EmptyState shell="plain" icon={RiUserLine} title="还没有保存创作者别名">
+            填写规范创作者名和平台别名以添加。
           </EmptyState>
         )}
       </div>

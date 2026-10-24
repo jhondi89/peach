@@ -14,7 +14,7 @@ export interface FollowDetailActionPorts {
   drawer(drawer: Pick<FollowDrawer, 'tags'>): void;
 }
 
-/** 舞Abrir, 代次yDesinstalar仍由舞拥Con者持Con; 域Solo决定Filtrary返回地址.  */
+/** 舞台的打开、代次与卸载仍由舞台拥有者持有；域只决定筛选与返回地址。 */
 export function createFollowDetailActions(ports: FollowDetailActionPorts,
   receipts: Pick<FollowDetailActions, 'toast' | 'failure'>): Omit<FollowDetailActions, 'mountPlayer'> {
   return {

@@ -1,4 +1,4 @@
-/* 挂载来源y服务端共用 resources/media-sources.json.  */
+/* 挂载来源与服务端共用 resources/media-sources.json。 */
 import registry from '../../../resources/media-sources.json' with { type: 'json' };
 
 export type SourceCost = 'free' | 'metered';

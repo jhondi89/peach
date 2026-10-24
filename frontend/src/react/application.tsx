@@ -1,4 +1,4 @@
-/** 主界面根: 同uno模Imagen y 路由树, 资源跟随根生命周期.  */
+/** 主界面根：同一模块图和路由树，资源跟随根的生命周期。 */
 import { useLayoutEffect, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { flushSync } from 'react-dom';
@@ -23,7 +23,7 @@ function finalizeResources(current: ApplicationResources): void {
   current.effects.dispose();
 }
 
-/** StrictMode Sincronizarpesado取沿用资源; 最终DesinstalarEn微TareadentroUnificadoLimpiar.  */
+/** StrictMode 的同步重取沿用资源；最终卸载在微任务里统一清理。 */
 function acquireResources(): ApplicationResources {
   if (!resources) {
     const effects = renewApplicationEffects();

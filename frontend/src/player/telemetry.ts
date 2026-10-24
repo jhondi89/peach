@@ -1,5 +1,5 @@
-/* 观verarriba报: Obras走 `/api/activity`, 关注Entrada走 `/api/follow/activity`, 都esdiez秒uno次加Pausar, Terminar
- * y换源时各冲uno次.  */
+/* 观看上报：作品走 `/api/activity`，关注条目走 `/api/follow/activity`，都是十秒一次加暂停、结束
+ * 与换源时各冲一次。 */
 import { api, realDuration } from '@peach/legacy/core';
 
 import type { PlayerItem } from './types';
@@ -27,25 +27,25 @@ function lifecycle(video: HTMLVideoElement, flush: (ended: boolean) => void, sto
 }
 
 export interface TelemetryOptions {
-  /** 侧栏"离开Ubicación"esetres节点(Progreso, 刻度ycien分比); No给就No画.  */
+  /** 侧栏「离开位置」那条的三个节点（进度条、刻度与百分比）；不给就不画。 */
   watched?: string;
   mark?: string;
   ratio?: string;
-  /** 放完之posterior要做事(InmersivoModocontinuar着放Siguiente).  */
+  /** 放完之后要做的事（沉浸模式接着放下一条）。 */
   onEnded?: () => void;
 }
 
-/** Obras观verarriba报. 
+/** 作品的观看上报。
  *
- *  同uno -1 哨兵: `it.duration||v.duration||0` 对 -1 求值仍es -1, 通过真值判断, 于es
- *  currentTime/-1 得到负Relación, 面板arriba就es"离开Ubicación -3320%". posterior端 w_activity Con `dur > 0` 守卫, 
- *  脏RelaciónNo会进DatosBiblioteca; 坏Soloes显示. 
+ *  同一个 -1 哨兵：`it.duration||v.duration||0` 对 -1 求值仍是 -1，通过了真值判断，于是
+ *  currentTime/-1 得到负比例，面板上就是「离开位置 -3320%」。后端 w_activity 有 `dur > 0` 守卫，
+ *  脏比例不会进数据库；坏的只是显示。
  *
- *  diez秒uno次arriba报SoloConuno定时Dispositivo. onplay 每次Nuevo起uno而SoloCon onpause 清话, "Reproducir→拖动→Reproducir"
- *  este类No经过 pause 序列会定时Dispositivo叠起来; 更要紧es离开Detalles时既No pause 也No ended, 
- *  setInterval 连着ya被销毁 video uno直跑, 每diez秒往 /api/activity 打uno发. 所以 `emptied` 收尾, 
- *  拆ReproducirDispositivo时 `disposePlayer` Sincronizar冲掉最posterioruno段再Completo组摘掉. ProcesarDispositivo挂En `on*`
- *  属性arriba, ReproducirDispositivo从舞搬进pequeño窗时表No停.  */
+ *  十秒一次的上报只有一个定时器。onplay 每次新起一个而只有 onpause 清的话，「播放→拖动→播放」
+ *  这类不经过 pause 的序列会把定时器叠起来；更要紧的是离开详情时既不 pause 也不 ended，
+ *  setInterval 连着已被销毁的 video 一直跑，每十秒往 /api/activity 打一发。所以 `emptied` 收尾，
+ *  拆播放器时 `disposePlayer` 同步冲掉最后一段再整组摘掉。处理器挂在 `on*`
+ *  属性上，播放器从舞台搬进小窗时表不停。 */
 export function wireTelemetry(item: PlayerItem, video: HTMLVideoElement | null, options: TelemetryOptions = {}): void {
   if (!video) return;
   let last = 0, acc = 0, seeks = 0, timer: ReturnType<typeof setInterval> | null = null;
@@ -63,7 +63,7 @@ export function wireTelemetry(item: PlayerItem, video: HTMLVideoElement | null, 
     if (!acc && !ended && !seeks) return;
     (api('/api/activity', { method: 'POST', keepalive: true, body: JSON.stringify(
       { id: item.id, position: video.currentTime, duration, delta: acc, ended: !!ended, seeks }) }) as Promise<{ real_ratio?: number | null } | null>)
-      .then((result) => { // 回Introduce面板真实观ver率
+      .then((result) => { // 回填面板的真实观看率
         const real = document.getElementById('realTxt');
         if (real && result && result.real_ratio != null) {
           const percent = Math.min(result.real_ratio, 1) * 100;
@@ -82,7 +82,7 @@ export function wireTelemetry(item: PlayerItem, video: HTMLVideoElement | null, 
   paint();
 }
 
-/** 关注Entrada观verarriba报; No.uno次开播另记uno次Reproducir, Estado随回执改写EnEntradaarriba.  */
+/** 关注条目的观看上报；第一次开播另记一次播放，状态随回执改写在条目上。 */
 export function wireFollowTelemetry(item: PlayerItem & { status?: string | undefined }, video: HTMLVideoElement): void {
   let last = 0, acc = 0, started = false, timer: ReturnType<typeof setInterval> | null = null;
   const flush = (ended: boolean) => {

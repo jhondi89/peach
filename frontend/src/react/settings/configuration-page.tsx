@@ -1,10 +1,10 @@
-/* Configuraciónpágina(`/settings/library`): este运行 Peach 电脑arribaese些要"GuardarConfiguración"más字段表单. 
- * 每分区各占uno格página签, uno次Solo摆uno组; 本机ConfiguraciónPermisosyDatosBiblioteca写入Permisos由服务端分别判定. 
- * Configuración弹层en la"Peach Configuración"入口指到aquí. 
+/* 配置页（`/settings/library`）：这台运行 Peach 的电脑上那些要「保存配置」的多字段表单。
+ * 每个分区各占一格页签，一次只摆一组；本机配置权限与数据库写入权限由服务端分别判定。
+ * 设置弹层里的「Peach 配置」入口指到这里。
  *
- * `.ui-configpage` No.uno层: 最anterior面espágina签(`.ui-board-local-nav`), posterior面每组uno `h2.ui-configgroup` pequeñoTítulo
- * 紧跟esteuno组根节点, 根节点就eseseuno格página签面板. pequeñoTítuloEn样dentroNo显示, 它字ya经写Enpágina签arriba; 
- * Sincontenido组连Títuloypágina签uno起省略. página签No.uno帧就En,  y Completopágina同uno次提交画出来.  */
+ * `.ui-configpage` 的第一层：最前面是页签条（`.ui-board-local-nav`），后面每组一个 `h2.ui-configgroup` 小标题
+ * 紧跟这一组的根节点，根节点就是那一格页签面板。小标题在样式里不显示，它的字已经写在页签上；
+ * 没有内容的组连标题与页签一起省略。页签条第一帧就在，和整页同一次提交画出来。 */
 import { useQuery } from '@tanstack/react-query';
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactElement } from 'react';
 import { peachHistory, shellNavigate, settingsPath } from '@peach/history';
@@ -30,8 +30,8 @@ export function ConfigurationPage({ receipt, reopenTutorial, section = '', diagn
   if (!data) {
     return (
       <div className="ui-configpage">
-        <Note tone="error" title="Configuración读取Fallido">
-          {config.error ? errorMessage(config.error) : 'No disponibleConfiguración, Por favorActualizarpágina面Reintentar. '}
+        <Note tone="error" title="配置读取失败">
+          {config.error ? errorMessage(config.error) : '未取得配置，请刷新页面重试。'}
         </Note>
       </div>
     );
@@ -41,11 +41,11 @@ export function ConfigurationPage({ receipt, reopenTutorial, section = '', diagn
 
 interface Group { title: string; body(panel: ConfigurationPanel): ReactElement }
 
-/* página签y面板 id anterior缀按página签计数: 每画出unoNuevopágina签领uno号.  */
+/* 页签与面板的 id 前缀按页签条计数：每画出一条新的页签条领一个号。 */
 let tabSequence = 0;
 
-/* página签esuno tablist, 方向ClaveEnCompleto排dentro走, primero尾相continuar, Home/End 到两头, 挪到哪uno格就选en proceso哪uno格, 焦点跟过去. 
-   分区地址y选en proceso项Sincronizar, 表单保持挂载.  */
+/* 页签条是一个 tablist，方向键在整排里走、首尾相接，Home／End 到两头，挪到哪一格就选中哪一格、焦点跟过去。
+   分区地址与选中项同步，表单保持挂载。 */
 function ConfigurationGroups(
   { data, receipt, reopenTutorial, section, diagnostics }: Required<ConfigurationProps> & { data: ConfigurationData; diagnostics?: ReactElement },
 ) {
@@ -81,23 +81,23 @@ function ConfigurationGroups(
   const network = Boolean(data.peach_proxy || data.access || data.tunnel || (data.editable && data.port_editable !== false));
   const downloads = data.downloads;
   const groups: Group[] = [
-    { title: 'Biblioteca y catalogación', body: (panel) => <div {...groupRoot(panel)}>
+    { title: '媒体库与入库', body: (panel) => <div {...groupRoot(panel)}>
       <MediaSettings {...group} /><MediaProcessingSettings receipt={receipt} />
     </div> },
-    { title: 'Fuentes y suscripciones', body: (panel) => <SourceSettings {...group} panel={panel} /> },
+    { title: '来源与订阅', body: (panel) => <SourceSettings {...group} panel={panel} /> },
     ...(downloads ? [{
-      title: 'Canal de descarga',
+      title: '下载渠道',
       body: (panel: ConfigurationPanel) => <DownloadGroup initial={downloads} receipt={receipt} panel={panel} />,
     }] : []),
-    ...(network ? [{ title: 'Red y acceso', body: (panel: ConfigurationPanel) => <NetworkSettings {...group} panel={panel} /> }] : []),
+    ...(network ? [{ title: '网络与访问', body: (panel: ConfigurationPanel) => <NetworkSettings {...group} panel={panel} /> }] : []),
     {
-      title: 'App y mantenimiento',
+      title: '应用与维护',
       body: (panel) => <div {...groupRoot(panel)}>
         <GeneralSettings {...group} />
         <MaintenanceSettings {...group} reopenTutorial={reopenTutorial} />
       </div>,
     },
-    { title: 'Diagnóstico del sistema', body: panel => <div {...groupRoot(panel)}>{panel.active ? diagnostics : null}</div> },
+    { title: '系统诊断', body: panel => <div {...groupRoot(panel)}>{panel.active ? diagnostics : null}</div> },
   ];
   const at = Math.max(0, groups.findIndex((item) => item.title === chosen));
   const move = (event: KeyboardEvent<HTMLButtonElement>, from: number) => {
@@ -114,7 +114,7 @@ function ConfigurationGroups(
   };
   return (
     <div ref={workspace} className="ui-configpage">
-      <div className="ui-board-local-nav" role="tablist" aria-label="Partición de configuración" data-section-nav="" data-section-items=""
+      <div className="ui-board-local-nav" role="tablist" aria-label="配置分区" data-section-nav="" data-section-items=""
         aria-orientation={narrow ? 'horizontal' : 'vertical'}>
         {groups.map(({ title }, i) => (
           <button key={title} ref={(node) => { buttons.current[i] = node }} type="button" role="tab"

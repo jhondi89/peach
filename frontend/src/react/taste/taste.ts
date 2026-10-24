@@ -1,14 +1,14 @@
-/* 口味páginaDatos契约, 轮询节律y纯折算. 
+/* 口味页的数据契约、轮询节律与纯折算。
  *
- * cuatro端点En `frontend/src` dentro都SoloEnaquí声明uno次(`tests/test_frontend_build.py` 盯着). 
+ * 四个端点在 `frontend/src` 里都只在这里声明一次（`tests/test_frontend_build.py` 盯着）。
  *
- * Clave带着AnálisisRango: `['taste', window]`. 同uno机Dispositivosiete天 y TodoTiempoes两真相, 合成unoClave
- * 话切Rango就esAnterior直continuar覆盖掉, 切回来还得再问uno遍. RangoCambiar时用
- * `keepPreviousData` Deja住Anterior, No退回骨架—esteuno屏结构No变, SoloCon数En变. 
- * No给 `staleTime`: 服务端ya经按 `taste:{window}` 缓存过uno层, anterior端再压uno层就会出现
- * "刚Importar完, página面还esImportaranterioreseuno". 
+ * 键带着分析范围：`['taste', window]`。同一台机器的七天和全部时间是两份真相，合成一个键
+ * 的话切范围就是把上一份直接覆盖掉，切回来还得再问一遍。范围切换时用
+ * `keepPreviousData` 留住上一份，不退回骨架——这一屏的结构不变，只有数在变。
+ * 不给 `staleTime`：服务端已经按 `taste:{window}` 缓存过一层，前端再压一层就会出现
+ * 「刚导入完，页面还是导入前那一份」。
  *
- * ActualizarTareaes另uno真相, 节律由posterior推进, 所以单独unoClave(`['taste','refresh']`).  */
+ * 刷新任务是另一份真相，节律由后台推进，所以单独一个键（`['taste','refresh']`）。 */
 import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
 import { clipGraphemes } from '@peach/legacy/core';
 
@@ -23,20 +23,20 @@ export const TASTE_REFRESH_URL = '/api/taste/refresh';
 export const TASTE_IMPORT_URL = '/api/taste/import';
 export const TASTE_SOURCE_URL = '/api/taste/source';
 
-/** uno dashboard Clave, 带AnálisisRango.  */
+/** 一份 dashboard 的键，带分析范围。 */
 export const tasteKey = (window: string) => ['taste', window] as const;
-/** 读取ExplorarRegistroeseuno趟posteriorTarea.  */
+/** 读取浏览记录那一趟后台任务。 */
 export const TASTE_REFRESH_KEY = ['taste', 'refresh'] as const;
 
-/** AnálisisRango. 值就es `/api/taste?window=` 收ese几.  */
+/** 分析范围。值就是 `/api/taste?window=` 收的那几个。 */
 export const TASTE_WINDOWS = [
-  ['7d', 'Últimos 7 días'], ['30d', 'Últimos 30 días'], ['90d', 'Últimos 90 días'],
-  ['365d', 'RecienteunoAño'], ['all', 'Todo el tiempo'],
+  ['7d', '最近 7 天'], ['30d', '最近 30 天'], ['90d', '最近 90 天'],
+  ['365d', '最近一年'], ['all', '全部时间'],
 ] as const;
 
 export const DEFAULT_WINDOW = 'all';
 
-/** 排行en launo行. `entity_id` y `has_avatar` 决定画哪uno级Imagen, `peach_items` 决定点No点得动.  */
+/** 排行里的一行。`entity_id` 与 `has_avatar` 决定画哪一级图，`peach_items` 决定点不点得动。 */
 export interface RankRow {
   name: string;
   score?: number;
@@ -55,7 +55,7 @@ export interface RankRow {
   source_domain?: string | null;
 }
 
-/** 按维度聚合名次. 名字y `taste_history.build_taste_dashboard` 对齐.  */
+/** 按维度聚合的名次。名字与 `taste_history.build_taste_dashboard` 对齐。 */
 export interface TasteRankings {
   browser_tags?: RankRow[];
   browser_creators?: RankRow[];
@@ -85,7 +85,7 @@ export interface TasteCoverage {
   tagged?: number; identified?: number; untagged?: number; unidentified?: number;
 }
 
-/** uno设备unoExplorarRegistro. `source_key` es 64 diezseis进制, Quitar时交回去就es它.  */
+/** 一台设备的一份浏览记录。`source_key` 是 64 位十六进制，移除时交回去的就是它。 */
 export interface TasteSource {
   source_key: string; browser: string; profile: string; host: string; visits?: number; bookmarks?: number;
 }
@@ -100,7 +100,7 @@ export interface TasteAnalysis {
 
 export interface CreatorFlow { source: string; target: string; value: number }
 
-/** `/api/taste` Respuesta. 字段y `web_stats.q_taste` 对齐.  */
+/** `/api/taste` 的响应。字段与 `web_stats.q_taste` 对齐。 */
 export interface TasteData {
   browsers?: BrowserSource[];
   summary?: TasteSummary;
@@ -129,7 +129,7 @@ export interface BrowserSource {
 export const configureTasteBrowser = (body: { operation: 'add' | 'disable' | 'enable' | 'delete_browser'; name?: string; path?: string; id?: string }, window: string) =>
   apiSend<{ dashboard: TasteData }>(TASTE_SOURCE_URL, { ...body, window });
 
-/** 读取ExplorarRegistroeseuno趟rápido照. `status` uno次都没跑过es `idle`.  */
+/** 读取浏览记录那一趟的快照。`status` 一次都没跑过是 `idle`。 */
 export interface TasteJob {
   status: string;
   job_id?: string;
@@ -147,26 +147,26 @@ export const fetchTaste = (window: string, signal?: AbortSignal) =>
 export const fetchTasteJob = (signal?: AbortSignal) =>
   apiGet<TasteJob>(TASTE_REFRESH_URL, signal);
 
-/** primero屏: 取完数才画. en proceso止时 `AbortError` 抛回挂载方, 它据此放弃esteuno次.  */
+/** 首屏：取完数才画。中止时把 `AbortError` 抛回挂载方，它据此放弃这一次。 */
 export async function prefetchTaste(window: string, signal: AbortSignal): Promise<void> {
   await queryClient.fetchQuery({
     queryKey: tasteKey(window), queryFn: () => fetchTaste(window, signal),
   });
 }
 
-/** 起uno趟读取ExplorarRegistro. 回esTarearápido照, 节律仍由 `TASTE_REFRESH_KEY` 说算.  */
+/** 起一趟读取浏览记录。回的是任务快照，节律仍由 `TASTE_REFRESH_KEY` 说了算。 */
 export const startTasteRefresh = (window: string) =>
   apiSend<TasteJob>(TASTE_REFRESH_URL, { window, background: true });
 
-/** Quitaruno设备ExplorarRegistro. 服务端连esteunoRangoNuevo dashboard uno起回, 换进缓存即puede.  */
+/** 移除一台设备的浏览记录。服务端连这一范围的新 dashboard 一起回，换进缓存即可。 */
 export const removeTasteSource = (sourceKey: string, window: string) =>
   apiSend<{ removed: number; dashboard: TasteData }>(
     TASTE_SOURCE_URL, { operation: 'remove', source_key: sourceKey, window });
 
-/** Importaruno私ConExportar. 
+/** 导入一份私有导出。
  *
- * ArchivoOriginal样当Por favor求体发, Archivo名走 `X-Peach-Filename`: 走 multipart 就要En服务端máscontinuaruno
- * 解析Dispositivo, 而aquíSoloConunoArchivo, uno名字. 服务端回es"TodoTiempo"eseuno dashboard.  */
+ * 文件原样当请求体发，文件名走 `X-Peach-Filename`：走 multipart 就要在服务端多接一个
+ * 解析器，而这里只有一个文件、一个名字。服务端回的是「全部时间」那一份 dashboard。 */
 export async function importTasteExport(file: File): Promise<{ dashboard: TasteData }> {
   const response = await fetch(TASTE_IMPORT_URL, {
     method: 'POST',
@@ -180,23 +180,23 @@ export async function importTasteExport(file: File): Promise<{ dashboard: TasteD
   let payload: unknown = null;
   try {
     payload = await response.json();
-  } catch { /* FalloRespuestaNouno定es JSON, abajo面按Estado码兜底 */ }
+  } catch { /* 失败响应不一定是 JSON，下面按状态码兜底 */ }
   if (!response.ok) {
     const reason = (payload as { error?: string } | null)?.error;
-    throw new ApiError(reason || `ImportarFallido(${response.status})`, response.status, payload);
+    throw new ApiError(reason || `导入失败（${response.status}）`, response.status, payload);
   }
   return payload as { dashboard: TasteData };
 }
 
-/** 读取闲着时diez秒问uno次—esteuno趟puede以从别página面或Anterior次会话dentro起来.  */
+/** 读取闲着时十秒问一次——这一趟可以从别的页面或上一次会话里起来。 */
 export const IDLE_POLL_MS = 10_000;
 
 export const tasteDate = (value: string | null | undefined): string =>
   (value ? new Date(value).toLocaleDateString('zh-CN') : '—');
 
-/** ExplorarRegistroese读数卡脚注: 几Datos源, 加arribaRegistro覆盖FechaRango; 两头都SinFecha时No写Rango.  */
+/** 浏览记录那张读数卡的脚注：几个数据源，加上记录覆盖的日期范围；两头都没有日期时不写范围。 */
 export function historySpan(summary: TasteSummary): string {
-  const sources = `${Number(summary.history_sources || 0).toLocaleString()} Fuente de datos`;
+  const sources = `${Number(summary.history_sources || 0).toLocaleString()} 个数据源`;
   if (!summary.range_start && !summary.range_end) return sources;
   const sameYear = summary.range_start?.slice(0, 4) === summary.range_end?.slice(0, 4);
   const date = (value: string | null | undefined) => value && sameYear
@@ -204,84 +204,84 @@ export function historySpan(summary: TasteSummary): string {
   return `${sources} · ${date(summary.range_start)}–${date(summary.range_end)}`;
 }
 
-/** 累计Duración. yEstadísticaspágina同uno套口径.  */
+/** 累计时长。与统计页同一套口径。 */
 export const tasteHours = playedFor;
 
-/** "口味维度"读数: 分数Como正维度才算,  y 雷达, 排行画出来es同uno批.  */
+/** 「口味维度」读数：分数为正的维度才算，和雷达、排行条画出来的是同一批。 */
 export const tasteDimensions = (rows: RankRow[]): RankRow[] =>
   rows.filter((row) => Number.isFinite(Number(row.score)) && Number(row.score) > 0)
     .sort((a, b) => Number(b.score) - Number(a.score));
 
-/** uno行Enesteuno榜en la强度. Explorar侧按Acceder次数, Peach 侧按分数, 都退化到Entrada数.  */
+/** 一行在这一榜里的强度。浏览侧按访问次数，Peach 侧按分数，都退化到条目数。 */
 export const rankStrength = (row: RankRow): number =>
   Number(row.web_visits ?? row.score ?? row.visits ?? row.peach_items ?? 0);
 
-/** uno行名次底abajoese句complementar. 两侧都Con证据时y排显示, SoloConuno侧就读eseuno侧数.  */
+/** 一行名次底下那句补充。两侧都有证据时并排显示，只有一侧就读那一侧的数。 */
 export function rankDetail(row: RankRow): string {
   if (row.web_visits == null && !row.web_bookmarks) return Number(row.score || row.visits || 0).toLocaleString();
   const parts: string[] = [];
   const bookmarks = Number(row.web_bookmarks || 0);
   const visits = Number(row.web_visits ?? row.visits ?? 0) - bookmarks;
-  if (visits > 0) parts.push(`Explorar ${visits.toLocaleString()}`);
+  if (visits > 0) parts.push(`浏览 ${visits.toLocaleString()}`);
   if (bookmarks) parts.push(`书签 ${bookmarks.toLocaleString()}`);
   if (row.peach_items) parts.push(`Peach ${Number(row.peach_items).toLocaleString()}`);
   return parts.join(' · ');
 }
 
-/** uno段largo度, cien分比. 最largoeseuno占满, 空榜No除cero.  */
+/** 一段条的长度，百分比。最长的那一条占满，空榜不除零。 */
 export function rankShares(rows: RankRow[]): number[] {
   const strengths = rows.map(rankStrength);
   const ceiling = Math.max(1, ...strengths);
   return strengths.map((value) => Math.max(0, Math.min(100, value / ceiling * 100)));
 }
 
-/** 按分数从alto到bajoanterior `limit` 维度. 分数Como 0 或非Limitado行先滤掉.  */
+/** 按分数从高到低的前 `limit` 个维度。分数为 0 或非有限的行先滤掉。 */
 export const topScores = (rows: RankRow[], limit: number): BarRow[] =>
   rows.filter((row) => Number.isFinite(Number(row.score)) && Number(row.score) > 0)
     .map((row) => ({ name: row.name, value: Number(row.score) }))
     .sort((a, b) => b.value - a.value).slice(0, limit);
 
-/** menos于tres维度画No成面, tres点以abajoNo画. 最más取anteriorseis, 再másEtiqueta互相压住.  */
+/** 少于三个维度画不成面，三点以下不画。最多取前六个，再多标签互相压住。 */
 export const RADAR_MIN = 3;
 export const RADAR_MAX = 6;
 
-/** 雷达Imagen几顶点.  */
+/** 雷达图的几个顶点。 */
 export function radarRows(rows: RankRow[]): BarRow[] {
   const values = topScores(rows, RADAR_MAX);
   return values.length < RADAR_MIN ? [] : values;
 }
 
-/** 排行最másocho.  */
+/** 排行条最多八条。 */
 export const RANK_MAX = 8;
 
-/** 桑基Imagenuno节点. `side` 决定它落Enizquierda边还esderecha边, 也决定它文字往哪边排.  */
+/** 桑基图的一个节点。`side` 决定它落在左边还是右边，也决定它的文字往哪边排。 */
 export interface FlowNode {
   id: string; name: string; side: 'source' | 'target'; index: number;
   x: number; y: number; height: number; value: number; share: number; color: number;
 }
-/** uno流. `d` es d3 算出来贝塞尔Ruta.  */
+/** 一条流。`d` 是 d3 算出来的贝塞尔路径。 */
 export interface FlowLink {
   key: string; d: string; width: number; color: number;
   source: number; target: number; value: number; label: string;
 }
 export interface FlowGraph { nodes: FlowNode[]; links: FlowLink[]; total: number; height: number }
 
-/** 节点anchoy画布: izquierdaderecha各Dejauno截给文字, 视口ancho 720, alto度跟着节点数走, 最矮 435.  */
+/** 节点条宽与画布：左右各留一截给文字，视口宽 720，高度跟着节点数走，最矮 435。 */
 export const FLOW_NODE_WIDTH = 10;
 export const FLOW_VIEWBOX = { width: 720, height: 435 } as const;
 export const FLOW_LABEL_X = { source: 145, target: 545 } as const;
 
-/** uno侧最más几节点. 再más就DejaabajoPistas最másanterior几, 其余y成uno"其余 N ..."节点.  */
+/** 一侧最多几个节点。再多就留下线索最多的前几个，其余并成一个「其余 N …」节点。 */
 export const FLOW_SIDE_MAX = 12;
 
-/** 相邻两节点之间空隙, 也就es两节点en proceso心最pequeñoEspaciado: 节点名 y 它abajo面ese行数从en proceso心往arriba
- *  约 7, 往abajo约 22, 隔 30 时pequeño节点挤Enuno起, 两行字也No压到Siguiente节点arriba.  */
+/** 相邻两个节点之间的空隙，也就是两个节点中心的最小间距：节点名和它下面那行数从中心往上
+ *  约 7、往下约 22，隔 30 时小节点挤在一起，两行字也不压到下一个节点上。 */
 const FLOW_ROW = 30;
 
-/** 除去空隙之exterior, Deja给节点本身按Pistas数分alto度.  */
+/** 除去空隙之外，留给节点本身按线索数分的高度。 */
 const FLOW_NODE_ROOM = 240;
 
-/** uno侧名字超过 `FLOW_SIDE_MAX` 时, Pistasmenosese些名字映射到同uno合y节点arriba.  */
+/** 一侧的名字超过 `FLOW_SIDE_MAX` 个时，把线索少的那些名字映射到同一个合并节点上。 */
 function foldSide(flows: CreatorFlow[], side: 'source' | 'target', rest: (count: number) => string) {
   const totals = new Map<string, number>();
   for (const row of flows) totals.set(row[side], (totals.get(row[side]) ?? 0) + row.value);
@@ -292,13 +292,13 @@ function foldSide(flows: CreatorFlow[], side: 'source' | 'target', rest: (count:
   return (name: string) => (kept.has(name) ? name : merged);
 }
 
-/** 来源Sitio web → 创作者流向Diseño. 值Como 0 或缺uno端流先滤掉, Todo空时返回 `null`.  */
+/** 来源网站 → 创作者的流向布局。值为 0 或缺一端的流先滤掉，全空时返回 `null`。 */
 export function flowGraph(rows: CreatorFlow[] = []): FlowGraph | null {
   const valid = rows.filter((row) =>
     row.source && row.target && Number.isFinite(row.value) && row.value > 0);
   if (!valid.length) return null;
-  const sourceOf = foldSide(valid, 'source', (count) => `其余 ${count.toLocaleString()} Sitio web`);
-  const targetOf = foldSide(valid, 'target', (count) => `其余 ${count.toLocaleString()}  resultado(s)Creador`);
+  const sourceOf = foldSide(valid, 'source', (count) => `其余 ${count.toLocaleString()} 个网站`);
+  const targetOf = foldSide(valid, 'target', (count) => `其余 ${count.toLocaleString()} 位创作者`);
   const folded = new Map<string, CreatorFlow>();
   for (const row of valid) {
     const source = sourceOf(row.source);
@@ -345,5 +345,5 @@ export function flowGraph(rows: CreatorFlow[] = []): FlowGraph | null {
   return { nodes, links, total, height: bottom + FLOW_VIEWBOX.height - 404 };
 }
 
-/** 节点名字太largo时截断. Imagendentrouno格SoloConeste么ancho, Completo名En `aria-label`  y  `<title>` dentro.  */
+/** 节点名字太长时截断。图里一格只有这么宽，整名在 `aria-label` 和 `<title>` 里。 */
 export const flowLabel = (name: string): string => clipGraphemes(name, 17);

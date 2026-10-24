@@ -5,13 +5,13 @@ import { setCatalogView, useCatalogView } from './catalog-view';
 
 export function CatalogViewToggle() {
   const view = useCatalogView();
-  return <RadioGroup aria-label="ColecciónMostrarMétodo" orientation="horizontal" value={view} onChange={setCatalogView}
+  return <RadioGroup aria-label="馆藏显示方式" orientation="horizontal" value={view} onChange={setCatalogView}
     data-entity-layout="" className={SEGMENTED_GLASS_TRACK}>
-    <Radio value="cards" aria-label="Tarjeta" className={SEGMENT_GLASS} data-glass-segment="">
-      <span title="Tarjeta" className="pointer-events-none contents"><RiLayoutGridLine aria-hidden="true" className="size-4" /></span>
+    <Radio value="cards" aria-label="卡片" className={SEGMENT_GLASS} data-glass-segment="">
+      <span title="卡片" className="pointer-events-none contents"><RiLayoutGridLine aria-hidden="true" className="size-4" /></span>
     </Radio>
-    <Radio value="list" aria-label="Lista" className={SEGMENT_GLASS} data-glass-segment="">
-      <span title="Lista" className="pointer-events-none contents"><RiListUnordered aria-hidden="true" className="size-4" /></span>
+    <Radio value="list" aria-label="列表" className={SEGMENT_GLASS} data-glass-segment="">
+      <span title="列表" className="pointer-events-none contents"><RiListUnordered aria-hidden="true" className="size-4" /></span>
     </Radio>
   </RadioGroup>;
 }

@@ -1,8 +1,8 @@
-/* uno关注来源En屏幕en laese几格: 站标, Avatar, Estado徽章, 来源名. 
+/* 一条关注来源在屏幕上的那几格：站标、头像、状态徽章、来源名。
  *
- * 创作者卡片, 表格视Imagen y 别名清单读es同uno, 所以este几格摆Enaquí而Noes各画uno次: 
- * 同uno来源En两视Imagenen laEstado写法uno旦分开写, 就会出现同uno行En卡片dentro说"noVerificar", 
- * En表格dentro说"正常".  */
+ * 创作者卡片、表格视图和别名清单读的是同一份，所以这几格摆在这里而不是各画一次：
+ * 同一条来源在两种视图里的状态写法一旦分开写，就会出现同一行在卡片里说「未检查」、
+ * 在表格里说「正常」。 */
 import { useLayoutEffect, useRef, useState } from 'react';
 import { VisuallyHidden } from 'react-aria-components';
 
@@ -14,10 +14,10 @@ import {
   type FollowSource,
 } from './follow-manage';
 
-/** 站点圆标. 
+/** 站点圆标。
  *
- * 给 `label` 就es"画得出Imagen标就Solo画Imagen标": Imagen标En时名字交给读屏, 没登记Imagen标或者eseuno
- * 取Noabajo来时名字显出来—uno站En屏幕arribaTotal要认得出es哪站, No能两情况都指望同unoImagen.  */
+ * 给了 `label` 就是「画得出图标就只画图标」：图标在时名字交给读屏，没登记图标或者那一枚
+ * 取不下来时名字显出来——一个站在屏幕上总要认得出是哪个站，不能两种情况都指望同一枚图。 */
 export function SourceIcon({ provider, label }: { provider: string; label?: string }) {
   const src = sourceIconUrl(provider);
   const [broken, setBroken] = useState(false);
@@ -32,9 +32,9 @@ export function SourceIcon({ provider, label }: { provider: string; label?: stri
   );
 }
 
-/** 创作者圆标: Oficial来源Avatar优先, 归档来源回退, 都取No到就用primero字母. 
+/** 创作者圆标：官方来源的头像优先，归档来源回退，都取不到就用首字母。
  *
- * primero字母取自创作者名而Noes某来源Etiqueta—ese会切出"初""uno"este类 y 创作者Sin关字.  */
+ * 首字母取自创作者名而不是某条来源的标签——那会切出「初」「一」这类和创作者无关的字。 */
 export function AuthorAvatar({ group, name }: { group: FollowSource[]; name: string }) {
   const { src, fallback } = authorAvatar(group);
   const [at, setAt] = useState(0);
@@ -42,7 +42,7 @@ export function AuthorAvatar({ group, name }: { group: FollowSource[]; name: str
   const current = chain[at];
   if (!current) {
     return (
-      <span title="No hay avatar disponible"
+      <span title="没有可用头像"
         className="inline-grid size-8 shrink-0 place-items-center rounded-full bg-background-tertiary-default text-caption-1-semibold text-text-secondary">
         {authorInitial(name)}
       </span>
@@ -55,7 +55,7 @@ export function AuthorAvatar({ group, name }: { group: FollowSource[]; name: str
   );
 }
 
-/** Estado徽章. tres档Color对应tres件事: 要Procesar, 正常, 还Sin结论.  */
+/** 状态徽章。三档颜色对应三件事：要处理的、正常的、还没有结论的。 */
 export function StatusBadge({ source }: { source: FollowSource }) {
   const color = isBroken(source) ? 'rose'
     : source.enabled && source.last_status === 'ok' ? 'lime'
@@ -63,18 +63,18 @@ export function StatusBadge({ source }: { source: FollowSource }) {
   return <Chip variant="caption" color={color}>{statusText(source)}</Chip>;
 }
 
-/** 来源名连到站en laOriginalpágina面. NuevoEtiquetapáginaNo继承esteunopágina会话, 来源地址也No带走 Peach 自己地址.  */
+/** 来源名连到站上的原页面。新标签页不继承这一页的会话，来源地址也不带走 Peach 自己的地址。 */
 export function SourceLink({ source }: { source: FollowSource }) {
   return (
-    <a href={source.url} target="_blank" rel="noreferrer noopener" title="AbrirOriginalFuente"
+    <a href={source.url} target="_blank" rel="noreferrer noopener" title="打开原来源"
       className="min-w-0 text-body-medium wrap-anywhere text-text-primary underline-offset-2 hover:underline">
       {source.label}
     </a>
   );
 }
 
-/** uno报错: ListadentroSolo露uno行(`errorHeadline`), 放Noabajo就截断; más于esteuno行或被截时给"verDetalles"Original地展开Todo文. 
- *  来源Última vezVerificar, JAV 入BibliotecaScrapingFallo都用它, posterior端常回Completopágina HTML 或Completo段 traceback.  */
+/** 一条报错：列表里只露一行（`errorHeadline`），放不下就截断；多于这一行或被截了时给「查看详情」原地展开全文。
+ *  来源的上次检查、JAV 入库的刮削失败都用它，后端常回整页 HTML 或整段 traceback。 */
 export function ErrorLine({ text, prefix = '', tone = 'error' }: { text: string; prefix?: string; tone?: 'error' | 'muted' }) {
   const line = useRef<HTMLElement>(null);
   const [open, setOpen] = useState(false);
@@ -99,7 +99,7 @@ export function ErrorLine({ text, prefix = '', tone = 'error' }: { text: string;
       {more ? (
         <Button variant="ghost" size="xs" data-error-line-toggle="" aria-expanded={open} className="-ml-2"
           onClick={() => setOpen(!open)}>
-          {open ? 'Ocultar detalles' : 'Ver detalles'}
+          {open ? '收起详情' : '查看详情'}
         </Button>
       ) : null}
     </span>

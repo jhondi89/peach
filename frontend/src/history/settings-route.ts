@@ -1,9 +1,9 @@
 export const PREFERENCE_SECTIONS = {
-  appearance: 'Apariencia y navegación', playback: 'Explorar y reproducir', jav: 'JAV y nuevos lanzamientos', search: 'Búsqueda y recomendaciones', content: 'Visualización de contenido',
+  appearance: '外观与导航', playback: '浏览与播放', jav: 'JAV 与新作', search: '搜索与推荐', content: '内容显示',
 } as const;
 export const CONFIGURATION_SECTIONS = {
-  library: 'Biblioteca y catalogación', subscriptions: 'Fuentes y suscripciones', downloads: 'Canal de descarga', network: 'Red y acceso', maintenance: 'App y mantenimiento',
-  diagnostics: 'Diagnóstico del sistema',
+  library: '媒体库与入库', subscriptions: '来源与订阅', downloads: '下载渠道', network: '网络与访问', maintenance: '应用与维护',
+  diagnostics: '系统诊断',
 } as const;
 export type ConfigurationPath = `/settings/${keyof typeof CONFIGURATION_SECTIONS}`;
 export function configurationSection(path: string): string {

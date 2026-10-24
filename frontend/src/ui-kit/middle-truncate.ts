@@ -1,13 +1,13 @@
-/* Geist MiddleTruncate  Peach Original生适配层. 
+/* Geist MiddleTruncate 的 Peach 原生适配层。
 
-   Solo复用yaVerificar行Como: 按容Dispositivoancho度保Dejaprimero尾, 使用单省略号, ancho度变化posteriorpesado算, CopiarySin障碍名称
-   仍提供完CompletoOriginal文. 调用方Solo需给Archivo名, Ruta, URL 或 ID 加 data-middle-truncate; Título y DescripciónContinuar
-   使用último尾省略. 随 `peach-app.js` 发出, 由 Application 启动yLimpiarTodoDocumentación唯uno观察者, 
-   Original生宿主y React 子树写属性都归它管.  */
+   只复用已验证的行为：按容器宽度保留首尾、使用单个省略号、宽度变化后重算、复制与无障碍名称
+   仍提供完整原文。调用方只需给文件名、路径、URL 或 ID 加 data-middle-truncate；标题和说明继续
+   使用末尾省略。随 `peach-app.js` 发出，由 Application 启动与清理全文档的唯一观察者，
+   原生宿主与 React 子树写的属性都归它管。 */
 
 interface TruncateState { full: string; rendered: string; raf: number }
 
-const ELLIPSIS='...';
+const ELLIPSIS='…';
 const segmenter=typeof Intl.Segmenter==='function'
   ? new Intl.Segmenter(undefined,{granularity:'grapheme'})
   : null;
@@ -21,8 +21,8 @@ const graphemes=(value:unknown)=>segmenter
   ? [...segmenter.segment(String(value??''))].map(part=>part.segment)
   : Array.from(String(value??''));
 
-/* 纯算法边界单独Exportar, Node puede直continuar实测, No需要伪造 DOM. fits(candidate) 由Explorar dispositivo
-   测量层注入; dos分寻找能放abajo最largoprimero尾组合, 奇数优先保Deja开头.  */
+/* 纯算法边界单独导出，Node 可直接实测，不需要伪造 DOM。fits(candidate) 由浏览器
+   测量层注入；二分寻找能放下的最长首尾组合，奇数位优先保留开头。 */
 function middleTruncateText(value:unknown,fits:(candidate:string)=>boolean):string{
   const parts=graphemes(value);
   if(!parts.length||fits(value as string))return String(value??'');
@@ -41,8 +41,8 @@ const measuredWidth=Object.assign((element:Element,value:string)=>{
   const canvas=measuredWidth.canvas||(measuredWidth.canvas=document.createElement('canvas'));
   const context=canvas.getContext('2d');
   if(!context)return Number.POSITIVE_INFINITY;
-  /* Chromium 会En font-variant-numeric etc.largo数字开启时计算posterior font 简写返回Como空串; 
-     直continuar赋值会让 Canvas 静predetermina退回 10px sans-serif, 进而bajo估en proceso文Archivo名ancho度.  */
+  /* Chromium 会在 font-variant-numeric 等长数字开启时把计算后的 font 简写返回为空串；
+     直接赋值会让 Canvas 静默退回 10px sans-serif，进而低估中文文件名宽度。 */
   context.font=style.font||`${style.fontStyle} ${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
   let width=context.measureText(value).width;
   const letterSpacing=parseFloat(style.letterSpacing);
@@ -52,10 +52,10 @@ const measuredWidth=Object.assign((element:Element,value:string)=>{
   return width;
 },{canvas:null as HTMLCanvasElement|null});
 
-/* puede用ancho度Predeterminado取元素自己盒子. 带 data-middle-truncate-within 元素按contenido收缩(posterior面紧跟着
-   别东西, 比如Archivo名posterior面"最grande"Etiqueta), 自己盒子就es当anterior文字ancho度—拿它当arriba限, 
-   clientWidth 取Completomenos掉eseNo到uno像素每uno轮都让Todo文"放Noabajo", 越截越corto. este类元素改按父级
-   量: 父级contenidoancho减去所Con兄弟 y 列Espaciado, 剩abajo才es文字能占.  */
+/* 可用宽度默认取元素自己的盒子。带 data-middle-truncate-within 的元素按内容收缩（后面紧跟着
+   别的东西，比如文件名后面的「最大」标记），自己的盒子就是当前文字的宽度——拿它当上限，
+   clientWidth 取整少掉的那不到一像素每一轮都让全文「放不下」，越截越短。这类元素改按父级
+   量：父级的内容宽减去所有兄弟和列间距，剩下的才是文字能占的。 */
 const availableWidth=(element:HTMLElement)=>{
   if(element.dataset.middleTruncateWithin===undefined)return element.clientWidth;
   const box=element.parentElement;if(!box)return element.clientWidth;
@@ -98,7 +98,7 @@ const bind=(element:Element)=>{
   if(!observed.has(element)){
     observed.add(element);
     tracked.add(element);
-    /* 按父级量元素跟着父级尺寸pesado算: 它自己盒子Solo会随文字变, No会随窗口变.  */
+    /* 按父级量的元素跟着父级的尺寸重算：它自己的盒子只会随文字变，不会随窗口变。 */
     if(element.dataset.middleTruncateWithin!==undefined&&element.parentElement)resizeObserver?.observe(element.parentElement);
     else resizeObserver?.observe(element);
   }

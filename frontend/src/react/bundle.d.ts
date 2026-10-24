@@ -1,6 +1,6 @@
-/* interior部常驻组件ypágina面Tipo契约. 
- * application-residents.ts y entry.tsx En主界面同uno源码Imageninterior组合este些Interfaz, NoPublicarIndependiente运行时桥包. 
- * ConfiguraciónDatos以 /api/configuration(src/peach/routes_configuration.py)Como准.  */
+/* 内部常驻组件与页面的类型契约。
+ * application-residents.ts 与 entry.tsx 在主界面同一源码图内组合这些接口，不发布独立运行时桥包。
+ * 配置数据以 /api/configuration（src/peach/routes_configuration.py）为准。 */
 import type { QualityGoal } from './quality-goals/quality-goals';
 import type { IndexProps } from './index/index-data';
 import type { CatalogGridProps } from './catalog-grid/types';
@@ -38,11 +38,11 @@ export interface TunnelState {
   error: string;
   available: boolean;
   mode: 'quick' | 'named';
-  /** 命名隧道绑定公开Anfitrión名, 临时链continuarModoabajoComo空.  */
+  /** 命名隧道绑定的公开主机名，临时链接模式下为空。 */
   hostname: string;
-  /** 隧道Token存没存过. Token本身No回传, página面Solo据此显示yaGuardar.  */
+  /** 隧道令牌存没存过。令牌本身不回传，页面只据此显示已保存。 */
   token_set: boolean;
-  /** este部署能No能用命名隧道; Independiente包Como false, eseunoCompletoNo渲染.  */
+  /** 这台部署能不能用命名隧道；独立包为 false，那一块整个不渲染。 */
   named_available: boolean;
 }
 
@@ -61,7 +61,7 @@ export interface UninstallState {
 
 export interface PeachProxyState { mode: string; proxy_saved: boolean; needs_selection: boolean }
 
-/** uno能换镜像域名exterior部入口站点. `host` Como空串就es没换过, 走 `default_host`.  */
+/** 一个能换镜像域名的外部入口站点。`host` 为空串就是没换过，走 `default_host`。 */
 export interface EntryLinkSite {
   key: string;
   label: string;
@@ -71,7 +71,7 @@ export interface EntryLinkSite {
 
 export interface EntryLinksState { sites: EntryLinkSite[] }
 
-/** uno"CloudDrive2 en laRutaanterior缀 → 哪媒体根"对应.  */
+/** 一条「CloudDrive2 里的路径前缀 → 哪个媒体根」的对应。 */
 export interface PushDiscoveryPrefix { prefix: string; root: string }
 
 export interface PushDiscoveryQueue {
@@ -85,7 +85,7 @@ export interface PushDiscoveryState {
   watch_local: boolean;
   cloud: boolean;
   prefixes: PushDiscoveryPrefix[];
-  /** este机DispositivoesDatosBiblioteca写入端才Como真; Solo读端No起任何监听.  */
+  /** 这台机器是数据库写入端才为真；只读端不起任何监听。 */
   available: boolean;
   secret: string;
   secret_set: boolean;
@@ -94,11 +94,11 @@ export interface PushDiscoveryState {
   local_message: string;
   local_roots: string[];
   queue: PushDiscoveryQueue;
-  /** puede选媒体根, anterior缀表en laabajo拉就从aquí取.  */
+  /** 可选的媒体根，前缀表里的下拉就从这里取。 */
   media_roots: string[];
-  /** CloudDrive2 该往哪地址推. 没开 TLS 或este机DispositivoNo知道自己地址时es空串.  */
+  /** CloudDrive2 该往哪个地址推。没开 TLS 或这台机器不知道自己的地址时是空串。 */
   origin: string;
-  /** Completo段抄进 CloudDrive2"Configuracióncontenido" TOML; 地址或Clave缺uno样就es空串.  */
+  /** 整段抄进 CloudDrive2「配置内容」的 TOML；地址或密钥缺一样就是空串。 */
   config_toml: string;
 }
 
@@ -106,58 +106,58 @@ export interface AutomaticUpdateState {
   mode: string; interval_hours: number; available: boolean; download_available: boolean; error?: string;
 }
 
-/** 云Descargar两渠道: 115 经 CloudDrive2, PikPak 直连.  */
+/** 云下载的两条渠道：115 经 CloudDrive2，PikPak 直连。 */
 export type DownloadProviderKey = '115' | 'pikpak';
 
 export interface DownloadConfig {
   clouddrive_address: string;
   targets: Partial<Record<DownloadProviderKey, string>>;
-  /** PikPak 根Directorio对应DatosBibliotecaRutaanterior缀, 空串表示还没选.  */
+  /** PikPak 根目录对应的数据库路径前缀，空串表示还没选。 */
   pikpak_root: string;
   wait_hours: number;
 }
 
 export type PikPakBrowserState = 'idle' | 'waiting' | 'done' | 'cancelled' | 'timeout' | 'failed';
 
-/** Configuraciónpágina云Descargar. CredencialesSolo报存没存过, No回值.  */
+/** 设置页的云下载块。凭据只报存没存过，不回值。 */
 export interface DownloadSettingsState {
   available: boolean;
   config: DownloadConfig;
   token_set: boolean;
-  /** `method`: `browser` esExplorar dispositivoIniciar sesión取来网página端会话, `password` es账号Contraseña换Token.  */
+  /** `method`：`browser` 是浏览器登录取来的网页端会话，`password` 是账号密码换的令牌。 */
   pikpak: { logged_in: boolean; username: string; remember: boolean; method: 'browser' | 'password' };
-  /** Explorar dispositivoIniciar sesión(ADR-0093): este电脑ConSin Chrome 或 Edge, Iniciar sesión窗口此刻En哪uno步.  */
+  /** 浏览器登录（ADR-0093）：这台电脑有没有 Chrome 或 Edge，登录窗口此刻在哪一步。 */
   pikpak_browser: { available: boolean; state: PikPakBrowserState; message: string };
   pikpak_roots: string[];
   providers: { key: DownloadProviderKey; label: string }[];
   max_wait_hours: number;
 }
 
-/** "GuardarConfiguración"Respuesta: Configuración加uno按yaGuardarConfiguración做VerificarInforme, SinToken时Como null.  */
+/** 「保存配置」的响应：设置块加一份按已保存配置做的检查报告，没有令牌时为 null。 */
 export interface DownloadSaveResult extends DownloadSettingsState {
   report?: DownloadCheckReport | null;
 }
 
-/** VerificarResultado: 每uno项各自报, uno项FalloNo挡住其余几项.  */
+/** 检查的结果：每一项各自报，一项失败不挡住其余几项。 */
 export interface DownloadCheckReport {
   ok: boolean;
-  /** 实际查 CloudDrive2 地址. 表单Deja空时es探测到本机地址, 探测No到时Como空串.  */
+  /** 实际查的 CloudDrive2 地址。表单留空时是探测到的本机地址，探测不到时为空串。 */
   address: string;
   permissions: { name: string; label: string; granted: boolean }[];
   missing: string[];
   root: string;
   folder: { path: string; can_offline: boolean; cloud: string } | null;
   quota: { total: number; used: number; left: number } | null;
-  /** 115 目标DirectorioDeja空时按Push发现推Directorio; `exists` Como假时 CloudDrive2 dentro还Sin它.  */
+  /** 115 目标目录留空时按推送发现推的目录；`exists` 为假时 CloudDrive2 里还没有它。 */
   suggested_target: { path: string; exists: boolean } | null;
-  /** noSeleccionar PikPak 对应Directorio时, 按Push发现Configuración建议DatosBibliotecaRutaanterior缀; Sin法确定时Como空串.  */
+  /** 未选择 PikPak 对应目录时，按推送发现的配置建议数据库路径前缀；无法确定时为空串。 */
   suggested_pikpak_root: string;
   problems: string[];
 }
 
 export interface PikPakLoginResult {
   ok: boolean;
-  /** 要人机Verificar时给Verificarpágina地址, 用户EnExplorar dispositivodentroCompletadoposterior再Iniciar sesiónuno次.  */
+  /** 要人机验证时给验证页地址，用户在浏览器里完成后再登录一次。 */
   captcha_url?: string;
   message?: string;
   settings: DownloadSettingsState;
@@ -254,13 +254,13 @@ export interface ConfigurationData {
   access?: AccessState;
   tunnel?: TunnelState;
   editable: boolean;
-  /** No能Editar时给用户verOriginal因, puedeEditar时Como空.  */
+  /** 不能编辑时给用户看的原因，可编辑时为空。 */
   notice: string;
-  /** ConfiguraciónArchivo指纹, Guardar时带回去, 服务端据此拒绝盖掉别处改动.  */
+  /** 设置文件的指纹，保存时带回去，服务端据此拒绝盖掉别处的改动。 */
   revision: string;
   media_dirs: string[];
   media_sources?: MediaSource[];
-  /** 媒体Biblioteca数, 服务端按侧栏媒体BibliotecaCambiarDispositivoeseunoAgrupar数bien(同名Archivocarpeta算uno).  */
+  /** 媒体库个数，服务端按侧栏媒体库切换器那一份分组数好（同名的文件夹算一个）。 */
   library_count: number;
   windows?: boolean;
   port: number;
@@ -269,17 +269,17 @@ export interface ConfigurationData {
   facts: ConfigurationFact[];
 }
 
-/** ConfiguraciónpáginaSolo要遗Deja层 Toast: Guardares写操作, 回执归Todo站eseuno.  */
+/** 配置页只要遗留层的 Toast：保存是写操作，回执归全站那一份。 */
 export interface ConfigurationProps {
-  /** GuardarÉxitoposterior过去时回执(遗Deja层 Toast).  */
+  /** 保存成功后的过去时回执（遗留层的 Toast）。 */
   receipt(message: string): void;
-  /** 让InstalarTutorialpesadoNuevo出现: Omitiry折叠归, 撤回DatosBibliotecaEtiqueta.  */
+  /** 让安装教程重新出现：跳过与折叠归位、撤回数据库标记。 */
   reopenTutorial(): Promise<void>;
-  /** primero帧选en procesoeseuno组páginaFirma(别处点"Gestionar媒体Biblioteca""添加媒体Directorio"etc.进来); 认No出或没给就选No.uno组.  */
+  /** 首帧选中的那一组页签名（别处点「管理媒体库」「添加媒体目录」等进来）；认不出或没给就选第一组。 */
   section?: string;
 }
 
-/** Configuraciónpágina按página签切Agrupar时, uno组根节点作ComoNo. `index` 格página签面板要带属性; `active` es此刻选en procesoeseuno组.  */
+/** 配置页按页签切分组时，一组的根节点作为第 `index` 格页签面板要带的属性；`active` 是此刻选中的那一组。 */
 export interface ConfigurationPanel {
   index: number;
   id: string;
@@ -287,255 +287,255 @@ export interface ConfigurationPanel {
   active: boolean;
 }
 
-/** Peach ConfiguraciónAgrupar: 媒体Bibliotecay入Biblioteca, 来源y订阅, Descargar渠道, 网络yAcceder, 应用y维护. 
- *  `panel` SoloEnConfiguraciónpáginadentro给, 单独挂uno组时Sin.  */
+/** Peach 配置的分组：媒体库与入库、来源与订阅、下载渠道、网络与访问、应用与维护。
+ *  `panel` 只在配置页里给，单独挂一组时没有。 */
 export interface ConfigurationGroupProps extends Pick<ConfigurationProps, 'receipt'> {
   data: ConfigurationData;
   panel?: ConfigurationPanel;
 }
 
-/** alto清版目标página仍由遗Deja层提供能力. Todoes纯函数或导航, página面No持Con它们Estado.  */
+/** 高清版目标页仍由遗留层提供的能力。全是纯函数或导航，页面不持有它们的状态。 */
 export interface QualityGoalsProps {
-  /** 写操作En服务端Llegar之posterior过去时回执.  */
+  /** 写操作在服务端落地之后的过去时回执。 */
   toast(message: string): void;
-  /** AbrirObrasDetalles(遗Deja层Completopágina视Imagen, 含ReproducirDispositivoyCola).  */
+  /** 打开作品详情（遗留层的整页视图，含播放器与队列）。 */
   openItem(id: number): void;
-  /** Código JAV + 版次徽章 + Título HTML. 非 JAV Entrada退化成转义posteriorArchivo名.  */
+  /** 番号 + 版次徽章 + 标题的 HTML。非 JAV 条目退化成转义后的文件名。 */
   javTitleHtml(item: QualityGoal): string;
-  /** 同unoEntrada纯文本形态, 用于Sin障碍名称.  */
+  /** 同一条目的纯文本形态，用于无障碍名称。 */
   javDisplayName(item: QualityGoal): string;
-  /** 来源徽标(含计费Etiqueta) HTML.  */
+  /** 来源徽标（含计费标记）的 HTML。 */
   srcBadge(location: string, cost: string): string;
 }
 
-/** Estadísticaspágina仍由遗Deja层提供能力. 都es纯函数或导航, página面No持Con它们Estado.  */
+/** 统计页仍由遗留层提供的能力。都是纯函数或导航，页面不持有它们的状态。 */
 export interface StatsProps {
-  /** EtiquetaClave到界面en la名称(`core/tags.ts`  `tagLabel`).  */
+  /** 标签键到界面上的名称（`core/tags.ts` 的 `tagLabel`）。 */
   tagLabel(key: string): string;
-  /** 点unocontenidoEtiqueta: 回Directorioy按它Filtrar. Completopágina换成Directorio由遗Deja壳做.  */
+  /** 点一个内容标签：回目录并按它筛选。整页换成目录由遗留壳做。 */
   onTag(key: string): void;
-  /** AbrirConfiguraciónpágina"媒体"página签. Sin视频或Sin存储来源时空态en laese去处.  */
+  /** 打开配置页的「媒体」页签。没有视频或没有存储来源时空态里的那个去处。 */
   openMediaSettings(): void;
-  /** este机Dispositivo能No能改Configuración. No能改时空态No给"添加媒体Directorio".  */
+  /** 这台机器能不能改配置。不能改时空态不给「添加媒体目录」。 */
   configurable: boolean;
 }
 
-/** 口味página仍由遗Deja层提供能力. 都es导航, 查表或回执, página面No持Con它们Estado.  */
+/** 口味页仍由遗留层提供的能力。都是导航、查表或回执，页面不持有它们的状态。 */
 export interface TasteProps {
-  /** 点uno名次: 回Directorioy按它Filtrar. `kind` es `tag`/`creator`/`performer`.  */
+  /** 点一条名次：回目录并按它筛选。`kind` 是 `tag`／`creator`／`performer`。 */
   onSignal(kind: string, name: string): void;
-  /** Abrir口味Resumen指向página面.  */
+  /** 打开口味总结指向的页面。 */
   navigate(route: string): void;
-  /** 写操作En服务端Llegar之posterior过去时回执.  */
+  /** 写操作在服务端落地之后的过去时回执。 */
   toast(message: string): void;
-  /** 从引导流程进来(`?onboarding=1`): ExplorarRegistroImportarGuía直continuar展开.  */
+  /** 从引导流程进来（`?onboarding=1`）：浏览记录导入指南直接展开。 */
   onboarding: boolean;
 }
 
-/** 来源 y 凭证páginaSolo要遗Deja层 Toast: GuardaryDeshaceres写操作, 回执归Todo站eseuno.  */
+/** 来源和凭证页只要遗留层的 Toast：保存与撤销是写操作，回执归全站那一份。 */
 export interface ScrapingProps {
-  /** 写操作En服务端Llegar之posterior过去时回执.  */
+  /** 写操作在服务端落地之后的过去时回执。 */
   toast(message: string): void;
 }
 
-/** 关注Gestionarpágina. 
+/** 关注管理页。
  *
- *  地址栏y人偏bienEnaquí分成两组: `tab`/`page`/`sort`/`dir` exterior面链continuar得过来, 跟着地址
- *  走; `pageSize`/`layout` esesteExplorar dispositivo习惯, 跟着 `appSettings` 走. 两组都由壳持Con存储, 
- *  React 持Con实时Estado, 各SoloConuno.  */
+ *  地址栏与个人偏好在这里分成两组：`tab`／`page`／`sort`／`dir` 外面链接得过来，跟着地址
+ *  走；`pageSize`／`layout` 是这台浏览器的习惯，跟着 `appSettings` 走。两组都由壳持有存储、
+ *  React 持有实时状态，各只有一份。 */
 export interface FollowManageProps {
-  /** 地址栏此刻带着página签(`list`/`add`/`feeds`).  */
+  /** 地址栏此刻带着的页签（`list`／`add`／`feeds`）。 */
   tab: string;
   page: number;
   sort: string;
   dir: string;
-  /** estecuatro项写回地址栏. 空串表示esteuno项此刻就esPredeterminado值, 壳No写进去.  */
+  /** 把这四项写回地址栏。空串表示这一项此刻就是默认值，壳不写进去。 */
   route(params: { tab: string; page: number; sort: string; dir: string }): void;
-  /** esteExplorar dispositivo偏bien当anterior值.  */
+  /** 这台浏览器的偏好当前值。 */
   pageSize: number;
   layout: string;
-  /** 偏bien改: 存储归壳(`appSettings`), página面No自己写uno.  */
+  /** 偏好改了：存储归壳（`appSettings`），页面不自己写一份。 */
   savePreference(patch: { pageSize?: number; layout?: string }): void;
-  /** 写操作En服务端Llegar之posterior过去时回执.  */
+  /** 写操作在服务端落地之后的过去时回执。 */
   toast(message: string): void;
-  /** 去"verActualizar"eseunopágina(`/follow`). Completopágina换成哪uno屏仍归遗Deja壳.  */
+  /** 去「看更新」那一页（`/follow`）。整页换成哪一屏仍归遗留壳。 */
   openFollow(): void;
   openServiceConfiguration(): void;
-  /** DatosBibliotecaSolo读: este机DispositivoSolo能Explorar, 写操作TodoNo给点.  */
+  /** 数据库只读：这台机器只能浏览，写操作全部不给点。 */
   readOnly: boolean;
   readOnlyMessage: string;
-  /** 写入端arribaesteunopágina地址. 取No到时门禁dentroNo给去处.  */
+  /** 写入端上这一页的地址。取不到时门禁里不给去处。 */
   writerUrl: string;
 }
 
-/** 人工复核página. 
+/** 人工复核页。
  *
- *  `category` es唯uno进地址栏eseuno项: diezCategoríaes固定uno组身, "Enver哪unoCola"链continuar
- *  得过来, Actualizar也要还Original. Agrupar, Filtrarypágina码esesteuno刻ver法, Cola又es消耗性(判uno就menos
- *  uno), 写进地址栏Compartir出去Solo会指向另uno批东西.  */
+ *  `category` 是唯一进地址栏的那一项：十个分类是固定的一组身份，「在看哪一条队列」链接
+ *  得过来，刷新也要还原。分组、筛选与页码是这一刻的看法，队列又是消耗性的（判一条就少
+ *  一条），写进地址栏分享出去只会指向另一批东西。 */
 export interface ReviewProps {
-  /** 地址栏此刻带着Categoría. No认识值退回Predeterminadoeseuno档.  */
+  /** 地址栏此刻带着的分类。不认识的值退回默认那一档。 */
   category: string;
-  /** Categoría写回地址栏. 空串表示esteuno项此刻就esPredeterminado值, 壳No写进去.  */
+  /** 把分类写回地址栏。空串表示这一项此刻就是默认值，壳不写进去。 */
   route(params: { category: string }): void;
-  /** AbrirObrasDetalles(遗Deja层Completopágina视Imagen, 含ReproducirDispositivoyCola).  */
+  /** 打开作品详情（遗留层的整页视图，含播放器与队列）。 */
   openItem(id: number): void;
-  /** Abrir实体资料página. `kind` es `creator`/`performer`.  */
+  /** 打开实体资料页。`kind` 是 `creator`／`performer`。 */
   openEntity(kind: string, name: string): void;
-  /** En资源GestionarDispositivodentro显示esteArchivo. Éxito由遗Deja层自己发回执, Fallo回uno句Original因.  */
+  /** 在资源管理器里显示这个文件。成功由遗留层自己发回执，失败回一句原因。 */
   revealSource(id: number): Promise<string>;
-  /** 写操作En服务端Llegar之posterior过去时回执.  */
+  /** 写操作在服务端落地之后的过去时回执。 */
   toast(message: string): void;
-  /** DatosBibliotecaSolo读: este机DispositivoSolo能Explorar, 判定y收录TodoNo给点, 进página面也No发eseuno次自动落Biblioteca.  */
+  /** 数据库只读：这台机器只能浏览，判定与收录全部不给点，进页面也不发那一次自动落库。 */
   readOnly: boolean;
   readOnlyMessage: string;
-  /** 写入端arribaesteunopágina地址. 取No到时门禁dentroNo给去处.  */
+  /** 写入端上这一页的地址。取不到时门禁里不给去处。 */
   writerUrl: string;
 }
 
-/** escanearyRecolectar. 同unoDatos两读者, 所以同uno名字挂两形态: DatosGestionarpáginaese卡片, 
- *   y Directoriopágina顶arribaese横幅(`mode: 'notice'`).  */
+/** 扫描与采集。同一份数据两个读者，所以同一个名字挂两种形态：数据管理页那张卡片，
+ *  和目录页顶上那条横幅（`mode: 'notice'`）。 */
 export interface LibraryProcessingProps {
-  /** Tarea跑完时uno次通知. 同uno趟按 `job_id` Solo报uno次, 谁先ver到Terminar谁报.  */
+  /** 任务跑完时的一次通知。同一趟按 `job_id` 只报一次，谁先看到结束谁报。 */
   toast(message: string): void;
-  /** esteuno趟从运行走到终态: 让遗Deja层pesado画DatosGestionarpáginaese几计数.  */
+  /** 这一趟从运行走到终态：让遗留层重画数据管理页那几个计数。 */
   onComplete?(): void;
-    /** 紧凑Tarea面持续观察posteriorEstado.  */
+    /** 紧凑任务面持续观察后台状态。 */
   mode?: 'notice';
-  /** 卡片闲着时也continuar着问: Tarea由posterior自己起, página面要认出"现En跑起来".  */
+  /** 卡片闲着时也接着问：任务由后台自己起，页面要认出「现在跑起来了」。 */
   monitor?: boolean;
 }
 
-/** 换Avatar: 资料página圆框角arribaese加号, 连同它点开eseuno屏候选. 资料卡(`entity-hero`)En自己
- *  Avatar框arriba直continuar渲染它, No单独挂载.  */
+/** 换头像：资料页圆框角上那个加号，连同它点开的那一屏候选。资料卡（`entity-hero`）在自己
+ *  的头像框上直接渲染它，不单独挂载。 */
 export interface AvatarPickerProps {
-  /** 实体Tipo(`performer`/`creator`).  */
+  /** 实体类型（`performer`／`creator`）。 */
   kind: string;
   entityId: number;
-  /** página面arriba显示este人名字, 用EnSin障碍名称 y eseuno句Descripcióndentro.  */
+  /** 页面上显示的这个人的名字，用在无障碍名称和那一句说明里。 */
   name: string;
-  /** 换Éxitoposterior让宿主pesado画Avatar. 遗Deja层传es"pesadoNuevo进esteunopágina".  */
+  /** 换成功后让宿主重画头像。遗留层传的是「重新进这一页」。 */
   onPicked(): void;
 }
 
-/** RecortarPortada: ObrasDetallespáginaTítulo旁eseClave, 连同它点开eseuno屏取景框.  */
+/** 裁剪封面：作品详情页标题旁那枚键，连同它点开的那一屏取景框。 */
 export interface CoverCropProps {
-  /** 归unoanteriorCódigo JAV, Original样回递给写端点.  */
+  /** 归一前的番号，原样回递给写端点。 */
   code: string;
-  /** PortadaOriginalImagen地址(`/cover?code=`). 框量esesteImagen像素.  */
+  /** 封面原图的地址（`/cover?code=`）。框量的是这张图的像素。 */
   coverUrl: string;
-  /** 当anterior生效取景框, Sin就es null. 形状同Interfaz `poster_box`.  */
+  /** 当前生效的取景框，没有就是 null。形状同接口的 `poster_box`。 */
   box: { x0: number; y0: number; x1: number; y1: number; px: number[] } | null;
-  /** 存bien之posterior让宿主pesado画Portada, `box` es写端点回Nuevo框(形状同 `box`): ObrasDetallespesado取esteuno, 
-   *  背posteriorCuadrículadentro同unoCódigo JAV卡就地换arriba它.  */
+  /** 存好之后让宿主重画封面，`box` 是写端点回的新框（形状同 `box`）：作品详情重取这一条，
+   *  背后网格里同一番号的卡就地换上它。 */
   onSaved(box: CoverCropProps['box']): void;
 }
 
-/** DatosGestionarpágina顶arribaese排读数卡各通往哪unopágina. `ads` es垃圾Archivo.  */
+/** 数据管理页顶上那排读数卡各通往哪一页。`ads` 是垃圾文件。 */
 export type DataCleanupSection = 'review' | 'quality' | 'duplicates' | 'ads' | 'trash';
 
-/** DatosGestionarpágina仍由遗Deja层提供能力: 回执 y 换página.  */
+/** 数据管理页仍由遗留层提供的能力：回执和换页。 */
 export interface DataCleanupProps {
-  /** 操作回执(遗Deja层 `actionReceipt`). `warning` es做完peroConuno部分要Deja意, 走Advertencia音效.  */
+  /** 操作回执（遗留层 `actionReceipt`）。`warning` 是做完了但有一部分要留意，走警告音效。 */
   toast(message: string, options?: { warning?: boolean }): void;
-  /** Fallo回执(遗Deja层 `actionFailure`): `action` es没做成ese件事.  */
+  /** 失败回执（遗留层 `actionFailure`）：`action` 是没做成的那件事。 */
   failure(action: string, error: unknown): void;
-  /** 点uno读数卡: 换到eseunopágina.  */
+  /** 点一张读数卡：换到那一页。 */
   open(section: DataCleanupSection): void;
 }
 
-/** RepetirArchivopágina仍由遗Deja层提供能力.  */
+/** 重复文件页仍由遗留层提供的能力。 */
 export interface DuplicatesProps {
-  /** AbrirObrasDetalles(遗Deja层Completopágina视Imagen).  */
+  /** 打开作品详情（遗留层的整页视图）。 */
   openItem(id: number): void;
-  /** 操作回执; 给 `undo` 就带unoDeshacerClave.  */
+  /** 操作回执；给了 `undo` 就带一颗撤销键。 */
   toast(message: string, options?: { undo?: () => Promise<void> }): void;
   failure(action: string, error: unknown): void;
 }
 
-/** ReproducirListapágina仍由遗Deja层提供能力.  */
+/** 播放列表页仍由遗留层提供的能力。 */
 export interface PlaylistsProps {
-  /** AbrirunoListaReproducirCola, 从 `resumeAssetId` eseunocontinuar着播.  */
+  /** 打开一份列表的播放队列，从 `resumeAssetId` 那一个接着播。 */
   openPlaylist(id: number, resumeAssetId: number): void;
-  /** 点署名行Avatar: 去este人资料página. `kind` es `performer`/`creator`.  */
+  /** 点署名行的头像：去这个人的资料页。`kind` 是 `performer`／`creator`。 */
   openEntity(kind: string, name: string): void;
-  /** 此刻能No能Pasar el ratón翻Página: 壳más选, 遮挡, 减menos动效y滚动en proceso都回 false.  */
+  /** 此刻能不能悬停翻页：壳的多选、遮挡、减少动效与滚动中都回 false。 */
   canFlip(): boolean;
-  /** 操作回执(遗Deja层 `actionReceipt`); 给 `undo` 就带unoDeshacerClave. Deshacer抛错时回执自己
-   *  换成"DeshacerFallo", página面No另报uno次.  */
+  /** 操作回执（遗留层 `actionReceipt`）；给了 `undo` 就带一颗撤销键。撤销抛错时回执自己
+   *  换成「撤销失败」，页面不另报一次。 */
   toast(message: string, options?: { undo?: () => Promise<void> }): void;
-  /** Actualizar代次. 壳Enesteunopáginaarriba要求pesado读(顶栏"换uno批", 从别处写完回来)时加uno, página面据此pesado取, Nopesado挂.  */
+  /** 刷新代次。壳在这一页上要求重读（顶栏「换一批」、从别处写完回来）时加一，页面据此重取，不重挂。 */
   revision?: number;
 }
 
-/** Todo站 Toast 两字形, 遗Deja层 `icon()` 画bien SVG 片段.  */
+/** 全站 Toast 的两枚字形，遗留层 `icon()` 画好的 SVG 片段。 */
 export interface ToastIcons { success: string; error: string }
 
-/** uno回执. `html` ya由遗Deja层 `toastBody` 按调用点声明转义或Original样放行.  */
+/** 一条回执。`html` 已由遗留层的 `toastBody` 按调用点的声明转义或原样放行。 */
 export interface ToastRequest {
   html: string;
   alert: boolean;
-  /** 毫秒; 0 y负数按Predeterminado 6 秒, `Infinity` 表示No自己消失.  */
+  /** 毫秒；0 与负数按默认的 6 秒，`Infinity` 表示不自己消失。 */
   timeout: number;
   action: { label: string; run(button: HTMLButtonElement): void } | null;
 }
 
 export type { StageApi, StageHost, StagePatch, StageRequest } from './stage/stage-api';
 
-/** continuararriba壳给宿主, 拿回舞命令入口(`stage/stage.tsx`). Solo调uno次; esteuno面由 `application-residents.ts` 
- *  `loadStage` continuar着经常驻表 `openResidentSurface` En路由树dentroAbrir.  */
+/** 接上壳给的宿主，拿回舞台的命令式入口（`stage/stage.tsx`）。只调一次；这一面由 `application-residents.ts` 的
+ *  `loadStage` 接着经常驻表的 `openResidentSurface` 在路由树里打开。 */
 export declare function configureStage(host: StageHost): StageApi;
 
 export type {
   SettingsEffect, SettingsPanelApi, SettingsPanelHost,
 } from './settings-panel/settings-panel-api';
 
-/** continuararriba壳给宿主, 拿回Configuración面板命令入口(`settings-panel/settings-panel.tsx`). Solo调uno次; esteuno面由
- *  `application-residents.ts`  `loadSettingsPanel` continuar着经常驻表 `openResidentSurface` En路由树dentroAbrir.  */
+/** 接上壳给的宿主，拿回设置面板的命令式入口（`settings-panel/settings-panel.tsx`）。只调一次；这一面由
+ *  `application-residents.ts` 的 `loadSettingsPanel` 接着经常驻表的 `openResidentSurface` 在路由树里打开。 */
 export declare function configureSettingsPanel(host: SettingsPanelHost): SettingsPanelApi;
 
 export type { ImmerseApi, ImmerseHost } from './immerse/immerse-api';
 
-/** continuararriba壳给宿主, 拿回InmersivoModo命令入口(`immerse/immerse-island.tsx`). Solo调uno次; esteuno面由
- *  `application-residents.ts`  `loadImmerse` continuar着经常驻表 `openResidentSurface` En路由树dentroAbrir.  */
+/** 接上壳给的宿主，拿回沉浸模式的命令式入口（`immerse/immerse-island.tsx`）。只调一次；这一面由
+ *  `application-residents.ts` 的 `loadImmerse` 接着经常驻表的 `openResidentSurface` 在路由树里打开。 */
 export declare function configureImmerse(host: ImmerseHost): ImmerseApi;
 
 export type {
   SidebarApi, SidebarChip, SidebarContent, SidebarDot, SidebarFacets, SidebarHost, SidebarProps,
 } from './sidebar/sidebar-api';
 
-/** continuararriba壳给宿主, 拿回侧栏命令入口(`sidebar/sidebar-island.tsx`). Solo调uno次; esteuno面由 `application-residents.ts` 
- *  `loadSidebar` continuar着经常驻表 `openResidentSurface` En路由树dentroAbrir.  */
+/** 接上壳给的宿主，拿回侧栏的命令式入口（`sidebar/sidebar-island.tsx`）。只调一次；这一面由 `application-residents.ts` 的
+ *  `loadSidebar` 接着经常驻表的 `openResidentSurface` 在路由树里打开。 */
 export declare function configureSidebar(host: SidebarHost): SidebarApi;
 
 export type {
   ManageEntry, ManageHeaderApi, ManageHeaderHost, ManageHeaderProps, TrashCount,
 } from './manage-header/manage-header-api';
 
-/** continuararriba壳给宿主, 拿回Gestionar区página头命令入口(`manage-header/manage-header-island.tsx`). Solo调uno次; esteuno面由
- *  `application-residents.ts`  `loadManageHeader` continuar着经常驻表 `openResidentSurface` En路由树dentroAbrir.  */
+/** 接上壳给的宿主，拿回管理区页头的命令式入口（`manage-header/manage-header-island.tsx`）。只调一次；这一面由
+ *  `application-residents.ts` 的 `loadManageHeader` 接着经常驻表的 `openResidentSurface` 在路由树里打开。 */
 export declare function configureManageHeader(host: ManageHeaderHost): ManageHeaderApi;
 
 export type {
   BatchAction, BatchContext, BatchDockApi, BatchDockHost, BatchDockProps, BatchGroup,
 } from './batch-dock/batch-dock-api';
 
-/** continuararriba壳给宿主, 拿回批量命令入口(`batch-dock/batch-dock-island.tsx`). Solo调uno次; esteuno面由
- *  `application-residents.ts`  `loadBatchDock` continuar着经常驻表 `openResidentSurface` En路由树dentroAbrir.  */
+/** 接上壳给的宿主，拿回批量条的命令式入口（`batch-dock/batch-dock-island.tsx`）。只调一次；这一面由
+ *  `application-residents.ts` 的 `loadBatchDock` 接着经常驻表的 `openResidentSurface` 在路由树里打开。 */
 export declare function configureBatchDock(host: BatchDockHost): BatchDockApi;
 
 export type { GlowPickerHost } from './glow-picker/glow-picker-api';
 
-/** continuararriba壳给宿主(`glow-picker/glow-picker-island.tsx`). Solo调uno次; 卡contenido由 `application-residents.ts` 
- *  `loadGlowPicker` continuar着经常驻表 `openResidentSurface` En路由树dentro画.  */
+/** 接上壳给的宿主（`glow-picker/glow-picker-island.tsx`）。只调一次；卡的内容由 `application-residents.ts` 的
+ *  `loadGlowPicker` 接着经常驻表的 `openResidentSurface` 在路由树里画。 */
 export declare function configureGlowPicker(host: GlowPickerHost): void;
 
 export type { ManagedOpenProps, ManagedPath, ShellActions } from './router/shell-actions';
 
-/** 路由树ese几páginaprimero屏取数(`@peach/history`  `openManagedRoute` 经 `connectManagedRoutes` 调它).  */
+/** 路由树那几页的首屏取数（`@peach/history` 的 `openManagedRoute` 经 `connectManagedRoutes` 调它）。 */
 export declare function prefetchManagedRoute(path: string, open: object, signal: AbortSignal): Promise<void>;
 
-/** En `host` arriba挂Todo站唯uno Toaster; Repetir调用es空操作.  */
+/** 在 `host` 上挂全站唯一的 Toaster；重复调用是空操作。 */
 export declare function mountToaster(host: Element, icons: ToastIcons): void;
-/** 发出uno回执; 同uno `id` 再调uno次就es改写eseuno.  */
+/** 发出一条回执；同一个 `id` 再调一次就是改写那一条。 */
 export declare function showToast(id: string, request: ToastRequest): void;

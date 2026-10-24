@@ -1,9 +1,9 @@
-/* 实体资料página(路由树画进 `#index`, `managed-routes.tsx`  `ENTITY_ROUTES`): 资料卡, Filtrar浮层, Nuevas obraseseuno行y正文, uno棵根, cuatro宿主. 
+/* 实体资料页（路由树画进 `#index`，`managed-routes.tsx` 的 `ENTITY_ROUTES`）：资料卡、筛选浮层、新作那一行与正文，一棵根、四块宿主。
  *
- * 资料卡画En壳交出宿主dentro(`[data-entity-hero]` eseuno格), 浮层, Nuevas obrasy正文经 portal 画进壳排bien另exteriortres: 浮层
- * 吸顶要它父元素就es `#index`, Nuevas obraseseuno行es遗Deja层卡片, No进 React 子树样Rango, 所以cuatro各
- * 守自己宿主. páginainteriorEstado都Enaquí: 当anterior视Imagen, 名册还esObras, 照片MuroSemillay翻página; Filtrary媒体视Imagen读
- * 地址栏(壳推进来 `filters`/`media`), 改它们Solo调 `actions.route`.  */
+ * 资料卡画在壳交出的宿主里（`[data-entity-hero]` 那一格），浮层、新作与正文经 portal 画进壳排好的另外三块：浮层
+ * 吸顶要它的父元素就是 `#index`，新作那一行是遗留层的卡片、不进 React 子树的样式范围，所以四块各
+ * 守自己的宿主。页内状态都在这里：当前视图、名册还是作品、照片墙的种子与翻页；筛选与媒体视图读
+ * 地址栏（壳推进来的 `filters`／`media`），改它们只调 `actions.route`。 */
 import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -38,15 +38,15 @@ import { useEntityOnline } from './use-entity-online';
 export function EntityPage(props: EntityPageProps) {
   const { kind, name } = props;
   const entity = useQuery(entityOptions(kind, name));
-  /* 名字对Noarriba任何uno时 `/api/entity` 回 `{error}`: Completo换成壳dentroeseuno屏空态, 骨架NoDeja着闪. 空态es
-     遗Deja层Etiqueta, No放进 React 子树样Rango.  */
+  /* 名字对不上任何一位时 `/api/entity` 回 `{error}`：整块换成壳里那一屏空态，骨架不留着闪。空态是
+     遗留层的标记，不放进 React 子树的样式范围。 */
   const missing = !!entity.data?.error;
   const canonical = entity.data?.canonical_name;
   const redirect = entity.data?.redirect ?? (canonical && canonical !== name ? { kind, name: canonical } : undefined);
   const { actions } = props;
   useLayoutEffect(() => { if (missing) actions.missing() }, [actions, missing]);
-  /* 换到Normalizar资料página排到微Tareadentro: 壳换página会pesado排página头y选en proceso态, eseuno路puede能走到批量 `flushSync`, 
-     提交阶段dentro它画No出来. esteuno代ya卸abajo就No换.  */
+  /* 换到规范资料页排到微任务里：壳换页会重排页头与选中态，那一路可能走到批量条的 `flushSync`，
+     提交阶段里它画不出来。这一代已卸下就不换。 */
   useLayoutEffect(() => {
     if (!redirect) return;
     let live = true;
@@ -58,7 +58,7 @@ export function EntityPage(props: EntityPageProps) {
   return <EntityLoaded {...props} entity={entity.data} />;
 }
 
-/** Claveuno变就加uno代次: ObrasCuadrículay照片Muro按它换Clave, 骨架y续página都从头Empezar.  */
+/** 键一变就加一的代次：作品网格与照片墙按它换键，骨架与续页都从头开始。 */
 function useRevision(key: string): number {
   const [seen, setSeen] = useState({ key, n: 1 });
   if (seen.key === key) return seen.n;
@@ -69,37 +69,37 @@ function useRevision(key: string): number {
 
 const newSeed = () => String(((Date.now() ^ (Math.random() * 1e9 | 0)) >>> 0) % 99991);
 
-/** 照片uno屏读数: 本地Imagen片y样各数各; SoloCon样时No写"0 ".  */
+/** 照片一屏的读数：本地图片与样张各数各的；只有样张时不写「0 张」。 */
 function photoReadout(page: PhotoPage, codeSets: number) {
-  return `Foto · ${[
-    page.total || !codeSets ? `${(page.total || 0).toLocaleString()}  imagen(es)` : '',
-    codeSets ? `Muestra ${(page.sample_total || 0).toLocaleString()}  imagen(es) · ${codeSets.toLocaleString()}  obra(s)` : '',
+  return `照片 · ${[
+    page.total || !codeSets ? `${(page.total || 0).toLocaleString()} 张` : '',
+    codeSets ? `样张 ${(page.sample_total || 0).toLocaleString()} 张 · ${codeSets.toLocaleString()} 部作品` : '',
   ].filter(Boolean).join(' · ')}`;
 }
 
 function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
   const { kind, name, entity, filters, media, helpers, actions, hosts } = props;
   const company = kind === 'agency' || kind === 'studio';
-  /* Agencia名abajoeste批人No摆En资料卡底ese排pequeño圆Avatardentro: esees"同艺人", uno附注; 名册esesteunopágina
-     正文. 片商página名册es旗abajo label, 同艺人ese排照antiguoDejaEn卡底.  */
+  /* 事务所名下的这批人不摆在资料卡底那排小圆头像里：那是「同台艺人」，一条附注；名册是这一页的
+     正文。片商页的名册是旗下 label，同台艺人那排照旧留在卡底。 */
   const roster = kind === 'agency' ? (entity.related_performers || []) : kind === 'studio' ? (entity.labels || []) : [];
   const entityId = Number(entity.id) || 0;
 
-  /* ── 照片: Completo组eseuno数出照片档Con几, 出No出; Muro读es当anterioresteuno组(Completo组或unoImagen集).  ── */
+  /* ── 照片：整组那一份数出照片档有几张、出不出；墙读的是当前这一组（整组或一个图集）。 ── */
   const base = useInfiniteQuery(photosOptions(kind, name, 0, ''));
   const basePage = base.data?.pages[0];
   const basePhotos = basePage && !basePage.error ? basePage : null;
   const photoCount = basePhotos ? (basePhotos.total || 0) + (basePhotos.sample_total || 0) : 0;
   const photosAvailable = (basePhotos?.total || 0) > 0 || codeSetsOf(basePhotos).length > 0;
-  /* 关注dentro绑Eneste名abajo来源(ADR-0096): Con就másunoEn线视Imagen. 本地uno部视频都Sin时Obras视Imagenes空, 
-     视频ClaveNo出, 进página就落EnEn线.  */
+  /* 关注里绑在这位名下的来源（ADR-0096）：有就多一个在线视图。本地一部视频都没有时作品视图是空的，
+     视频键不出，进页就落在在线。 */
   const followKey = kind === 'creator' ? entity.follow?.key || '' : '';
   const onlineOnly = !!followKey && !entity.asset_count;
   const mediaNow = media.media === 'photos' && photosAvailable ? media
     : (media.media === 'online' || onlineOnly) && followKey ? { media: 'online' as const, set: 0 } : EMPTY_MEDIA;
 
-  /* 名册y媒体No共用地址栏: 地址栏Solo认 `media`, 名册esAgenciapáginay片商páginaPredeterminado视Imagen, 进página就Enesedentro. 
-     换Filtrar就回到Obras: EtiquetaesObrasFiltrar, DejaEn名册dentro既No生效, Etiqueta也会自相矛盾.  */
+  /* 名册与媒体不共用地址栏：地址栏只认 `media`，名册是事务所页与片商页的默认视图，进页就在那里。
+     换了筛选就回到作品：标签是作品筛选，留在名册里既不生效，标签条也会自相矛盾。 */
   const [rosterView, setRosterView] = useState<'people' | 'videos'>('people');
   const filterKey = new URLSearchParams(Object.entries(filters).filter(([, value]) => value)).toString();
   const [seenFilters, setSeenFilters] = useState(filterKey);
@@ -109,23 +109,23 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
   }
   const view: EntityView = company && rosterView === 'people' && roster.length ? 'people' : mediaNow.media;
 
-  /* ── En线: Filtrary取数同关注página, Solo按este作者Clave筛 ── */
+  /* ── 在线：筛选与取数同关注页，只按这位的作者键筛 ── */
   const online = useEntityOnline(followKey, view === 'online', {
     photoLayout: props.photoLayout, photoLayouts: props.photoLayouts, imagesOnly: props.followImagesOnly,
     setImagesOnly: props.follow.actions.setImagesOnly,
   });
   const photoWall = view === 'photos' || (view === 'online' && online.media === 'images');
 
-  /* 换过几次Avatar. 资料卡yObrasCuadrícula都Imagen拼进自己Estado(CuadrículaSoloEn代次变时才按NuevoNo.unopágina
-     pesado建), pesado取到NuevoDatos还No够, 得换Clavepesado建, NuevoImagen地址en laVersión才落得到página面arriba.  */
+  /* 换过几次头像。资料卡与作品网格都把图拼进了自己的状态（网格只在代次变时才按新的第一页
+     重建），重取到新数据还不够，得换键重建，新图地址里的版本才落得到页面上。 */
   const [avatarEpoch, setAvatarEpoch] = useState(0);
 
-  /* ── Obras ── */
+  /* ── 作品 ── */
   const itemsQuery = itemsOptions(props);
   const items = useQuery(itemsQuery);
   const itemsRevision = useRevision(JSON.stringify([itemsQuery.queryKey, avatarEpoch]));
-  /* 直达或Actualizar资料página时 URL Sin `jav=1`: 以No.unopáginaObras真实 `is_jav` RestaurarActriz/Sello语境, 版开关
-     NoesSoloEn从 JAV primeropágina点进来时才偶然存En. Solover进páginaeseuno, páginainterior换FiltrarNo改语境.  */
+  /* 直达或刷新资料页时 URL 没有 `jav=1`：以第一页作品的真实 `is_jav` 恢复女优／厂牌语境，版式开关
+     不是只在从 JAV 首页点进来时才偶然存在。只看进页那一份，页内换筛选不改语境。 */
   const [javPage] = useState(() => (kind === 'performer' || kind === 'studio')
     && (props.jav || (items.data?.items || []).some((item) => item.is_jav)));
   useLayoutEffect(() => { actions.javContext(javPage) }, [actions, javPage]);
@@ -135,10 +135,10 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
   const fetchPage = useCallback(
     (offset: number, signal: AbortSignal, options?: Parameters<typeof fetchItems>[6]) =>
       fetchItems(kind, name, filters, opts, offset, signal, options),
-    // 续página口径就esNo.unopáginaeseuno: 代次随Clave变, Clavedentroya经带着Filtrar, Semillay JAV 开关. 
+    // 续页的口径就是第一页那一份：代次随键变，键里已经带着筛选、种子与 JAV 开关。
     [itemsRevision]);
 
-  /* ── 照片Muro ── */
+  /* ── 照片墙 ── */
   const [seeds, setSeeds] = useState<Record<number, string>>({});
   const wallSet = mediaNow.set;
   const wallSeed = seeds[wallSet] || '';
@@ -160,7 +160,7 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
   const wallRefetch = wall.refetch;
   const fetchNextPhotos = wall.fetchNextPage;
 
-  /* ── Nuevas obras ── */
+  /* ── 新作 ── */
   const feed = useQuery({ ...feedNewOptions(entityId, helpers.feedRowHtml), enabled: !!entityId });
   const feedRevision = useRef(props.feedRevision);
   useEffect(() => {
@@ -169,7 +169,7 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
     void queryClient.invalidateQueries({ queryKey: feedNewKey(entityId) });
   }, [entityId, props.feedRevision]);
 
-  /* 换视Imagen, 换uno批contenido之posterior吸顶要pesado算uno次.  */
+  /* 换了视图、换了一批内容之后吸顶要重算一次。 */
   const hasItems = !!items.data;
   useEffect(() => { actions.painted(view, photoWall) },
     [actions, view, photoWall, itemsRevision, photos?.revision, hasItems, online.key]);
@@ -207,20 +207,20 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
 
   const heroActions = useMemo<EntityHeroActions>(() => ({
     openEntity: actions.openEntity,
-    /* 换统称要pesado写Completo实体扁平投影, 先代价说清再问. ConfirmarClave, Título y Éxito回执共用"更改统称"esteuno
-       动词; 写入Fallo时弹层DejaEnOriginal地, Original因写En正文abajo方etc.Reintentar. 地址换成Nuevo名字, 由壳pesado进esteunopágina.  */
+    /* 换统称要重写整条实体的扁平投影，先把代价说清再问。确认键、标题和成功回执共用「更改统称」这一个
+       动词；写入失败时弹层留在原地，原因写在正文下方等重试。地址换成新名字，由壳重进这一页。 */
     chooseName: (chosen) => {
       const current = entity.canonical_name;
       if (chosen === current) return;
       void confirmModal({
-        title: 'Cambiar nombre general',
-        body: `"${chosen}"将成Comoeste档案MostrarNombre, "${current}"Deja作Alias. Obraen la署名, Buscar y Etiqueta都会跟着改写. `,
-        confirmLabel: 'Cambiar nombre general',
+        title: '更改统称',
+        body: `「${chosen}」将成为这份档案显示的名称，「${current}」留作别名。作品上的署名、搜索和标签都会跟着改写。`,
+        confirmLabel: '更改统称',
         onConfirm: () => rename.mutateAsync({ from: current, to: chosen }),
       }).then(({ confirmed, result }) => {
         const done = result as { changed?: boolean; canonical_name?: string; previous_name?: string } | undefined;
         if (!confirmed || !done?.changed) return;
-        helpers.receipt(`Ya统称更改Como ${done.canonical_name}`, { undo: async () => {
+        helpers.receipt(`已把统称更改为 ${done.canonical_name}`, { undo: async () => {
           await rename.mutateAsync({ from: done.canonical_name || '', to: done.previous_name || '' });
           actions.openEntity(kind, done.previous_name || '');
         } });
@@ -232,12 +232,12 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
       try {
         await follow.mutateAsync(on);
       } catch (error) {
-        helpers.failure(on ? 'Suscribirse a nuevas obras' : 'CancelarSuscribirse a nuevas obras', error);
+        helpers.failure(on ? '订阅新作' : '取消订阅新作', error);
         throw error;
       }
     },
-    /* "订阅Nuevas obras"Abrir时服务端当场Enposterior拉uno轮: etc.eseuno轮跑完再Nuevas obraseseuno行pesado取uno次. etc.arriba限es
-       eseuno轮自己Duración量级, página面换走就No再etc..  */
+    /* 「订阅新作」打开时服务端当场在后台拉一轮：等那一轮跑完再把新作那一行重取一次。等的上限是
+       那一轮自己的时长量级，页面换走了就不再等。 */
     refreshFeedAfterCheck: () => {
       void (async () => {
         for (let tries = 0; tries < 40 && alive.current; tries += 1) {
@@ -249,28 +249,28 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
       })();
     },
     feedAction: postFeedAction,
-    /* 圆框角arribaese加号: Avatar索引En服务端ya经换过. 资料yObrasListauno起pesado取(Obras卡署名dentro也es
-       este脸), 回来posterior资料卡yObrasCuadrícula都按NuevoDatospesado建; 壳缓存着顶部tres也unoy作废.  */
+    /* 圆框角上那个加号：头像索引在服务端已经换过。资料与作品列表一起重取（作品卡署名里也是
+       这张脸），回来后资料卡与作品网格都按新数据重建；壳缓存着的顶部三条也一并作废。 */
     avatarPicked: () => {
       actions.avatarChanged();
       void refreshEntity().then(() => {
         if (alive.current) setAvatarEpoch((epoch) => epoch + 1);
       });
     },
-    /* 资料卡ese句"N 项Actualizar": este名abajo就EnesteunopáginaEn线视Imagendentro, No离开; 别作者Clave才去关注página.  */
+    /* 资料卡那句「N 项更新」：这位名下的就在这一页的在线视图里，不离开；别的作者键才去关注页。 */
     openFollowAuthor: (key) => {
       if (key && key === followKey) actions.route(filters, { media: 'online', set: 0 });
       else actions.openFollowAuthor(key);
     },
-    /* 认过之posteriorese组来源Actualizar都记到este名abajo: 资料pesado取, 读数ySugerencia跟着换.  */
+    /* 认过之后那组来源的更新都记到这位名下：资料重取，读数与提示跟着换。 */
     confirmFollowAuthor: async (key, author) => {
       try {
         await bindFollow.mutateAsync(key);
       } catch (error) {
-        helpers.failure('VincularSeguir作者', error);
+        helpers.failure('绑定关注作者', error);
         throw error;
       }
-      helpers.receipt(`YaSeguiren la ${author} 记到 ${entity.canonical_name} 名abajo`);
+      helpers.receipt(`已把关注里的 ${author} 记到 ${entity.canonical_name} 名下`);
       await refreshEntity();
     },
   }), [actions, alias, bindFollow, entity, entityId, filters, follow, followKey, helpers, kind, name, refreshEntity, rename]);
@@ -283,7 +283,7 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
 
   /* ── 浮层 ── */
   const filterActions = useMemo<EntityFilterActions>(() => ({
-    /* 按abajo去eseunoabajo视ImagenClave就换过去, 玻璃跟着滑, Noetc.换视Imagen活干完.  */
+    /* 按下去那一下视图键就换过去，玻璃跟着滑，不等换视图的活干完。 */
     setView: (next) => {
       if (next === view && !mediaNow.set) return;
       setRosterView(next === 'people' ? 'people' : 'videos');
@@ -294,8 +294,8 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
     clearFilter: actions.clearFilter,
     clearAll: actions.clearAll,
     setSort: actions.setSort,
-    /* 换uno批: 照片换uno粒Semillaesteuno屏pesado排uno遍, Completo组或单Imagen集都es, NuevoMuro取回来再换arriba, etc.esteunoabajo
-       Clavearriba转圈; Obraseseuno粒esTodo站Semilla, 交给壳.  */
+    /* 换一批：照片换一粒种子把这一屏重排一遍，整组或单个图集都是，新墙取回来再换上，等的这一下
+       键上转圈；作品那一粒是全站的种子，交给壳。 */
     reshuffle: async () => {
       if (view !== 'photos') {
         const seed = actions.reshuffleVideos();
@@ -321,15 +321,15 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
     wireSourceTools: (root) => helpers.wireSourceTools(root, () => { void wallRefetch() }),
   }), [helpers, wallRefetch]);
 
-  /* Etiqueta按资料en la顺序摆, 选en procesoNo往anterior挪: 刚点ese就En指针底abajo, esteunoabajo它抽走反倒es替人决定
-     现En该ver哪儿. 数eseste人/Sello名abajo带esteEtiqueta视频.  */
+  /* 标签按资料里的顺序摆，选中的不往前挪：刚点的那枚就在指针底下，这一下把它抽走反倒是替人决定
+     现在该看哪儿。数的是这个人／厂牌名下带这个标签的视频。 */
   const tags: EntityFilterTag[] = (entity.tags || []).map((tag) => ({
     k: tag.k, label: tagLabel(tag.k), n: tag.n, selected: tagPressed(filters.tag, tag.k) }));
-  /* 艺人名册, 视频, 照片yEn线esesteunopágina互斥视Imagen, 共用uno组圆Clave; SoloConuno类东西时No出esteuno组.  */
+  /* 艺人名册、视频、照片与在线是这一页的互斥视图，共用一组圆键；只有一类东西时不出这一组。 */
   const viewKinds = [roster.length, !onlineOnly, photoCount, followKey].filter(Boolean).length;
   const views: EntityViewKeys | null = viewKinds > 1 ? {
-    label: roster.length ? 'Vista de página' : 'Tipo de medio',
-    people: roster.length ? { label: kind === 'studio' ? 'Sello' : 'Actriz', count: roster.length,
+    label: roster.length ? '页面视图' : '媒体类型',
+    people: roster.length ? { label: kind === 'studio' ? '厂牌' : '艺人', count: roster.length,
       icon: kind === 'studio' ? 'clapperboard' : 'user-round' } : null,
     videos: onlineOnly ? null : { count: entity.asset_count || 0 },
     photos: photoCount ? { count: photoCount } : null,
@@ -339,41 +339,41 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
     sorts: helpers.sortKeys(filters.sort || 'new', filters.dir || '', javPage),
     jav: javPage ? { layout: props.javLayout, options: props.javLayouts } : null,
   };
-  /* 照片esteuno排No给OrdenarClave: DatosBibliotecadentroImagen片SoloConArchivo名, 体积 y 来源tres样. EnunoImagen集dentromás两源ArchivoClave.  */
+  /* 照片这一排不给排序键：数据库里图片只有文件名、体积和来源三样。在一个图集里多两枚源文件键。 */
   const inSet = !!wallPage?.id && !wallPage.error;
   const photo: EntityPhotoHead | null = wallPage && !wallPage.error ? {
     back: inSet, shuffle: !!wallPage.total, layout: props.photoLayout, layouts: props.photoLayouts,
     setId: inSet ? Number(wallPage.id) : 0,
   } : null;
-  /* 名Siguiente部Obras都Sin(或筛完uno部No剩)时正文es空态, abajo排ese排OrdenarClavey换uno批Sin东西puede排, No出.  */
+  /* 名下一部作品都没有（或筛完一部不剩）时正文是空态，下排那排排序键与换一批没有东西可排，不出。 */
   const combo = helpers.comboItems(filters);
   const filtered = combo.length > 0 || !!filters.state;
   const worksEmpty = view === 'videos' && !!items.data && !(items.data.items || []).length;
   const showAll = () => actions.route(
-    // Clave名y壳 `clearAll` 同uno组, exterior加观verEstado. 
+    // 键名与壳的 `clearAll` 同一组，外加观看状态。
     { ...filters, state: '', tag: '', creator: '', studio: '', owner: '' }, EMPTY_MEDIA);
   let readout = '';
   let busy = false;
-  if (view === 'people') readout = `${kind === 'studio' ? 'Sello' : 'Actriz'} · ${roster.length.toLocaleString()}`;
+  if (view === 'people') readout = `${kind === 'studio' ? '厂牌' : '艺人'} · ${roster.length.toLocaleString()}`;
   else if (view === 'online') {
     busy = online.busy;
-    readout = `En línea · ${(online.total ?? entity.follow?.n ?? 0).toLocaleString()}  actualización(es)`;
+    readout = `在线 · ${(online.total ?? entity.follow?.n ?? 0).toLocaleString()} 项更新`;
   }
   else if (view === 'videos') {
     busy = !items.data;
-    /* 选哪几Etiqueta由arriba面ese交集unouno列着, 读数Solo报数: Etiqueta名再列uno遍, 几largoEtiqueta
-       就能esteuno行撑出página面.  */
+    /* 选了哪几枚标签由上面那条交集条一枚一枚列着，读数只报个数：标签名再列一遍，几枚长标签
+       就能把这一行撑出页面。 */
     const picked = tagList(filters.tag).length;
-    readout = `Videos · ${(items.data?.work_total ?? items.data?.total ?? 0).toLocaleString()}${picked ? ` · Ya选 ${picked.toLocaleString()} Etiqueta` : ''}`;
+    readout = `视频 · ${(items.data?.work_total ?? items.data?.total ?? 0).toLocaleString()}${picked ? ` · 已选 ${picked.toLocaleString()} 个标签` : ''}`;
   } else if (wallPage && !wallPage.error) {
-    readout = inSet ? `${wallPage.title} · ${(wallPage.total || 0).toLocaleString()}  imagen(es)`
+    readout = inSet ? `${wallPage.title} · ${(wallPage.total || 0).toLocaleString()} 张`
       : photoReadout(wallPage, codeSetsOf(wallPage).length);
   } else busy = wall.isPending;
 
   /* ── 正文 ── */
   const bodyActions = useMemo<EntityBodyActions>(() => ({
     ...props.card.actions,
-    /* 本地Imagen片Siguientepágina; 取No到就抛错, Claveabajo出Reintentar.  */
+    /* 本地图片的下一页；取不到就抛错，键下出重试。 */
     loadMorePhotos: async () => {
       const result = await fetchNextPhotos();
       if (result.isError) throw result.error;
@@ -417,16 +417,16 @@ function EntityLoaded(props: EntityPageProps & { entity: EntityPageData }) {
   );
 }
 
-/** Obras区uno部也Sin. 筛完uno部No剩时给uno回到Todo视频路: 观verEstadoy交集en laFiltraruno起撤掉.  */
+/** 作品区一部也没有。筛完一部不剩时给一条回到全部视频的路：观看状态与交集条上的筛选一起撤掉。 */
 function WorksEmpty({ filtered, onShowAll }: { filtered: boolean; onShowAll(): void }) {
   return filtered ? (
-    <EmptyState icon={spriteGlyph('search')} title="Sinque cumple los criterios de resultado deVideos"
-      actions={<Button variant="secondary" onClick={onShowAll}>verTodoVideos</Button>}>
-      BorrarFiltrarposteriorver名abajoTodo视频. 
+    <EmptyState icon={spriteGlyph('search')} title="没有符合条件的视频"
+      actions={<Button variant="secondary" onClick={onShowAll}>查看全部视频</Button>}>
+      清除筛选后查看名下全部视频。
     </EmptyState>
   ) : (
-    <EmptyState icon={spriteGlyph('film')} title="Sin videos todavía">
-      署arribaeste名字视频入Bibliotecaposterior会显示Enaquí. 
+    <EmptyState icon={spriteGlyph('film')} title="还没有视频">
+      署上这个名字的视频入库后会显示在这里。
     </EmptyState>
   );
 }

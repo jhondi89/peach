@@ -1,8 +1,8 @@
-/* DatosBibliotecadentrouno律存 UTC(ISO 带 Z), 界面要按ver人所En时区显示. No.dospágina面要用就搬进
- * aquí, No各写uno: 两处各自解释"Sin时区Etiqueta算哪uno边"话, 同unoTiempo会En两páginaarriba
- * 差出ochopequeño时.  */
+/* 数据库里一律存 UTC（ISO 带 Z），界面要按看的人所在时区显示。第二个页面要用就搬进
+ * 这里，不各写一份：两处各自解释「没有时区标记的算哪一边」的话，同一个时间会在两页上
+ * 差出八小时。 */
 
-/** 本机Tiempo. Sin时区Etiqueta按 UTC 解释—存进去时候就es UTC.  */
+/** 本机时间。没有时区标记的按 UTC 解释——存进去的时候就是 UTC。 */
 export function localTime(iso: string | null | undefined): string {
   if (!iso) return '';
   const text = /[Zz]|[+-]\d\d:?\d\d$/.test(iso) ? iso : `${iso}Z`;

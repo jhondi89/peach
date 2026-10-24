@@ -1,4 +1,4 @@
-/* Explorar dispositivoExcepciónSoloRegistro到当anterior Peach Anfitrión. FalloNo再生成NuevoErrorPor favor求.  */
+/* 浏览器异常只记录到当前 Peach 主机。失败不再生成新的错误请求。 */
 let installed = false;
 
 export function installErrorReporting(): void {
@@ -28,5 +28,5 @@ export function installErrorReporting(): void {
     }).catch(() => {});
   };
   window.addEventListener('error', event => send('error', event.error, event.message, event));
-  window.addEventListener('unhandledrejection', event => send('unhandledrejection', event.reason, 'Excepción no manejada en Promise'));
+  window.addEventListener('unhandledrejection', event => send('unhandledrejection', event.reason, 'Promise 未处理的异常'));
 }

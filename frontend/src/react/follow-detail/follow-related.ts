@@ -9,7 +9,7 @@ import type { FollowDetailData } from './follow-detail';
 export const followRelatedKey = (id: number, media: FollowMedia, limit: number) =>
   ['follow-feed', 'related', id, media, limit] as const;
 
-/** Recomendado认Completo组身, Excluir当anterior组, yavery忽略; 按共同EtiquetaOrdenar, etc.分沿用取数顺序.  */
+/** 推荐认整组身份，排除当前组、已看与忽略；按共同标签排序，等分沿用取数顺序。 */
 export function followRelatedGroups(pages: readonly FollowPage[], current: FollowDetailData, media: FollowMedia, limit: number): FollowGroup[] {
   const excluded = new Set((current.group ? collectionItems(current.group) : [current.item]).map(item => item.id));
   const seen = new Set<number>();
@@ -33,7 +33,7 @@ export function followRelatedGroups(pages: readonly FollowPage[], current: Follo
     .slice(0, limit).map(row => row.group);
 }
 
-/** 复用关注分página y 缓存结构. 最más读trespágina; 同作者No足时CompletarBibliotecanovercontenido, 换仍puede直continuar命en procesoLista缓存.  */
+/** 复用关注分页和缓存结构。最多读三页；同作者不足时补全库未看内容，换条仍可直接命中列表缓存。 */
 export async function fetchFollowRelated(current: FollowDetailData, media: FollowMedia, limit: number,
   signal: AbortSignal): Promise<InfiniteData<FollowPage>> {
   const author = current.sources.find(source => source.id === current.item.source_id)?.author_key || '';

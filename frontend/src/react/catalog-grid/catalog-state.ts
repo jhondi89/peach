@@ -10,7 +10,7 @@ export interface CatalogPreferences {
 
 export interface CatalogAddress { pathname: string; search: string }
 
-/** DirectorioPor favor求完Completo口径; AleatorioSemillaDejaEninterior存, 地址Solo表达puedeCompartirFiltrar.  */
+/** 目录请求的完整口径；随机种子留在内存，地址只表达可分享的筛选。 */
 export interface CatalogState extends CatalogFilters {
   loc: string; creator: string; studio: string; owner: string;
   tag: string; tag_match: string; len: string; dur_min: string; dur_max: string;
@@ -30,7 +30,7 @@ export function resolveSort(rawSort: string | null, rawDir: string | null,
   return sortFromAddress(rawSort, rawDir, preferences.defaultSort, preferences.defaultSortDirection, fallback);
 }
 
-/** 启动时SoloEnDirectorio地址读DirectorioParámetro; 来源Rango同时适用于其它página面.  */
+/** 启动时只在目录地址读目录参数；来源范围同时适用于其它页面。 */
 export function initialCatalogFilters(address: CatalogAddress, preferences: CatalogPreferences,
   seed: () => string): CatalogState {
   const pathname = decodeURIComponent(address.pathname);
@@ -50,12 +50,12 @@ export function initialCatalogFilters(address: CatalogAddress, preferences: Cata
   };
 }
 
-/** Todo来源离线时保DejaRango, 空RangoEn API en proceso表示Completo馆藏.  */
+/** 全部来源离线时保留范围，空范围在 API 中表示整个馆藏。 */
 export function onlineDefaultLoc(loc: string, online: Readonly<Record<string, boolean | undefined>>): string {
   return loc.split(',').filter(Boolean).filter(key => online[key] !== false).join(',') || loc;
 }
 
-/** 显来源Parámetro(包括空串)拥Con最终决定权.  */
+/** 显式来源参数（包括空串）拥有最终决定权。 */
 export function defaultCatalogLoc(loc: string, search: string,
   online: Readonly<Record<string, boolean | undefined>>): string {
   return new URLSearchParams(search).has('loc') ? loc : onlineDefaultLoc(loc, online);
@@ -73,7 +73,7 @@ export function homePath(filters: Readonly<CatalogFilters>): string {
   return path + (params.size ? `?${params}` : '');
 }
 
-/** 回primeropágina保Deja来源Rango, 其余口径使用Explorar偏bienyNuevoSemilla.  */
+/** 回首页保留来源范围，其余口径使用浏览偏好与新种子。 */
 export function resetCatalogFilters(previous: Readonly<CatalogFilters>, preferences: CatalogPreferences,
   seed: () => string): CatalogState {
   return {
@@ -86,7 +86,7 @@ export function resetCatalogFilters(previous: Readonly<CatalogFilters>, preferen
   };
 }
 
-/** uno次写入让primeropáginaFiltraryPor favor求读取同uno对象.  */
+/** 一次写入让首页筛选条与请求读取同一个对象。 */
 export function homeCatalogState<T extends CatalogFilters>(state: T): {
   state: T; barsContext: BarsContext; detailReturnBarsContext: null;
 } {

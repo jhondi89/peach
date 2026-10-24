@@ -1,22 +1,22 @@
-/* 热力ImagenDatos形状y折算. EstadísticaspáginaReproducirTiempoy口味páginaExplorarTiempoes同uno形状, 
- * 服务端分别由 `web_stats.q_stats`  `play_activity` y口味Análisis `activity` 给出.  */
+/* 热力图的数据形状与折算。统计页的播放时间与口味页的浏览时间是同一个形状，
+ * 服务端分别由 `web_stats.q_stats` 的 `play_activity` 与口味分析的 `activity` 给出。 */
 
-/** 按天y按"星期 × 钟点"计数. `weekday` 0 es周uno, `timezone` 形如 `UTC+08:00`.  */
+/** 按天与按「星期 × 钟点」的计数。`weekday` 0 是周一，`timezone` 形如 `UTC+08:00`。 */
 export interface ActivityCounts {
   timezone?: string;
   days?: { date: string; count: number }[];
   hours?: { weekday: number; hour: number; count: number }[];
 }
 
-/** 热力Imagenen launo格. `share` esesteuno格相对最忙eseuno格浓度, 0 到 1.  */
+/** 热力图里的一格。`share` 是这一格相对最忙那一格的浓度，0 到 1。 */
 export interface HeatCell { key: string; label: string; count: number; share: number }
 
-export const WEEKDAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+export const WEEKDAYS = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
-/** Con计数格子至menosDejauno成浓度: uno次 y uno次都Sin必须ver得出差别.  */
+/** 有计数的格子至少留一成浓度：一次和一次都没有必须看得出差别。 */
 const shareOf = (count: number, max: number) => (count ? Math.max(0.12, count / max) : 0);
 
-/** 星期 × pequeño时 168 格. 越界或负数Registro当作Sin.  */
+/** 星期 × 小时的 168 格。越界或负数的记录当作没有。 */
 export function hourGrid(activity: ActivityCounts | undefined): { cells: HeatCell[]; total: number } {
   const counts = Array.from({ length: 7 }, () => Array<number>(24).fill(0));
   for (const item of activity?.hours || []) {
@@ -34,7 +34,7 @@ export function hourGrid(activity: ActivityCounts | undefined): { cells: HeatCel
   return { cells, total: flat.reduce((sum, count) => sum + count, 0) };
 }
 
-/** Reciente 91 天日历. último尾ese天由Datos说算, 往anterior数 90 天, en proceso间SinRegistroese些补 0.  */
+/** 最近 91 天的日历。末尾那天由数据说了算，往前数 90 天，中间没有记录的那些补 0。 */
 export function dayCalendar(activity: ActivityCounts | undefined):
 { cells: HeatCell[]; total: number; start: string; end: string } {
   const days = (activity?.days || [])

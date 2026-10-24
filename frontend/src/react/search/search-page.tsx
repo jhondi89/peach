@@ -1,13 +1,13 @@
-/* 顶栏Buscarabajo拉栏yClave盘(`search` 岛). 
+/* 顶栏搜索的下拉栏与键盘（`search` 岛）。
  *
- * Estado放Enuno随组件活着puede变仓dentro, Introducir框en laOriginal生事件改它再pesado画: `#q` es壳节点, 事件Solo能用
- * `addEventListener` continuar, ProcesarDispositivodentro要读esesteuno刻值, Noes挂arribaeseuno刻闭包en laese. Introducir法组字期间
- * 按Clave读Original生事件 `isComposing`: 方向ClaveEn挑候选字, 回车En定字, 都Noes给este菜单. 
+ * 状态放在一个随组件活着的可变仓里，输入框上的原生事件改它再重画：`#q` 是壳的节点，事件只能用
+ * `addEventListener` 接，处理器里要读的是这一刻的值，不是挂上那一刻闭包里的那份。输入法组字期间
+ * 的按键读原生事件的 `isComposing`：方向键在挑候选字、回车在定字，都不是给这个菜单的。
  *
- * BoardUI Registrarse表dentroSin Combobox/Command(`https://www.boardui.com/r/registry.json`, 2026-10-01), 
- * React Aria  ComboBox 要自己画Introducir框, Opcioneses listbox en la option: Opcionesdentro嵌删RegistroClave, 近作
- * pequeñoPortadaClave y 最arriba面ese排página签都放No进去. 所以aquí按遗Deja层eseuno套逐照做: arribaabajo环绕着选, 回车提交, 
- * Escape 先关abajo拉再清字, 空Introducir回车用占dentroeseRecomendado词.  */
+ * BoardUI 注册表里没有 Combobox／Command（`https://www.boardui.com/r/registry.json`，2026-10-01），
+ * React Aria 的 ComboBox 要自己画输入框、选项是 listbox 里的 option：选项里嵌的删记录键、近作
+ * 小封面键和最上面那排页签都放不进去。所以这里按遗留层那一套逐条照做：上下环绕着选、回车提交、
+ * Escape 先关下拉再清字、空输入回车用占位里那个推荐词。 */
 import { useLayoutEffect, useReducer, useRef, type MouseEvent, type ReactNode } from 'react';
 import { avatarInner } from '@peach/card-art';
 
@@ -25,21 +25,21 @@ interface Store {
   poolRequest: number;
   recommendations: SuggestGroup[];
   recommendationRequest: number;
-  /** 画eseuno刻Introducir框en la词y洗bienRecomendado.  */
+  /** 画的那一刻输入框里的词与洗好的推荐。 */
   query: string;
   picks: string[];
   suggestFor: string;
   groups: SuggestGroup[];
   tabs: SuggestTab[];
   suggestRequest: number;
-  /** Recienteuno次NoCategoríaCompletar问词: 聚焦时Datos晚到, 框dentro还eseste词就No再问uno遍.  */
+  /** 最近一次不分类补全问的词：聚焦时的数据晚到，框里还是这个词就不再问一遍。 */
   asked: string;
   timer: number;
   kind: string;
   active: number;
-  /** esteuno次选en procesoesClave盘挪: 画完eseuno行滚进视野.  */
+  /** 这一次选中是键盘挪的：画完把那一行滚进视野。 */
   reveal: boolean;
-  /** 选uno类: 画完abajo拉栏滚回顶arriba.  */
+  /** 选了一类：画完把下拉栏滚回顶上。 */
   rewind: boolean;
 }
 
@@ -68,7 +68,7 @@ export function SearchPage(props: SearchProps) {
   const root = useRef<HTMLDivElement>(null);
   const [, bump] = useReducer((n: number) => n + 1, 0);
 
-  /* ProcesarDispositivouno次建bien, 挂EnIntroducir框arriba; 读都es `latest` y仓dentroesteuno刻值.  */
+  /* 处理器一次建好、挂在输入框上；读的都是 `latest` 与仓里这一刻的值。 */
   const ops = useRef<ReturnType<typeof createOps> | null>(null);
   ops.current ??= createOps(() => latest.current, s, () => root.current?.closest<HTMLElement>('[data-search-menu]') ?? null, bump);
   const op = ops.current;
@@ -118,7 +118,7 @@ export function SearchPage(props: SearchProps) {
         <a href={group.href} onMouseDown={keep} onClick={event => {
           if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
           event.preventDefault(); op.openPath(group.href!);
-        }}>{group.action || 'verTodo'}</a>
+        }}>{group.action || '查看全部'}</a>
       ) : null}</h3>
       {group.kind ? <div data-search-items="">{group.options.map(option)}</div> : group.options.map(option)}
       {group.more ? option(group.more) : null}
@@ -136,7 +136,7 @@ export function SearchPage(props: SearchProps) {
       {s.query && model.recent ? section(model.recent) : null}
       {columns(model.left, model.right)}
       {!s.query && model.recent ? section(model.recent) : null}
-      {model.empty ? <p data-search-empty="" role="status">No encontrado</p> : null}
+      {model.empty ? <p data-search-empty="" role="status">没有找到</p> : null}
     </div>
   );
 }
@@ -154,10 +154,10 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
       const data = await apiGet<{ items?: unknown }>(`/api/search-history?limit=${limit}`);
       s.history = Array.isArray(data.items) ? data.items.map(String) : [];
     } catch {
-      // Registro读No到就用手arribaeste: Buscar本身No受影响. 
+      // 记录读不到就用手上这份：搜索本身不受影响。
     }
   };
-  /* Buscar本身esSolo读能力; DatosBiblioteca暂时Solo读时, HistorialRegistroDegradar aComo本次página面interior存, 写FalloNo妨碍Buscar.  */
+  /* 搜索本身是只读能力；数据库暂时只读时，历史记录降级为本次页面内存，写失败不妨碍搜索。 */
   const rememberSearch = (query: string) => {
     if (!query || !props().historyLimit) return;
     writeHistory([query, ...readHistory().filter((value) => fold(value) !== fold(query))]);
@@ -168,16 +168,16 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
     s.pool = [];
     const field = input();
     field.dataset.suggestion = '';
-    field.placeholder = 'BuscarColección';
+    field.placeholder = '搜索馆藏';
     try {
       const names = await props().helpers.pool();
       if (request !== s.poolRequest) return;
       s.pool = names;
       const pick = names[Math.floor(Math.random() * names.length)] || '';
       field.dataset.suggestion = pick;
-      field.placeholder = pick || 'BuscarColección';
+      field.placeholder = pick || '搜索馆藏';
     } catch {
-      // RecomendadoNopuede用时仍puede直continuarIntroducirBuscar. 
+      // 推荐不可用时仍可直接输入搜索。
     }
   };
   const loadRecommendations = async () => {
@@ -189,11 +189,11 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
       s.recommendations = groups;
       if (focused() && !input().value.trim()) paint();
     } catch {
-      // Recomendado读取Fallo仍puedeBuscar, 保Deja手en laRecomendado. 
+      // 推荐读取失败仍可搜索，保留手上的推荐。
     }
   };
-  /* Agrupar顺序 y 每组名字都由 `/api/suggest` 给出, aquí照抄. lentoantiguoRespuestaNo许盖掉Nuevo: 连敲两字时
-     先发ese次完Todopuede能posterior回来.  */
+  /* 分组顺序和每组的名字都由 `/api/suggest` 给出，这里照抄。慢的旧响应不许盖掉新的：连敲两个字时
+     先发的那次完全可能后回来。 */
   const loadSuggestions = async (query: string, kind = '') => {
     const request = ++s.suggestRequest;
     if (!kind) s.asked = query;
@@ -220,7 +220,7 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
     s.active = -1;
     bump();
   };
-  /** 按此刻Introduciry手en laDatos画uno遍: Con东西就掀开, Sin就收起. Recomendado每画uno次洗uno次.  */
+  /** 按此刻的输入与手上的数据画一遍：有东西就掀开，没有就收起。推荐每画一次洗一次。 */
   const paint = () => {
     s.query = input().value.trim();
     s.picks = s.query ? [] : shufflePicks(s.pool, readHistory());
@@ -232,11 +232,11 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
     }
     bump();
   };
-  /* 每unoabajoIntroducir都排uno次Completar, peroSolo发uno次Por favor求. 先按手头yaConcontenidopesado画uno遍; Por favor求返回时核对焦点, 
-     点击página面或移到其他ControlesposteriorNo再Abrir建议.  */
+  /* 每一下输入都排一次补全，但只发一次请求。先按手头已有的内容重画一遍；请求返回时核对焦点，
+     点击页面或移到其他控件后不再打开建议。 */
   const refresh = () => {
     s.active = -1;
-    // 换词就回到"Todo": Anterior词选en procesoeseuno类, este词abajopuede能uno都Sin. 
+    // 换了词就回到「全部」：上一个词选中的那一类，这个词下可能一条都没有。
     s.kind = '';
     clearTimeout(s.timer);
     const query = input().value.trim();
@@ -270,14 +270,14 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
     if (committed) rememberSearch(query);
     props().actions.search(query);
   };
-  /* 人, 公司 y Serie点开就es资料página, No绕uno趟Buscar: 按名字搜出来esuno屏Obras, 而用户点es"este人". 
-     记进BuscarRegistroeseste名字, abajo次聚焦还找得回来.  */
+  /* 人、公司和系列点开就是资料页，不绕一趟搜索：按名字搜出来的是一屏作品，而用户点的是「这个人」。
+     记进搜索记录的是这个名字，下次聚焦还找得回来。 */
   const openEntity = (kind: string, name: string) => {
     input().blur();
     rememberSearch(name);
     props().actions.openEntity(kind, name);
   };
-  /** 选en procesouno行, 点它 y 回车落En同uno处. Obras开Detalles, Con资料página开资料página, 其余按este词搜.  */
+  /** 选中一行，点它和回车落在同一处。作品开详情，有资料页的开资料页，其余按这个词搜。 */
   const choose = (entry: SearchOption) => {
     if (entry.type === 'suggest' && entry.item.followMedia && entry.item.id && props().actions.openFollow) {
       input().blur();
@@ -301,7 +301,7 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
   const remove = async (value: string) => {
     await apiSend('/api/search-history', { operation: 'remove', query: value }).catch(() => null);
     writeHistory(readHistory().filter((row) => fold(row) !== fold(value)));
-    // 行没, Clave盘选en procesoabajo标就指No回同uno项, 归ceropesado来. RecomendadoNopesado洗: 删unoRegistro却换uno批Recomendado, ver着像Lista自己跳. 
+    // 行没了，键盘选中的下标就指不回同一项，归零重来。推荐不重洗：删一条记录却换了一批推荐，看着像列表自己跳了。
     s.active = -1;
     bump();
   };
@@ -327,7 +327,7 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
     event.preventDefault();
     const picked = options()[s.active];
     close();
-    // 选en proceso某uno项时用它Original样Buscar; 没选en proceso才回退到"空Introducir按 Enter 用Recomendado词". 
+    // 选中某一项时用它原样搜索；没选中才回退到「空输入按 Enter 用推荐词」。
     if (picked) {
       choose(picked);
       if (picked.type !== 'suggest' || picked.kind !== 'asset') field.blur();
@@ -345,8 +345,8 @@ function createOps(props: () => SearchProps, s: Store, menu: () => HTMLElement |
     void loadRecommendations();
     void Promise.all([loadHistory(), loadPool()]).then(() => {
       if (!focused()) return;
-      // 带着 `?q=` 进来再点回Introducir框时, 框dentroya经Con词, Completar该跟着este词给. este两Datos回来之anterior
-      // 人puede能ya经敲完字, ese词Completar也问过, 同uno词No再问No.dos遍. 
+      // 带着 `?q=` 进来再点回输入框时，框里已经有词，补全该跟着这个词给。这两份数据回来之前
+      // 人可能已经敲完字、那个词的补全也问过了，同一个词不再问第二遍。
       paint();
       if (input().value.trim() !== s.asked) refresh();
     });
@@ -358,18 +358,18 @@ function Tabs({ tabs, kind, onPick, wire }: {
   tabs: SuggestTab[]; kind: string; onPick(kind: string): void; wire(row: Element | null): void;
 }) {
   const row = useRef<HTMLDivElement>(null);
-  // estrecho屏página签排Noabajo时derecha缘渐隐, ver得出还能往derecha拨. 
+  // 窄屏页签排不下时右缘渐隐，看得出还能往右拨。
   useLayoutEffect(() => { wire(row.current) }, [wire, tabs]);
   const tab = (k: string, label: string, total?: number) => (
     <button key={k || 'all'} type="button" role="tab" data-suggest-kind={k} aria-selected={kind === k}
-      // página签Seleccionar保DejaIntroducir焦点, 便于ContinuarIntroduciry使用方向Clave. 
+      // 页签选择保留输入焦点，便于继续输入与使用方向键。
       onMouseDown={(event) => event.preventDefault()} onClick={() => onPick(k)}>
       {label}{total ? <TabCount value={total} /> : null}
     </button>
   );
   return (
-    <div ref={row} data-search-tabs="" role="tablist" aria-label="Ver completado por tipo">
-      {tab('', 'Todo')}
+    <div ref={row} data-search-tabs="" role="tablist" aria-label="按种类看补全">
+      {tab('', '全部')}
       {tabs.map((t) => tab(t.kind, t.label, t.total))}
     </div>
   );
@@ -391,7 +391,7 @@ function Row({ entry, active, helpers, onPick, onPeek, onRemove }: {
   if (entry.type === 'more') {
     return (
       <button type="button" data-search-option="more" {...shared} onMouseDown={keep}>
-        verTodo {entry.total.toLocaleString()} 视频
+        查看全部 {entry.total.toLocaleString()} 个视频
         <Sprite name="chevron-right" />
       </button>
     );
@@ -402,9 +402,9 @@ function Row({ entry, active, helpers, onPick, onPeek, onRemove }: {
         <Sprite name={entry.type === 'history' ? 'history' : 'sparkles'} />
         <span>{entry.value}</span>
         {entry.type === 'history' ? (
-          /* 按abajo就 preventDefault, No让EliminarClave焦点从Introducir框抢走: 抢走会触发 `#q` 失焦, eseProcesarDispositivo
-             140ms posterior收起Completoabajo拉栏, 于es"删unoRegistro"实际etc.于"关掉Completoabajo拉栏".  */
-          <button type="button" data-remove-history={entry.value} aria-label={`EliminarHistorial ${entry.value}`}
+          /* 按下就 preventDefault，不让删除键把焦点从输入框抢走：抢走会触发 `#q` 的失焦，那个处理器
+             140ms 后收起整个下拉栏，于是「删一条记录」实际等于「关掉整个下拉栏」。 */
+          <button type="button" data-remove-history={entry.value} aria-label={`删除历史 ${entry.value}`}
             onMouseDown={keep} onClick={(event) => { event.stopPropagation(); void onRemove(entry.value) }}>
             <Sprite name="x" />
           </button>
@@ -415,8 +415,8 @@ function Row({ entry, active, helpers, onPick, onPeek, onRemove }: {
   const { item, kind } = entry;
   const opens = SUGGEST_PROFILE_KINDS.has(kind) ? kind : undefined;
   if (['asset', 'jav', 'post', 'photo', 'release'].includes(kind)) {
-    /* Obras点开esDetalles, NoesunoBuscar词: Completo句TítuloIntroduce回Buscar框, Siguiente次Buscar会因Como其en proceso任何uno字符对Noarriba
-       而落空.  */
+    /* 作品点开是详情，不是一个搜索词：整句标题填回搜索框，下一次搜索会因为其中任何一个字符对不上
+       而落空。 */
     const byline = [item.who, item.code ? item.title : ''].filter(Boolean).join(' · ');
     return (
       <button type="button" data-search-option="work" data-open-item={kind === 'asset' ? item.id : undefined} {...shared} onMouseDown={keep}>
@@ -427,20 +427,20 @@ function Row({ entry, active, helpers, onPick, onPeek, onRemove }: {
   }
   const matched = item.matched ? <span data-search-matched="">{item.matched}</span> : null;
   if (kind === 'performer' || kind === 'creator' || kind === 'author') {
-    // uno行dentro摆得abajo几部近作就摆几部; estrechoabajo拉Completo排收起, Datos照给. 
+    // 一行里摆得下几部近作就摆几部；窄下拉整排收起，数据照给。
     const works = item.works ?? [];
-    const sub = item.subtitle || [`${(item.n ?? 0).toLocaleString()}  video(s)`, item.agency].filter(Boolean).join(' · ');
+    const sub = item.subtitle || [`${(item.n ?? 0).toLocaleString()} 个视频`, item.agency].filter(Boolean).join(' · ');
     return (
       <div data-search-option="person" data-open-entity={opens} {...shared} onMouseDown={keep}>
         <Face item={item} kind={kind} />
-        <button type="button" data-search-person="" data-search-meta="" aria-label={`ver ${item.value}`}>
+        <button type="button" data-search-person="" data-search-meta="" aria-label={`查看 ${item.value}`}>
           <span data-search-name=""><span>{item.value}</span>{matched}</span>
           <span data-search-sub="">{sub}</span>
         </button>
         {works.length ? (
           <span data-search-peeks="">
             {works.map((card) => (
-              <button key={card.id} type="button" data-open-work={card.id} aria-label={`Abrir ${card.code || item.value}`}
+              <button key={card.id} type="button" data-open-work={card.id} aria-label={`打开 ${card.code || item.value}`}
                 onMouseDown={keep} onClick={(event) => { event.stopPropagation(); onPeek(card) }}>
                 <Cover card={card} helpers={helpers} />
               </button>
@@ -460,13 +460,13 @@ function Row({ entry, active, helpers, onPick, onPeek, onRemove }: {
   );
 }
 
-/** pequeñoImagen y 卡片同uno套取景: 卡片eseuno格(`.pic`)连同dentro面eseImagen都归遗Deja层, aquíSolo定它Conmásancho.  */
+/** 小图和卡片同一套取景：卡片那一格（`.pic`）连同里面那张图都归遗留层，这里只定它有多宽。 */
 function Cover({ card, helpers }: { card: SuggestCard | null | undefined; helpers: SearchProps['helpers'] }) {
   return <span data-search-pic="" dangerouslySetInnerHTML={{ __html: helpers.coverHtml(card) }} />;
 }
 
-/** 门面uno律圆片, 走索引página同uno兜底链: 人es实体Imagen → Obra representativaAvatar, Selloes标识, Agenciaes官网
- *  站点圆标; 都取No到就esprimero字母. uno屏几diez, 取派生件.  */
+/** 门面一律圆片，走索引页同一条兜底链：人是实体图 → 代表作头像，厂牌是标识，事务所是官网
+ *  站点圆标；都取不到就是首字母。一屏几十个，取派生件。 */
 function Face({ item, kind }: { item: SuggestItem; kind: string }) {
   if (item.avatarHtml) return <span data-search-face="" dangerouslySetInnerHTML={{ __html: item.avatarHtml }} />;
   const ref = { id: item.entity_id as number | null | undefined, has_image: item.has_image as boolean | undefined,

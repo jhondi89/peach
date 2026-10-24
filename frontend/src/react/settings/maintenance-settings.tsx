@@ -1,4 +1,4 @@
-/* "应用y维护"en proceso运行Información, InstalarTutorialyDesinstalar.  */
+/* 「应用与维护」中的运行信息、安装教程与卸载。 */
 import { useState, type FormEvent } from 'react';
 import { confirmModal } from '@peach/legacy/ui';
 
@@ -16,7 +16,7 @@ import { groupRoot } from './configuration-panel';
 import { Disclosure, ErrorText, ExternalLink, Fact, FactList, Footer, Help, Rows, Section, Stack } from './section';
 import { busyProps, useAction } from './use-action';
 
-const INTERVALS = [['6', 'Cada 6 horas'], ['24', 'Diario'], ['168', 'Semanal']] as const;
+const INTERVALS = [['6', '每 6 小时'], ['24', '每天'], ['168', '每周']] as const;
 
 export function MaintenanceSettings(
   { data, receipt, reopenTutorial, panel }: ConfigurationGroupProps & Pick<ConfigurationProps, 'reopenTutorial'>,
@@ -30,15 +30,15 @@ export function MaintenanceSettings(
   );
 }
 
-/** InstalarTutorialpesado开入口. Tutorial卡本身还画En遗Deja层, aquíSolo按unoabajo让它回来.  */
+/** 安装教程的重开入口。教程卡本身还画在遗留层，这里只按一下让它回来。 */
 export function TutorialSettings({ receipt, reopenTutorial }: ConfigurationProps) {
   const action = useAction();
   const reopen = () => void action.run('reopen', () => reopenTutorial(),
-    () => receipt('YapesadoNuevoAbrirTutorial de instalación'));
+    () => receipt('已重新打开安装教程'));
   return (
-    <section aria-label="Tutorial de instalación" className="w-full"><SettingsCard>
-      <Rows><SettingsRow label="Tutorial de instalación">
-        <Button variant="secondary" onClick={reopen} {...busyProps(action.busy === 'reopen')}>Reabrir tutorial</Button>
+    <section aria-label="安装教程" className="w-full"><SettingsCard>
+      <Rows><SettingsRow label="安装教程">
+        <Button variant="secondary" onClick={reopen} {...busyProps(action.busy === 'reopen')}>重新打开教程</Button>
       </SettingsRow></Rows>
       {action.error ? <Stack><ErrorText>{action.error}</ErrorText></Stack> : null}
     </SettingsCard></section>
@@ -54,28 +54,28 @@ export function AutomaticUpdates({ initial, receipt }: { initial: AutomaticUpdat
     event.preventDefault();
     if (!initial.available) return;
     void action.run('save', (signal) => apiSend<AutomaticUpdateState>('/api/configuration/automatic-updates',
-      { mode, interval_hours: hours }, 'POST', signal), () => receipt('Configuración guardada'));
+      { mode, interval_hours: hours }, 'POST', signal), () => receipt('已保存配置'));
   };
 
   const help = !initial.available
-    ? 'AutomáticoActualizarNecesario由Bandeja del sistemaGestionar服务. '
+    ? '自动更新需要由托盘管理的服务。'
     : initial.download_available
-      ? 'Confirma el reinicio e instalación aquí cuando la descarga esté completa.'
+      ? '下载完成后在这里确认重启安装。'
       : undefined;
   return (
-    <Section title="AutomáticoActualizar" onSubmit={submit}>
+    <Section title="自动更新" onSubmit={submit}>
       <Rows>
-        <SettingsRow label="Verificar automáticamente nueva versión">
-          <Switch aria-label="Verificar automáticamente nueva versión" isSelected={mode !== 'off'} isDisabled={!initial.available}
+        <SettingsRow label="自动检查新版本">
+          <Switch aria-label="自动检查新版本" isSelected={mode !== 'off'} isDisabled={!initial.available}
             onChange={(on) => setMode(on ? 'check' : 'off')} />
         </SettingsRow>
-        <SettingsRow label="AutomáticoDescargasActualizar">
-          <Switch aria-label="AutomáticoDescargasActualizar" isSelected={mode === 'download'}
+        <SettingsRow label="自动下载更新">
+          <Switch aria-label="自动下载更新" isSelected={mode === 'download'}
             isDisabled={!initial.available || !initial.download_available || mode === 'off'}
             onChange={(on) => setMode(on ? 'download' : 'check')} />
         </SettingsRow>
-        <SettingsRow label="Frecuencia de verificación" description={help}>
-          <Select aria-label="Frecuencia de verificación" selectedKey={String(hours)} isDisabled={!initial.available}
+        <SettingsRow label="检查频率" description={help}>
+          <Select aria-label="检查频率" selectedKey={String(hours)} isDisabled={!initial.available}
             onSelectionChange={(key) => { if (key !== null) setHours(Number(key)); }}>
             {INTERVALS.map(([key, name]) => <SelectItem key={key} id={key}>{name}</SelectItem>)}
           </Select>
@@ -83,7 +83,7 @@ export function AutomaticUpdates({ initial, receipt }: { initial: AutomaticUpdat
       </Rows>
       {action.error ? <Stack divided><ErrorText>{action.error}</ErrorText></Stack> : null}
       <Footer>
-        <Button type="submit" disabled={!initial.available} {...busyProps(action.busy === 'save')}>Guardar configuración</Button>
+        <Button type="submit" disabled={!initial.available} {...busyProps(action.busy === 'save')}>保存配置</Button>
       </Footer>
     </Section>
   );
@@ -91,7 +91,7 @@ export function AutomaticUpdates({ initial, receipt }: { initial: AutomaticUpdat
 
 function Facts({ facts }: { facts: ConfigurationFact[] }) {
   return (
-    <Section title="Información de ejecución">
+    <Section title="运行信息">
       <FactList>
         {facts.map((fact) => (
           <Fact key={fact.term} term={fact.term}>
@@ -110,38 +110,38 @@ export function UninstallSettings(
   const [removeData, setRemoveData] = useState(false);
   const [accepted, setAccepted] = useState('');
   const remove = () => void confirmModal({
-    title: 'Desmontar Peach',
+    title: '卸载 Peach',
     danger: true,
     body: removeData
-      ? '将Salir Peach, Quitar程序, Inicio automático, EscritorioImagen标, Configuración, LocalBase de datos, VerRegistro, Credenciales y Caché. OriginalMediosArchivoConservar. '
-      : '将Salir Peach yQuitar程序, Inicio automático y EscritorioImagen标. Configuración, LocalBase de datos, VerRegistroyCachéConservar. ',
-    confirmLabel: 'Desmontar Peach',
+      ? '将退出 Peach，移除程序、开机自启、桌面图标、设置、本地数据库、观看记录、凭据和缓存。原始媒体文件保留。'
+      : '将退出 Peach 并移除程序、开机自启和桌面图标。设置、本地数据库、观看记录与缓存保留。',
+    confirmLabel: '卸载 Peach',
     onConfirm: async () => {
-      const result = await apiSend<{ message: string }>('/api/configuration/uninstall', { delete_data: removeData, confirmation: 'Desmontar Peach' });
+      const result = await apiSend<{ message: string }>('/api/configuration/uninstall', { delete_data: removeData, confirmation: '卸载 Peach' });
       setAccepted(result.message);
     },
   });
-  // 底栏izquierda边uno句说este按钮此刻意味着什么: 拦住Desinstalar理由(源码Instalar, Actualizar还En跑) y 按abajo去
-  // 之posterior回执都En答"este现En能No能按", 摆En正文último尾就得先读完Completo段Descripción才找得到. 
+  // 底栏左边一句说这颗按钮此刻意味着什么：拦住卸载的理由（源码安装、更新还在跑）和按下去
+  // 之后的回执都在答「这颗现在能不能按」，摆在正文末尾就得先读完整段说明才找得到。
   const status = accepted || uninstall.message;
   const paths = [...new Set([uninstall.data_root, ...uninstall.directories])];
   return (
-    <Section id="uninstallPeach" title="Desmontar Peach">
-      {uninstall.available ? <Stack><Help>DesmontarQuitar Peach 程序本身, OriginalMediosArchivoConservar. </Help></Stack> : null}
+    <Section id="uninstallPeach" title="卸载 Peach">
+      {uninstall.available ? <Stack><Help>卸载移除 Peach 程序本身，原始媒体文件保留。</Help></Stack> : null}
       <Rows>
-        <SettingsRow label="Desmontar todo completamente" description="同时EliminarConfiguración, LocalBase de datos, VerRegistro, Credenciales y Caché">
-          <Switch aria-label="Desmontar todo completamente" isSelected={removeData} isDisabled={!uninstall.full_available || Boolean(accepted)} onChange={setRemoveData} />
+        <SettingsRow label="完全卸载" description="同时删除设置、本地数据库、观看记录、凭据和缓存">
+          <Switch aria-label="完全卸载" isSelected={removeData} isDisabled={!uninstall.full_available || Boolean(accepted)} onChange={setRemoveData} />
         </SettingsRow>
       </Rows>
       <Stack divided>
-        <Disclosure summary="DatosDirectorio">
+        <Disclosure summary="数据目录">
           {paths.map((path) => (
             <PathLine key={path} path={path} className="text-body-2-regular text-text-secondary" onRevealed={receipt} />
           ))}
         </Disclosure>
       </Stack>
       <Footer status={status ? <p role={accepted ? 'status' : undefined}>{status}</p> : null}>
-        <Button variant="danger" disabled={!uninstall.available || Boolean(accepted)} onClick={remove}>Desmontar Peach</Button>
+        <Button variant="danger" disabled={!uninstall.available || Boolean(accepted)} onClick={remove}>卸载 Peach</Button>
       </Footer>
     </Section>
   );

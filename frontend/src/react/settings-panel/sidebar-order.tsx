@@ -1,7 +1,7 @@
-/* izquierda侧导航顺序: 直continuar拖动Ordenar, 逐行arriba移, abajo移, 隐藏, 再从abajo面esepágina面清单dentro加回来. 
+/* 左侧导航的顺序：直接拖动排序，逐行上移、下移、隐藏，再从下面那张页面清单里加回来。
  *
- * 写入y侧栏eseuno列拖动共用 `sidebar/sidebar-order.ts`: 先落本地ese(侧栏按 store 通知当场
- * pesado排), 再写 `/api/settings`.  */
+ * 写入与侧栏那一列的拖动共用 `sidebar/sidebar-order.ts`：先落本地那份（侧栏按 store 的通知当场
+ * 重排），再写 `/api/settings`。 */
 import { useRef, useState, type DragEvent, type KeyboardEvent } from 'react';
 
 import { dismissMenu, presentMenu } from '@peach/legacy/ui';
@@ -10,7 +10,7 @@ import { moveSidebarKey, useCommitSidebarOrder } from '../sidebar/sidebar-order'
 import { Icon } from './icon';
 import type { SettingsPanelHost } from './settings-panel-api';
 
-/* primeropáginaeseuno项Clavees空串; 空串写进属性 y  dataTransfer 都etc.于没写, 给它uno占.  */
+/* 首页那一项的键是空串；空串写进属性和 dataTransfer 都等于没写，给它一个占位。 */
 const HOME = '__home__';
 const optionKey = (key: string) => key === '' ? HOME : key;
 
@@ -39,7 +39,7 @@ export function SidebarOrder({ host }: { host: SettingsPanelHost }) {
     commit(next);
   };
 
-  /* 清单dentro当anterior挑en procesoeseuno项; 挑en procesoeseuno项被加进侧栏之posterior退回清单No.uno项.  */
+  /* 清单里当前挑中的那一项；挑中的那一项被加进侧栏之后退回清单第一项。 */
   const chosen = available.find(([key]) => optionKey(key) === picked) ?? available[0];
   const closeMenu = () => {
     if (menu.current) dismissMenu(menu.current);
@@ -96,11 +96,11 @@ export function SidebarOrder({ host }: { host: SettingsPanelHost }) {
           <span data-sidebar-label=""><i data-sidebar-grip="" aria-hidden="true"><Icon name="grip-vertical" /></i>
             <Icon name={glyph ?? ''} /><b>{label}</b></span>
           <span data-sidebar-actions="">
-            <button type="button" data-sidebar-key={key} data-sidebar-move="-1" aria-label={`Mover arriba ${label}`} title="Mover arriba"
+            <button type="button" data-sidebar-key={key} data-sidebar-move="-1" aria-label={`上移 ${label}`} title="上移"
               disabled={index === 0} onClick={() => step(key, -1)}><Icon name="chevron-up" /></button>
-            <button type="button" data-sidebar-key={key} data-sidebar-move="1" aria-label={`Mover abajo ${label}`} title="Mover abajo"
+            <button type="button" data-sidebar-key={key} data-sidebar-move="1" aria-label={`下移 ${label}`} title="下移"
               disabled={index === visible.length - 1} onClick={() => step(key, 1)}><Icon name="chevron-down" /></button>
-            <button type="button" data-sidebar-key={key} data-sidebar-hide="" aria-label={`Ocultar ${label}`} title="Ocultar"
+            <button type="button" data-sidebar-key={key} data-sidebar-hide="" aria-label={`隐藏 ${label}`} title="隐藏"
               disabled={visible.length === 1}
               onClick={() => { if (order.length > 1) commit(order.filter((item) => item !== key)) }}><Icon name="eye-off" /></button>
           </span>
@@ -113,10 +113,10 @@ export function SidebarOrder({ host }: { host: SettingsPanelHost }) {
             disabled={!chosen} ref={trigger} onClick={toggleMenu}>
             {chosen
               ? <><Icon name={chosen[2] ?? ''} /><span data-sidebar-add-label="">{chosen[1]}</span><Icon name="chevron-down" /></>
-              : <><Icon name="check" /><span>Todopágina面都YaMostrar</span></>}
+              : <><Icon name="check" /><span>全部页面都已显示</span></>}
           </button>
           {available.length
-            ? <div className="popmenu" data-sidebar-add-menu="" role="listbox" aria-label="Seleccionar要Añadirpágina面" hidden ref={menu}>
+            ? <div className="popmenu" data-sidebar-add-menu="" role="listbox" aria-label="选择要添加的页面" hidden ref={menu}>
                 {available.map(([key, label, glyph]) => (
                   <button type="button" role="option" key={optionKey(key)} data-sidebar-add-option={optionKey(key)}
                     aria-selected={chosen?.[0] === key} tabIndex={chosen?.[0] === key ? 0 : -1} onKeyDown={optionKeys}
@@ -128,7 +128,7 @@ export function SidebarOrder({ host }: { host: SettingsPanelHost }) {
             : null}
         </div>
         <button type="button" className="geist-button primary" data-sidebar-add="" disabled={!chosen}
-          onClick={() => { if (chosen && !order.includes(chosen[0])) commit([...order, chosen[0]]) }}>Añadir</button>
+          onClick={() => { if (chosen && !order.includes(chosen[0])) commit([...order, chosen[0]]) }}>添加</button>
       </div>
     </div>
   );

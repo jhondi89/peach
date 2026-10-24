@@ -1,5 +1,5 @@
-/* primeropáginaeseuno行Nuevas obras(`feed-new` página面interior组件, 路由树画进 `#feedNew`). SoloEnDirectorioRutaarriba画: 离开Directoriopágina由壳收起, 人还EnDirectoriopáginadentro换
- * Filtrar时esteuno行Nopesado挂, Nopesado取—它No随Filtrar变. 取回来卡 portal 回宿主 `#feedNew` 本身.  */
+/* 首页那一行新作（`feed-new` 页面内组件，路由树画进 `#feedNew`）。只在目录路径上画：离开目录页由壳收起，人还在目录页里换
+ * 筛选时这一行不重挂、不重取——它不随筛选变。取回来的卡 portal 回宿主 `#feedNew` 本身。 */
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';

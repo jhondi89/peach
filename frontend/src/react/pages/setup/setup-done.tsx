@@ -1,7 +1,7 @@
-/* ConfiguraciónCompletado: escaneares否ya排队, 进入 Peach 入口, 运行InformaciónPredeterminado折叠. 口令No出现Enpágina面arriba. 
+/* 设置完成：扫描是否已排队、进入 Peach 的入口，运行信息默认折叠。口令不出现在页面上。
  *
- * Independiente包服务端En `redirect` dentro给入口地址, 过 `RESTART_REDIRECT_MS` 自己Omitir去, yConfiguraciónpáginaGuardarposterior
- * etc.Bandeja del sistema换进程Duraciónes同uno数.  */
+ * 独立包的服务端在 `redirect` 里给入口地址，过 `RESTART_REDIRECT_MS` 自己跳过去，与配置页保存后
+ * 等托盘换进程的时长是同一个数。 */
 import { useEffect, useRef } from 'react';
 
 import { ButtonLink } from '@/components/base/buttons/button';
@@ -15,7 +15,7 @@ export function SetupDoneView({ done }: { done: SetupDone }) {
   const entry = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
-    document.title = 'Peach · Configuración completada';
+    document.title = 'Peach · 设置完成';
     entry.current?.focus();
   }, []);
 
@@ -27,16 +27,16 @@ export function SetupDoneView({ done }: { done: SetupDone }) {
   }, [done.redirect]);
 
   return (
-    <AuthCard title="ConfiguraciónFinalizar" lede="ProcesandoIniciarColección. ">
+    <AuthCard title="设置完成" lede="正在启动馆藏。">
       <p className="text-body-regular text-text-primary">
-        {done.restored ? 'YaConectarYaConDatosDirectorio. ' : done.scan_requested
-          ? 'primero次EscanearYa排队, EnposteriorOrganizarBiblioteca de medios, 期间puede以照常使用 Peach. '
-          : 'Más tardeEnConfiguraciónpáginaIniciarEscanearBiblioteca de medios. '}
+        {done.restored ? '已连接已有数据目录。' : done.scan_requested
+          ? '首次扫描已排队，在后台整理媒体库，期间可以照常使用 Peach。'
+          : '稍后在配置页开始扫描媒体库。'}
       </p>
       <ButtonLink ref={entry} href={done.url} className="self-start">
-        {done.history_guide ? 'ImportarExplorar dispositivoHistorialRegistro' : 'Entrar a Peach'}
+        {done.history_guide ? '导入浏览器历史记录' : '进入 Peach'}
       </ButtonLink>
-      <Disclosure summary="Información de ejecución">
+      <Disclosure summary="运行信息">
         <FactList>
           {done.facts.map((fact) => (
             <Fact key={fact.term} term={fact.term}>

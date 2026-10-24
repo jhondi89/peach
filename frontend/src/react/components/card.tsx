@@ -1,48 +1,48 @@
-/* Board 卡面. SoloConesteuno出处. 
+/* Board 的卡面。只有这一份出处。
  *
- * antiguo样表en la卡分两族, 按página各Con各基线, No能uno律画成同uno: 
+ * 旧样式表里的卡分两族，按页各有各的基线，不能一律画成同一种：
  *
- * - **Introduce充**: `background:var(--ground);border:0`, 圆角 16px(Imagen表卡 20px), 底abajo压uno层
- *   1px continuar触阴影. 读数卡 `.metricstrip>button`, 口味读数 `.tastesummary`, 面板
- *   `.insightpanel`, 分区 `.followmanage .fmain>.fsec`, Imagen表卡 `.board-radial-card` 都esesteuno族. 
- *   `--ground` continuar就es `--color-background-secondary-default`(`web/board.css`  `:root`
- *   映射), 阴影取arriba游同uno用途 `--shadow-card`("1px contact shadow used on white cards
- *   sitting on the secondary background"). 
- * - **描边**: `border:1px solid var(--line-soft);background:var(--color-background-primary-default)`, 
- *   复核página `body[data-surface="/review"] .reviewitem` esesteuno族—卡浮Enpágina面底arriba, 靠uno
- *   发丝线收边, No靠换底色. 
+ * - **填充**：`background:var(--ground);border:0`，圆角 16px（图表卡 20px），底下压一层
+ *   1px 接触阴影。读数卡 `.metricstrip>button`、口味读数 `.tastesummary`、面板
+ *   `.insightpanel`、分区 `.followmanage .fmain>.fsec`、图表卡 `.board-radial-card` 都是这一族。
+ *   `--ground` 接的就是 `--color-background-secondary-default`（`web/board.css` 的 `:root`
+ *   映射），阴影取上游同一用途的 `--shadow-card`（「1px contact shadow used on white cards
+ *   sitting on the secondary background」）。
+ * - **描边**：`border:1px solid var(--line-soft);background:var(--color-background-primary-default)`，
+ *   复核页的 `body[data-surface="/review"] .reviewitem` 是这一族——卡浮在页面底上，靠一条
+ *   发丝线收边，不靠换底色。
  *
- * 另Conuno批es"Introduce充再加uno描边": 活动página `.cleanupfieldset` es `--ground` 底加 `--line`, 
- * alto清版 `.qualityitem` es `--ground` 底加更淡 `--line-soft`. 所以描边esIntroduce充之en launo档
- * puedeOpciones(`bordered`), NoesIntroduce充对立面. 
+ * 另有一批是「填充再加一条描边」：活动页 `.cleanupfieldset` 是 `--ground` 底加 `--line`，
+ * 高清版 `.qualityitem` 是 `--ground` 底加更淡的 `--line-soft`。所以描边是填充之上的一档
+ * 可选项（`bordered`），不是填充的对立面。
  *
- * 迁移时Por página各拼uno串 `rounded-2xl border border-separator-border`, 同uno卡片EndiezArchivodentro
- * largo出dosdiez描边空心壳, página面Completo体掉uno层底色—卡面收Enaquí就esComoNo再发生este件事.  */
+ * 迁移时每页各拼一串 `rounded-2xl border border-separator-border`，同一种卡片在十个文件里
+ * 长出二十种描边空心壳，页面整体掉了一层底色——卡面收在这里就是为了不再发生这件事。 */
 
-/** 圆角: 读数卡, 面板, 分区都es 16px; Imagen表卡grandeuno档 20px,  y antiguo `.board-radial-card` uno致; 
- *  描边卡es Board ese档No浮起表面 `--surface-radius`(14px), `outlined` Predeterminado取它.  */
+/** 圆角：读数卡、面板、分区都是 16px；图表卡大一档 20px，和旧 `.board-radial-card` 一致；
+ *  描边卡是 Board 那档不浮起的表面 `--surface-radius`（14px），`outlined` 默认取它。 */
 export type CardRadius = 'default' | 'chart' | 'surface' | 'plain';
 
-/** Relleno: `none` 交给卡interior自己头, 体, 脚各自排; `default` esantiguoImagen表卡y面板体 20px.  */
+/** 内边距：`none` 交给卡内自己的头、体、脚各自排；`default` 是旧图表卡与面板体的 20px。 */
 export type CardPadding = 'none' | 'default';
 
-/** 卡面本身. 哪uno档由eseunopágina基线 CSS 说算, No由"ver起来更bien"说算. 
+/** 卡面本身。哪一档由那一页的基线 CSS 说了算，不由「看起来更好」说了算。
  *
- *  - `filled`: `--ground` Introduce充, Sin描边. Board Gestionar区主力卡. 
- *  - `outlined`: `--color-background-primary-default` 底加uno `--line-soft`. 复核páginaEntrada卡. 
- *  - `raised`: primary 底, Sin描边. 卡arriba再浮uno层(关注Gestionardentro按作者Agruparese卡).  */
+ *  - `filled`：`--ground` 填充、无描边。Board 管理区的主力卡。
+ *  - `outlined`：`--color-background-primary-default` 底加一条 `--line-soft`。复核页的条目卡。
+ *  - `raised`：primary 底、无描边。卡上再浮一层（关注管理里按作者分组的那张卡）。 */
 export type CardVariant = 'filled' | 'outlined' | 'raised';
 
 export type CardOptions = {
   variant?: CardVariant;
   radius?: CardRadius;
   padding?: CardPadding;
-  /** 卡片本身puede点(读数卡兼página签, 来源卡): 补Pasar el ratónIntroduce充, 焦点环y光标.  */
+  /** 卡片本身可点（读数卡兼页签、来源卡）：补悬停填充、焦点环与光标。 */
   interactive?: boolean;
-  /** 卡片带互斥选en proceso态: 选en proceso时换成浮层eseuno档面, 收掉continuar触阴影, 最arriba层压uno圈 2px 焦点环色描边.  */
+  /** 卡片带互斥选中态：选中时换成浮层那一档面、收掉接触阴影，最上层压一圈 2px 的焦点环色描边。 */
   selectable?: boolean;
-  /** Introduce充之arriba另加ese描边: 活动página Fieldset 用 `--line`, alto清版Entrada用 `--line-soft`. 
-   *  `outlined` 自带描边, No必再给.  */
+  /** 填充之上另加的那条描边：活动页的 Fieldset 用 `--line`，高清版的条目用 `--line-soft`。
+   *  `outlined` 自带描边，不必再给。 */
   bordered?: 'line' | 'soft';
   className?: string;
 };
@@ -55,13 +55,13 @@ const VARIANT: Record<CardVariant, string> = {
   raised: 'bg-background-primary-default',
 };
 
-/* 圆角y阴影esuno件事: antiguo样表dentroCon阴影SoloCon读数卡eseuno档(`0 1px 2px #00000008`), 
- * Imagen表卡 `.board-radial-card` / `.board-heat-card` / `.board-sankey-card` 都es净面.  */
+/* 圆角与阴影是一件事：旧样式表里有阴影的只有读数卡那一档（`0 1px 2px #00000008`），
+ * 图表卡 `.board-radial-card` / `.board-heat-card` / `.board-sankey-card` 都是净面。 */
 const RADIUS: Record<CardRadius, string> = {
   default: 'rounded-2xl shadow-card',
   chart: 'rounded-2-5xl',
   surface: 'rounded-surface',
-  /* DatosGestionareseuno排净面读数卡(antiguo `.board-plain-stat`): 同样 16px, peroNo压continuar触阴影.  */
+  /* 数据管理那一排净面读数卡（旧 `.board-plain-stat`）：同样 16px，但不压接触阴影。 */
   plain: 'rounded-2xl',
 };
 
@@ -75,26 +75,26 @@ const PADDING: Record<CardPadding, string> = {
   default: 'p-5',
 };
 
-/* Pasar el ratónSolo抬Introduce充, 选en proceso时No抬: antiguoRegladentro选en proceso态ese排EnPasar el ratónposterior面, 压着它. 工具类先posterior由
- * Tailwind 自己排, Noes写顺序, 所以"没选en proceso"写进变体dentro, No指望顺序.  */
+/* 悬停只抬填充，选中时不抬：旧规则里选中态那条排在悬停后面，压着它。工具类的先后由
+ * Tailwind 自己排，不是写的顺序，所以把「没选中」写进变体里，不指望顺序。 */
 const INTERACTIVE = 'cursor-pointer outline-none not-data-selected:hover:bg-card-hover'
   + ' focus-visible:ring-2 focus-visible:ring-border-focus-ring focus-visible:ring-offset-3';
 
-/* 选en procesoeseuno圈画En `::after` arriba, 压En最arriba层, No用 inset  box-shadow: interior阴影画En子元素底abajo, 
- * 读数卡脚注带uno铺底色, 环abajomedio截就被盖掉, Solo剩arriba面tres边. antiguo
- * `.metricstrip>button[aria-selected=true]::after` 就esuno层 2px 描边覆盖层, 圆角跟卡走.  */
+/* 选中的那一圈画在 `::after` 上、压在最上层，不用 inset 的 box-shadow：内阴影画在子元素底下，
+ * 读数卡的脚注带一铺底色，环的下半截就被盖掉，只剩上面三边。旧
+ * `.metricstrip>button[aria-selected=true]::after` 就是一层 2px 描边的覆盖层，圆角跟卡走。 */
 const SELECTABLE = 'relative data-selected:bg-background-primary-default data-selected:shadow-none'
   + ' data-selected:after:pointer-events-none data-selected:after:absolute data-selected:after:inset-0'
   + ' data-selected:after:z-1 data-selected:after:rounded-[inherit]'
   + ' data-selected:after:border-2 data-selected:after:border-border-focus-ring';
 
-/** 卡面类名. 宿主puede能es `section`, `li`, React Aria  `Tab` 或 `Modal`, 所以Solo给类名.  */
+/** 卡面的类名。宿主可能是 `section`、`li`、React Aria 的 `Tab` 或 `Modal`，所以只给类名。 */
 export function cardClass(options: CardOptions = {}) {
   const {
     variant = 'filled', padding = 'default', interactive, selectable, bordered, className,
   } = options;
-  /* 圆角跟着变体走: Introduce充eseuno族es 16px 加uno层continuar触阴影, 描边eseuno族es 14px 净面. 
-     antiguo样表dentroeste两件事本来就绑Enuno起, 拆开写Solo会让调用方每次都要记住配哪uno.  */
+  /* 圆角跟着变体走：填充那一族是 16px 加一层接触阴影，描边那一族是 14px 的净面。
+     旧样式表里这两件事本来就绑在一起，拆开写只会让调用方每次都要记住配哪一个。 */
   const radius = options.radius ?? (variant === 'outlined' ? 'surface' : 'default');
   return [
     FACE,

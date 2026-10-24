@@ -1,8 +1,8 @@
-/* EvilCharts 源码en la `@/lib/utils`: Condición类名先经 `clsx` 摊平, 再交给 BoardUI  `cx`. 
+/* EvilCharts 源码里的 `@/lib/utils`：条件类名先经 `clsx` 摊平，再交给 BoardUI 的 `cx`。
  *
- * arriba游es shadcn Proyecto, `cn` 由 `shadcn init` 生成, NoEnRegistrarse表Entradadentro. aquícontinuares BoardUI 扩展过
- *  `tailwind-merge`: 它认得 `text-caption-1-regular` este类字阶类,  y Color类同处uno串时No会被
- * 当成Color丢掉. Ruta别名写En `vite.config.ts`, `vitest.config.ts` y `src/react/tsconfig.json`.  */
+ * 上游是 shadcn 项目，`cn` 由 `shadcn init` 生成，不在注册表条目里。这里接的是 BoardUI 扩展过
+ * 的 `tailwind-merge`：它认得 `text-caption-1-regular` 这类字阶类，和颜色类同处一串时不会被
+ * 当成颜色丢掉。路径别名写在 `vite.config.ts`、`vitest.config.ts` 与 `src/react/tsconfig.json`。 */
 import { clsx, type ClassValue } from 'clsx';
 
 import { cx } from '@/utils/cx';

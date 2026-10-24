@@ -14,7 +14,7 @@ export interface EntityApplicationPorts {
   sortPreference(): { sort: string; dir: string };
 }
 
-/** 资料página地址, 动作, Esperandoy照片Muro共享uno生命周期; Abrir意ImagenSolo消费uno次.  */
+/** 资料页地址、动作、等待与照片墙共享一个生命周期；打开意图只消费一次。 */
 export function createEntityApplication(ports: EntityApplicationPorts) {
   const entry = createEntityEntryState();
   const helpers: EntityPageHelpers = { ...ports.helpers, portraitImg: entityPortraitImg };

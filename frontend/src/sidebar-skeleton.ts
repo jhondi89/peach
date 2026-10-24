@@ -1,12 +1,12 @@
-/* 侧栏导航骨架: 壳启动时Sincronizar写进 `#drawerScroll`, 路由树画arriba常驻组件 `sidebar`(`react/sidebar/`)eseuno刻
- * Completo换掉. 
+/* 侧栏导航的骨架：壳启动时同步写进 `#drawerScroll`，路由树画上常驻组件 `sidebar`（`react/sidebar/`）的那一刻
+ * 整块换掉。
  *
- * izquierda侧导航Solo认地址 y 本地Configuración, unoPor favor求都Noetc.; React 包装载回来之anterioresteuno列No能es空. 骨架y组件画es
- * 同uno结构(Título行空槽, 导航eseuno列), 两者之间换手Sin移.  */
+ * 左侧导航只认地址和本地设置，一个请求都不等；React 包装载回来之前这一列不能是空的。骨架与组件画的是
+ * 同一份结构（标题行的空槽、导航那一列），两者之间换手没有位移。 */
 const escape = (value: string) => value.replace(/[&<>"']/g, (char) =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!);
 
-/** `order` es `appSettings.sidebarOrder`, `catalog` es `[Clave, 名称, 字形]` Todo入口, `pressed` es壳 `navOn`.  */
+/** `order` 是 `appSettings.sidebarOrder`，`catalog` 是 `[键, 名称, 字形]` 的全部入口，`pressed` 是壳的 `navOn`。 */
 export function sidebarSkeletonHtml(
   order: readonly string[], catalog: readonly (readonly [string, string, string])[], pressed: (key: string) => boolean,
 ): string {

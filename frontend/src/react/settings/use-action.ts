@@ -1,5 +1,5 @@
-/* 用户触发Por favor求: 同uno分区同uno时刻Solo跑uno, 离开página面CancelarEsperando, ResultadoSolo交给仍挂载组件. 
- * 忙态落En触发它ese按钮arriba, 同uno分区en la几按 key 区分.  */
+/* 用户触发的请求：同一分区同一时刻只跑一个，离开页面取消等待，结果只交给仍挂载的组件。
+ * 忙态落在触发它的那颗按钮上，同一分区里的几颗按 key 区分。 */
 import { useEffect, useRef, useState } from 'react';
 
 import { errorMessage } from '../../api';

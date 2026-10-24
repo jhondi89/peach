@@ -1,11 +1,11 @@
-/* Imagen片灯箱(ADR-0031 No. 10f 步): Datos形状, Swiper 按需CargaryZoom换算. 
+/* 图片灯箱（ADR-0031 第 10f 步）：数据形状、Swiper 的按需加载与缩放条的换算。
  *
- * 灯箱服务资料página照片Muro(本地Imagen片yCódigo JAV样) y 关注páginaEn线Imagen集. 每调用方自己
- * 形状换成 `LightboxSlide` 再交进来; tres边共用Información面板, 动作No同: 本地Imagenpuede按 asset id
- * 定源Archivo, 样 y En线ImagenSolo展示来源, 序号, 尺寸 y puede取得Tamaño.  */
+ * 灯箱服务资料页的照片墙（本地图片与番号样张）和关注页的在线图集。每个调用方把自己的
+ * 形状换成 `LightboxSlide` 再交进来；三边共用信息面板，动作不同：本地图可按 asset id
+ * 定位源文件，样张和在线图只展示来源、序号、尺寸和可取得的大小。 */
 import { fmtSize, LOC } from '@peach/legacy/core';
 
-/** 本地Imagen片EnDatosBibliotecaen laese几样. 定Solo `id` 交给服务端, Ruta绝No进Explorar dispositivo.  */
+/** 本地图片在数据库里的那几样。定位只把 `id` 交给服务端，路径绝不进浏览器。 */
 export interface LightboxAsset {
   id: number;
   name?: string;
@@ -14,29 +14,29 @@ export interface LightboxAsset {
   [field: string]: unknown;
 }
 
-/** 灯箱en launo. `src` esgrandeImagen, `thumb` es缩略Imageneseuno格, grandeImagen取No到时也退到它.  */
+/** 灯箱里的一张。`src` 是大图，`thumb` 是缩略图条那一格，大图取不到时也退到它。 */
 export interface LightboxSlide {
   src: string;
   thumb: string;
   name?: string;
-  /** 本地Imagen片才Con; Con它才出"En资源GestionarDispositivoen proceso显示".  */
+  /** 本地图片才有；有它才出「在资源管理器中显示」。 */
   asset?: LightboxAsset | null;
-  /** Sin asset 时Información面板No.uno段: 站名或"Oficial样", 缺省es"En线Imagen片".  */
+  /** 没有 asset 时信息面板第一段：站名或「官方样张」，缺省是「在线图片」。 */
   source?: string;
   size?: number;
 }
 
-/** 灯箱要回壳办事. 定Éxito由壳发回执, Fallo回uno句Original因, 写En按钮abajo面.  */
+/** 灯箱要回壳办的事。定位成功由壳发回执，失败回一句原因，写在按钮下面。 */
 export interface LightboxHost {
   revealSource(id: number): Promise<string>;
 }
 
 /* ── Swiper ──
- * grandeImagen轮播, 底部缩略Imagen y Clave盘izquierdaderechaClave都es Swiper 自带模, 没必要自己写uno遍; pero它SoloCon
- * ver照片时才用得arriba, No该进primero屏. Solo用它核心 API, No用它 React 封装: eseuno层自带uno套
- * 渲染,  y aquí"DOM 由 React 画, Swiper Solocontinuar管移yEstado类"分工对Noarriba.  */
+ * 大图轮播、底部缩略图条和键盘左右键都是 Swiper 自带的模块，没必要自己写一遍；但它只有
+ * 看照片时才用得上，不该进首屏。只用它的核心 API，不用它的 React 封装：那一层自带一套
+ * 渲染，和这里「DOM 由 React 画、Swiper 只接管位移与状态类」的分工对不上。 */
 
-/** 用到eseuno截 Swiper 实例Interfaz.  */
+/** 用到的那一截 Swiper 实例接口。 */
 export interface SwiperInstance {
   activeIndex: number;
   destroyed: boolean;
@@ -52,7 +52,7 @@ export type SwiperConstructor = new (el: HTMLElement, options: Record<string, un
 const SWIPER = '/vendor/swiper/14.3.0/';
 let loader: Promise<SwiperConstructor> | null = null;
 
-/** 样y脚本uno起etc.: 样晚到uno拍, 所Con slide 会先当普通元素同时画出来.  */
+/** 样式与脚本一起等：样式晚到一拍，所有 slide 会先当普通块元素同时画出来。 */
 export const loadSwiper = (): Promise<SwiperConstructor> => loader ??= Promise.all([
   new Promise<void>((resolve, reject) => {
     const href = `${SWIPER}swiper-bundle.min.css`;
@@ -76,23 +76,23 @@ export const loadSwiper = (): Promise<SwiperConstructor> => loader ??= Promise.a
   }),
 ]).then(([, Swiper]) => Swiper).catch((error: unknown) => { loader = null; throw error });
 
-/* ── Zoom ──
- * 显示相对OriginalImagen像素cien分比, 而Noes相对"适应窗口"变换倍数. 因此grandeImagen初始puede能es 34%, 
- * Tamaño original才es 100%; Swiper 14  zoom.in(number) 能直continuarRecibir目标倍数, 既puedebajo于 1 也puedealto于 1.  */
+/* ── 缩放条 ──
+ * 显示相对原图像素的百分比，而不是相对「适应窗口」的变换倍数。因此大图初始可能是 34%，
+ * 原大小才是 100%；Swiper 14 的 zoom.in(number) 能直接接收目标倍数，既可低于 1 也可高于 1。 */
 export const PHOTO_ZOOM_MIN = 10;
 export const PHOTO_ZOOM_MAX = 400;
 export const PHOTO_ZOOM_STEP = 10;
 
 export interface PhotoZoom {
-  /** `'fit'` es适应窗口; 数字es目标cien分比, carpetaEnarribaabajo限之间.  */
+  /** `'fit'` 是适应窗口；数字是目标百分比，夹在上下限之间。 */
   apply(raw: number | 'fit'): void;
-  /** 灯箱量过uno次尺寸: 按Anterior次目标pesado算.  */
+  /** 灯箱量过一次尺寸：按上一次的目标重算。 */
   resize(): void;
-  /** unograndeImagen到: es当anterioreste就按目标pesado算, 适应窗口cien分比要etc.它自然尺寸.  */
+  /** 一张大图到了：是当前这张就按目标重算，适应窗口的百分比要等它的自然尺寸。 */
   loaded(img: HTMLImageElement): void;
 }
 
-/** `box` es灯箱本身, 它NoEnDocumentacióndentro(ya经关掉)就什么都No做; `show` cien分比交给读数y滑杆.  */
+/** `box` 是灯箱本身，它不在文档里了（已经关掉）就什么都不做；`show` 把百分比交给读数与滑杆。 */
 export function photoZoom(box: Element, main: SwiperInstance, show: (percent: number) => void): PhotoZoom {
   let target: number | 'fit' = 'fit';
   const image = () => main.slides?.[main.activeIndex]?.querySelector('img');
@@ -122,22 +122,22 @@ export function photoZoom(box: Element, main: SwiperInstance, show: (percent: nu
   };
 }
 
-/* ── Información面板 ── */
+/* ── 信息面板 ── */
 
-/** unomil字节以abajo也写 1 KB; 数 y 单之间esNo换行空格, estrecho面板dentroNo拆成两行.  */
+/** 一千字节以下也写 1 KB；数和单位之间是不换行空格，窄面板里不拆成两行。 */
 export const fmtPhotoSize = (raw: unknown): string => {
   const size = Number(raw) || 0;
-  if (!size) return 'Tamaño desconocido';
+  if (!size) return '大小未知';
   return (size < 1024 * 1024 ? `${Math.max(1, Math.round(size / 1024))} KB` : fmtSize(size)).replace(' ', ' ');
 };
 
-export const photoTitle = (slide: LightboxSlide): string => (slide.asset?.name || slide.name) || 'No命名Imágenes';
+export const photoTitle = (slide: LightboxSlide): string => (slide.asset?.name || slide.name) || '未命名图片';
 
-/** 面板No.dos行. 本地Imagenes来源yTamaño; 别es来源, 分辨率(grandeImagen到才Con) y Tamaño. No.几SoloCon底栏eseuno编号.  */
+/** 面板第二行。本地图是来源与大小；别的是来源、分辨率（大图到了才有）和大小。第几张只有底栏那一个编号。 */
 export function photoMeta(slide: LightboxSlide, natural: readonly [number, number] | undefined): string {
   const asset = slide.asset;
-  if (asset) return [LOC[asset.location ?? ''] || asset.location || 'FuenteDesconocido', fmtPhotoSize(asset.size)].join(' · ');
+  if (asset) return [LOC[asset.location ?? ''] || asset.location || '来源未知', fmtPhotoSize(asset.size)].join(' · ');
   const resolution = natural?.[0] && natural[1] ? `${natural[0]} × ${natural[1]}` : '';
-  return [slide.source || 'Imagen en línea', resolution, slide.size ? fmtPhotoSize(slide.size) : '']
+  return [slide.source || '在线图片', resolution, slide.size ? fmtPhotoSize(slide.size) : '']
     .filter(Boolean).join(' · ');
 }

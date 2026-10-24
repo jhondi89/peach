@@ -1,12 +1,12 @@
-/* Listapágina顶arribaese汇Total(antiguo `.collection-summary`): izquierda边uno名目配unogrande数, derecha边uno句分项. 
+/* 列表页顶上那块汇总（旧 `.collection-summary`）：左边一个名目配一个大数，右边一句分项。
  *
- * superficial色espágina面底en launoIntroduce充面, profundo色反过来比página面亮uno档(antiguo `html:not(.dark)` ese), 14px 圆角, 
- * No压阴影. 600px 以abajo改成arribaabajo两行. 
+ * 浅色是页面底上的一块填充面，深色反过来比页面亮一档（旧 `html:not(.dark)` 那条），14px 圆角、
+ * 不压阴影。600px 以下改成上下两行。
  *
- * 数字回来之anterior, grande数eseuno格esuno 96×32 微光占(antiguo `.collection-summary strong .countskeleton`), 
- * 行alto照antiguo, 数字到货时CompletoNo改alto度. `flush` 去掉abajo方Espaciado: 落Enuno行自己排Espaciado容Dispositivodentro时
- * (垃圾Archivo计数行, `Page` 自己排Espaciadoalto清版), Espaciado归eseuno层. 壳铺primero屏骨架
- * (`src/island-skeleton.ts`  `islandSummary`)抄esaquíEsperando态类名, 改aquí要uno起改ese边.  */
+ * 数字回来之前，大数那一格是一条 96×32 的微光占位（旧 `.collection-summary strong .countskeleton`），
+ * 行高照旧，数字到货时整块不改高度。`flush` 去掉块下方的间距：落在一行自己排间距的容器里时
+ * （垃圾文件的计数行、`Page` 自己排间距的高清版），间距归那一层。壳铺的首屏骨架
+ * （`src/island-skeleton.ts` 的 `islandSummary`）抄的是这里等待态的类名，改这里要一起改那边。 */
 export function CollectionSummary({ label, figure, detail = '', pending = false, flush = false }: {
   label: string; figure: string; detail?: string; pending?: boolean; flush?: boolean;
 }) {

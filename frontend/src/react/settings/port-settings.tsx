@@ -1,4 +1,4 @@
-/* 本机PuertoyyaGuardar媒体Configuración使用同uno修订号.  */
+/* 本机端口与已保存媒体配置使用同一份修订号。 */
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/base/buttons/button';
 import { Input } from '@/components/base/input/input';
@@ -28,23 +28,23 @@ export function PortSettings({ data, receipt }: ConfigurationGroupProps) {
       revision: data.revision, media_dirs: data.media_dirs,
       ...(data.media_sources ? { media_sources: data.media_sources } : {}),
       port, scan_now: false,
-    }, 'POST', signal), (result) => { setSaved(result); receipt('Configuración guardada'); }, (cause) => {
+    }, 'POST', signal), (result) => { setSaved(result); receipt('已保存配置'); }, (cause) => {
       const fields = cause instanceof ApiError && cause.status === 400
         ? (cause.body as { errors?: { port?: string } } | null)?.errors : null;
       if (fields?.port) setFieldError(fields.port);
       else action.setError(errorMessage(cause));
     });
   };
-  if (saved) return <Section title="Esta máquinaAccesoPuerto"><Stack>
-    <Note tone="success" title="Configuración guardada">Peach En cursopesadoNuevo启动. 
-      <LinkButton href={saved.url} size="small">Ir a la colección</LinkButton>
+  if (saved) return <Section title="本机访问端口"><Stack>
+    <Note tone="success" title="配置已保存">Peach 正在重新启动。
+      <LinkButton href={saved.url} size="small">进入馆藏</LinkButton>
     </Note>
   </Stack></Section>;
-  return <Section title="Esta máquinaAccesoPuerto" onSubmit={submit}><Stack>
-    <Input id="configPort" label="Puerto" inputMode="numeric" value={port} onChange={setPort}
+  return <Section title="本机访问端口" onSubmit={submit}><Stack>
+    <Input id="configPort" label="端口" inputMode="numeric" value={port} onChange={setPort}
       validationBehavior="aria" isInvalid={Boolean(fieldError)} hint={fieldError || undefined} />
-    {action.error ? <Note tone="error" title="Sin guardar">{action.error}</Note> : null}
-  </Stack><Footer status="Guardarposterior Peach 会Reiniciar, ySaltar a到NuevoDirección. ">
-    <Button type="submit" {...busyProps(action.busy === 'save')}>Guardar configuración</Button>
+    {action.error ? <Note tone="error" title="没有保存">{action.error}</Note> : null}
+  </Stack><Footer status="保存后 Peach 会重启，并跳转到新地址。">
+    <Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button>
   </Footer></Section>;
 }

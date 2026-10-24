@@ -1,4 +1,4 @@
-/** Configuraciónprimero屏y正表单共用文案, 保持文字 y 换行alto度uno致.  */
-export const ENTRY_LINKS_HELP = 'Si JavDB/MISSAV no abren, ingresa un dominio espejo alternativo.';
+/** 配置首屏与正式表单共用文案，保持文字和换行高度一致。 */
+export const ENTRY_LINKS_HELP = 'JavDB 或 MISSAV 打不开时，填一个能打开的镜像域名。';
 
-export const ENTRY_LINKS_HINT = 'Solo introduce el nombre de dominio, Deja vacío para usar la dirección predeterminada';
+export const ENTRY_LINKS_HINT = '只填域名，留空用默认地址';

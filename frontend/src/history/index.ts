@@ -1,18 +1,18 @@
-/* Todo站唯unoExplorar dispositivoHistorial(`@peach/history`). 
+/* 全站唯一的浏览器历史（`@peach/history`）。
  *
- * Application y React 路由树直continuar引用本模, 随 peach-app.js 发出同unoHistorial实例. 
- * 启动地址Limpiarypesado定向使用 shellNavigate, Router  navigator 也读esteuno. 
+ * Application 与 React 路由树直接引用本模块，随 peach-app.js 发出同一个历史实例。
+ * 启动地址清理与重定向使用 shellNavigate，Router 的 navigator 也读这一份。
  *
- * 实现es React Router 自己 `createBrowserHistory`(`v5Compat` 档: push / replace 也通知监听者), 
- *  y 它 `<Router>` 读写es同uno `{usr, key, idx}` HistorialEntrada, No另引uno history Biblioteca. 它Solo收uno
- * 监听者, 而且要Con监听者才挂 `popstate`: aquíuno建bien就由本模continuararriba, 再分发给各订阅者, 所以página面
- * unoCargar就En数posterior退yanterior进, Noetc.谁来订阅. 
+ * 实现是 React Router 自己的 `createBrowserHistory`（`v5Compat` 档：push / replace 也通知监听者），
+ * 和它的 `<Router>` 读写的是同一种 `{usr, key, idx}` 历史条目，不另引一份 history 库。它只收一个
+ * 监听者，而且要有监听者才挂 `popstate`：这里一建好就由本模块接上，再分发给各个订阅者，所以页面
+ * 一加载就在数后退与前进，不等谁来订阅。
  *
- * 每uno次Historial变化(壳写, React 子树写, posterior退anterior进)都领uno递增序号 `seq`. 壳写地址走 `shellNavigate`, 
- * eseuno次当场认领(`claimed`): página面元素保持代次, 覆盖元素continuar走esteuno次AbrirPor favor求. posterior退anterior进, React
- * 子树写y壳经 `peachHistory` 直continuar写ese几次没人认领, 另领unopágina面Abrir序号(`openEpoch`): 每uno次都要eseunopágina
- * 按地址pesado开uno遍. 代次En通知订阅者之anterior就定, 路由根Sincronizar提交eseuno次渲染dentro读到ya经esNuevo代次, página面按它挂 key, 
- * uno次AbrirSolo挂uno次. 判据用序号y代次No用地址: 同unoEntradapesado放 `popstate` 地址No变, eseunopágina照样要pesado开.  */
+ * 每一次历史变化（壳写的、React 子树写的、后退前进）都领一个递增的序号 `seq`。壳写地址走 `shellNavigate`，
+ * 那一次当场认领（`claimed`）：页面元素保持代次，覆盖元素接走这一次的打开请求。后退前进、React
+ * 子树写的与壳经 `peachHistory` 直接写的那几次没人认领，另领一个页面打开序号（`openEpoch`）：每一次都要把那一页
+ * 按地址重开一遍。代次在通知订阅者之前就定了，路由根同步提交那一次渲染里读到的已经是新代次，页面按它挂 key，
+ * 一次打开只挂一次。判据用序号与代次不用地址：同一条目重放的 `popstate` 地址不变，那一页照样要重开。 */
 import { UNSAFE_createBrowserHistory, type Location, type NavigationType, type Navigator, type To } from 'react-router';
 
 import { backgroundOf, type BackgroundLocation } from './overlay';
@@ -21,7 +21,7 @@ import { settingsBackgroundOf, isPreferencePath } from './settings-route';
 export * from './settings-route';
 export { canonicalPath } from './canonical-path';
 
-/** uno次Historial变化: 动作, 变化之posterior地址, 它领到序号, 到esteuno次Como止página面Abrir序号,  y esteuno次esNoes壳认领写.  */
+/** 一次历史变化：动作、变化之后的地址、它领到的序号、到这一次为止的页面打开序号，和这一次是不是壳认领写的。 */
 export interface Navigation {
   action: NavigationType;
   location: Location;
@@ -32,7 +32,7 @@ export interface Navigation {
 
 export type NavigationListener = (navigation: Navigation) => void;
 
-/** 给 `<Router navigator>` 用eseuno, exterior加当anterioresteuno次变化y订阅.  */
+/** 给 `<Router navigator>` 用的那一份，外加当前这一次变化与订阅。 */
 export interface PeachHistory extends Navigator {
   readonly navigation: Navigation;
   listen(listener: NavigationListener): () => void;
@@ -43,9 +43,9 @@ let seq = 0;
 let openEpoch = 0;
 let current: Navigation = { action: browser.action, location: browser.location, seq, openEpoch, claimed: true };
 const listeners = new Set<NavigationListener>();
-/* `claiming` SoloEn `shellNavigate` 写地址eseunoabajoComo真.  */
+/* `claiming` 只在 `shellNavigate` 写地址那一下为真。 */
 let claiming = false;
-/* 还停Enpágina面Cargar时eseunoarriba: 之posteriorSolo经 replace 改写过(Limpiar启动地址, páginainterior写Parámetro), 没 push, 没posterior退anterior进.  */
+/* 还停在页面加载时的那一条上：之后只经 replace 改写过（清理启动地址、页内写参数），没 push、没后退前进。 */
 let onBootEntry = true;
 
 browser.listen(({ action, location }) => {
@@ -87,14 +87,14 @@ export const peachHistory: PeachHistory = {
 
 export interface ShellNavigateOptions {
   replace?: boolean;
-  /** NuevoEntrada `usr` Estado. Limpiar地址时传 `peachHistory.navigation.location.state`, Original样保住当anterioreseuno.  */
+  /** 新条目的 `usr` 状态。清理地址时传 `peachHistory.navigation.location.state`，原样保住当前那一份。 */
   state?: unknown;
 }
 
-/** 壳写地址: push 或 replace uno, 当场认领. 
+/** 壳写地址：push 或 replace 一条，当场认领。
  *
- * Ruta先按当anterior地址解析成绝对: 壳传进来Con相对Ruta, ConSolo带Consulta串, 也ConCompleto href, 
- * `history.pushState` 本来就eseste样解析; React Router  `To` Solo认Ruta, `#x` este会丢掉Consulta串.  */
+ * 路径先按当前地址解析成绝对的：壳传进来的有相对路径、有只带查询串的，也有整条 href，
+ * `history.pushState` 本来就是这样解析的；React Router 的 `To` 只认路径，`#x` 这种会丢掉查询串。 */
 export function shellNavigate(path: string | URL, { replace = false, state }: ShellNavigateOptions = {}): void {
   const url = new URL(path, window.location.href);
   const to: To = canonicalPath(`${url.pathname}${url.search}${url.hash}`);
@@ -107,11 +107,11 @@ export function shellNavigate(path: string | URL, { replace = false, state }: Sh
   }
 }
 
-/** 当anteriorEntradaesNoespágina面Cargar时eseuno(Actualizar, NuevoEtiquetapágina, profundo链).  */
+/** 当前条目是不是页面加载时的那一条（刷新、新标签页、深链）。 */
 export const bootEntry = (): boolean => onBootEntry;
 
-/** página面组按它匹配Fondo: 当anteriorEntradaEn `usr` dentro记eseunopágina. 启动eseunoNo读(ADR-0031"DetallesEntrada记abajo压En哪unopágina
- *  arriba"): `usr` 跨Actualizar仍En, abajo面eseunopágina却从没画过, Actualizar, NuevoEtiquetapáginayprofundo链落EnDetallesAnterior律当作SinFondo.  */
+/** 页面组按它匹配的背景：当前条目在 `usr` 里记的那一页。启动那一条不读（ADR-0031「详情条目记下压在哪一页
+ *  上」）：`usr` 跨刷新仍在，下面那一页却从没画过，刷新、新标签页与深链落在详情上一律当作没有背景。 */
 export function navigationBackground(): BackgroundLocation | null {
   if (isPreferencePath(current.location.pathname)) {
     const settings = onBootEntry ? null : settingsBackgroundOf(current.location.state);

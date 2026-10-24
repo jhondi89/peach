@@ -1,9 +1,9 @@
-/* Imagen片Llegar之posterior取景: Avatar按人脸放grande, Portada按人脸y正封框取景, 过pequeñoImagenOriginal尺寸摆, Cargaren proceso
- * 框铺微光. 
+/* 图片落地之后的取景：头像按人脸放大，封面按人脸与正封框取景，过小的图原尺寸摆，加载中的
+ * 框铺微光。
  *
- * este些Imagen都es模板字符串拼出来(`./markup.ts`), 没法逐挂监听, 所以由 `installCardArt`
- * En document arriba挂uno组捕obtener监听 y uno MutationObserver Unificadocontinuar管. 监听Solo能Conuno: este模
- * 由 Application y React página面共享源码, 启动时SoloInstalaruno次.  */
+ * 这些图都是模板字符串拼出来的（`./markup.ts`），没法逐张挂监听，所以由 `installCardArt`
+ * 在 document 上挂一组捕获监听和一个 MutationObserver 统一接管。监听只能有一份：这个模块
+ * 由 Application 与 React 页面共享源码，启动时只安装一次。 */
 import { SKELETON_REVEAL_DELAY } from '@peach/legacy/ui';
 
 import { PANEL_ASPECT, WIDE_PANEL_ASPECT, WIDE_SLEEVE_RATIO_MIN, WIDE_SLEEVE_RATIO_MAX, panelFrame, relayoutJavImages, type JavLayout } from '../jav-artwork';
@@ -12,27 +12,27 @@ import { faceSourceScale, markClamp, nativeImageFit } from './native-image';
 
 const devicePixels = () => window.devicePixelRatio || 1;
 
-/* 圆框dentroeseImagen按人脸取景. 放grande靠改 img 自己尺寸 y 偏移, No用 transform: 
-   `object-position` Solo能En cover 裁掉ese部分dentro挪, 方Imagen根本没得挪, 而 transform
-   Zoom会连圆框描边uno起放grande. 元素撑到"Imagen按 cover Zoom再乘倍数"ese么grande, 再用负偏移
-   脸心拉到框心, 圆框 `overflow:hidden` 负责裁— y No放grande时es同uno套几何.  */
+/* 圆框里那张图按人脸取景。放大靠改 img 自己的尺寸和偏移，不用 transform：
+   `object-position` 只能在 cover 裁掉的那部分里挪，方图根本没得挪，而 transform
+   缩放会连圆框的描边一起放大。元素撑到「图按 cover 缩放再乘倍数」那么大，再用负偏移
+   把脸心拉到框心，圆框的 `overflow:hidden` 负责裁——和不放大时是同一套几何。 */
 export function avatarFrame(img: HTMLImageElement): void {
   const ring = img.parentElement;
   if (!ring) return;
   ['position', 'right', 'bottom', 'left', 'top', 'width', 'height', 'max-width', 'max-height']
     .forEach(name => img.style.removeProperty(name));
-  // 取景完才露面(`09-skeleton.css`): 本函数Sincronizar写完样, 先标arriba; SoloConetc.框Diseñoese路撤掉. 
+  // 取景完才露面（`09-skeleton.css`）：本函数同步写完样式，先标上；只有等框布局那条路撤掉。
   img.dataset.faceFramed = '';
   if (ring.dataset.nativeSmall === 'true') return;
   const rect = ring.getBoundingClientRect();
-  /* ImagenCargar完时框还没Diseño, es真会发生unoCompleto类情况: 面板隐藏, `display:none` página签, 
-     缓存直出. eseuno刻框es 0×0, 算出来倍数Solo能es 1, 而 `load` No会再来No.dos次—
-     放grande于es静predetermina地永No生效, página面arribaverNo出 y "esteImagenNo需要放grande"Con任何区别. 
-     实测En资料página复现过: 框ya经 160×160, Imagen也 complete, style dentro却SoloCon平移. 
-     etc.到框拿到尺寸再算uno次, etc.No到就维持No放grande.  */
+  /* 图加载完时框还没布局，是真会发生的一整类情况：面板隐藏、`display:none` 的页签、
+     缓存直出。那一刻框是 0×0，算出来的倍数只能是 1，而 `load` 不会再来第二次——
+     放大于是静默地永不生效，页面上看不出和「这张图不需要放大」有任何区别。
+     实测在资料页复现过：框已经 160×160、图也 complete，style 里却只有平移。
+     等到框拿到尺寸再算一次，等不到就维持不放大。 */
   if (!(rect.width > 0 && rect.height > 0)) {
     if (typeof ResizeObserver !== 'function') return;
-    // 框es 0×0 时本来也verNo见; etc.它量到尺寸, 取完景再露面. 
+    // 框是 0×0 时本来也看不见；等它量到尺寸、取完景再露面。
     delete img.dataset.faceFramed;
     const watch = new ResizeObserver(() => {
       const now = ring.getBoundingClientRect();
@@ -44,9 +44,9 @@ export function avatarFrame(img: HTMLImageElement): void {
     return;
   }
   const [cx = NaN, cy = NaN, faceW = NaN, imgW = NaN, imgH = NaN] = String(img.dataset.facebox).split(' ').map(Number);
-  /* 索引página取es实体Imagen派生件, 边车记esOriginal件像素: etc.比缩过仍es同unoImagen, 按Relación
-     换算就对得arriba. 脸心es归uno化, No跟着缩; 脸框 y Imagen像素uno起乘, `faceZoom` dentroese
-     Sin损arriba限才问得到手arribaeste真Conmásmenos像素. RelaciónComo 0 es换成别Imagen, ese时退回几何居en proceso.  */
+  /* 索引页取的是实体图的派生件，边车记的是原件像素：等比缩过的仍是同一张图，按比例
+     换算就对得上。脸心是归一化的，不跟着缩；脸框和图的像素一起乘，`faceZoom` 里那条
+     无损上限才问得到手上这张真有多少像素。比例为 0 是换成了别的图，那时退回几何居中。 */
   const scale = faceSourceScale(img.naturalWidth, img.naturalHeight, imgW, imgH);
   if (!scale) {
     img.style.objectPosition = '50% 50%';
@@ -54,24 +54,24 @@ export function avatarFrame(img: HTMLImageElement): void {
   }
   const frame = faceFrame({ cx, cy, faceW: faceW * scale, imgW: imgW * scale, imgH: imgH * scale },
     { w: rect.width, h: rect.height }, devicePixels());
-  // 放Nogrande就uno字都No写: Dejaabajoes CSS dentroese几何, `object-position` 照antiguo生效. 
+  // 放不大就一个字都不写：留下的是 CSS 里那份几何，`object-position` 照旧生效。
   if (!frame) return;
   const s = img.style;
-  // `inset:0` 定 right/bottom,  y esteen la left+width 过约束; 显撤掉, No靠Explorar dispositivo取舍. 
+  // `inset:0` 定了 right/bottom，和这里的 left+width 过约束；显式撤掉，不靠浏览器取舍。
   s.position = 'absolute'; s.right = 'auto'; s.bottom = 'auto';
   s.left = `${frame.left}%`; s.top = `${frame.top}%`;
   s.width = `${frame.width}%`; s.height = `${frame.height}%`;
-  /* ancho常常超过框ancho. React 岛 Tailwind 预检给每 img `max-width:100%`, 会anchocarpeta回框ancho, 
-     alto照样放grande, 脸偏到izquierda边, derecha侧露出底色; interior联撤掉, Imagen落En哪容Dispositivodentro都No用再各补uno.  */
+  /* 宽常常超过框宽。React 岛的 Tailwind 预检给每张 img `max-width:100%`，会把宽夹回框宽、
+     高照样放大，脸偏到左边、右侧露出底色；内联撤掉，图落在哪个容器里都不用再各补一条。 */
   s.maxWidth = 'none'; s.maxHeight = 'none';
 }
 
-/* OficialPortadaContres形态, 实测过: Completo封套约 1.48(izquierda侧es剧照拼贴, derecha侧才es正封), 
-   竖版正封约 0.70(本身就es正封, Sinizquierdamedio边puede裁), 16:9 Oficial剧照约 1.78(Completo幅
-   都esImagen, Sin"正封eseuno"puede推). 所以取景No能写死"取derecha边", 得etc.Imagen片Cargarposterior
-   按它自己anchoalto比分流—服务端没存esteRelación, 也No该Como此再存uno. 
-   剧照必须自成uno档:  1.78 归进 front 就会按写死 50% 取横向en proceso段, 人偏Enuno侧
-   就Completo被切掉, 而grandeImagen容Dispositivo比所ConPortada都竖, 纵向锚点Enesedentro根本No生效.  */
+/* 官方封面有三种形态，实测过：整张封套约 1.48（左侧是剧照拼贴，右侧才是正封），
+   竖版正封约 0.70（本身就是正封，没有左半边可裁），16:9 官方剧照约 1.78（整幅
+   都是画面，没有「正封那一块」可推）。所以取景不能写死「取右边」，得等图片加载后
+   按它自己的宽高比分流——服务端没存这个比例，也不该为此再存一份。
+   剧照必须自成一档：把 1.78 归进 front 就会按写死的 50% 取横向中段，人偏在一侧
+   就整个被切掉，而大图容器比所有封面都竖、纵向锚点在那里根本不生效。 */
 export function coverAnchor(img: HTMLImageElement): void {
   img.closest<HTMLElement>('.pic,[data-media-pic]')?.style.removeProperty('--cover-blur');
   const r = img.naturalWidth / img.naturalHeight;
@@ -80,17 +80,17 @@ export function coverAnchor(img: HTMLImageElement): void {
   ['--panel-aspect', '--panel-clip', '--panel-left', '--panel-top', '--panel-height', '--cover-x', '--cover-y']
     .forEach(name => img.style.removeProperty(name));
   const code = img.dataset.coverCode || new URL(img.currentSrc || img.src, location.href).searchParams.get('code') || '';
-  // FC2 PortadaesCompleto幅Imagen, 横向取景跟随人脸; anchoalto比No代表Con DVD 正封. 
+  // FC2 封面是整幅画面，横向取景跟随人脸；宽高比不代表有 DVD 正封。
   img.dataset.frame = img.dataset.coverLayout === 'still' || /^FC2(?:-PPV)?-/i.test(code) ? 'still' : wideSleeve(img) ? 'sleeve' : r >= 1.65 ? 'still' : r > 1.2 ? 'sleeve' : 'front';
-  /* `object-position` cien分比说es"Imagen片arribaeste点对齐puede见窗口同unocien分比Ubicación", 
-     Noes"este点落到窗口正en proceso". 所以人脸en proceso心Original样当锚点Solo能保证脸还EnImagendentro: 0.81
-     ese偏derecha脸会贴着窗口derecha缘, Imagen片derecha边还剩uno截永远露No出来. puede见窗口占Imagen片 w 时, 
-     让人脸落到正en proceso锚点es (face - w/2) / (1 - w). carpeta回 0–1 es因Como脸离Imagen片边缘No足
-     medio窗口时窗口ya经顶到边, 再往exterior推Solo会Imagen片exterior面推进来.  */
+  /* `object-position` 的百分比说的是「图片上这个点对齐可见窗口的同一个百分比位置」，
+     不是「这个点落到窗口正中」。所以人脸中心原样当锚点只能保证脸还在画面里：0.81
+     那种偏右的脸会贴着窗口右缘，图片右边还剩一截永远露不出来。可见窗口占图片 w 时，
+     让人脸落到正中的锚点是 (face - w/2) / (1 - w)。夹回 0–1 是因为脸离图片边缘不足
+     半个窗口时窗口已经顶到边，再往外推只会把图片外面推进来。 */
   const car = coverRatio(img);
   const center = (name: string, face: number | null, visible: number) => {
-    // Solo给被裁ese轴算. `object-fit:cover` uno次Solo裁uno轴, 另uno轴Completo幅puede见
-    // (visible>=1), eseen la object-position es死值, 算也No生效. 
+    // 只给被裁的那个轴算。`object-fit:cover` 一次只裁一个轴，另一个轴整幅可见
+    // （visible>=1），那里的 object-position 是死值，算了也不生效。
     if (face == null || !(visible > 0 && visible < 1)) return;
     const pct = Math.min(1, Math.max(0, (face - visible / 2) / (1 - visible)));
     img.style.setProperty(name, `${Math.round(pct * 100)}%`);
@@ -98,25 +98,25 @@ export function coverAnchor(img: HTMLImageElement): void {
   center('--cover-x', coverFace(img, 'cx'), car / r);
   center('--cover-y', coverFace(img, 'cy'), r / car);
   posterPanel(img, car);
-  // 传统PortadaCompletoImageny竖版正封保持完Completo, RelaciónNo同处用同Imagen补底; Completo幅grande封保持纯fondo de color. 
+  // 传统封面的整图与竖版正封保持完整，比例不同处用同图补底；整幅大封保持纯色底。
   if (img.dataset.frame !== 'still' && (img.classList.contains('whole') || img.dataset.frame === 'front')
     && Math.abs(r / car - 1) > .02) coverBackdrop(img);
 }
 
-/* Solo折痕derecha边ese正封摆进卡片, 封底uno像素都No露. 折痕UbicaciónEn `data-posterbox` dentro, 
-   换算要容DispositivoRelaciónSoloConpágina面知道, 两边Enaquí才凑齐.  */
+/* 只把折痕右边那块正封摆进卡片，封底一个像素都不露。折痕位置在 `data-posterbox` 里，
+   换算要的容器比例只有页面知道，两边在这里才凑齐。 */
 export function posterPanel(img: HTMLImageElement, ratio: number): void {
   if (img.dataset.frame === 'front' || img.dataset.coverLayout === 'still') return;
   let [x0 = NaN, imgW = NaN, imgH = NaN, y0 = NaN, x1 = NaN, y1 = NaN] = String(img.dataset.posterbox || '').split(' ').map(Number);
-  /* Sin框双página封套按先验从derecha缘量回去, y服务端折痕找No到时Relación框uno致.  */
+  /* 没有框的双页封套按先验从右缘量回去，与服务端折痕找不到时的比例框一致。 */
   if (!img.dataset.posterbox && img.dataset.frame === 'sleeve') {
     imgW = img.naturalWidth; imgH = img.naturalHeight;
     x0 = Math.round(imgW - (wideSleeve(img) ? WIDE_PANEL_ASPECT : PANEL_ASPECT) * imgH); y0 = 0; x1 = imgW; y1 = imgH;
   }
-  /* 框es按eseuno版源Imagen像素算, 而Portada会被更grandeeseOriginal子Reemplazar. 尺寸对Noarriba就Descripción
-     框Descripciónes另unoImagen, 落Enestearribaesuno错区域—而错Enpágina面arriba y "本来就该
-     este么取景"verNo出区别, 所以宁puede退回回退值.  */
-  // 卡片先取esetc.比缩pequeño派生档, 框cien分比Enetc.比ZoomabajoNo变, 所以认缩pequeño, No认别Imagen. 
+  /* 框是按那一版源图的像素算的，而封面会被更大的那张原子替换。尺寸对不上就说明
+     框描述的是另一张图，落在这张上是一块错位的区域——而错位在页面上和「本来就该
+     这么取景」看不出区别，所以宁可退回回退值。 */
+  // 卡片先取的是等比缩小的派生档，框的百分比在等比缩放下不变，所以认缩小，不认别的图。
   if (!faceSourceScale(img.naturalWidth, img.naturalHeight, imgW, imgH)) return;
   const panelAspect = (x1 - x0) / (y1 - y0);
   const sourceAspect = imgW / imgH;
@@ -135,7 +135,7 @@ export function posterPanel(img: HTMLImageElement, ratio: number): void {
     && Math.abs(panelAspect / ratio - 1) > .02) coverBackdrop(img);
 }
 
-/** 传统正封Deja白使用同ImagenDifuso补底, 优先复用yaCargar派生档.  */
+/** 传统正封的留白使用同图模糊补底，优先复用已加载的派生档。 */
 function coverBackdrop(img: HTMLImageElement): void {
   const src = (img.dataset.thumbSrc || img.currentSrc || img.src).replace(/"/g, '%22');
   img.closest<HTMLElement>('.pic,[data-media-pic]')?.style.setProperty('--cover-blur', `url("${src}")`);
@@ -149,10 +149,10 @@ function wideSleeve(img: HTMLImageElement): boolean {
     && ratio >= WIDE_SLEEVE_RATIO_MIN && ratio < WIDE_SLEEVE_RATIO_MAX;
 }
 
-/* 卡片先取Portada派生档(`/cover?thumb=1`): alto清Original件uno解码 38 MB, unopágina几diez挤爆
-   解码缓存, 来Revertir动时滚走被清掉, 滚回来现解, eseuno段es空白. 取景落定之posterior量esteImagenEn
-   屏幕arriba铺开másgrande: uno源像素要占No止uno设备像素, 就es派生档No够清楚, 换回Original件. 
-   单列, grandeImageneste些真用得arriba像素地方照antiguoesOriginal件, más列时屏幕本来就放Noabajoese么más像素.  */
+/* 卡片先取封面的派生档（`/cover?thumb=1`）：高清原件一张解码 38 MB，一页几十张挤爆
+   解码缓存，来回滚动时滚走的被清掉、滚回来现解，那一段是空白。取景落定之后量这张图在
+   屏幕上铺开多大：一个源像素要占不止一个设备像素，就是派生档不够清楚，换回原件。
+   单列、大图这些真用得上像素的地方照旧是原件，多列时屏幕本来就放不下那么多像素。 */
 export function upgradeCover(img: HTMLImageElement): void {
   if (!/[?&]thumb=1(&|$)/.test(img.src) || !img.naturalWidth) return;
   const { width, height } = img.getBoundingClientRect();
@@ -163,9 +163,9 @@ export function upgradeCover(img: HTMLImageElement): void {
   img.src = img.src.replace(/[?&]thumb=1(?=&|$)/, '');
 }
 
-/* 容DispositivoRelaciónSoloCon `.pic`  `--card-ratio` 知道: 竖屏开关, JAV grandeImagen y 普通卡片各写uno
-   值, Enaquí按 layout pesado算迟早会 y 它分叉. 自定义属性会继承, 直continuar从Imagen片arriba读; 
-   `aspect-ratio` 允许 `16/9` este写法, 所以两形都得认.  */
+/* 容器比例只有 `.pic` 的 `--card-ratio` 知道：竖屏开关、JAV 大图和普通卡片各写一个
+   值，在这里按 layout 重算迟早会和它分叉。自定义属性会继承，直接从图片上读；
+   `aspect-ratio` 允许 `16/9` 这种写法，所以两种形式都得认。 */
 export function coverRatio(img: HTMLImageElement): number {
   const parts = getComputedStyle(img).getPropertyValue('--card-ratio').trim().split('/').map(Number);
   const r = parts.length === 2 ? Number(parts[0]) / Number(parts[1]) : Number(parts[0]);
@@ -177,19 +177,19 @@ export function coverFace(img: HTMLImageElement, axis: 'cx' | 'cy'): number | nu
   return Number.isFinite(face) ? face : null;
 }
 
-/* PortadayAvatarCargar态,  y 换Avatareseuno格同uno形态: Imagen还En路arriba时框arriba铺uno层微光, 到手posterior
-   微光淡出y糊掉(`09-skeleton.css`  `.imgwait`). Imagenes模板字符串拼进来, 逐挂
-   监听做No到, 所以En插进página面时veruno眼: ya经 `complete` (缓存dentro直continuar解码ese)
-   什么都No标, página面每次pesado绘都No会闪unoabajo微光. 标arriba之posterior `load` uno定会来—Imagenya经挂En
-   Documentaciónarriba, 捕obtener阶段监听收得到; 取No到Imagen `error` 同样收尾, No让微光盖住primero字母. 
-   收尾posterior类名unoy摘掉: 没到门槛就到手直continuar摘, 淡出过etc.淡出完再摘, Portadaarriba平时NoDeja
-   ese层 `::after`. React 索引páginaAvatar框(`[data-person-ring]`)y资料卡grande, 同艺人
-   (`[data-entity-portrait]`, `[data-hero-ring]`)dentroeseImagen同样由esteuno层拼, 插进página面时照样
-   被aquíver见.  */
+/* 封面与头像的加载态，和换头像那一格同一形态：图还在路上时框上铺一层微光，到手后
+   微光淡出并糊掉（`09-skeleton.css` 的 `.imgwait`）。图是模板字符串拼进来的，逐张挂
+   监听做不到，所以在插进页面时看一眼：已经 `complete` 的（缓存里直接解码的那种）
+   什么都不标，页面每次重绘都不会闪一下微光。标上之后 `load` 一定会来——图已经挂在
+   文档上，捕获阶段的监听收得到；取不到图的 `error` 同样收尾，不让微光盖住首字母。
+   收尾后类名一并摘掉：没到门槛就到手的直接摘，淡出过的等淡出完再摘，封面上平时不留
+   那层 `::after`。React 索引页的头像框（`[data-person-ring]`）与资料卡的大位、同台艺人
+   （`[data-entity-portrait]`、`[data-hero-ring]`）里那张图同样由这一层拼，插进页面时照样
+   被这里看见。 */
 const PENDING_IMAGES = '.pic>img.poster,[data-media-art]>img,.ring>img,[data-tier-ring]>img,[data-person-ring]>img,[data-entity-portrait]>img,[data-hero-ring]>img';
 const pendingSince = new WeakMap<Element, number>();
 
-/** 插进página面时还没到手Imagen, En框arriba标 `imgwait`.  */
+/** 插进页面时还没到手的图，在框上标 `imgwait`。 */
 export function watchPendingImages(node: Element): void {
   const found = node.matches(PENDING_IMAGES) ? [node] : node.querySelectorAll(PENDING_IMAGES);
   for (const img of found) {
@@ -199,7 +199,7 @@ export function watchPendingImages(node: Element): void {
   }
 }
 
-/** Imagen到手或取No到: 收掉框arribaese层微光. etc.得No够久直continuar摘, 否则淡出完再摘.  */
+/** 图到手或取不到：收掉框上那层微光。等得不够久的直接摘，否则淡出完再摘。 */
 export function settleImage(img: HTMLImageElement): void {
   const box = img.parentElement;
   if (!box?.classList.contains('imgwait')) return;
@@ -211,13 +211,13 @@ export function settleImage(img: HTMLImageElement): void {
     box.removeEventListener('transitionend', drop); clearTimeout(timer); box.classList.remove('ui-imgdone');
   };
   box.addEventListener('transitionend', drop);
-  // 兜底: 面板藏Enposterior或动效归cero时 `transitionend` No会来. 
+  // 兜底：面板藏在后台或动效归零时 `transitionend` 不会来。
   timer = setTimeout(drop, 1000);
 }
 
-/* 缓存Imagen插进página面No.uno帧就画出来, `load` 却排EnSiguienteTareadentro: NoEnaquí先取景, eseuno帧
-   要么藏着(`09-skeleton.css`), 要么es几何居en proceso. 观察回调es微Tarea, 赶En绘制之anterior. 
-   No限于 `PENDING_IMAGES` ese几框: 带脸框Avatar散En各página, 哪en la都uno样要先取景.  */
+/* 缓存图插进页面的第一帧就画出来了，`load` 却排在下一个任务里：不在这里先取景，那一帧
+   要么藏着（`09-skeleton.css`），要么是几何居中。观察回调是微任务，赶在绘制之前。
+   不限于 `PENDING_IMAGES` 那几种框：带脸框的头像散在各页，哪里的都一样要先取景。 */
 export function frameCachedImages(node: Element): void {
   const framed = 'img.cover,img[data-facebox]';
   const found = node.matches(framed) ? [node] : node.querySelectorAll(framed);
@@ -229,20 +229,20 @@ export function frameCachedImages(node: Element): void {
   }
 }
 
-/* Imagen比框还pequeño时No再拉伸: Original尺寸居en proceso摆, 空出来uno圈拿同unoImagen放grandeDifuso补底. 
+/* 图比框还小时不再拉伸：原尺寸居中摆，空出来的一圈拿同一张图放大模糊补底。
 
-   Sello标识实测从 42 px 到 1378 px 都Con. `/logo?variant=large` ya经先挑过esteSello
-   最清晰uno, 剩abajoes本来就SingrandeImagenSello— 112 px ese拉满 180 px 格子
-   Soloes糊放grande给人ver, 而摆EnOriginal尺寸arriba, 它至menoses清楚. 
+   厂牌标识实测从 42 px 到 1378 px 都有。`/logo?variant=large` 已经先挑过这个厂牌
+   最清晰的一份，剩下的是本来就没有大图的厂牌——把 112 px 的那张拉满 180 px 的格子
+   只是把糊放大给人看，而摆在原尺寸上，它至少是清楚的。
 
-   度量Solo能En `load` 之posterior做: Imagen没Cargar完时 `naturalWidth` 读到es 0. 换过回落Imagenposterior
-   `load` 会再来uno次, aquí读 `currentSrc` 也就跟着es当anterior真正显示ese. 
-   允许适度放grande; 明显过pequeñoImagen片才按源尺寸补底.  */
+   度量只能在 `load` 之后做：图没加载完时 `naturalWidth` 读到的是 0。换过回落图后
+   `load` 会再来一次，这里读的 `currentSrc` 也就跟着是当前真正显示的那张。
+   允许适度放大；明显过小的图片才按源尺寸补底。 */
 export function fitNativeImage(img: HTMLImageElement): void {
   const box = img.closest<HTMLElement>('[data-fit-native]');
   if (!box || !img.naturalWidth) return;
-  /* 超扁, 超alto标识另走uno: corto边撑到abajo限, largo边两头裁掉(`[data-native-clamp]` 换成 cover), 
-     No补底—eseuno圈Difuso放grandeesuno道线, Solo会糊成unogrande.  */
+  /* 超扁、超高的标识另走一条：短边撑到下限、长边两头裁掉（`[data-native-clamp]` 换成 cover），
+     不补底——那一圈模糊放大的是一道线，只会糊成一大块。 */
   const clamp = box.dataset.fitNative === 'mark'
     ? markClamp(img.naturalWidth, img.naturalHeight, box.clientWidth, box.clientHeight) : null;
   box.dataset.nativeClamp = String(!!clamp);
@@ -253,7 +253,7 @@ export function fitNativeImage(img: HTMLImageElement): void {
     box.style.setProperty('--markbg', 'none');
     return;
   }
-  // 版Cambiar会改变框Tamaño, 每次按屏幕像素密度pesadoNuevo判断. 
+  // 版式切换会改变框的大小，每次按屏幕像素密度重新判断。
   const { small, width, height } = nativeImageFit(img.naturalWidth, img.naturalHeight, box.clientWidth, box.clientHeight, devicePixels());
   box.dataset.nativeSmall = String(small);
   box.style.setProperty('--markw', small ? width + 'px' : '100%');
@@ -262,7 +262,7 @@ export function fitNativeImage(img: HTMLImageElement): void {
   box.style.setProperty('--markbg', small ? `url("${src}")` : 'none');
 }
 
-/** ya经Cargar完ImagenNo会再发 `load`, 容Dispositivo换尺寸就得自己pesado量uno遍.  */
+/** 已经加载完的图不会再发 `load`，容器换了尺寸就得自己重量一遍。 */
 export function refitNativeImages(root?: ParentNode | null): void {
   (root || document).querySelectorAll<HTMLImageElement>('[data-fit-native] img').forEach(img => {
     fitNativeImage(img);
@@ -270,36 +270,36 @@ export function refitNativeImages(root?: ParentNode | null): void {
   });
 }
 
-/** Portada格换版: 格en laCódigo JAVPortadaOriginal地换取景类名, ya经到手按Nuevo卡片RelaciónpesadoNuevo取景, 派生档
- *  No够清楚换回Original件.  */
+/** 封面格换版式：格里的番号封面原地换取景类名，已经到手的按新卡片比例重新取景，派生档
+ *  不够清楚的换回原件。 */
 export function relayoutCovers(root: ParentNode, layout: JavLayout): void {
   for (const img of relayoutJavImages(root, layout)) { coverAnchor(img); upgradeCover(img); }
 }
 
 let installed = false;
 
-/** 取景y微光ese组Todo站监听. 壳启动时调uno次; Repetir调用No会再挂No.dos.  */
+/** 取景与微光的那组全站监听。壳启动时调一次；重复调用不会再挂第二份。 */
 export function installCardArt(): void {
   if (installed) return;
   installed = true;
-  /* Portadaes模板字符串拼出来, 没法逐挂监听; interior联 `onload` 属性Solo能调Todo局函数, 而
-     模en la取景函数Enesedentro取No到—página面会每Imagen报uno次 ReferenceError, PortadaTodo按回落
-     取景. `load` No冒泡, pero捕obtener阶段照样收得到.  */
+  /* 封面是模板字符串拼出来的，没法逐张挂监听；内联 `onload` 属性只能调全局函数，而
+     模块里的取景函数在那里取不到——页面会每张图报一次 ReferenceError，封面全部按回落
+     取景。`load` 不冒泡，但捕获阶段照样收得到。 */
   document.addEventListener('load', event => {
     const img = event.target;
     if (!(img instanceof HTMLImageElement)) return;
     settleImage(img);
     fitNativeImage(img);
     if (img.classList.contains('cover')) { coverAnchor(img); upgradeCover(img); }
-    // Avatar走同uno路, 理由也同uno: 倍数要etc.Imagen y 框都Llegar才算得出来. 
+    // 头像走同一条路，理由也同一个：倍数要等图和框都落地才算得出来。
     else if (img.dataset.facebox) avatarFrame(img);
   }, true);
   new MutationObserver(records => {
     for (const record of records) for (const node of record.addedNodes)
       if (node.nodeType === Node.ELEMENT_NODE) { watchPendingImages(node as Element); frameCachedImages(node as Element); }
   }).observe(document.body, { childList: true, subtree: true });
-  // 挂En document arriba, 比 body arribaese兜底链先收到: Imagen被摘掉之anterior框还找得到. 兜底链dentro还Con
-  // Siguiente时微光Deja着, 换en laese到手才收. 
+  // 挂在 document 上，比 body 上那条兜底链先收到：图被摘掉之前框还找得到。兜底链里还有
+  // 下一张时微光留着，换上的那张到手才收。
   document.addEventListener('error', event => {
     const img = event.target;
     if (img instanceof HTMLImageElement && !img.dataset.fallbacks) settleImage(img);

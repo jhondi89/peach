@@ -1,9 +1,9 @@
-/* Imagen片灯箱: unoOriginal生模态 dialog, 主画布y缩略Imagen各esuno Swiper. 
+/* 图片灯箱：一枚原生模态 dialog，主画布与缩略图条各是一个 Swiper。
  *
- * 宿主es body último尾uno带 `.peach-react` 容Dispositivo, uno棵根常驻: Abrir时换arribaNuevouno灯箱
- * (`key` 每次加uno, Swiper 从头建), 关掉时Solocontenido渲染成空, 根 y 容DispositivoDeja着给Siguiente次. No进
- * 路由树: eseuno套es给壳página面容Dispositivo用, 容Dispositivo归壳, 换página就被Completopesado写; 灯箱浮En所Conpágina面
- * 之arriba, 哪unopágina都能Abrir, 跟哪página面容Dispositivo都No同生共死.  */
+ * 宿主是 body 末尾一个带 `.peach-react` 的容器，一棵根常驻：打开时换上新的一份灯箱
+ * （`key` 每次加一，Swiper 从头建），关掉时只把内容渲染成空，根和容器留着给下一次。不进
+ * 路由树：那一套是给壳的页面容器用的，容器归壳、换页就被整块重写；灯箱浮在所有页面
+ * 之上，哪一页都能打开，跟哪个页面容器都不同生共死。 */
 import { useId, useLayoutEffect, useRef, useState } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { flushSync } from 'react-dom';
@@ -33,7 +33,7 @@ function lightboxRoot(): Root {
   return root;
 }
 
-/** 从No. `index` Empezarver `slides`. Swiper 取No到时退到NuevoEtiquetapáginadentroAbrireseunograndeImagen.  */
+/** 从第 `index` 张开始看 `slides`。Swiper 取不到时退到新标签页里打开那一张大图。 */
 export async function openPhotoLightbox(index: number, slides: LightboxSlide[], actions?: LightboxHost): Promise<void> {
   if (!slides.length || index < 0 || index >= slides.length) return;
   let Swiper: SwiperConstructor;
@@ -55,7 +55,7 @@ export function closePhotoLightbox(): void {
 
 interface Detail {
   dismiss(returnFocus?: boolean): void;
-  /** 面板开着, esteunoabajo点En面板 y 触发Clave之exterior: 收起面板, esteunoabajoNo再算别.  */
+  /** 面板开着、这一下点在面板和触发键之外：收起面板，这一下不再算别的。 */
   dismissOutside(target: EventTarget | null): boolean;
   isOpen(): boolean;
 }
@@ -78,10 +78,10 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
   const detail = useRef<Detail | null>(null);
   const [active, setActive] = useState(index);
   const [percent, setPercent] = useState(100);
-  /* grandeImagen自然尺寸, 到才知道: 面板en la分辨率读它. 取No到OriginalImagenese几换成缩略Imagen.  */
+  /* 大图的自然尺寸，到了才知道：面板上的分辨率读它。取不到原图的那几张换成缩略图。 */
   const [natural, setNatural] = useState<Record<number, [number, number]>>({});
   const [broken, setBroken] = useState<ReadonlySet<number>>(() => new Set());
-  /** OriginalImagen y 缩略Imagen都取No到ese几: 放uno占, No露Explorar dispositivo破Imagen标.  */
+  /** 原图和缩略图都取不到的那几张：放一块占位，不露浏览器的破图标。 */
   const [lost, setLost] = useState<ReadonlySet<number>>(() => new Set());
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<{ at: number; text: string }>({ at: index, text: '' });
@@ -97,13 +97,13 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
     const centerThumb = (at: number, speed = 200) => strip.slideTo(at, speed);
     const main = new Swiper(mainEl.current!, {
       initialSlide: index, zoom: { minRatio: .01, maxRatio: 100 }, keyboard: { enabled: true }, lazyPreloadPrevNext: 1,
-      // arribaabajo滚也翻Página: verImagen时手En滚轮arriba, 没人愿意Como换uno去够izquierdaderechaClave或按钮. 
+      // 上下滚也翻页：看图时手在滚轮上，没人愿意为了换一张去够左右键或按钮。
       mousewheel: { enabled: true, forceToAxis: false },
       thumbs: { swiper: strip },
       pagination: {
         el: pagination.current, clickable: true, dynamicBullets: true, dynamicMainBullets: 3,
         renderBullet: (at: number, className: string) =>
-          `<button type="button" class="${className}" aria-label="verNo. ${at + 1}  imagen(es)"></button>`,
+          `<button type="button" class="${className}" aria-label="查看第 ${at + 1} 张图片"></button>`,
       },
       navigation: { prevEl: back.current, nextEl: fwd.current },
       on: {
@@ -121,8 +121,8 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
       toggle.current?.setAttribute('aria-expanded', 'false');
       if (returnFocus && toggle.current && document.contains(toggle.current)) toggle.current.focus();
     };
-    /* 开着没开着问Información卡自己: 退场动画eseuno段面板还没 hidden, 按 hidden 判会"En curso收"
-       当成"开着", 连按两abajo Escape No.dosabajo就Soloes又收uno遍.  */
+    /* 开着没开着问信息卡自己：退场动画那一段面板还没 hidden，按 hidden 判会把「正在收」
+       当成「开着」，连按两下 Escape 第二下就只是又收了一遍。 */
     detail.current = {
       dismiss,
       dismissOutside: (target) => {
@@ -133,8 +133,8 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
       },
       isOpen: context.isOpen,
     };
-    /* Swiper SoloEn自己构造eseuno刻量uno次容Dispositivo. 窗口uno改Tamaño(或primero屏Fuente de letra, 滚动落定得比构造晚)
-       slide 就停Enantiguoancho度arriba, grandeImagen按Error框Zoom, ver起来就es"显示NoTodo".  */
+    /* Swiper 只在自己构造的那一刻量一次容器。窗口一改大小（或首屏字体、滚动条落定得比构造晚）
+       slide 就停在旧宽度上，大图按错误的框缩放，看起来就是「显示不全」。 */
     const resize = new ResizeObserver(() => { main.update(); strip.update(); zoom.current?.resize() });
     resize.observe(dialog);
     const keys = (event: KeyboardEvent) => {
@@ -156,7 +156,7 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
       dialog.close();
       document.body.classList.remove('photolight-open');
     };
-    // 每次Abrir换unoNuevo(`key`), esteuno段SoloEn挂arribay卸abajo时各跑uno次. 
+    // 每次打开换一份新的（`key`），这一段只在挂上与卸下时各跑一次。
   }, []);
 
   useLayoutEffect(() => { if (range.current) syncBoardRange(range.current) }, [percent]);
@@ -182,8 +182,8 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
     }
     zoom.current?.loaded(img);
   };
-  // OriginalImagen取No到时换arribaeste缩略Imagen: 归档站OriginalArchivoAnfitrión会拦abajoProxy(pawchive  file.
-  // 子域挂着 ddos-guard), 缩略Imagen由Explorar dispositivo直continuar读公开Anfitrión. Solo换uno次, 缩略Imagen也取No到就放占. 
+  // 原图取不到时换上这张的缩略图：归档站的原文件主机会拦下代理（pawchive 的 file.
+  // 子域挂着 ddos-guard），缩略图由浏览器直接读公开主机。只换一次，缩略图也取不到就放占位。
   const failed = (at: number) => {
     if (broken.has(at) || !slides[at].thumb || slides[at].thumb === slides[at].src) {
       setLost((prev) => new Set(prev).add(at));
@@ -192,28 +192,28 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
     setBroken((prev) => new Set(prev).add(at));
   };
   const apply = (raw: number | 'fit') => zoom.current?.apply(raw);
-  const revealLabel = '<span>Mostrar en explorador</span>';
+  const revealLabel = '<span>在资源管理器中显示</span>';
 
   return (
-    <dialog ref={box} aria-label="Explorar imágenes" data-photo-lightbox="" data-has-strip={many ? '' : undefined}
+    <dialog ref={box} aria-label="图片浏览" data-photo-lightbox="" data-has-strip={many ? '' : undefined}
       onCancel={(event) => { event.preventDefault(); closePhotoLightbox() }}
       onClick={(event) => {
-        // 主画布铺满视口posterior, 黑色Deja白属于 zoom 容Dispositivo而Noes最exterior层; 两者都视ComoFondo. 
-        // 点Imagen片, 缩略Imagen, 工具栏 y 翻página按钮仍NoCerrar sesión. 
+        // 主画布铺满视口后，黑色留白属于 zoom 容器而不是最外层；两者都视为背景。
+        // 点图片、缩略图条、工具栏和翻页按钮仍不退出。
         const target = event.target as Element;
         if (detail.current?.dismissOutside(target)) return;
         if (target === box.current || target.classList.contains('swiper-zoom-container')) closePhotoLightbox();
       }}>
-      <button type="button" data-photo-close="" aria-label="Desactivar" onClick={closePhotoLightbox}
+      <button type="button" data-photo-close="" aria-label="关闭" onClick={closePhotoLightbox}
         dangerouslySetInnerHTML={{ __html: icon('x') }} />
-      <div ref={mainEl} className="swiper" data-photo-main="" role="region" aria-roledescription="Carrusel"
-        aria-label="Explorar imágenes">
+      <div ref={mainEl} className="swiper" data-photo-main="" role="region" aria-roledescription="轮播"
+        aria-label="图片浏览">
         <div className="swiper-wrapper">
           {slides.map((item, at) => (
             <div key={at} className="swiper-slide">
               <div className="swiper-zoom-container">
                 {lost.has(at)
-                  ? <span data-photo-missing="">Imágenes取No到</span>
+                  ? <span data-photo-missing="">图片取不到</span>
                   : <img src={broken.has(at) ? item.thumb : item.src} alt={item.name ?? ''} loading="lazy"
                     referrerPolicy="no-referrer" onLoad={(event) => loaded(at, event.currentTarget)}
                     onError={() => failed(at)} />}
@@ -221,36 +221,36 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
             </div>
           ))}
         </div>
-        {/* 方向Solo翻Imagen标, No转Completo按钮. 两都画朝izquierdaeseuno, 朝derechaEn样dentro转medio圈.  */}
-        <button ref={back} type="button" data-photo-nav="back" aria-label="Anterior"
+        {/* 方向只翻图标，不转整个按钮。两枚都画朝左那一枚，朝右的在样式里转半圈。 */}
+        <button ref={back} type="button" data-photo-nav="back" aria-label="上一张"
           dangerouslySetInnerHTML={{ __html: icon('chevron-left') }} />
-        <button ref={fwd} type="button" data-photo-nav="fwd" aria-label="Siguiente"
+        <button ref={fwd} type="button" data-photo-nav="fwd" aria-label="下一张"
           dangerouslySetInnerHTML={{ __html: icon('chevron-left') }} />
       </div>
       <div data-photo-bar="">
         <button ref={toggle} type="button" data-photo-detail-toggle="" aria-expanded="false" aria-controls={detailId}
-          aria-haspopup="dialog" aria-label="ImágenesDetalles" title="ImágenesDetalles" dangerouslySetInnerHTML={{ __html: icon('info') }} />
+          aria-haspopup="dialog" aria-label="图片详情" title="图片详情" dangerouslySetInnerHTML={{ __html: icon('info') }} />
         <div>
           <div data-photo-count="" aria-live="polite">{`${active + 1} / ${slides.length}`}</div>
-          {many ? <div ref={pagination} data-photo-pagination="" aria-label="SeleccionarImágenes" /> : null}
+          {many ? <div ref={pagination} data-photo-pagination="" aria-label="选择图片" /> : null}
         </div>
         <div data-photo-zoom="">
-          <button type="button" data-zoom-step="-1" aria-label="Alejar"
+          <button type="button" data-zoom-step="-1" aria-label="缩小"
             onClick={() => apply(percent - PHOTO_ZOOM_STEP)} dangerouslySetInnerHTML={{ __html: icon('zoom-out') }} />
           <input ref={range} type="range" min={PHOTO_ZOOM_MIN} max={PHOTO_ZOOM_MAX} step="1" value={percent}
-            aria-label="Zoom" onChange={(event) => apply(Number(event.currentTarget.value))} />
-          <button type="button" data-zoom-step="1" aria-label="Acercar"
+            aria-label="缩放" onChange={(event) => apply(Number(event.currentTarget.value))} />
+          <button type="button" data-zoom-step="1" aria-label="放大"
             onClick={() => apply(percent + PHOTO_ZOOM_STEP)} dangerouslySetInnerHTML={{ __html: icon('zoom-in') }} />
           <b data-photo-zoom-readout="">{`${percent}%`}</b>
-          <button type="button" data-photo-scale="fit" aria-label="Ajustar a ventana" title="Ajustar a ventana"
+          <button type="button" data-photo-scale="fit" aria-label="适应窗口" title="适应窗口"
             onClick={() => apply('fit')} dangerouslySetInnerHTML={{ __html: icon('maximize') }} />
-          <button type="button" data-photo-scale="original" aria-label="Tamaño original" title="Tamaño original"
+          <button type="button" data-photo-scale="original" aria-label="原大小" title="原大小"
             onClick={() => apply(100)}>1:1</button>
         </div>
       </div>
-      {/* Imagen片DetallesSolo展示安TodoMetadatos, 定Solo asset id 交给服务端: 绝No能Como显示Ruta ledger
-          本机绝对Ruta送进Explorar dispositivo. Título按esteuno换uno元素: en proceso段省略(`src/ui-kit/middle-truncate.ts`)
-          会改写它文字, 同uno元素arriba React 再改字就对Noarriba.  */}
+      {/* 图片详情只展示安全元数据，定位只把 asset id 交给服务端：绝不能为了显示路径把 ledger
+          的本机绝对路径送进浏览器。标题按这一张换一个元素：中段省略（`src/ui-kit/middle-truncate.ts`）
+          会改写它的文字，同一个元素上 React 再改字就对不上了。 */}
       <section ref={panel} id={detailId} data-photo-detail="" role="dialog" aria-modal="false"
         aria-labelledby={`${detailId}-title`} hidden>
         <div data-photo-detail-copy="">
@@ -259,7 +259,7 @@ function PhotoLightbox({ slides, index, Swiper, host: actions }: {
         </div>
         <button type="button" data-photo-reveal="" hidden={!asset || !actions}
           onClick={(event) => void reveal(event.currentTarget)}
-          dangerouslySetInnerHTML={{ __html: (busy ? spinnerHtml('Localizando') : icon('folder-open')) + revealLabel }} />
+          dangerouslySetInnerHTML={{ __html: (busy ? spinnerHtml('正在定位') : icon('folder-open')) + revealLabel }} />
         <span data-photo-status="" aria-live="polite">{status.at === active ? status.text : ''}</span>
       </section>
       <div ref={stripEl} className="swiper" data-photo-strip="">

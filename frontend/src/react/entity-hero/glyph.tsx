@@ -1,6 +1,6 @@
-/* 雪碧Imagen(`web/index.html`  `#i-*` symbol)en launo字形, 写法同遗Deja层 `icon()`: 尺寸y描边
- * 由 `./entity-hero.css` 按Ubicación给. 横向站点标识(JavDB esees 326:111)viewBox 跟着 symbol
- * Relación走, 槽按alto定ancho.  */
+/* 雪碧图（`web/index.html` 的 `#i-*` symbol）里的一枚字形，写法同遗留层 `icon()`：尺寸与描边
+ * 由 `./entity-hero.css` 按位置给。横向的站点标识（JavDB 那枚是 326:111）viewBox 跟着 symbol
+ * 的比例走，槽位按高定宽。 */
 import { iconGeometry } from '../../core/icon-geometry';
 
 export function Glyph({ name }: { name: string }) {

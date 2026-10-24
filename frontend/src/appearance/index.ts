@@ -1,6 +1,6 @@
-/* exterior观y版Configuración应用层(@peach/appearance): 偏bien store, 启动归uno化, Documentación属性, CSS 变量y版开关. 
- * Application y React página面引用同uno源码, 随 peach-app.js 发出. 
- * 路由yDirectorio JAV, primeropágina判据由 application/layout.js 计算posterior作ComoParámetro传入.  */
+/* 外观与版式设置的应用层（@peach/appearance）：偏好 store、启动归一化、文档属性、CSS 变量与版式开关。
+ * Application 与 React 页面引用同一份源码，随 peach-app.js 发出。
+ * 路由与目录的 JAV、首页判据由 application/layout.js 计算后作为参数传入。 */
 export {
   allowedSetting, appSettingsStore, applySyncedSettings, DEFAULT_SETTINGS, FEED_COMPILATION_KEYS, FOLLOW_INITIAL_DAYS,
   normalizeAppSettings, postSearchHistoryLimit, readAppSettings, SETTINGS_KEY, THEME_CHOICES,

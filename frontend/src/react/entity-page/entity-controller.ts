@@ -36,7 +36,7 @@ export interface EntityControllerPorts {
   dropBars(): void;
 }
 
-/** páginainterior换Filtrar复用当anterior宿主, 地址提交由Historial唯uno拥Con者执行.  */
+/** 页内换筛选复用当前宿主，地址提交由历史的唯一拥有者执行。 */
 export function createEntityController(ports: EntityControllerPorts, helpers: EntityPageHelpers,
   delegated: Pick<EntityPageActions, 'toggleTag' | 'openFollowAuthor' | 'javContext'>) {
   const route = (kind: string, name: string, filters: EntityFilters,
@@ -94,7 +94,7 @@ export function createEntityController(ports: EntityControllerPorts, helpers: En
       }),
       avatarChanged: () => ports.dropBars(),
     };
-    // Solo缓存当anteriorunopágina, pesado开该página props 仍读实时偏bienyFiltrar. 
+    // 只缓存当前一页，重开该页的 props 仍读实时偏好与筛选。
     actionCache.clear();
     actionCache.set(key, value);
     return value;

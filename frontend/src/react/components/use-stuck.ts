@@ -1,8 +1,8 @@
-/* 吸顶ese玻璃esNoesya经贴到顶栏abajo沿. 贴住就En元素arriba标 `data-stuck`, 样表按它换成
- * 抬起来eseuno档影(`../styles.css`  `[data-filter-glass][data-stuck]`). 
+/* 吸顶的那块玻璃是不是已经贴到了顶栏下沿。贴住了就在元素上标 `data-stuck`，样式表按它换成
+ * 抬起来那一档影（`../styles.css` 的 `[data-filter-glass][data-stuck]`）。
  *
- * 判据照壳 `updateStickySurfaces`: página面滚过, 元素arriba沿到它自己 `top` ese线. 滚动y改
- * 尺寸各合成uno帧再量; 属性直continuar写En元素arriba, No走 React Estado—每uno帧滚动都pesado画Completo浮层Sin意义.  */
+ * 判据照壳的 `updateStickySurfaces`：页面滚过了、元素上沿到了它自己 `top` 那条线。滚动与改
+ * 尺寸各合成一帧再量；属性直接写在元素上，不走 React 状态——每一帧滚动都重画整条浮层没有意义。 */
 import { useEffect, type RefObject } from 'react';
 
 export function useStuck(ref: RefObject<HTMLElement | null>): void {

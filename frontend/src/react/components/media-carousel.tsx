@@ -5,7 +5,7 @@ import { wireHorizontalScroller } from '../../ui-kit/scroll';
 
 export interface CarouselMedia { index: number; label?: string; video?: boolean }
 
-/** 关注yObrasVista previa共用环形Cambiar, 缩略Imagen y Ubicación指示.  */
+/** 关注与作品预览共用环形切换、缩略图和位置指示。 */
 export function MediaCarousel({ items, position, onSelect, below = false, renderThumbnail }: {
   items: readonly CarouselMedia[]; position: number; onSelect(index: number): void;
   below?: boolean; renderThumbnail?(item: CarouselMedia): ReactNode;
@@ -62,18 +62,18 @@ export function MediaCarousel({ items, position, onSelect, below = false, render
   }, [items.length, position, below]);
   if (items.length < 2) return null;
   const step = (delta: number) => onSelect(items[(position + delta + items.length) % items.length]!.index);
-  const unit = mixed ? ' elemento(s)' : ' imagen(es)';
+  const unit = mixed ? '项媒体' : '张图片';
   const indicator = (item: CarouselMedia, index: number) => <button key={item.index} type="button" data-follow-image-item={item.index}
     data-carousel-video={item.video ? '' : undefined} aria-current={index === position ? 'true' : 'false'}
-    aria-label={item.label || `No. ${index + 1}  imagen(es), 共 ${items.length}  imagen(es)`} title={item.label || `No. ${index + 1}  imagen(es)`}
+    aria-label={item.label || `第 ${index + 1} 张，共 ${items.length} 张`} title={item.label || `第 ${index + 1} 张`}
     onClick={() => onSelect(item.index)}>{item.video ? <span dangerouslySetInnerHTML={{ __html: icon('play') }} /> : null}</button>;
   return <div ref={root} data-media-carousel="" data-carousel-below={below ? '' : undefined}
     data-carousel-video-active={items[position]?.video ? '' : undefined}>
-    {!items[position]?.video ? <><button type="button" data-follow-image-step="-1" data-follow-image-arrow="prev" aria-label={mixed ? 'Elemento anterior' : 'Imagen anterior'} title="Anterior"
+    {!items[position]?.video ? <><button type="button" data-follow-image-step="-1" data-follow-image-arrow="prev" aria-label={mixed ? '上一项媒体' : '上一张图片'} title="上一张"
       onClick={() => step(-1)} dangerouslySetInnerHTML={{ __html: icon('chevron-left') }} />
-    <button type="button" data-follow-image-step="1" data-follow-image-arrow="next" aria-label={mixed ? 'Elemento siguiente' : 'Imagen siguiente'} title="Siguiente"
+    <button type="button" data-follow-image-step="1" data-follow-image-arrow="next" aria-label={mixed ? '下一项媒体' : '下一张图片'} title="下一张"
       onClick={() => step(1)} dangerouslySetInnerHTML={{ __html: icon('chevron-right') }} /></> : null}
-    {renderThumbnail ? <div data-media-thumbnails="" role="group" aria-label="Miniaturas de medios">{items.map((item, index) =>
+    {renderThumbnail ? <div data-media-thumbnails="" role="group" aria-label="媒体缩略图">{items.map((item, index) =>
       <MediaThumbnail key={item.index} item={item} selected={index === position} onSelect={onSelect} render={renderThumbnail} />)}</div> : null}
     <div data-media-indicator=""><div data-follow-image-dots="" role="group" aria-label={`${items.length} ${unit}`}>
       {items.map((item, index) => indicator(item, index))}
@@ -81,7 +81,7 @@ export function MediaCarousel({ items, position, onSelect, below = false, render
   </div>;
 }
 
-/** 缩略ImagenSoloEn横向滚动puede见Rangointerior挂载, Consulta缓存由Imagen片组件共享.  */
+/** 缩略图只在横向滚动的可见范围内挂载，查询缓存由图片组件共享。 */
 function MediaThumbnail({ item, selected, onSelect, render }: {
   item: CarouselMedia; selected: boolean; onSelect(index: number): void; render(item: CarouselMedia): ReactNode;
 }) {
@@ -96,7 +96,7 @@ function MediaThumbnail({ item, selected, onSelect, render }: {
     return () => observer.disconnect();
   }, [visible]);
   return <button ref={node} type="button" data-media-thumbnail={item.index} aria-current={selected ? 'true' : 'false'}
-    aria-label={`Cambiar到${item.label || `No. ${item.index + 1}  imagen(es)`}`} onClick={() => onSelect(item.index)}>
+    aria-label={`切换到${item.label || `第 ${item.index + 1} 张`}`} onClick={() => onSelect(item.index)}>
     {visible ? render(item) : <span className="block h-full w-full skeleton-sheen" />}
     {item.video ? <span data-media-thumbnail-play="" aria-hidden dangerouslySetInnerHTML={{ __html: icon('play') }} /> : null}
   </button>;

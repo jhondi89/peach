@@ -1,11 +1,11 @@
-/* Independientepágina面包构建入口(`web/dist/peach-pages.js`). 
+/* 独立页面包的构建入口（`web/dist/peach-pages.js`）。
  *
- * primero启, Iniciar sesiónyErrortrespágina共用服务端给同unoHTML 模板, 壳dentroSoloConuno挂载点 `#peach-page`: `data-page` 说es
- * 哪unopágina, 其余 `data-*` es服务端才知道变量, Original样交给eseunopágina. este产物No依赖主界面任何模: 
- * NoCargar主包, No带 Query 缓存, 共用Controles(折叠, 来源站标)由 `vite.pages.config.ts`
- * 直continuar打进来. trespágina都用Explorar dispositivoOriginal生滚动. 弹出层落En body arriba, body 本身就es `.peach-react` 容Dispositivo. 
+ * 首启、登录与错误三页共用服务端给的同一张HTML 模板，壳里只有一个挂载点 `#peach-page`：`data-page` 说是
+ * 哪一页，其余 `data-*` 是服务端才知道的变量，原样交给那一页。这份产物不依赖主界面的任何模块：
+ * 不加载主包，不带 Query 缓存，共用控件（折叠、来源站标）由 `vite.pages.config.ts`
+ * 直接打进来。三页都用浏览器原生滚动条。弹出层落在 body 上，body 本身就是 `.peach-react` 容器。
  *
- * este包No要会话就能取(ADR-0094): No得 import 别产物, No得interior嵌DatosBiblioteca, Configuración或Credenciales派生Datos.  */
+ * 这个包不要会话就能取（ADR-0094）：不得 import 别的产物，不得内嵌数据库、配置或凭据派生的数据。 */
 import './pages.css';
 import { installErrorReporting } from '../../error-reporting';
 

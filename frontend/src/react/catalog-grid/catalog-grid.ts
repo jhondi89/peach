@@ -1,13 +1,13 @@
-/* 馆藏卡片CuadrículaDatos: Directorio(`/` ycuatroFiltrar态, 回收站), 资料páginaObras区, 以及壳直continuar给uno批
- * Entradaese两处(DetallespáginaContinuar viendo). 
+/* 馆藏卡片网格的数据：目录（`/` 与四个筛选态、回收站）、资料页作品区，以及壳直接给一批
+ * 条目的那两处（详情页的接着看）。
  *
- * Directorio y Obras区都esunopáginauno `useInfiniteQuery`, "载入更más"就es取Siguientepágina. 
+ * 目录和作品区都是一页一个 `useInfiniteQuery`，「载入更多」就是取下一页。
  *
- * uno屏卡片排法Todo由aquí算, 渲染Solo照着画: 
- * - 分卷y版次各自折叠. 同uno组SoloDejaNo.uno次出现eseuno, 跨página也算(Configuración关掉就No折). 
- * - Directorio每unopáginapuede见卡够 8 时, No. 8 插uno Mix; Semilla从 Mix 再往abajo隔uno屏Empezar找, 
- *   No会 y 同屏卡撞Imagen. 
- * - 竖屏带每continuarunopágina出现uno, 落点EnesteunopáginaAgregarese几行之间行边界arribaAleatorio取uno.  */
+ * 一屏卡片的排法全由这里算，渲染只照着画：
+ * - 分卷与版次各自折叠。同一组只留第一次出现的那一张，跨页也算（设置关掉就不折）。
+ * - 目录每一页可见的卡够 8 张时，第 8 位插一张 Mix；种子从 Mix 位再往下隔一屏开始找，
+ *   不会和同屏的卡撞图。
+ * - 竖屏带每接一页出现一条，落点在这一页新增的那几行之间的行边界上随机取一个。 */
 import type { InfiniteData, QueryKey } from '@tanstack/react-query';
 
 import { apiGet } from '../../api';
@@ -16,20 +16,20 @@ import type { CatalogGridProps, MediaItem, MediaPage } from './types';
 import { queryClient } from '../query';
 import { catalogView } from './catalog-view';
 
-/** 竖屏带uno放几.  */
+/** 竖屏带一条放几张。 */
 export const SHORTS_BATCH = 18;
-/** Mix 卡插En每unopáginaesteuno, 也就esNo. 8 .  */
+/** Mix 卡插在每一页的这一位，也就是第 8 张。 */
 export const MIX_SLOT = 7;
 
-/** unopáginaResultado, exterior加No.unopáginaComo空时"Completo馆藏esNoes空": 空态据此说"还SinObras"还es
- *  "Sinque cumple".  */
+/** 一页的结果，外加第一页为空时「整个馆藏是不是空的」：空态据此说「还没有作品」还是
+ *  「没有符合的」。 */
 export interface GridPage extends MediaPage {
   offset: number;
   libraryEmpty?: boolean;
 }
 
-/** DirectorioConsulta串, No含 `limit`/`offset`. `exclude_vertical` 判据归壳: primeropáginaPredeterminadoLista另Con
- *  竖屏带承continuar竖屏, Buscar y 显筛竖屏时候NoExcluir.  */
+/** 目录的查询串，不含 `limit`／`offset`。`exclude_vertical` 的判据归壳：首页默认列表另有
+ *  竖屏带承接竖屏，搜索和显式筛了竖屏的时候不排除。 */
 export function catalogParams(filters: Readonly<Record<string, string>>, excludeVertical: boolean): string {
   const params = new URLSearchParams(Object.entries(filters).filter(([, value]) => value));
   if (excludeVertical) params.set('exclude_vertical', '1');
@@ -39,7 +39,7 @@ export function catalogParams(filters: Readonly<Record<string, string>>, exclude
 export const catalogKey = (params: string, revision: number): QueryKey => ['catalog-grid', 'catalog', params, revision];
 export const entityKey = (key: string, revision: number): QueryKey => ['catalog-grid', 'entity', key, revision];
 
-/** Directoriounopágina. No.unopáginaComo空, 又Noes回收站时, 再问uno次Completo馆藏ConSin东西.  */
+/** 目录的一页。第一页为空、又不是回收站时，再问一次整个馆藏有没有东西。 */
 export async function fetchCatalogPage(
   params: string, offset: number, batch: number, trash: boolean, signal: AbortSignal,
 ): Promise<GridPage> {
@@ -56,13 +56,13 @@ export async function fetchCatalogPage(
   return result;
 }
 
-/** Siguientepágina从哪儿取. No.unopágina按Total数判断, 往posteriorpáginaNo带Total数, ver `has_more`.  */
+/** 下一页从哪儿取。第一页按总数判断，往后的页不带总数，看 `has_more`。 */
 export const nextOffset = (batch: number) => (last: GridPage): number | undefined => {
   const more = last.offset === 0 ? last.items.length < (last.total || 0) : !!last.has_more;
   return more ? last.offset + batch : undefined;
 };
 
-/** 资料páginaObras区SiguientePágina: 壳给No.unopáginapuede能带 `has_more`, 也puede能SoloConTotal数.  */
+/** 资料页作品区的下一页：壳给的第一页可能带 `has_more`，也可能只有总数。 */
 export const nextEntityOffset = (last: GridPage, pages: GridPage[]): number | undefined => {
   const loaded = pages.reduce((sum, page) => sum + page.items.length, 0);
   const more = last.has_more == null ? loaded < (last.total || 0) : !!last.has_more;
@@ -95,8 +95,8 @@ export function entityQuery(props: CatalogGridProps) {
   };
 }
 
-/** primero屏取数(DirectorioCuadrículaese路由 `prefetch`). SoloConDirectorio要etc.: 资料páginaObras区No.unopágina跟着资料página递进来, 
- *  Cuadrícula挂arriba时自己落进缓存(`initialData`).  */
+/** 首屏取数（目录网格那条路由的 `prefetch`）。只有目录要等：资料页的作品区第一页跟着资料页递进来，
+ *  网格挂上时自己落进缓存（`initialData`）。 */
 export async function prefetchCatalogGrid(props: CatalogGridProps, signal: AbortSignal): Promise<void> {
   if (props.mode !== 'catalog' || props.wall || catalogView() === 'list') return;
   const query = catalogQuery(props);
@@ -105,7 +105,7 @@ export async function prefetchCatalogGrid(props: CatalogGridProps, signal: Abort
   });
 }
 
-/** 同uno集合分páginaGuardarEn Query en proceso; Actualizar代次之间认领Completo分página, NoCopiarObras到界面Estado.  */
+/** 同一集合的分页保存在 Query 中；刷新代次之间认领整份分页，不复制作品到界面状态。 */
 export function latestCatalogPages(key: QueryKey): InfiniteData<GridPage, number> | undefined {
   const exact = JSON.stringify(key);
   const cached = queryClient.getQueryCache().findAll({ queryKey: key.slice(0, -1) })
@@ -114,8 +114,8 @@ export function latestCatalogPages(key: QueryKey): InfiniteData<GridPage, number
   return cached?.state.data as InfiniteData<GridPage, number> | undefined;
 }
 
-/** 分卷y版次各自折叠: 分卷esuno部片被切成几段, 版次es同uno部片几来源, 两者能同时
- *  出现EnunoCódigo JAVarriba, 所以两套 key 分开记. `seen` 跨página累积, uno组SoloDejaNo.uno次出现eseuno.  */
+/** 分卷与版次各自折叠：分卷是一部片被切成几段，版次是同一部片的几个来源，两者能同时
+ *  出现在一个番号上，所以两套 key 分开记。`seen` 跨页累积，一组只留第一次出现的那一张。 */
 export function collapseGroups(
   items: readonly MediaItem[], seen: { parts: Set<string>; editions: Set<string> }, enabled: boolean,
 ): MediaItem[] {
@@ -135,12 +135,12 @@ export function collapseGroups(
   });
 }
 
-/** esteuno真能画出Imagen吗:  y 卡片Portada分支uno致, Solover `has_cover` 会SoloConOficial封套, 却按
- *  Vista previaImagen偏bien画Entrada当成ConImagen.  */
+/** 这一条真能画出图吗：和卡片封面的分支一致，只看 `has_cover` 会把只有官方封套、却按
+ *  预览图偏好画的条目当成有图。 */
 export const mixHasPicture = (item: MediaItem | undefined, javImage: string) =>
   !!item && Boolean(javImageKind(item, javImage));
 
-/** Semilla决定 Mix Portada y 署名. 从 Mix 再往abajo隔uno屏Empezar找ConImagen, Con署名, 找No到逐级放ancho.  */
+/** 种子决定 Mix 的封面和署名。从 Mix 位再往下隔一屏开始找有图、有署名的，找不到逐级放宽。 */
 export function mixSeed(visible: readonly MediaItem[], javImage: string): MediaItem | undefined {
   const named = (item: MediaItem) => mixHasPicture(item, javImage)
     && Boolean(item.creator || (item.performers || []).length || item.studio);
@@ -150,17 +150,17 @@ export function mixSeed(visible: readonly MediaItem[], javImage: string): MediaI
     || visible[visible.length - 1];
 }
 
-/** Cuadrículaen launo格: unoObras卡, 或uno Mix.  */
+/** 网格里的一格：一张作品卡，或一张 Mix。 */
 export type Tile = { kind: 'card'; item: MediaItem } | { kind: 'mix'; seed: MediaItem };
 
-/** ya取回各página排成uno列格子. 每unopágina各自折叠, 各自插 Mix,  y 逐páginacontinuararriba来时uno样. 
- *  `pageStarts[i]` esNo. i páginaEnesteuno列en la起点, 竖屏带落点要落EneseunopáginaAgregar格子之间.  */
+/** 把已取回的各页排成一列格子。每一页各自折叠、各自插 Mix，和逐页接上来时一样。
+ *  `pageStarts[i]` 是第 i 页在这一列里的起点，竖屏带的落点要落在那一页新增的格子之间。 */
 export function arrangeTiles(
   pages: readonly GridPage[], { collapse, mix, javImage }: { collapse: boolean; mix: boolean; javImage: string },
 ): { tiles: Tile[]; pageStarts: number[] } {
   const seen = { parts: new Set<string>(), editions: new Set<string>() };
-  /* 翻página期间BibliotecadentroNuevo进Obras, 偏移量Completo体posterior挪, Anteriorpáginaúltimo尾ese几会EnSiguientepágina再出现uno次. 
-     同unoSolo画No.uno次: uno屏dentro两uno样卡什么也NoDescripción.  */
+  /* 翻页期间库里新进了作品，偏移量整体后挪，上一页末尾那几条会在下一页再出现一次。
+     同一条只画第一次：一屏里两张一样的卡什么也不说明。 */
   const ids = new Set<number>();
   const tiles: Tile[] = [];
   const pageStarts: number[] = [];
@@ -178,8 +178,8 @@ export function arrangeTiles(
   return { tiles, pageStarts };
 }
 
-/** 竖屏带落点候选: 从esteunopáginaAgregarese几行Empezar, 每行边界uno; 两端各Deja至menosuno行, 剪En
- *  头尾就成"置顶"或"垫底", Noes穿插. `addedFrom` y `count` 都按最posterioruno段计.  */
+/** 竖屏带的落点候选：从这一页新增的那几行开始，每个行边界一个；两端各留至少一行，剪在
+ *  头尾就成了「置顶」或「垫底」，不是穿插。`addedFrom` 与 `count` 都按最后一段计。 */
 export function shortsBoundaries(count: number, addedFrom: number, columns: number): number[] {
   const step = Math.max(1, columns);
   const boundaries: number[] = [];
@@ -189,23 +189,23 @@ export function shortsBoundaries(count: number, addedFrom: number, columns: numb
   return boundaries;
 }
 
-/** ya经插进Cuadrículauno竖屏带: `at` es它abajo面eseuno段EnCompleto列格子en la起点.  */
+/** 已经插进网格的一条竖屏带：`at` 是它下面那一段在整列格子里的起点。 */
 export interface ShortsCut {
   at: number;
   total: number;
   items: MediaItem[];
 }
 
-/** 竖屏带Consulta串: 跟着主ListaFiltraryOrdenar走, 换uno批时它也uno起换.  */
+/** 竖屏带的查询串：跟着主列表的筛选与排序走，换一批时它也一起换。 */
 export function shortsParams(filters: Readonly<Record<string, string>>, offset: number): string {
   const params = new URLSearchParams(Object.entries(filters).filter(([, value]) => value));
-  params.set('orient', 'Pantalla vertical');
+  params.set('orient', '竖屏');
   params.set('limit', String(SHORTS_BATCH));
   params.set('offset', String(offset));
   return params.toString();
 }
 
-/** uno列格子按竖屏带切成几段, 段y段之间插带子.  */
+/** 把一列格子按竖屏带切成几段，段与段之间插带子。 */
 export function splitSections(tiles: readonly Tile[], cuts: readonly ShortsCut[]) {
   const ordered = [...cuts].sort((a, b) => a.at - b.at);
   const sections: { start: number; tiles: Tile[]; strip: ShortsCut | null }[] = [];
@@ -218,13 +218,13 @@ export function splitSections(tiles: readonly Tile[], cuts: readonly ShortsCut[]
   return sections;
 }
 
-/** 每uno版ya缓存DirectorioyObras区en la同uno卡换arriba `patch`(DetallesdentroPuntuación, Comentarios, 稍posteriorver之posterior). 
- *  Solo改字段No增删卡: DetallesNo知道每uno版筛着哪uno档, 移出y否etc.abajo次取数.  */
+/** 每一版已缓存的目录与作品区里的同一张卡换上 `patch`（详情里评分、反馈、稍后看之后）。
+ *  只改字段不增删卡：详情不知道每一版筛着哪一档，移出与否等下次取数。 */
 export function replaceCatalogItem(id: number, patch: Partial<MediaItem>): void {
   patchCatalogItems((item) => item.id === id, patch);
 }
 
-/** 同arriba, 换es `match` 认出来每uno: unoCódigo JAV几段, 几Versión共用同unoPortada.  */
+/** 同上，换的是 `match` 认出来的每一张：一个番号的几段、几个版本共用同一张封面。 */
 export function patchCatalogItems(match: (item: MediaItem) => boolean, patch: Partial<MediaItem>): void {
   queryClient.setQueriesData<MediaPage>({ queryKey: ['catalog-grid', 'table'] }, data => {
     if (!data?.items.some(match)) return data;

@@ -1,4 +1,4 @@
-/** 标注工具en la字段ConIndependiente表单身, 现Con id/name 由工具自己Gestionar.  */
+/** 标注工具里的字段有独立表单身份，现有 id/name 由工具自己管理。 */
 export function identifyAgentationFields(host: HTMLElement): () => void {
   let sequence = 0;
   const watched = new WeakSet<Node>();

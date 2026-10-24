@@ -1,8 +1,8 @@
-/* Peach Reproducir会话InterfazyEntrada形状; Video.js 10 通过本地 ESM 模提供媒体yControles.  */
+/* Peach 播放会话接口与条目形状；Video.js 10 通过本地 ESM 模块提供媒体与控件。 */
 
 export type PlayerEvents = string | string[];
 
-/** Video.js Calidad轨道表(HLS/DASH 自适应档).  */
+/** Video.js 的质量轨道表（HLS/DASH 的自适应档）。 */
 export interface QualityLevel { width?: number; height?: number; id?: string; enabled: boolean }
 export interface QualityLevelList {
   length: number;
@@ -14,7 +14,7 @@ export interface QualityLevelList {
 export interface PlayerSource { src: string; type: string }
 
 export interface VjsPlayer {
-  /** 挂载时记abajoEntrada: derechaClave菜单Copiar网址按它取 id.  */
+  /** 挂载时记下的条目：右键菜单复制网址按它取 id。 */
   peachItem?: PlayerItem;
   on(events: PlayerEvents, handler: (...args: unknown[]) => void): void;
   off(events: PlayerEvents, handler: (...args: unknown[]) => void): void;
@@ -52,7 +52,7 @@ export interface VjsPlayer {
 
 export type VideojsFactory = (video: HTMLVideoElement, options: Record<string, unknown>) => VjsPlayer;
 
-/** Obrasy关注Entrada共Conese几样. Obras来自 `/api/item`, 关注来自 `/api/follow/item`.  */
+/** 作品与关注条目共有的那几样。作品来自 `/api/item`，关注来自 `/api/follow/item`。 */
 export interface PlayerItem {
   id: number;
   name?: string;
@@ -69,6 +69,6 @@ export interface PlayerItem {
   [field: string]: unknown;
 }
 
-/** 来源自己给uno档Nitidez(从alto到bajo).  */
+/** 来源自己给的一档清晰度（从高到低）。 */
 export interface SourceQuality { height: number; label?: string }
 export interface MediaFacts { qualities?: SourceQuality[] | null; size?: number | null }

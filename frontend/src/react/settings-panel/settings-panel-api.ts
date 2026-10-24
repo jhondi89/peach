@@ -1,21 +1,21 @@
-/* Configuración面板(常驻组件 `settings-panel`, `settings-panel.tsx`)y壳之间continuar缝. 
+/* 设置面板（常驻组件 `settings-panel`，`settings-panel.tsx`）与壳之间的接缝。
  *
- * 界面偏bienSoloConuno: 壳En启动时归uno化bien `appSettings`, 经 `createSettingsStore` 递进来
- * (`frontend/src/settings-store.ts`). 面板读 `store.value`, Original地改字段, `store.save()` 落盘, 
- * 再用 `changed(effect)` 告诉壳esteunoabajo要跟着做什么—pesado画Cuadrícula, pesado取Directorio, 换Tema, este些都还es壳事; 
- * 侧栏顺序No经它, 侧栏自己订阅esteuno store. 跟DatosBiblioteca走ese几项(侧栏顺序, 合集开关, primero次RecolectarRango, AvatarActualizar, BuscarRegistro
- * 数)由面板经 `/api/settings` 写, Éxitoposterior同样落进esteuno对象.  */
+ * 界面偏好只有一份：壳在启动时归一化好的 `appSettings`，经 `createSettingsStore` 递进来
+ * （`frontend/src/settings-store.ts`）。面板读 `store.value`、原地改字段、`store.save()` 落盘，
+ * 再用 `changed(effect)` 告诉壳这一下要跟着做什么——重画网格、重取目录、换主题，这些都还是壳的事；
+ * 侧栏顺序不经它，侧栏自己订阅这一份 store。跟数据库走的那几项（侧栏顺序、合集开关、首次采集范围、头像刷新、搜索记录
+ * 条数）由面板经 `/api/settings` 写，成功后同样落进这一份对象。 */
 import type { HomeGlow } from '@peach/appearance';
 
 import type { SettingsStore } from '../../settings-store';
 import type { SyncedSettings } from './settings-data';
 
-/** 面板读写ese几项; 对象本身还Con别字段, 面板No碰.  */
+/** 面板读写的那几项；对象本身还有别的字段，面板不碰。 */
 export interface PanelSettings {
   theme: string;
   uiSounds: boolean;
   homeGlow: HomeGlow;
-  /** 预设格选uno档时连强调色uno起换(`@peach/appearance`  `chooseGlowPreset`).  */
+  /** 预设格选一档时连强调色一起换（`@peach/appearance` 的 `chooseGlowPreset`）。 */
   accent: string;
   sidebarOrder: string[];
   batchSize: number;
@@ -38,18 +38,18 @@ export interface PanelSettings {
   faviconRefreshDays: number;
 }
 
-/** 改完uno项之posterior壳要跟着做事, uno项uno名字; 落盘ya经由面板做过.  */
+/** 改完一项之后壳要跟着做的事，一项一个名字；落盘已经由面板做过。 */
 export type SettingsEffect =
   | 'theme' | 'uiSounds'
-  /** 拖光晕拉每uno步: Solo排uno帧pesado画侧栏eseuno层, No碰根.  */
+  /** 拖光晕拉条的每一步：只排一帧重画侧栏那一层，不碰根。 */
   | 'glowFrame'
-  /** 光晕开关, Color, RestaurarPredeterminadoy松手: 侧栏eseuno层, 其余玻璃面 y 侧栏配色钮uno起对齐.  */
+  /** 光晕的开关、颜色、恢复默认与松手：侧栏那一层、其余玻璃面和侧栏配色钮一起对齐。 */
   | 'glow'
   | 'batchSize' | 'defaultSort' | 'sortDirection' | 'hoverDelay' | 'seekSeconds'
   | 'groupCollapse' | 'feedAutoScroll' | 'feedCompilations' | 'miniplayer' | 'javImage'
   | 'searchHistoryLimit';
 
-/** `[值, 显示名, 字形]`, y壳dentro各Opciones表同形.  */
+/** `[值, 显示名, 字形]`，与壳里各张选项表同形。 */
 export type Choice = readonly [value: string, label: string, icon?: string];
 
 export interface SettingsPanelHost {
@@ -58,35 +58,35 @@ export interface SettingsPanelHost {
   store: SettingsStore<PanelSettings>;
   changed(effect: SettingsEffect): void;
   sound(name: 'whoosh' | 'toggle-on'): void;
-  /** 侧栏能放Todo入口, `[Clave, 名称, 字形]`; primeropáginaeseuno项Clavees空串.  */
+  /** 侧栏能放的全部入口，`[键, 名称, 字形]`；首页那一项的键是空串。 */
   navCatalog: readonly Choice[];
   themeOptions: readonly Choice[];
   videoLayouts: readonly Choice[];
   followInitialRanges: readonly Choice[];
-  /** 视频PortadaPredeterminadoTamaño跟着当anteriorpágina走(primeropáginay JAV 各存uno), 读写都归壳.  */
+  /** 视频封面默认大小跟着当前页走（首页与 JAV 各存一份），读写都归壳。 */
   videoLayout(): string;
   setVideoLayout(layout: string): void;
-  /** SFW y增加Contraste各Con自己Clave, NoEn `appSettings` dentro; 改完壳调 `store.notify()`.  */
+  /** SFW 与增加对比度各有自己的键，不在 `appSettings` 里；改完壳调 `store.notify()`。 */
   censored(): boolean;
   setCensored(on: boolean): void;
   highContrast(): boolean;
   setHighContrast(on: boolean): void;
   receipt(message: string): void;
   failure(message: string, error: unknown): void;
-  /** DatosBibliotecaen laesey本地缓存对账(壳en la `applySyncedSettings`), 启动时壳自己也走esteuno.  */
+  /** 数据库上的那份与本地缓存对账（壳里的 `applySyncedSettings`），启动时壳自己也走这一条。 */
   syncRemote(remote: SyncedSettings): void;
   openConfiguration(): void;
-  /** 面板No.uno次进 DOM: izquierda栏ese玻璃要挂arriba折射贴Imagen.  */
+  /** 面板第一次进 DOM：左栏那块玻璃要挂上折射贴图。 */
   attached(panel: HTMLElement): void;
-  /** este设备能No能改Configuración(`/healthz`  `configurable`); 取No到时es null.  */
+  /** 这台设备能不能改配置（`/healthz` 的 `configurable`）；取不到时是 null。 */
   configurable(): Promise<boolean | null>;
 }
 
 export interface SettingsPanelApi {
-  /** Abrir面板; `section` 给分区名("exterior观y导航""ExploraryReproducir"...)时直continuar落到eseunopágina.  */
+  /** 打开面板；`section` 给分区名（「外观与导航」「浏览与播放」…）时直接落到那一页。 */
   open(section?: string): void;
   close(notify?: boolean): void;
   isOpen(): boolean;
-  /** ya经Abrir时某uno滚进视野(配色弹层"详细Configuración"落到光晕Parámetro).  */
+  /** 已经打开时把某一块滚进视野（配色弹层的「详细设置」落到光晕参数）。 */
   reveal(selector: string): void;
 }

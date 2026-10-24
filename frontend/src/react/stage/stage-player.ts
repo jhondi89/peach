@@ -1,14 +1,14 @@
-/* 舞ypequeño窗共用eseunoReproducirDispositivo(ADR-0031 No. 11a 步). No含 React: 舞岛媒体框En layout effect
- * dentro调 `attachStagePlayer`, pequeño窗组件自己节点登记进来, 其余都es命令. 
+/* 舞台与小窗共用的那一个播放器（ADR-0031 第 11a 步）。不含 React：舞台岛的媒体框在 layout effect
+ * 里调 `attachStagePlayer`，小窗组件把自己的节点登记进来，其余都是命令式的。
  *
- * 照 YouTube 桌面版 miniplayer(docs/reference-snapshots/youtube-miniplayer-measured.md): 离开Detalles
- * 时En curso放视频No销毁, Video.js 壳Completo搬进pequeño窗continuar着放; pequeño窗开着时点别卡片就Enpequeño窗dentro换片; 
- * 点Título或"展开"回到Detalles, 同uno实例搬回舞媒体框, Nopesado建; 拖到哪象限就吸附到哪角. 
- * arriba游SoloReproducirListainteriorCambiarDejaEnpequeño窗dentro, Peach 按用户要求卡片点击也收进来. 
+ * 照 YouTube 桌面版的 miniplayer（docs/reference-snapshots/youtube-miniplayer-measured.md）：离开详情
+ * 时正在放的视频不销毁，Video.js 的壳整块搬进小窗接着放；小窗开着时点别的卡片就在小窗里换片；
+ * 点标题或「展开」回到详情，同一个实例搬回舞台的媒体框，不重建；拖到哪个象限就吸附到哪个角。
+ * 上游只把播放列表内的切换留在小窗里，Peach 按用户要求把卡片点击也收进来。
  *
- * 舞ypequeño窗同uno时刻Solo放uno, 所以SoloCon两Ubicación: `attached` es舞媒体框en laeseuno, `held`
- * espequeño窗en laeseuno. uno实例从 `attached` 交到 `held`(离开Detalles), 或从 `held` 认领回
- * `attached`(展开), No会同时En两处.  */
+ * 舞台与小窗同一时刻只放一条，所以只有两个位置：`attached` 是舞台媒体框里的那一个，`held`
+ * 是小窗里的那一个。一个实例从 `attached` 交到 `held`（离开详情），或从 `held` 认领回
+ * `attached`（展开），不会同时在两处。 */
 import { api, fmtClock, realDuration } from '@peach/legacy/core';
 import { iconSwapHtml, setIconSwap } from '@peach/legacy/ui';
 
@@ -20,21 +20,21 @@ import {
 
 export type StageKind = 'item' | 'follow';
 
-/** 舞此刻画着eseuno: pequeño窗Títuloy来源, derechaClave菜单Copiar网址用类都从aquí取.  */
+/** 舞台此刻画着的那一条：小窗的标题与来源、右键菜单复制网址用的种类都从这里取。 */
 export interface StageMeta { kind: StageKind; item: PlayerItem; title: string; sub: string }
 
-/** 舞ypequeño窗向壳要东西. ReproducirDispositivo宿主en la舞元素由舞自己补arriba.  */
+/** 舞台与小窗向壳要的东西。播放器宿主里的舞台元素由舞台自己补上。 */
 export interface StagePlayerHost {
   player: Omit<PlayerHost, 'stage'>;
-  /** este来源此刻esNoes脱盘.  */
+  /** 这个来源此刻是不是脱盘。 */
   sourceOffline(location: string): boolean;
-  /** pequeño窗en la"展开": 回到esteunoDetalles, 壳负责地址y来处.  */
+  /** 小窗里的「展开」：回到这一条的详情，壳负责地址与来处。 */
   expand(kind: StageKind, id: number, mediaIndex: number | null): void;
-  /** pequeño窗continuarNo卡片照常AbrirDetalles.  */
+  /** 小窗接不了的卡片照常打开详情。 */
   openItem(id: number): void;
 }
 
-/** pequeño窗组件画bien之posterior登记进来节点; Reproducir态, TiempoyRelación随ReproducirDispositivo事件直continuar写En它们身arriba.  */
+/** 小窗组件画好之后登记进来的节点；播放态、时间与比例随播放器事件直接写在它们身上。 */
 export interface MiniplayerDom {
   root: HTMLElement;
   frame: HTMLElement;
@@ -70,8 +70,8 @@ let held: Held | null = null;
 let attached: Attached | null = null;
 let meta: StageMeta | null = null;
 let dom: MiniplayerDom | null = null;
-/* derechaClave菜单y i Clave"迷你ReproducirDispositivo": 越过Reproducir态判定, 舞arribaesteuno送进pequeño窗. 关窗Con退场动画, 
-   所以它uno直Deja到舞真正拆掉eseuno刻才消费.  */
+/* 右键菜单与 i 键的「迷你播放器」：越过播放态判定，把舞台上这一个送进小窗。关窗有退场动画，
+   所以它一直留到舞台真正拆掉的那一刻才消费。 */
 let requested = false;
 let token = 0;
 let requestClose: (() => void) | null = null;
@@ -93,21 +93,21 @@ export function configureStagePlayer(next: StagePlayerHost, stage: {
     expand: () => expandMiniplayer(),
     toMiniplayer: () => toggleMiniplayer(),
   });
-  // 离开página面时收掉Detallesesteuno路Nitidez探测y转码会话, 服务端NoDejaHuérfano进程. 
+  // 离开页面时收掉详情这一路的清晰度探测与转码会话，服务端不留孤儿进程。
   if (!pagehideWired) { pagehideWired = true; addEventListener('pagehide', () => cancelDetailStream()) }
 }
 let pagehideWired = false;
 
 function stageHost(): StagePlayerHost {
-  if (!host) throw new Error('舞ReproductorAún no haycontinuararriba宿主(configureStagePlayer)');
+  if (!host) throw new Error('舞台播放器还没有接上宿主（configureStagePlayer）');
   return host;
 }
 
-/** 舞画出uno时登记它Títuloy来源; 舞拆掉时清掉.  */
+/** 舞台画出一条时登记它的标题与来源；舞台拆掉时清掉。 */
 export function setStageMeta(next: StageMeta | null): void { meta = next }
 export const stageMeta = (): StageMeta | null => meta;
 
-/* ── 舞媒体框 ── */
+/* ── 舞台媒体框 ── */
 
 export interface StagePlayerOptions {
   kind: StageKind;
@@ -115,18 +115,18 @@ export interface StagePlayerOptions {
   media?: PlayerMedia | null | undefined;
   autoplay?: boolean | undefined;
   resume?: PlayerResume | null | undefined;
-  /** `<video>`  id: ObrasDetalleseseunoes `vid`, Clave盘y e2e 按它找Reproducir区.  */
+  /** `<video>` 的 id：作品详情那一枚是 `vid`，键盘与 e2e 按它找播放区。 */
   id?: string | undefined;
   poster?: string | undefined;
-  /** Original生 `<video>` 报错(关注Entrada据此Descripción片源Fallo).  */
+  /** 原生 `<video>` 报错（关注条目据此说明片源失败）。 */
   onError?: (() => void) | undefined;
 }
 
-/** 给舞dentrouno媒体框挂ReproducirDispositivo, 返回卸abajo它函数. 
+/** 给舞台里一块媒体框挂播放器，返回卸下它的函数。
  *
- *  pequeño窗正放着同uno(同类, 同 id, 同uno媒体)就eseuno实例认领回来: Video.js 壳Completo搬进
- *  este框, 读数pesadoNuevocontinuararriba, ReproducirNo断. 否则Nuevouno `<video>` 交给 `mountPlayer`. 卸abajo时este实例
- *  ya经被pequeño窗continuar走就Solo摘读数, 没被continuar走就连流会话uno起拆掉.  */
+ *  小窗正放着同一条（同种类、同 id、同一份媒体）就把那一个实例认领回来：Video.js 的壳整块搬进
+ *  这块框，读数重新接上，播放不断。否则新建一个 `<video>` 交给 `mountPlayer`。卸下时这个实例
+ *  已经被小窗接走就只摘读数，没被接走就连流会话一起拆掉。 */
 export function attachStagePlayer(frame: HTMLElement, options: StagePlayerOptions): () => void {
   const { kind, item, media = null } = options;
   const key = playerKey(kind, item.id, media?.index ?? null);
@@ -153,25 +153,25 @@ export function attachStagePlayer(frame: HTMLElement, options: StagePlayerOption
     if (attached === slot) attached = null;
     release();
     if (handed) return;
-    /* Video.js 没拉到时es裸 `<video>` En放: 节点离开Documentación照样出声, 先停abajo再清掉片源.  */
+    /* Video.js 没拉到时是裸 `<video>` 在放：节点离开文档照样出声，先停下再清掉片源。 */
     if (!slot.player) { video.pause(); video.removeAttribute('src'); video.load() }
     cancelDetailStream();
   };
 }
 
-/** Muro面Recibirya选定本地视频Entrada; 计费yEn线Obras使用Detalles来源门槛.  */
+/** 墙面接收已选定的本地视频条目；计费与在线作品使用详情的来源门槛。 */
 export async function mountWallPlayer(summary: PlayerItem, frame: HTMLElement, signal: AbortSignal): Promise<(continuePlaying?: boolean) => void> {
   const item = await api(`/api/item?id=${summary.id}`, { signal }) as PlayerItem & { error?: string };
   signal.throwIfAborted();
-  if (!item || item.error) throw new Error(item?.error || 'ObraNo disponible');
-  if (item.medium && item.medium !== 'video') throw new Error('esteResultadoObraSinpuedeReproducirVideos');
-  if (item.location === 'online') throw new Error('Por favorAbrir detallesReproducirObras en línea');
-  if (item.cost === 'metered') throw new Error('Por favorAbrir detallesConfirmar计费Fuente');
+  if (!item || item.error) throw new Error(item?.error || '作品未取得');
+  if (item.medium && item.medium !== 'video') throw new Error('这条作品没有可播放的视频');
+  if (item.location === 'online') throw new Error('请打开详情播放在线作品');
+  if (item.cost === 'metered') throw new Error('请打开详情确认计费来源');
   const sources = await stageHost().player.loadSourceStatus();
   signal.throwIfAborted();
   if (sources[String(item.location || '')] === false) throw new Error(stageHost().player.offlineReason(String(item.location || '')));
   const metadata: StageMeta = { kind: 'item', item, title: String(item.title || item.name || ''),
-    sub: String((item.performers as string[] | undefined)?.[0] || item.creator || 'Sin asignar') };
+    sub: String((item.performers as string[] | undefined)?.[0] || item.creator || '未归属') };
   setStageMeta(metadata);
   const release = attachStagePlayer(frame, { kind: 'item', item, autoplay: true });
   let released = false;
@@ -207,15 +207,15 @@ function claimHeld(frame: HTMLElement, from: Held): () => void {
   };
 }
 
-/** 舞此刻挂着eseReproducirDispositivo(derechaClave菜单, i Clavey剧场Modo要).  */
+/** 舞台此刻挂着的那个播放器（右键菜单、i 键与剧场模式要）。 */
 export const stagePlayer = (): VjsPlayer | null => {
   const player = attached?.player;
   return player && !player.isDisposed() ? player : null;
 };
 
-/** 舞要拆: 舞arribaEn curso放esteuno该No该进pequeño窗. `allow` eseste次离开允No允许进pequeño窗—显
- *  Cerrar(叉, Escape), 换成别Detallesy删掉当anteriorEntrada都No允许; derechaClave菜单y i ClavePor favor求过例exterior. 
- *  展开之posterior还没来得及认领eseuno(取数改道, 盘没挂arriba)Enaquíuno起收掉.  */
+/** 舞台要拆了：舞台上正在放的这一个该不该进小窗。`allow` 是这次离开允不允许进小窗——显式
+ *  关闭（叉、Escape）、换成别的详情与删掉当前条目都不允许；右键菜单与 i 键请求过的例外。
+ *  展开之后还没来得及认领的那一个（取数改道、盘没挂上）在这里一起收掉。 */
 export function handOffStage(allow: boolean): void {
   const wanted = requested;
   requested = false;
@@ -230,8 +230,8 @@ export function handOffStage(allow: boolean): void {
   enterMiniplayer({ player, kind: slot.kind, item: slot.item, mediaIndex: slot.mediaIndex, key: slot.key }, current);
 }
 
-/** 舞Abriresteuno之anterior: pequeño窗放着Noes它就先关掉, 两ReproducirDispositivoNo同时出声; es它就先藏起来, 
- *  etc.媒体框画出来再认领.  */
+/** 舞台打开这一条之前：小窗放着的不是它就先关掉，两个播放器不同时出声；是它就先藏起来，
+ *  等媒体框画出来再认领。 */
 export function prepareStageFor(kind: StageKind, id: number): void {
   requested = false;
   if (!held) return;
@@ -243,7 +243,7 @@ export function prepareStageFor(kind: StageKind, id: number): void {
   closeMiniplayer();
 }
 
-/* ── pequeño窗 ── */
+/* ── 小窗 ── */
 
 export function registerMiniplayer(next: MiniplayerDom | null): void {
   dom = next;
@@ -256,8 +256,8 @@ export function miniplayerVideo(): HTMLVideoElement | null {
   return miniplayerActive() ? dom?.frame.querySelector('video') ?? null : null;
 }
 
-/** 此刻该RespuestaReproducirrápido捷Clave video: 舞开着取舞en la, 否则取pequeño窗en la. 直continuar操作Original生元素而Noes
- *  Video.js 实例: 挂载posterior `#vid` es Video.js  div, 真正媒体元素es `#vid_html5_api`.  */
+/** 此刻该响应播放快捷键的 video：舞台开着取舞台里的，否则取小窗里的。直接操作原生元素而不是
+ *  Video.js 实例：挂载后 `#vid` 是 Video.js 的 div，真正的媒体元素是 `#vid_html5_api`。 */
 export function activeStageVideo(): HTMLVideoElement | null {
   if (stageOpen()) return document.getElementById('stage')?.querySelector('video') ?? null;
   return stagePlayer()?.el().querySelector('video') ?? miniplayerVideo();
@@ -267,11 +267,11 @@ function paintMeta(next: { title: string; sub: string }): void {
   if (!dom) return;
   dom.title.textContent = next.title || '';
   dom.sub.textContent = next.sub || '';
-  dom.info.setAttribute('aria-label', next.title ? `Expandir a detalles: ${next.title}` : 'Expandir a detalles');
+  dom.info.setAttribute('aria-label', next.title ? `展开到详情：${next.title}` : '展开到详情');
 }
 
-/* Imagen区按视频Relación给alto: arriba游 4:3 片子pequeño窗就es 400×300. 竖片压到 1:1 以interior, 400 ancho 9:16
-   会alto过视口.  */
+/* 画面区按视频比例给高：上游 4:3 的片子小窗就是 400×300。竖片压到 1:1 以内，400 宽的 9:16
+   会高过视口。 */
 function syncAspect(item: PlayerItem | undefined = held?.item): void {
   if (!dom) return;
   const video = dom.frame.querySelector('video');
@@ -284,9 +284,9 @@ function syncPlayState(): void {
   const player = held?.player;
   if (!player || player.isDisposed() || !dom) return;
   const paused = player.paused();
-  dom.play.setAttribute('aria-label', paused ? 'Reproducir' : 'Pausar');
-  /* 主ReproducirDispositivoeseuno走es path 形变, 迷你arribaesteunoSoloCon 20px, 形变verNo出来, 走两字形叠着换. 
-     换Soloes容DispositivoEstado, No改 `use`  href—改 href esGrave切.  */
+  dom.play.setAttribute('aria-label', paused ? '播放' : '暂停');
+  /* 主播放器那一枚走的是 path 形变，迷你条上这一枚只有 20px，形变看不出来，走两枚字形叠着换。
+     换的只是容器状态，不改 `use` 的 href——改 href 是硬切。 */
   if (!dom.play.querySelector('[data-icon-swap]')) dom.play.innerHTML = iconSwapHtml('player-pause', 'player-play', paused ? 'b' : 'a');
   setIconSwap(dom.play, paused ? 'b' : 'a');
 }
@@ -300,12 +300,12 @@ function syncTime(): void {
 
 const seekStep = (): number => Math.max(1, Number(stageHost().player.settings().seekSeconds) || 10);
 
-/* 步largo跟Configuración走, Etiquetadentro带着este数: 读屏用户按之anterior听得到自己会跳más远. 每次continuar手ReproducirDispositivo时pesado写
-   uno遍, Configuración改完开Siguientepequeño窗就esNuevo秒数.  */
+/* 步长跟设置走，标签里带着这个数：读屏用户按之前听得到自己会跳多远。每次接手播放器时重写
+   一遍，设置改完开的下一个小窗就是新的秒数。 */
 function syncSeekLabels(): void {
   if (!dom || !host) return;
   const step = seekStep();
-  for (const [button, text] of [[dom.back, `posterior退 ${step} segundo(s)`], [dom.ahead, `anterior进 ${step} segundo(s)`]] as const) {
+  for (const [button, text] of [[dom.back, `后退 ${step} 秒`], [dom.ahead, `前进 ${step} 秒`]] as const) {
     button.setAttribute('aria-label', text);
     button.title = text;
   }
@@ -314,7 +314,7 @@ function syncSeekLabels(): void {
 function bindHeld(slot: Held): void {
   const on = (events: string | string[], handler: () => void) => {
     slot.player.on(events, handler);
-    slot.off.push(() => { try { slot.player.off(events, handler) } catch { /* ya拆 */ } });
+    slot.off.push(() => { try { slot.player.off(events, handler) } catch { /* 已拆 */ } });
   };
   on(['play', 'pause', 'ended'], syncPlayState);
   on(['timeupdate', 'durationchange', 'loadedmetadata'], syncTime);
@@ -377,7 +377,7 @@ export function expandMiniplayer(): void {
   stageHost().expand(kind, item.id, mediaIndex);
 }
 
-/** i Clavey YouTube 同义: Detallesdentro进pequeño窗, pequeño窗dentro展开回Detalles.  */
+/** i 键与 YouTube 同义：详情里进小窗，小窗里展开回详情。 */
 export function toggleMiniplayer(): void {
   if (miniplayerActive() && !stageOpen()) { expandMiniplayer(); return }
   if (stageOpen() && stagePlayer() && requestClose) { requested = true; requestClose() }
@@ -389,8 +389,8 @@ export function playMiniplayer(): void {
   if (player.paused()) player.play()?.catch(() => {}); else player.pause();
 }
 
-/* Duración取No到时No封顶: En vivo y 还没读到Metadatos片子 `duration()` es NaN, 拿它去 `Math.min` 会Progreso
-   直continuar扔成 NaN, 视频停EnOriginal地No动.  */
+/* 时长取不到时不封顶：直播和还没读到元数据的片子 `duration()` 是 NaN，拿它去 `Math.min` 会把进度
+   直接扔成 NaN，视频停在原地不动。 */
 export function seekMiniplayer(side: 1 | -1): void {
   const player = held?.player;
   if (!player || player.isDisposed()) return;
@@ -399,8 +399,8 @@ export function seekMiniplayer(side: 1 | -1): void {
   player.currentTime(total ? Math.min(total, at) : at);
 }
 
-/** pequeño窗dentro能直continuar换SoloCon普通视频卡: 分卷/版次组要先选卷, 计费, 脱盘 y 反查No到关注EntradaEn线
- *  资产都要先过Detallesdentroese道门.  */
+/** 小窗里能直接换的只有普通视频卡：分卷／版次组要先选卷，计费、脱盘和反查不到关注条目的在线
+ *  资产都要先过详情里那道门。 */
 export function miniplayerTakesCard(item: PlayerItem | null | undefined): boolean {
   if (!miniplayerActive() || !item) return false;
   if (item.part_group || item.edition_group) return false;
@@ -411,8 +411,8 @@ export function miniplayerTakesCard(item: PlayerItem | null | undefined): boolea
   return true;
 }
 
-/** Enpequeño窗dentro换unoObras. 换片就esunoNuevo视频, pesadoNuevo挂unoReproducirDispositivo最干净: AnteriorError兜底, 观ver
- *  arriba报 y Nitidez表都绑Enantiguo实例闭包dentro, 复用它Solo会Nuevo片行Como记到antiguo片头arriba.  */
+/** 在小窗里换一条作品。换片就是一条新视频，重新挂一个播放器最干净：上一条的错误兜底、观看
+ *  上报和清晰度表都绑在旧实例的闭包里，复用它只会把新片的行为记到旧片头上。 */
 export async function miniplayerPlay(id: number): Promise<void> {
   if (!miniplayerActive() || !held || !dom) return;
   const mine = ++token;
@@ -432,8 +432,8 @@ export async function miniplayerPlay(id: number): Promise<void> {
   video.preload = 'metadata';
   dom.frame.prepend(video);
   const nextMeta: StageMeta = { kind: 'item', item, title: String(item.title || item.name || ''),
-    sub: String((item.performers as string[] | undefined)?.[0] || item.creator || 'Sin asignar') };
-  /* 换片期间 `held` 仍指着antiguoeseuno格(标成ya拆), pequeño窗No因Como挂载要etc.uno拍而收起.  */
+    sub: String((item.performers as string[] | undefined)?.[0] || item.creator || '未归属') };
+  /* 换片期间 `held` 仍指着旧的那一格（标成已拆），小窗不因为挂载要等一拍而收起。 */
   paintMeta(nextMeta);
   mountPlayer(video, {
     kind: 'item', item, autoplay: true, chrome: false,

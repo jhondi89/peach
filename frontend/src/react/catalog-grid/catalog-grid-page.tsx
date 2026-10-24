@@ -1,12 +1,12 @@
-/* 馆藏卡片Cuadrícula: Directorioy回收站(由路由树画进 `#grid`), 资料páginaObras区, DetallespáginaContinuar viendo. 
+/* 馆藏卡片网格：目录与回收站（由路由树画进 `#grid`）、资料页作品区、详情页的接着看。
  *
- * 取数, 排法y续página都Enaquí; Abrir, Seleccionar, 稍posteriorvery回收站操作es壳递进来动作. 换Filtrar或壳要求
- * pesado读时Consulta换Clave, CompletoCuadrícula按NuevoClavepesado挂: 先铺壳ese骨架, Datos回来posterior骨架淡出, contenido从Difusodentro清晰
- * 起来(同遗Deja层 `revealSkeleton`), 骨架还没到显示门槛就取完直continuar落contenido. 
+ * 取数、排法与续页都在这里；打开、选择、稍后看与回收站操作是壳递进来的动作。换筛选或壳要求
+ * 重读时查询换键，整个网格按新键重挂：先铺壳那份骨架，数据回来后骨架淡出、内容从模糊里清晰
+ * 起来（同遗留层 `revealSkeleton`），骨架还没到显示门槛就取完的直接落内容。
  *
- * Cuadrícula每continuarunopágina经 `onCount` 报uno次Total数y显示卡数, 读数画EnprimeropáginaFiltrar(`catalog-filter` 岛)
- * abajo排. Sin限滚动见abajo面 `LoadMore`: 哨兵进入视口 320px
- * interior自动取Siguientepágina, 点它etc.于手动取; FalloEn哨兵posterior面DejaunopuedeReintentar Note, 之posteriorSoloCon手动才Reintentar.  */
+ * 网格每接一页经 `onCount` 报一次总数与显示的卡数，读数画在首页筛选条（`catalog-filter` 岛）的
+ * 下排。无限滚动见下面的 `LoadMore`：哨兵进入视口 320px
+ * 内自动取下一页，点它等于手动取；失败在哨兵后面留一条可重试的 Note，之后只有手动才重试。 */
 import { Fragment, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { useInfiniteQuery, type InfiniteData, type QueryKey } from '@tanstack/react-query';
 import { mixFace as mixArtwork, mixLabel, relayoutCovers, type Artwork } from '@peach/card-art';
@@ -42,7 +42,7 @@ function Icon({ name }: { name: string }) {
   return <svg viewBox="0 0 24 24" aria-hidden="true"><use href={`#i-${name}`} /></svg>;
 }
 
-/** 壳手arribayaConuno批(DetallespáginaContinuar viendo): No取数, Solo画卡. `next` eseuno排卡直continuar排进壳横排.  */
+/** 壳手上已有的一批（详情页的接着看）：不取数，只画卡。`next` 那一排的卡直接排进壳的横排。 */
 function ItemsGrid(props: CatalogGridProps) {
   const { actions } = props;
   const onOpen = useCallback((item: MediaItem, anchor: HTMLElement) => actions.open(item, anchor), [actions]);
@@ -56,13 +56,13 @@ function ItemsGrid(props: CatalogGridProps) {
   return <div data-media-grid="" data-select-mode={props.selectMode ? '' : undefined}>{cards}</div>;
 }
 
-/** uno次ConsultaCompleto生命周期: 骨架, primero屏, 续página, 竖屏带y读数.  */
+/** 一次查询的整个生命周期：骨架、首屏、续页、竖屏带与读数。 */
 function GridBody(props: CatalogGridProps) {
   const { helpers, actions, layout } = props;
   const entity = props.mode === 'entity';
   const trash = !entity && props.filters?.state === 'trash';
   const query = entity ? entityQuery(props) : catalogQuery(props);
-  /* 资料páginaNo.unopágina由壳 y página头uno起取来: Sincronizar落进esteuno代缓存, primero帧就es卡片, No再发uno遍.  */
+  /* 资料页的第一页由壳和页头一起取来：同步落进这一代的缓存，首帧就是卡片，不再发一遍。 */
   const [retained] = useState(() => props.wall ? latestCatalogPages(query.queryKey) : undefined);
   const initialData = retained || (entity && props.initial
     ? { pages: [{ ...props.initial, items: props.initial.items || [], offset: 0 }], pageParams: [0] }
@@ -76,7 +76,7 @@ function GridBody(props: CatalogGridProps) {
     refetchOnMount: entity && retained ? 'always' : false,
   });
 
-  /* uno次取数落定就告诉壳uno次, Éxito, Como空, Fallo都算: 壳dentro `await` este次pesado读调用方据此放行.  */
+  /* 一次取数落定就告诉壳一次，成功、为空、失败都算：壳里 `await` 这次重读的调用方据此放行。 */
   const settledOnce = useRef(false);
   useEffect(() => {
     if (result.isPending || settledOnce.current) return;
@@ -100,8 +100,8 @@ function GridBody(props: CatalogGridProps) {
   const body = useRef<HTMLDivElement | null>(null);
   const cuts = useShortsStrips(props, result.data, tiles, pageStarts, body);
 
-  /* 读数排到微Tareadentro报: 壳画读数会顺带pesado排página头y选en proceso态, eseuno路puede能走到批量 `flushSync`, 
-     提交阶段dentro它画No出来. 微TareaEnExplorar dispositivo绘制anterior跑完; esteuno代ya卸abajo就No报.  */
+  /* 读数排到微任务里报：壳画读数会顺带重排页头与选中态，那一路可能走到批量条的 `flushSync`，
+     提交阶段里它画不出来。微任务在浏览器绘制前跑完；这一代已卸下就不报。 */
   useLayoutEffect(() => {
     if (!result.data) return;
     let live = true;
@@ -144,7 +144,7 @@ function GridBody(props: CatalogGridProps) {
       error={!result.data && !result.isPending ? requestErrorMessage(result.error) : ''}
       retry={() => void result.refetch()}
       emptyHtml={result.data && !wallPool.length ? tiles.length
-        ? emptyStateHtml('image', 'este批ObraSinPortada', result.hasNextPage ? 'Cargar másObraposteriorContinuarExplorar. ' : '换FiltrarRango再试. ')
+        ? emptyStateHtml('image', '这批作品没有封面', result.hasNextPage ? '载入更多作品后继续浏览。' : '换个筛选范围再试。')
         : props.emptyHtml?.({ trash, libraryEmpty:!!result.data.pages[0]?.libraryEmpty }) : ''}
       loadMore={loadNext} actions={actions} helpers={helpers} javImage={layout.javImage} />;
     if (result.isPending) return null;
@@ -182,9 +182,9 @@ function GridBody(props: CatalogGridProps) {
   );
 }
 
-/** 续página. Directorioesuno滚到附近就自己取哨兵, 资料páginaesuno"载入更más"Clave, 两者判据相同. 
- *  每continuarAnteriorpágina就按NuevoClavepesado挂uno次, FalloEstadoNo跨página. 资料página照片Muroy关注página翻página也用esteuno; 关注páginaeseClave
- *  带字形, `children` 换掉Claveen la字.  */
+/** 续页。目录是一颗滚到附近就自己取的哨兵，资料页是一枚「载入更多」键，两者判据相同。
+ *  每接上一页就按新键重挂一次，失败状态不跨页。资料页照片墙与关注页的翻页也用这一枚；关注页那枚键
+ *  带字形，`children` 换掉键上的字。 */
 export function LoadMore({ entity, load, enabled, children }: {
   entity: boolean; load: () => Promise<void>; enabled: () => boolean; children?: ReactNode;
 }) {
@@ -224,17 +224,17 @@ export function LoadMore({ entity, load, enabled, children }: {
   return (
     <>
       {entity
-        ? <button ref={attach} type="button" data-entity-more="" {...aria} onClick={() => void run(true)}>{children ?? 'Cargar más'}</button>
-        /* Fallo时SoloDejaabajo面eseReintentar: 哨兵收起peroNo卸abajo, Reintentarcontinuararriba之posterior照antiguo由它续página.  */
+        ? <button ref={attach} type="button" data-entity-more="" {...aria} onClick={() => void run(true)}>{children ?? '载入更多'}</button>
+        /* 失败时只留下面那条重试：哨兵收起但不卸下，重试接上之后照旧由它续页。 */
         : <div ref={attach} data-load-more="" {...aria} hidden={Boolean(state.error)} onClick={() => void run(true)}
-          dangerouslySetInnerHTML={{ __html: loadingDotsHtml('Cargando más...') }} />}
+          dangerouslySetInnerHTML={{ __html: loadingDotsHtml('继续载入中…') }} />}
       {state.error ? <RetryNote message={state.error} onRetry={() => void run(true)} /> : null}
     </>
   );
 }
 
-/** 竖屏带: 每continuarunopáginaPor favor求uno, 落点EnesteunopáginaAgregarese几行之间行边界arribaAleatorio取uno. 
- *  Por favor求跟着主ListaFiltraryOrdenar走; uno都Sin, 或esteunopágina剪No出行边界, 偏移量按遗Deja层归cero或No动.  */
+/** 竖屏带：每接一页请求一条，落点在这一页新增的那几行之间的行边界上随机取一个。
+ *  请求跟着主列表的筛选与排序走；一条都没有、或这一页剪不出行边界，偏移量按遗留层归零或不动。 */
 function useShortsStrips(
   props: CatalogGridProps, data: InfiniteData<GridPage, number> | undefined,
   tiles: readonly Tile[], pageStarts: readonly number[], body: RefObject<HTMLElement | null>,
@@ -258,7 +258,7 @@ function useShortsStrips(
         if (!items.length) { offset.current = 0; return }
         setArrived({ page, total: Number(strip.total || 0), items, more: strip.has_more !== false });
       })
-      /* 竖屏带es穿插进来附加contenido, 取No到就No插, 主Lista照常.  */
+      /* 竖屏带是穿插进来的附加内容，取不到就不插，主列表照常。 */
       .catch(() => {});
   }, [data]);
   useLayoutEffect(() => {
@@ -287,9 +287,9 @@ function ShortsStrip({ cut, props, onOpen }: {
   return (
     <section data-shorts-strip="">
       <h2>
-        竖屏 <span data-shorts-count="">{`${cut.total.toLocaleString()} `}</span>
+        竖屏 <span data-shorts-count="">{`${cut.total.toLocaleString()} 个`}</span>
         <button type="button" data-shorts-enter="" onClick={() => props.actions.openShorts()}>
-          <Icon name="gallery-vertical-end" /><span>进入Modo inmersivo</span>
+          <Icon name="gallery-vertical-end" /><span>进入沉浸模式</span>
         </button>
       </h2>
       <div ref={row} data-shorts-row="">
@@ -303,12 +303,12 @@ function ShortsStrip({ cut, props, onOpen }: {
   );
 }
 
-/** Mix unoImagen: Código JAV版开着时Código JAVObras按esteuno屏grandeImagen/pequeñoImagen取, 其余uno律按pequeñoImagen.  */
+/** Mix 的一张画面：番号版式开着时番号作品按这一屏的大图／小图取，其余一律按小图。 */
 function mixFace(item: MediaItem, layout: MediaCardLayout, eager: boolean): Artwork {
   return mixArtwork(item, layout.active && item.is_jav ? layout.size : 'small', eager, layout.javImage);
 }
 
-/** Directorio每unopáginaNo. 8 ese Mix: 以SemillaComoprimero相似Obras. Completo卡es点击区, Pasar el ratón逐翻过eseuno叠.  */
+/** 目录每一页第 8 位的那张 Mix：以种子为首的相似作品。整张卡是点击区，悬停逐张翻过那一叠。 */
 function HomeMix({ seed, layout, helpers, actions }: {
   seed: MediaItem; layout: MediaCardLayout; helpers: MediaCardHelpers; actions: CatalogGridProps['actions'];
 }) {
@@ -328,13 +328,13 @@ function HomeMix({ seed, layout, helpers, actions }: {
   const artwork = mixFace(seed, layout, false);
   return (
     <MixCard data-mix-seed={String(seed.id)} name={`Mix · ${label}`}
-      caption={`${helpers.displayName(seed, seed.name || '')}及相似Obra`} count={0} badge="Mix" glyph wholeCard
+      caption={`${helpers.displayName(seed, seed.name || '')}及相似作品`} count={0} badge="Mix" glyph wholeCard
       poster={null} artwork={artwork}
       artworkIdentity={size === 'small' ? artwork.html : mixFace(seed, { ...layout, size: 'small' }, false).html}
       relayoutArt={(root) => relayoutCovers(root, size)}
       ratio={cardRatio(seed, 'grid', layout)}
       flipImages={flipImages} faceHtml={(id) => faces.current.get(id) || ''} canFlip={actions.canFlip}
       faces={[]} onOpenEntity={actions.openEntity}
-      onOpen={(anchor) => actions.openMix(seed.id, anchor)} openLabel={`Abrir Mix · ${label}`} />
+      onOpen={(anchor) => actions.openMix(seed.id, anchor)} openLabel={`打开 Mix · ${label}`} />
   );
 }

@@ -1,17 +1,17 @@
-/* 舞(ADR-0031 No. 11a 步): Detalles浮窗 `<dialog id="stage">`, 它进出场, 骨架y揭示, 两座Detalles, 
- * ReproducirDispositivoypequeño窗都Enesteuno面dentro. 
+/* 舞台（ADR-0031 第 11a 步）：详情浮窗 `<dialog id="stage">`、它的进出场、骨架与揭示、两座详情、
+ * 播放器与小窗都在这一面里。
  *
- * 常驻组件 `stage`(`router/managed-routes.tsx` 常驻表): 路由树它画进 body último尾常驻宿主
- * `[data-stage-host]`, 宿主就esese节点本身, No包 `.peach-react`, No.uno次AbrirDetalles时由 `application-residents.ts` 
- * `loadStage` 建bien, En画出pequeño窗节点同unoTareadentro挂进Documentación. 舞盖En所Conpágina面之arriba, pequeño窗要En换página之posteriorcontinuar着放, 
- * 所以宿主No跟某unopágina走. 壳Solo拿 `configureStage` 给命令入口: 句柄写本模 store 再 `flushSync` 通知, 
- * `open`(含Original地换), `update` y `dispose` dentro每uno次绘制都En返回之anterior画完, 紧跟着读 DOM 代码(骨架量尺寸, 
- * `showModal`, Título揭示, 焦点交给CerrarClave)读到就es刚画bien结构. 
+ * 常驻组件 `stage`（`router/managed-routes.tsx` 的常驻表）：路由树把它画进 body 末尾的常驻宿主
+ * `[data-stage-host]`，宿主就是那个节点本身、不包 `.peach-react`，第一次打开详情时由 `application-residents.ts` 的
+ * `loadStage` 建好、在画出小窗节点的同一个任务里挂进文档。舞台盖在所有页面之上，小窗要在换页之后接着放，
+ * 所以宿主不跟某一页走。壳只拿 `configureStage` 给的命令式入口：句柄写本模块的 store 再 `flushSync` 通知，
+ * `open`（含原地换条）、`update` 与 `dispose` 里每一次绘制都在返回之前画完，紧跟着读 DOM 的代码（骨架量尺寸、
+ * `showModal`、标题揭示、焦点交给关闭键）读到的就是刚画好的结构。
  *
- * 每次 `open` 换uno `generation`, 取数回来时代次No对就作废; pesado开时 dialog 按它pesado建, Original地换沿用开着ese. 
- * 两座Detallesesesteuno面子组件,  y página面共用路由树 QueryClient(`providers.tsx`). 两座Detalles画出来时报给壳 `present` 排到微Tareadentro: 壳收到posterior
- * 会画侧栏y顶栏, ese几座常驻组件句柄interior部 `flushSync`, En路由树提交阶段dentro画No出来. 微TareaEnExplorar dispositivo绘制anterior
- * 跑完; eseunoya经换走(Original地换或pesado开)或舞ya经收起就No报.  */
+ * 每次 `open` 换一枚 `generation`，取数回来时代次不对就作废；重开时 dialog 按它重建，原地换条沿用开着的那个。
+ * 两座详情是这一面的子组件，和页面共用路由树的 QueryClient（`providers.tsx`）。两座详情画出来时报给壳的 `present` 排到微任务里：壳收到后
+ * 会画侧栏与顶栏，那几座常驻组件的句柄内部 `flushSync`，在路由树的提交阶段里画不出来。微任务在浏览器绘制前
+ * 跑完；那一条已经换走（原地换条或重开）或舞台已经收起就不报。 */
 import { useLayoutEffect, useRef, useSyncExternalStore, type MouseEvent, type PointerEvent } from 'react';
 import { flushSync } from 'react-dom';
 
@@ -42,8 +42,8 @@ interface View {
   generation: number;
   request: StageRequest;
   content: Content;
-  /* 骨架 → 淡出(骨架抬成 `[data-stage-fade]` uno层, contenido同时清晰起来)→ contenido. 取得比显示门槛rápido时Omitir
-     en proceso间eseuno段: 从no露面骨架No该再演uno次退场.  */
+  /* 骨架 → 淡出（骨架抬成 `[data-stage-fade]` 一层，内容同时清晰起来）→ 内容。取得比显示门槛快时跳过
+     中间那一段：从未露面的骨架不该再演一次退场。 */
   phase: Phase;
 }
 
@@ -52,11 +52,11 @@ let view: View | null = null;
 const listeners = new Set<() => void>();
 let generation = 0;
 let controller: AbortController | null = null;
-/* CerrarClave, Escape, 点浮窗exterior面yOriginal生 `cancel` puede能En同unoabajodentro各来uno次: 退场动画期间再要uno次, 
-   会让No.dos次CerrarOmitir动画直continuar拆.  */
+/* 关闭键、Escape、点浮窗外面与原生 `cancel` 可能在同一下里各来一次：退场动画期间再要一次，
+   会让第二次关闭跳过动画直接拆。 */
 let closeRequested = false;
-/* 按abajoeseuno刻EnNoEn浮窗exterior面. DetallesdentroProgreso, Volumen y Cola都能拖, 从Controlesarriba拖出边界再松手同样会En
-   dialog arriba收到uno次 click—eseesuno次拖动收尾, Noes要关窗.  */
+/* 按下那一刻在不在浮窗外面。详情里进度条、音量条和队列都能拖，从控件上拖出边界再松手同样会在
+   dialog 上收到一次 click——那是一次拖动的收尾，不是要关窗。 */
 let dismissArmed = false;
 
 const stageDialog = (): HTMLDialogElement | null => {
@@ -65,7 +65,7 @@ const stageDialog = (): HTMLDialogElement | null => {
 };
 
 function stageHost(): StageHost {
-  if (!host) throw new Error('El escenario aún no está conectado al host (configureStage)');
+  if (!host) throw new Error('舞台还没有接上宿主（configureStage）');
   return host;
 }
 
@@ -78,7 +78,7 @@ function notify(): void {
   for (const listener of [...listeners]) listener();
 }
 
-/* 返回时ya经画完. esteuno面抛错, 被Error边界卸掉之posterior没人订阅, `view` 照antiguo写进 store, No画, No抛.  */
+/* 返回时已经画完。这一面抛错、被错误边界卸掉之后没人订阅，`view` 照旧写进 store，不画、不抛。 */
 function paint(): void {
   flushSync(notify);
 }
@@ -93,13 +93,13 @@ function StageTree({ view: current }: { view: View | null }) {
 }
 
 const DetailSkeleton = () => (
-  <div data-skeleton="detail" role="status" aria-label="CargandoObraDetalles" dangerouslySetInnerHTML={{ __html: detailSkeletonBody() }} />
+  <div data-skeleton="detail" role="status" aria-label="正在读取作品详情" dangerouslySetInnerHTML={{ __html: detailSkeletonBody() }} />
 );
 
-/* 点浮窗exterior面就Cerrar sesión. Original生模态dentro"exterior面"还eseste dialog 自己—遮罩归它, 落En遮罩en la事件 target
-   就es它本人, 所以判据取坐标No取 target: 按 target 判, 浮窗身arriba任何unoNo属于contenido地方都会被算成
-   点exterior面. Solover坐标也No够: ReproducirDispositivoPantalla completaposterior铺满Completo视口, 浮窗矩形仍esDetalles排版dentroese, 点Progresoderecha段
-   或底部控制栏会落En矩形exterior. 所以两都要成立: target es dialog 本身, 坐标En浮窗exterior.  */
+/* 点浮窗外面就退出。原生模态里「外面」还是这个 dialog 自己——遮罩归它，落在遮罩上的事件 target
+   就是它本人，所以判据取坐标不取 target：按 target 判，浮窗身上任何一块不属于内容的地方都会被算成
+   点了外面。只看坐标也不够：播放器全屏后铺满整个视口，浮窗的矩形仍是详情排版里那块，点进度条右段
+   或底部控制栏会落在矩形外。所以两条都要成立：target 是 dialog 本身，坐标在浮窗外。 */
 function outside(event: MouseEvent | PointerEvent): boolean {
   const dialog = event.currentTarget as HTMLElement;
   if (event.target !== dialog) return false;
@@ -109,26 +109,26 @@ function outside(event: MouseEvent | PointerEvent): boolean {
 
 function StageDialog({ view: current }: { view: View }) {
   const ref = useRef<HTMLDialogElement>(null);
-  /* Original生 `cancel`(Escape 之exteriorCerrarPor favor求, 例如安卓返回手势)yCerrarClave走同uno路. Escape 本身En
-     keydown arriba就Procesar掉: esedentro `preventDefault` 之posteriorExplorar dispositivoNo再派 `cancel`.  */
+  /* 原生 `cancel`（Escape 之外的关闭请求，例如安卓返回手势）与关闭键走同一条路。Escape 本身在
+     keydown 上就处理掉了：那里 `preventDefault` 之后浏览器不再派 `cancel`。 */
   useLayoutEffect(() => {
     const dialog = ref.current!;
-    // ArchivoSeleccionar框 cancel 会冒泡; DetallesSoloProcesar自己CerrarPor favor求. 
+    // 文件选择框的 cancel 会冒泡；详情只处理自己的关闭请求。
     const cancel = (event: Event) => { if (event.target === dialog) { event.preventDefault(); requestClose() } };
     dialog.addEventListener('cancel', cancel);
     return () => dialog.removeEventListener('cancel', cancel);
   }, []);
   const { phase, content } = current;
-  /* Original地换时关注Detalles按Entradapesado建: 选en procesoese媒体, 写操作忙碌yFallo都Solo属于Anterior. ObrasDetalles
-     自己按Entrada给 `Detail` 换Clave, Cola取数DejaEnexterior层Nopesado来.  */
+  /* 原地换条时关注详情按条目重建：选中的那份媒体、写操作的忙碌与失败都只属于上一条。作品详情
+     自己按条目给 `Detail` 换键，队列取数留在外层不重来。 */
   const body = content.kind === 'item'
     ? <ItemDetailPage {...content.props} />
     : content.kind === 'jav' ? <JavDetailPage key={content.props.code} {...content.props} />
     : <FollowDetailPage key={content.props.id} {...content.props} />;
   return (
-    <dialog ref={ref} id="stage" data-stage="" data-stage-kind={content.kind} aria-label="ObraDetalles"
+    <dialog ref={ref} id="stage" data-stage="" data-stage-kind={content.kind} aria-label="作品详情"
       onKeyDown={(event) => {
-        /* dentro层弹层(EtiquetaBuscar框, derechaClave菜单)先Procesar Escape y `preventDefault`, esteunoabajo就No再关浮窗.  */
+        /* 里层弹层（标签搜索框、右键菜单）先处理 Escape 并 `preventDefault`，这一下就不再关浮窗。 */
         if (event.key !== 'Escape' || event.defaultPrevented) return;
         event.preventDefault();
         requestClose();
@@ -138,9 +138,9 @@ function StageDialog({ view: current }: { view: View }) {
       {phase === 'skeleton' ? <DetailSkeleton key="skeleton" /> : null}
       {phase === 'reveal' ? <div key="fade" data-stage-fade="" aria-hidden="true"><DetailSkeleton /></div> : null}
       {phase === 'skeleton' ? null : (
-        /* estrecho屏abajo滚es `[data-stage-scroll]`, Todo站ese覆盖滚动挂En它兄弟Ubicación(`<dialog>` En顶层, 
-           轨道挂到它exterior面会落进遮罩底abajo); "Continuar viendo"es `[data-stage-grid]` 兄弟, 也得uno起装进来. dentro面ese层
-           `.peach-react` No占盒子, token y Preflight 从它Empezar作用.  */
+        /* 窄屏下滚的是 `[data-stage-scroll]`，全站那条覆盖式滚动条挂在它的兄弟位置（`<dialog>` 在顶层，
+           轨道挂到它外面会落进遮罩底下）；「接着看」是 `[data-stage-grid]` 的兄弟，也得一起装进来。里面那层
+           `.peach-react` 不占盒子，token 与 Preflight 从它开始作用。 */
         <div key="content" data-stage-scroll=""><div className="peach-react">{body}</div></div>
       )}
     </dialog>
@@ -159,8 +159,8 @@ function toggleStageModes(ambient: boolean, theater: boolean): void {
   dialog?.toggleAttribute('data-theater', theater);
 }
 
-/* 两座Detalles动作经舞包uno层: Cerrar走 `requestClose`; 画出来eseuno刻登记pequeño窗Metadatos, 切氛围光y剧场
-   Modo; 媒体框交给舞ReproducirDispositivo. 续播时刻Solo给No.uno次挂en laeseuno.  */
+/* 两座详情的动作经舞台包一层：关闭走 `requestClose`；画出来那一刻登记小窗元数据、切氛围光与剧场
+   模式；媒体框交给舞台的播放器。续播时刻只给第一次挂上的那一条。 */
 function contentFor(request: StageRequest): Content {
   if (request.kind === 'jav') return { kind: 'jav', props: { code: request.code, readOnly: request.readOnly,
     actions: { ...request.actions, close: requestClose } } };
@@ -171,7 +171,7 @@ function contentFor(request: StageRequest): Content {
     return hit;
   };
   const settings = () => stageHost().player.settings();
-  /* Original地换沿用浮窗开着时代次(dialog Nopesado建), 所以按esteuno次Abrir request 认: 换ypesado开都换unoNuevo.  */
+  /* 原地换条沿用浮窗开着时的代次（dialog 不重建），所以按这一次打开的 request 认：换条与重开都换一份新的。 */
   const live = () => view?.request === request;
   if (request.kind === 'item') {
     const { kind: _kind, resume: _resume, actions: base, ...props } = request;
@@ -181,7 +181,7 @@ function contentFor(request: StageRequest): Content {
       present: (item, queue) => {
         const performers = item.performers as string[] | undefined;
         player.setStageMeta({ kind: 'item', item, title: String(item.title || item.name || ''),
-          sub: String(performers?.[0] || item.creator || 'Sin asignar') });
+          sub: String(performers?.[0] || item.creator || '未归属') });
         toggleStageModes(settings().ambientMode, settings().theaterMode);
         queueMicrotask(() => { if (live()) base.present(item, queue) });
       },
@@ -207,7 +207,7 @@ function contentFor(request: StageRequest): Content {
   return { kind: 'follow', props: { ...props, actions } };
 }
 
-/* 骨架抬成uno层淡出, contenido同时从Difusodentro清晰起来; 走完(或 1s 兜底)摘掉eseuno层.  */
+/* 骨架抬成一层淡出，内容同时从模糊里清晰起来；走完（或 1s 兜底）摘掉那一层。 */
 function startReveal(dialog: HTMLDialogElement, mine: number): void {
   const fade = dialog.querySelector<HTMLElement>(':scope > [data-stage-fade]');
   dialog.setAttribute('data-stage-reveal', '');
@@ -226,7 +226,7 @@ function startReveal(dialog: HTMLDialogElement, mine: number): void {
   timer = window.setTimeout(drop, 1000);
 }
 
-/** 浮窗开着同unoDetalles, NoEn退场: 换就Original地换contenido, No拆浮窗.  */
+/** 浮窗开着同一种详情、不在退场：换条就原地换内容，不拆浮窗。 */
 function swappable(kind: StageRequest['kind']): HTMLDialogElement | null {
   const dialog = stageDialog();
   if (!view || view.content.kind !== kind || closeRequested || !dialog?.open || dialog.hasAttribute('data-closing')) return null;
@@ -261,25 +261,25 @@ async function open(request: StageRequest): Promise<void> {
   try {
     await waiting;
   } catch {
-    // en proceso止就es用户ya经走开. 其余Fallo照画: Original因 y Reintentar节律都EnDetalles自己手dentro. 
+    // 中止就是用户已经走开。其余失败照画：原因和重试的节律都在详情自己手里。
     if (abort.signal.aborted) return;
   }
   if (mine !== generation || !view) return;
   if (cached) return;
-  /* 还没到显示门槛就ya经取完: 直continuar落contenido, 隐藏en proceso占从no被人ver见.  */
+  /* 还没到显示门槛就已经取完：直接落内容，隐藏中的占位从未被人看见。 */
   const direct = !!dialog.querySelector('.skeleton-awaiting');
   view = { ...view, phase: direct ? 'content' : 'reveal' };
   paint();
   if (!direct) startReveal(dialog, mine);
-  /* 浮窗dentroese两行Título跟着esteuno次pesado画揭示uno遍. 绕开En curso淡出eseuno层: 骨架照着最终结构画, dentro面也Con
-     uno `[data-stage-side-content]`, 按Documentación顺序找话拿到es它.  */
+  /* 浮窗里那两行标题跟着这一次重画揭示一遍。绕开正在淡出的那一层：骨架照着最终结构画，里面也有
+     一个 `[data-stage-side-content]`，按文档顺序找的话拿到的是它。 */
   revealTexts(dialog, ':scope>:not([data-stage-fade]) [data-reveal-line]');
-  /* 骨架dentroSinpuede聚焦元素, `showModal()` Solo能焦点给 dialog 本身; contenido到交给CerrarClave.  */
+  /* 骨架里没有可聚焦的元素，`showModal()` 只能把焦点给 dialog 本身；内容到了交给关闭键。 */
   const active = document.activeElement;
   if (active === dialog || !dialog.contains(active)) dialog.querySelector<HTMLElement>('#closeStage')?.focus();
 }
 
-/** puede立即完Completo呈现Detalles沿用Consulta缓存, ActualizarSoloActualizarcontenido.  */
+/** 可立即完整呈现的详情沿用查询缓存，刷新只更新内容。 */
 function cachedContent(content: Content): boolean {
   if (content.kind === 'jav') return !!queryClient.getQueryData(javDetailKey(content.props.code));
   if (content.kind === 'follow') return !!queryClient.getQueryData(followItemKey(content.props.id));
@@ -290,9 +290,9 @@ function cachedContent(content: Content): boolean {
   return current != null && !!queryClient.getQueryData(itemKey(current));
 }
 
-/* Detalles开着时换到同uno另uno(Cola换卷, 合集换Versión, 相关Obras, posterior退anterior进): 浮窗, 遮罩y进场都No
-   pesado演, 也No回骨架. 先Nuevouno取齐, 取este段TiempoAnterior照antiguoEn放; 取到再换contenido, 媒体框按Entrada卸abajo, 
-   AnteriorReproducirDispositivo随之拆掉(No进pequeño窗).  */
+/* 详情开着时换到同一种的另一条（队列换卷、合集换版本、相关作品、后退前进）：浮窗、遮罩与进场都不
+   重演，也不回骨架。先把新的一条取齐，取的这段时间上一条照旧在放；取到再换内容，媒体框按条目卸下，
+   上一条的播放器随之拆掉（不进小窗）。 */
 async function swap(request: StageRequest, dialog: HTMLDialogElement): Promise<void> {
   const mine = ++generation;
   controller?.abort();
@@ -314,12 +314,12 @@ async function swap(request: StageRequest, dialog: HTMLDialogElement): Promise<v
   closePlayerMenu();
   view = { ...view, request, content, phase: 'content' };
   paint();
-  /* primero次揭示还没走完就换: 淡出eseuno层ya经卸abajo, etc.No到它 transitionend, Difuso要当场摘掉.  */
+  /* 首次揭示还没走完就换了条：淡出那一层已经卸下，等不到它的 transitionend，模糊要当场摘掉。 */
   dialog.removeAttribute('data-stage-reveal');
   dialog.removeAttribute('data-stage-revealing');
   dialog.querySelector<HTMLElement>(':scope > [data-stage-scroll]')?.scrollTo({ top: 0 });
   revealTexts(dialog, ':scope>:not([data-stage-fade]) [data-reveal-line]');
-  /* 点abajo去eseuno行随Detallespesado建卸掉, 焦点落回 body: 交给ColadentroNuevo当anterior行, SinCola交给CerrarClave.  */
+  /* 点下去的那一行随详情重建卸掉了，焦点落回 body：交给队列里新的当前行，没有队列交给关闭键。 */
   const active = document.activeElement;
   if (active === dialog || !dialog.contains(active)) {
     (dialog.querySelector<HTMLElement>('[data-mix-item][aria-current="true"]')
@@ -327,8 +327,8 @@ async function swap(request: StageRequest, dialog: HTMLDialogElement): Promise<v
   }
 }
 
-/* Detalles浮窗退场跟Configuración弹层同uno: `data-closing` 让 `board-dialog-out`  y 遮罩淡出演完, 再拆. EsperandoCon
-   arriba限: `animation` 被别Regla关掉时 animationend No会来.  */
+/* 详情浮窗的退场跟设置弹层同一条：`data-closing` 让 `board-dialog-out` 和遮罩淡出演完，再拆。等待有
+   上限：`animation` 被别的规则关掉时 animationend 不会来。 */
 function exit(): Promise<void> {
   const dialog = stageDialog();
   if (!dialog?.open || dialog.hasAttribute('data-closing') || matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -338,7 +338,7 @@ function exit(): Promise<void> {
   return new Promise((resolve) => {
     let timer = 0;
     const done = () => { clearTimeout(timer); dialog.removeEventListener('animationend', onEnd); resolve() };
-    // 浮窗en laControles也会冒泡出 animationend, Solo认目标就es舞本身eseuno. 
+    // 浮窗里的控件也会冒泡出 animationend，只认目标就是舞台本身的那一条。
     const onEnd = (event: Event) => { if (event.target === dialog) done() };
     dialog.addEventListener('animationend', onEnd);
     timer = window.setTimeout(done, 380);
@@ -349,13 +349,13 @@ function dispose({ miniplayer = true }: { miniplayer?: boolean } = {}): void {
   generation++;
   controller?.abort();
   controller = null;
-  /* 离开Detalles时En curso放视频No销毁: CompletoReproducirDispositivo搬进pequeño窗continuar着放. 要En卸掉媒体框之anterior搬.  */
+  /* 离开详情时正在放的视频不销毁：整个播放器搬进小窗接着放。要在卸掉媒体框之前搬。 */
   player.handOffStage(miniplayer);
   if (!view) return;
   const dialog = stageDialog();
-  // 舞拆掉之anterior收起挂En舞en laPasar el ratónVista previa("Continuar viendo"eseuno排卡). 
+  // 舞台拆掉之前收起挂在舞台里的悬停预览（「接着看」那一排的卡）。
   if (dialog) releaseHoverPreviews(dialog);
-  // derechaClave菜单开着时挪进舞: 先放回 body, 别跟着浮窗uno起被卸掉. 
+  // 右键菜单开着时挪进了舞台：先放回 body，别跟着浮窗一起被卸掉。
   closePlayerMenu();
   if (dialog?.open) dialog.close();
   view = null;
@@ -400,15 +400,15 @@ const api: StageApi = {
   miniplayerPlay: (id) => { void player.miniplayerPlay(id) },
 };
 
-/** continuararriba壳给宿主, 拿回舞命令入口. 先continuarReproducirDispositivo; pequeño窗节点En路由树Abriresteuno面时画出来, No.uno次进pequeño窗
- *  之anterior就En.  */
+/** 接上壳给的宿主，拿回舞台的命令式入口。先接播放器；小窗的节点在路由树打开这一面时画出来，第一次进小窗
+ *  之前就在。 */
 export function configureStage(next: StageHost): StageApi {
   host = next;
   player.configureStagePlayer(next, { isOpen: () => !!view, requestClose });
   return api;
 }
 
-/** 常驻组件 `stage` 组件: 订阅本模 store. pequeño窗节点SinCondición画着, ReproducirDispositivo搬进搬出都命令地落En它dentro面.  */
+/** 常驻组件 `stage` 的组件：订阅本模块的 store。小窗节点无条件画着，播放器搬进搬出都命令式地落在它里面。 */
 export function StageSurface() {
   const at = useSyncExternalStore(subscribe, () => view);
   return host ? <StageTree view={at} /> : null;

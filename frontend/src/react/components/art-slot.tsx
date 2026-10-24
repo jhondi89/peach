@@ -1,10 +1,10 @@
-/* 卡片Portada格dentroeseImagen(`[data-media-art]`). 
+/* 卡片封面格里那张图（`[data-media-art]`）。
  *
- * Imagenes遗Deja层拼 HTML 片段, Cargarposterior壳En同uno `<img>` arriba改取景, 派生档换成Original件(见
- * `../catalog-grid/artwork.ts`). grandeImagen, pequeñoImagen拼出片段Solo差取景类名, 按片段Completo段pesado写就es
- * 每Imagen都换成Nuevo元素: 派生档pesadoNuevo解码, 取景etc. `load` 才pesado算, Completo屏uno起闪unoabajo. 所以按
- * `identity`(同unoObras按pequeñoImagen拼出片段)认Imagen: 身No变时Deja着Anterior段片段, 版交给
- * `relayout` En同unoImagenarriba换, 换Imagen才Completo段pesado写.  */
+ * 图是遗留层拼的 HTML 片段，加载后壳在同一个 `<img>` 上改取景、把派生档换成原件（见
+ * `../catalog-grid/artwork.ts`）。大图、小图拼出的片段只差取景类名，按片段整段重写就是把
+ * 每张图都换成新元素：派生档重新解码、取景等 `load` 才重算，整屏一起闪一下。所以按
+ * `identity`（同一条作品按小图拼出的片段）认图：身份不变时留着上一段片段，版式交给
+ * `relayout` 在同一张图上换，换了图才整段重写。 */
 import { useLayoutEffect, useRef, useState } from 'react';
 
 export function ArtSlot({ artwork, identity = artwork.html, relayout }: {
@@ -18,7 +18,7 @@ export function ArtSlot({ artwork, identity = artwork.html, relayout }: {
   const slot = useRef<HTMLSpanElement>(null);
   const latest = useRef(relayout);
   latest.current = relayout;
-  // 片段uno变就交给壳比对: 它按Imagenarriba记着版判断, 同uno版什么都No做. 
+  // 片段一变就交给壳比对：它按图上记着的版式判断，同一版式什么都不做。
   useLayoutEffect(() => {
     if (slot.current) latest.current?.(slot.current);
   }, [artwork.html]);

@@ -1,15 +1,15 @@
-/* 资料卡arribaese几进顶层浮层: 别名yEtiqueta"+N", 以及订阅Nuevas obrasDescripción. 
+/* 资料卡上那几枚进顶层的浮层：别名与标签的「+N」，以及订阅新作的说明。
  *
- * tres者都esOriginal生 `popover="manual"`: 进顶层才No被资料卡 `overflow:hidden` 裁掉, 也No被卡底
- * 同艺人ese压住. Ubicación按视口算: Predeterminado贴锚点abajo方 8px, abajo面放Noabajo翻到arriba方, izquierdaderechacarpetaEn视口interior
- * 8px; 开着时候página面滚动或窗口改ancho就pesado算, 收起posteriorese监听自己摘掉.  */
+ * 三者都是原生 `popover="manual"`：进顶层才不被资料卡的 `overflow:hidden` 裁掉，也不被卡底
+ * 同台艺人那条压住。位置按视口算：默认贴锚点下方 8px，下面放不下翻到上方，左右夹在视口内
+ * 8px；开着的时候页面滚动或窗口改宽就重算，收起后那条监听自己摘掉。 */
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 
 import { Glyph } from './glyph';
 
-/**  `pop` 摆到 `anchor` abajo方, 放Noabajo翻arriba方, izquierdaderechacarpetaEn视口interior 8px. 两边都放Noabajo时摆到空间grande
- *  eseuno边, alto度压到eseuno边真正剩abajo空间, 浮层dentro自己滚: 浮层从No横跨锚点, 盖住"+N"eseunoabajo
- *  指针就落En浮层arriba, 按钮再也点No到.  */
+/** 把 `pop` 摆到 `anchor` 下方，放不下翻上方，左右夹在视口内 8px。两边都放不下时摆到空间大的
+ *  那一边，高度压到那一边真正剩下的空间、浮层里自己滚：浮层从不横跨锚点，盖住「+N」那一下
+ *  指针就落在浮层上，按钮再也点不到。 */
 export function placePop(anchor: Element, pop: HTMLElement): void {
   pop.style.removeProperty('max-height');
   const at = anchor.getBoundingClientRect(), box = pop.getBoundingClientRect();
@@ -24,7 +24,7 @@ export function placePop(anchor: Element, pop: HTMLElement): void {
 
 const isOpen = (pop: HTMLElement | null) => !!pop?.isConnected && pop.matches(':popover-open');
 
-/** 开着时跟着滚动y改窗anchopesado算Ubicación; `open` Como假或Desinstalar时摘掉监听.  */
+/** 开着时跟着滚动与改窗宽重算位置；`open` 为假或卸载时摘掉监听。 */
 function useFollow(open: boolean, anchor: RefObject<Element | null>, pop: RefObject<HTMLElement | null>, onLost: () => void) {
   const lost = useRef(onLost);
   lost.current = onLost;
@@ -43,18 +43,18 @@ function useFollow(open: boolean, anchor: RefObject<Element | null>, pop: RefObj
   }, [open, anchor, pop]);
 }
 
-/** "+N" y 它浮层. 
+/** 「+N」和它的浮层。
  *
- *  指针Pasar el ratón或Clave盘聚焦就出, 指针挪到浮层arriba读名字时No收; 点unoabajo钉住(触屏SoloConesteuno路), 
- *  再点, 点别处或 Escape 收起.  */
+ *  指针悬停或键盘聚焦就出，指针挪到浮层上读名字时不收；点一下钉住（触屏只有这一条路），
+ *  再点、点别处或 Escape 收起。 */
 export function MorePop({ id, rest, label, heading, hook, children }: {
   id: string;
   rest: number;
-  /** 按钮给读屏名字: "另exterior N 别名".  */
+  /** 按钮给读屏的名字：「另外 N 个别名」。 */
   label: string;
-  /** 浮层Título: "7 别名".  */
+  /** 浮层标题：「7 个别名」。 */
   heading: string;
-  /** 按钮自己样钩子: `alias`/`fact`.  */
+  /** 按钮自己的样式钩子：`alias`／`fact`。 */
   hook: 'alias' | 'fact';
   children: ReactNode;
 }) {
@@ -84,7 +84,7 @@ export function MorePop({ id, rest, label, heading, hook, children }: {
     }, 150);
   };
   useFollow(open, more, pop, hide);
-  // 点En按钮 y 浮层以exterior地方就收. 
+  // 点在按钮和浮层以外的地方就收。
   useEffect(() => {
     if (!open) return undefined;
     const outside = (event: PointerEvent) => {
@@ -117,9 +117,9 @@ export function MorePop({ id, rest, label, heading, hook, children }: {
   );
 }
 
-/** "订阅Nuevas obras"开关: uno RSS Imagen标, 开关本身藏给读屏yClave盘, Descripción浮层Pasar el ratón y Clave盘聚焦都出. 
+/** 「订阅新作」开关：一枚 RSS 图标，开关本身藏给读屏与键盘，说明浮层悬停和键盘聚焦都出。
  *
- *  Escape Solo收起esteuno次; 指针离开或焦点移走posterior, Siguiente次Pasar el ratón照常出现.  */
+ *  Escape 只收起这一次；指针离开或焦点移走后，下一次悬停照常出现。 */
 export function FeedSwitch({ following, busy, onToggle, tip }: {
   following: boolean;
   busy: boolean;
@@ -144,7 +144,7 @@ export function FeedSwitch({ following, busy, onToggle, tip }: {
   };
   const restore = () => { dismissed.current = false; hideTip() };
   useFollow(open, label, pop, () => setOpen(false));
-  // Descripción文字换(订arriba/Cancelar), 浮层开着就按Nuevoancho度pesado摆uno次. 
+  // 说明文字换了（订上／取消），浮层开着就按新宽度重摆一次。
   useEffect(() => {
     if (label.current && isOpen(pop.current)) placePop(label.current, pop.current!);
   }, [tip]);
@@ -153,7 +153,7 @@ export function FeedSwitch({ following, busy, onToggle, tip }: {
     <label ref={label} data-entry-feed="" onPointerEnter={showTip}
       onPointerLeave={() => { if (!input.current?.matches(':focus-visible')) restore() }}>
       <Glyph name="rss" />
-      <input ref={input} type="checkbox" role="switch" aria-label="Suscribirse a nuevas obras" aria-describedby="entityFeedTip"
+      <input ref={input} type="checkbox" role="switch" aria-label="订阅新作" aria-describedby="entityFeedTip"
         data-entity-feed="" checked={following} aria-busy={busy || undefined} aria-disabled={busy || undefined}
         onChange={(event) => { if (!busy) onToggle(event.currentTarget.checked) }}
         onKeyDown={(event) => { if (event.key === 'Escape') { dismissed.current = true; hideTip() } }}

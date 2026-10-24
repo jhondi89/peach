@@ -1,11 +1,11 @@
-/* DetallesReproducirDispositivo: 给舞Reproducir区 `<video>` 挂 Video.js yTodo Peach Controles. 
+/* 详情播放器：给舞台播放区的 `<video>` 挂 Video.js 与全部 Peach 控件。
  *
- * - `mountDetailPlayer` 挂uno Video.js 实例: 片源解析, Duración校正, 出错时从分片退回直读, 脱盘判定, 
- *   ready 之posterior挂Configuración菜单, 拖动Vista previa, Media Session, 转圈ySubtítulos. 
- * - `attachPlayerChrome` Estadísticas面板, CargarVelocidad度角标y氛围光continuar到uno媒体框arriba. ReproducirDispositivo进pequeño窗时摘abajo, 
- *   展开回舞时continuar到Nuevo媒体框arriba, 实例本身Nopesado建. 
- * - `mountPlayer` es舞Reproducir区yInmersivoModo每uno格入口: 插氛围光画布yEstadísticas角标, 按Obras或关注Entrada
- *   给片源, 海报yarriba报, 返回拆掉esteunoReproducirDispositivo函数.  */
+ * - `mountDetailPlayer` 挂一个 Video.js 实例：片源解析、时长校正、出错时从分片退回直读、脱盘判定，
+ *   ready 之后挂设置菜单、拖动预览、Media Session、转圈与字幕。
+ * - `attachPlayerChrome` 把统计面板、加载速度角标与氛围光接到一块媒体框上。播放器进小窗时摘下，
+ *   展开回舞台时接到新的媒体框上，实例本身不重建。
+ * - `mountPlayer` 是舞台播放区与沉浸模式每一格的入口：插氛围光画布与统计角标，按作品或关注条目
+ *   给片源、海报与上报，返回拆掉这一个播放器的函数。 */
 import { detailPosterUrl } from '@peach/card-art';
 import { api, esc, fmtClock, fmtSize, icon, realDuration } from '@peach/legacy/core';
 
@@ -28,45 +28,45 @@ import { stopTelemetry, wireFollowTelemetry, wireTelemetry } from './telemetry';
 import type { MediaFacts, PlayerItem, PlayerSource, SourceQuality, VjsPlayer } from './types';
 import { ensureVideojs } from './videojs';
 
-/** 从pequeño窗展开回来或带 `?t=` profundo链进来时continuar着放eseuno刻.  */
+/** 从小窗展开回来或带 `?t=` 深链进来时接着放的那一刻。 */
 export interface PlayerResume { time: number; autoplay: boolean }
 
 export interface DetailPlayerOptions {
-  /** 给定片源(关注Entrada `/follow-stream`); No给就按Obras来源解析.  */
+  /** 给定片源（关注条目的 `/follow-stream`）；不给就按作品的来源解析。 */
   source?: PlayerSource;
-  /** Reproducir出错时要No要查来源Estado判脱盘. 关注Entrada片源NoEn本机来源dentro, No查.  */
+  /** 播放出错时要不要查来源状态判脱盘。关注条目的片源不在本机来源里，不查。 */
   checkSourceStatus?: boolean;
   size?: number | null | undefined;
   poster?: string | undefined;
   qualities?: SourceQuality[] | null;
-  /** Nitidez表y字节数, 跟Predeterminado片源y行解析, 回来得比挂载晚.  */
+  /** 清晰度表与字节数，跟默认片源并行解析，回来得比挂载晚。 */
   mediaPromise?: Promise<MediaFacts | null>;
   resume?: PlayerResume | null;
 }
 
-/** 媒体框dentroesetres读数: EstadísticasClave, Estadísticas面板yCargarVelocidad度角标(`playerStatsOverlayHtml`).  */
+/** 媒体框里那三块读数：统计键、统计面板与加载速度角标（`playerStatsOverlayHtml`）。 */
 interface PlayerChrome {
   statsButton: HTMLElement | null;
   statsPanel: HTMLElement | null;
   netBadge: HTMLElement | null;
 }
 
-/** unoReproducirDispositivo实例读数来源. 面板画En哪uno框dentro由 `chrome` 决定, 换框时Solo换它.  */
+/** 一个播放器实例的读数来源。面板画在哪一块框里由 `chrome` 决定，换框时只换它。 */
 interface PlayerSession {
   chrome: PlayerChrome | null;
-  /** ready 之posteriorEstadísticasClave才露出来: Controles还没挂arriba时点它什么也读No到.  */
+  /** ready 之后统计键才露出来：控件条还没挂上时点它什么也读不到。 */
   ready: boolean;
   updateStats(): void;
 }
 
 const sessions = new WeakMap<VjsPlayer, PlayerSession>();
 
-/* Estadísticas面板yCargarVelocidad度角标定时Dispositivo. 它们画En舞媒体框dentro, ReproducirDispositivo进pequeño窗时跟着舞uno起停.  */
+/* 统计面板与加载速度角标的定时器。它们画在舞台的媒体框里，播放器进小窗时跟着舞台一起停。 */
 let statsTimer: ReturnType<typeof setInterval> | null = null;
 let netTimer: ReturnType<typeof setInterval> | null = null;
 let netHideTimer: ReturnType<typeof setTimeout> | null = null;
 
-/** 停掉Estadísticas面板y角标Actualizar. ReproducirDispositivo本身No动.  */
+/** 停掉统计面板与角标的刷新。播放器本身不动。 */
 export function stopPlayerPanels(): void {
   if (statsTimer) { clearInterval(statsTimer); statsTimer = null }
   if (netTimer) { clearInterval(netTimer); netTimer = null }
@@ -82,7 +82,7 @@ export async function mountDetailPlayer(
   const resume = options.resume ?? null;
   if (resume?.autoplay) autoplay = true;
   const source = () => (options.source ? Promise.resolve(options.source) : detailStreamSource(item));
-  /* 拉No到就退回Original生 video,  y "página面dentroSin videojs"es同uno兜底出口.  */
+  /* 拉不到就退回原生 video，和「页面里没有 videojs」是同一个兜底出口。 */
   let videojs;
   try { videojs = await ensureVideojs() } catch {
     video.controls = true;
@@ -96,28 +96,28 @@ export async function mountDetailPlayer(
   }
   const player = videojs(video, {
     controls: true, preload: 'metadata', language: 'zh-CN', responsive: true,
-    /* 海报yObras当anteriorPortada偏bienuno致, 交给Original生视频显示.  */
+    /* 海报与作品当前封面偏好一致，交给原生视频显示。 */
     poster: options.poster || detailPosterUrl(item, host.settings().javImage),
     controlBar: {
       pictureInPictureToggle: true, currentTimeDisplay: false, timeDivider: false,
       durationDisplay: false, remainingTimeDisplay: false,
-      // TiempoyPasar el ratónVista previa归 Peach Controles, ProgresoSolo保DejaReproduciry拖动所需组件. 
+      // 时间与悬停预览归 Peach 控件，进度条只保留播放与拖动所需的组件。
       progressControl: { seekBar: { mouseTimeDisplay: false, playProgressBar: { timeTooltip: false } } },
     },
   });
   setDetailPlayer(player);
   player.peachItem = item;
   wirePlayerContextMenu(player);
-  /* Teléfonoen laImagen格按视频自己Relación排(`--peach-video-ratio`).  */
+  /* 手机上的画面格按视频自己的比例排（`--peach-video-ratio`）。 */
   player.on('loadedmetadata', () => {
     const tech = player.el()?.querySelector('video');
     if (tech?.videoWidth && tech.videoHeight) player.el().style.setProperty('--peach-video-ratio', `${tech.videoWidth}/${tech.videoHeight}`);
   });
-  // 非正Duraciónuno律当no知. 
+  // 非正时长一律当未知。
   const expected = realDuration(item.duration);
   const statsHistory = { speed: [] as number[], activity: [] as number[], buffer: [] as number[] };
-  /* 关注Entrada字节数要回源 HEAD 才知道, 跟Nitidez表同uno趟回来, 比挂载晚. 码率esVelocidad度读数
-     换算系数, 所以Dejaunopuede以posteriorIntroduce口子, 别它固定En挂载eseuno刻.  */
+  /* 关注条目的字节数要回源 HEAD 才知道，跟清晰度表同一趟回来，比挂载晚。码率是速度读数的
+     换算系数，所以留一个可以后填的口子，别把它固定在挂载那一刻。 */
   let mediaSize = Number(options.size ?? item.size) || 0;
   const meter = createBufferMeter(averageBitrate(mediaSize, item.duration));
   let statsLoaded = 0;
@@ -145,37 +145,37 @@ export async function mountDetailPlayer(
     const seconds = resources.reduce((n, entry) => n + (entry.duration || 0), 0) / 1000;
     meter.sample(video);
     const speed = playerSpeedBits(player, item.id, stream, segmented ? null : meter) || (seconds > 0 ? bytes * 8 / seconds : 0);
-    /* 分片流按yaCompletadoPor favor求字节累计; 渐进源SinestePor favor求, 按anterior沿推进折算, 码率no知时退到秒.  */
+    /* 分片流按已完成请求的字节累计；渐进源没有这种请求，按前沿推进折算，码率未知时退到秒。 */
     const loaded = segmented ? bytes : (meter.bitrate > 0 ? meter.bytes() : meter.seconds);
     const activity = Math.max(0, loaded - statsLoaded); statsLoaded = loaded;
     const buffer = bufferedAhead(video);
     pushPlayerStat(statsHistory.speed, speed);
     pushPlayerStat(statsHistory.activity, activity);
     pushPlayerStat(statsHistory.buffer, buffer);
-    /* 关注EntradaSin落盘Archivo名, 容DispositivoFormatoSolo能从片源 MIME 反推; HLS ya经写En传输uno侧, NoRepetir.  */
+    /* 关注条目没有落盘文件名，容器格式只能从片源 MIME 反推；HLS 已经写在传输一侧，不重复。 */
     const named = String(item.name || '');
     const container = (named.includes('.') ? named.split('.').pop() || ''
       : segmented ? '' : String(player.currentSource()?.type || '').split('/').pop() || '').toUpperCase() || '—';
     const speedText = speed ? `${(speed / 1e6).toFixed(1)} Mbps` : '—';
     const byteScale = segmented || meter.bitrate > 0;
     const loadedRow: [string, string, string] = segmented
-      ? ['Red活动', `${bytes ? fmtSize(bytes) : '—'} · ${resources.length} Por favor求`,
-        `Recienteunosegundo(s)Red活动 ${activity ? fmtSize(activity) : '0 B'}`]
-      : ['YaDescargas', byteScale ? `${fmtSize(loaded)}${mediaSize > 0 ? ` / ${fmtSize(mediaSize)}` : ''}` : `${loaded.toFixed(0)} segundo(s)`,
-        byteScale ? `Recienteunosegundo(s)Descargas ${activity ? fmtSize(activity) : '0 B'}` : `Recienteunosegundo(s)Descargas ${activity.toFixed(1)} segundo(s)`];
+      ? ['网络活动', `${bytes ? fmtSize(bytes) : '—'} · ${resources.length} 请求`,
+        `最近一秒网络活动 ${activity ? fmtSize(activity) : '0 B'}`]
+      : ['已下载', byteScale ? `${fmtSize(loaded)}${mediaSize > 0 ? ` / ${fmtSize(mediaSize)}` : ''}` : `${loaded.toFixed(0)} 秒`,
+        byteScale ? `最近一秒下载 ${activity ? fmtSize(activity) : '0 B'}` : `最近一秒下载 ${activity.toFixed(1)} 秒`];
     const rows: [string, string, string?][] = [
-      ['Videos ID / 会话', stream && !options.source ? `${item.id} / ${stream.slice(0, 8)}` : `${item.id}`],
-      ['Viewport / Fotograma', `${Math.round(rect.width)}×${Math.round(rect.height)} / ${quality ? `${quality.totalVideoFrames - quality.droppedVideoFrames} of ${quality.totalVideoFrames}` : '—'}`],
-      ['Actual / 最佳Resolución', `${current} / ${item.width || video.videoWidth || '?'}×${item.height || video.videoHeight || '?'}`],
-      ['Codificación / Transmisión', `${container} / ${segmented ? 'HLS' : 'HTTP Range'}`],
-      ['ConectarVelocidad', speedText,
-        playerStatsPlot(statsHistory.speed, 'speed', Math.max(10e6, ...statsHistory.speed), `ConectarVelocidad ${speedText === '—' ? 'Sin datos disponibles' : speedText}`)],
+      ['视频 ID / 会话', stream && !options.source ? `${item.id} / ${stream.slice(0, 8)}` : `${item.id}`],
+      ['视口 / 帧', `${Math.round(rect.width)}×${Math.round(rect.height)} / ${quality ? `${quality.totalVideoFrames - quality.droppedVideoFrames} of ${quality.totalVideoFrames}` : '—'}`],
+      ['当前 / 最佳分辨率', `${current} / ${item.width || video.videoWidth || '?'}×${item.height || video.videoHeight || '?'}`],
+      ['编码 / 传输', `${container} / ${segmented ? 'HLS' : 'HTTP Range'}`],
+      ['连接速度', speedText,
+        playerStatsPlot(statsHistory.speed, 'speed', Math.max(10e6, ...statsHistory.speed), `连接速度 ${speedText === '—' ? '暂无数据' : speedText}`)],
       [loadedRow[0], loadedRow[1],
         playerStatsPlot(statsHistory.activity, 'activity', Math.max(1, ...statsHistory.activity), loadedRow[2])],
-      ['Buffering健康', `${buffer.toFixed(1)} segundo(s)`,
-        playerStatsPlot(statsHistory.buffer, 'buffer', 30, `ActualpuedeReproducción continua ${buffer.toFixed(1)} segundo(s)`)],
-      ['Tiempo de reproducción', `${fmtClock(video.currentTime)} / ${fmtClock(expected || player.duration())}`],
-      ['Fecha', new Date().toLocaleString()],
+      ['缓冲健康', `${buffer.toFixed(1)} 秒`,
+        playerStatsPlot(statsHistory.buffer, 'buffer', 30, `当前可连续播放 ${buffer.toFixed(1)} 秒`)],
+      ['播放时间', `${fmtClock(video.currentTime)} / ${fmtClock(expected || player.duration())}`],
+      ['日期', new Date().toLocaleString()],
     ];
     statsPanel.innerHTML = `<dl>${rows.map(([key, value, plot]) =>
       `<dt>${esc(key)}</dt><dd${plot ? ' data-player-stats-metric=""' : ''}>${plot || ''}<span>${esc(value)}</span></dd>`).join('')}</dl>`;
@@ -189,7 +189,7 @@ export async function mountDetailPlayer(
     if (!segmented) meter.sample(video);
     const bits = playerSpeedBits(player, item.id, detailStreamSession(), segmented ? null : meter);
     const rate = segmented ? fmtSpeed(bits) : fmtLoadRate(bits, bufferedAhead(video));
-    netBadge.innerHTML = `${icon('gauge')}<span class="sr-only">CargarVelocidad</span><span>${esc(rate)}</span>`;
+    netBadge.innerHTML = `${icon('gauge')}<span class="sr-only">加载速度</span><span>${esc(rate)}</span>`;
   };
   const showNet = () => {
     const netBadge = session.chrome?.netBadge;
@@ -213,11 +213,11 @@ export async function mountDetailPlayer(
       if (autoplay) player.play()?.catch(() => {});
       return;
     }
-    // 播到unomedio掉盘时 video 元素Solo报通用Error; 来源Estado才分得清脱盘 y Archivo损坏. 
+    // 播到一半掉盘时 video 元素只报通用错误；来源状态才分得清脱盘和文件损坏。
     if (options.checkSourceStatus === false) return;
     void host.loadSourceStatus().then((status) => {
       if (status[String(item.location)] !== false || player.isDisposed()) return;
-      player.error({ code: 2, message: `Directorio de mediosNinguno法Acceso · ${host.offlineReason(String(item.location))}` });
+      player.error({ code: 2, message: `媒体目录无法访问 · ${host.offlineReason(String(item.location))}` });
     });
   });
   player.ready(() => {
@@ -253,8 +253,8 @@ export async function mountDetailPlayer(
 
 const AMBIENT_CANVAS = '<canvas data-ambient-canvas="" width="32" height="18"></canvas>';
 
-/** 媒体框dentro氛围光画布ytres读数占: 画布es框No.uno子节点, 读数插En `before` anterior面(No给就
- *  放到最posterior). ya经Con就No再插.  */
+/** 媒体框里氛围光画布与三块读数的占位：画布是框的第一个子节点，读数插在 `before` 前面（不给就
+ *  放到最后）。已经有了就不再插。 */
 export function preparePlayerFrame(frame: HTMLElement, before: Element | null = null): void {
   if (!frame.querySelector(':scope > [data-ambient-canvas]')) frame.insertAdjacentHTML('afterbegin', AMBIENT_CANVAS);
   if (frame.querySelector(':scope > #playerStatsBtn')) return;
@@ -263,8 +263,8 @@ export function preparePlayerFrame(frame: HTMLElement, before: Element | null = 
   frame.insertBefore(overlay.content, before);
 }
 
-/** Estadísticas面板, CargarVelocidad度角标y氛围光continuar到 `frame` arriba(它先经过 `preparePlayerFrame`). 返回摘abajo
- *  函数: 进pequeño窗时摘, ReproducirDispositivo销毁时自己摘.  */
+/** 把统计面板、加载速度角标与氛围光接到 `frame` 上（它先经过 `preparePlayerFrame`）。返回摘下的
+ *  函数：进小窗时摘，播放器销毁时自己摘。 */
 export function attachPlayerChrome(player: VjsPlayer, frame: HTMLElement): () => void {
   const session = sessions.get(player);
   if (!session || player.isDisposed()) return () => {};
@@ -305,34 +305,34 @@ export function attachPlayerChrome(player: VjsPlayer, frame: HTMLElement): () =>
   return detach;
 }
 
-/** 关注Entradaen launo媒体(组en laNo.几视频).  */
+/** 关注条目里的一份媒体（组里的第几条视频）。 */
 export interface PlayerMedia { index: number; media_type?: string; size?: number | null }
 
 export interface MountPlayerOptions {
   kind: 'item' | 'follow';
   item: PlayerItem;
   media?: PlayerMedia | null;
-  /** No给就按Configuración(`detailAutoplay`).  */
+  /** 不给就按设置（`detailAutoplay`）。 */
   autoplay?: boolean | undefined;
   resume?: PlayerResume | null;
-  /** 挂载之anteriorEn媒体框dentro插氛围光画布yEstadísticas角标. Predeterminado插; pequeño窗dentro换片No要este些.  */
+  /** 挂载之前在媒体框里插氛围光画布与统计角标。默认插；小窗里换片不要这些。 */
   chrome?: boolean;
-  /** 挂arriba之posterior实例交出去: pequeño窗y展开要认得esteuno. 挂Noarriba(Video.js 拉No到, 退回Original生 video)
-   *  给 null. 拆得比挂载rápido时No回调.  */
+  /** 挂上之后把实例交出去：小窗与展开要认得这一个。挂不上（Video.js 拉不到、退回原生 video）
+   *  给 null。拆得比挂载快时不回调。 */
   onPlayer?: (player: VjsPlayer | null) => void;
-  /** esteReproducirDispositivoya经被pequeño窗continuar走: 拆Reproducir区时No销毁它.  */
+  /** 这个播放器已经被小窗接走：拆播放区时不销毁它。 */
   handedOff?: (player: VjsPlayer) => boolean;
 }
 
-/** 舞Reproducir区入口: 给Reproducir区en la `<video>` 挂ReproducirDispositivo, 返回拆掉它函数. 
+/** 舞台播放区的入口：给播放区里的 `<video>` 挂播放器，返回拆掉它的函数。
  *
- *  氛围光画布yEstadísticas角标En挂载之anterior插进媒体框: Video.js uno包, `video` 父级就换成它自己ese层. 
- *  - Obras(`item`): 片源由 `mountDetailPlayer` 按来源解析, 海报es本地Imagen, esteuno次挂载No.uno次开播时
- *    记uno次Reproducir, 离开Ubicacióny真实观ver由 `wireTelemetry` 随Reproducir写回侧栏. 
- *  - 关注(`follow`): 片源es `/follow-stream`, Nitidezy字节数(`/follow-qualities`)跟Predeterminado片源y行
- *    解析—它要回源抓Detalles, 再 HEAD uno次正片, No能挡住ReproducirDispositivo挂载. 
- *  - InmersivoModouno格(`immerse`): 裸 Video.js, esteuno格自己流会话, 见 `immerse-player.ts`. 
- *  返回LimpiarEn舞卸abajoeste媒体区时调: 换uno媒体Solo拆esteunoReproducirDispositivo; 被pequeño窗continuar走Solo摘读数.  */
+ *  氛围光画布与统计角标在挂载之前插进媒体框：Video.js 一包，`video` 的父级就换成它自己的那层了。
+ *  - 作品（`item`）：片源由 `mountDetailPlayer` 按来源解析，海报是本地图，这一次挂载第一次开播时
+ *    记一次播放，离开位置与真实观看由 `wireTelemetry` 随播放写回侧栏。
+ *  - 关注（`follow`）：片源是 `/follow-stream`，清晰度与字节数（`/follow-qualities`）跟默认片源并行
+ *    解析——它要回源抓详情、再 HEAD 一次正片，不能挡住播放器挂载。
+ *  - 沉浸模式的一格（`immerse`）：裸 Video.js、这一格自己的流会话，见 `immerse-player.ts`。
+ *  返回的清理在舞台卸下这块媒体区时调：换一份媒体只拆这一个播放器；被小窗接走的只摘读数。 */
 export function mountPlayer(video: HTMLVideoElement, options: MountPlayerOptions | ImmersePlayerOptions): () => void {
   if (options.kind === 'immerse') return mountImmersePlayer(video, options);
   const { kind, item, media = null, handedOff, onPlayer } = options;
@@ -363,7 +363,7 @@ export function mountPlayer(video: HTMLVideoElement, options: MountPlayerOptions
   };
   void mountDetailPlayer(item, video, options.autoplay ?? host.settings().detailAutoplay, detail).then((mounted) => {
     player = mounted;
-    // 挂载还没回来媒体区就换: esteunouno出来就拆掉. 
+    // 挂载还没回来媒体区就换了：这一个一出来就拆掉。
     if (released) { release(); return }
     trackedVideo = mounted?.el().querySelector('video') ?? video;
     trackPlaybackPosition(key, trackedVideo);

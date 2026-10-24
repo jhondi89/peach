@@ -1,11 +1,11 @@
-/* 遗Deja雪碧Imagen(`web/index.html`  `#i-*` symbol)en la字形, 做成 y  Remix Imagen标同形组件. 
+/* 遗留雪碧图（`web/index.html` 的 `#i-*` symbol）里的字形，做成和 Remix 图标同形的组件。
  *
- * primero屏骨架由遗Deja层画, 字形取就es雪碧Imagen: página面continuar管时换成 Remix dentro形状Recienteese几, 
- * esteuno排会En骨架换成正文eseuno拍跳unoabajo(方勾变圆勾, uno叠Archivo变两página纸). 所以骨架dentro
- * 出现过字形, continuar管posterior仍取同uno. 尺寸由宿主给(BoardUI `Button` 按档传 `size-*`). 
+ * 首屏骨架由遗留层画，字形取的就是雪碧图：页面接管时换成 Remix 里形状最近的那几枚，
+ * 这一排会在骨架换成正文的那一拍跳一下（方勾变圆勾、一叠文件变两页纸）。所以骨架里
+ * 出现过的字形，接管后仍取同一枚。尺寸由宿主给（BoardUI `Button` 按档位传 `size-*`）。
  *
- * ancho字形("Aa"es 1.4:1) viewBox 跟着 symbol Relación走, 同遗Deja层 `icon()` 
- * 共用几何定义; 宿主决定alto度, ancho度由字形Relación决定.  */
+ * 宽字形（「Aa」是 1.4:1）的 viewBox 跟着 symbol 的比例走，同遗留层 `icon()` 的
+ * 共用几何定义；宿主决定高度，宽度由字形比例决定。 */
 import type { ComponentType } from 'react';
 import { iconGeometry } from '../../core/icon-geometry';
 

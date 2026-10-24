@@ -1,11 +1,11 @@
-/* Biblioteca存径向Imagen: uno段uno圈, 读数跟着指到eseuno段走. 
+/* 库存的径向图：一段一圈，读数跟着指到的那一段走。
  *
- * 圈由 EvilCharts  `EvilRadialChart` 画, Color按 `chart-1`...`chart-6` 循环, 满圈es最largoese段
- * 1.1 倍(`radialCeiling`). 段数超过seis时y掉尾部(`radialSlices`), NoComo 0 段至menos画unopequeño截
- * 弧(`radialArc`), 浮层y读数仍esOriginal数. alto亮es React Estado: 指针进出y点选各管uno件事—扫过去esveruno眼, 
- * 点abajo去es钉住. Imagenabajoese排格子es同unoEstado按钮, Clave盘也够得着; arriba游puede点选Imagen例SoloConuno
- * 选en proceso态, 分No出"veruno眼" y "钉住", 所以圈形状y点击走 `radialBarProps` continuar到aquí. 
- * 差异登记En `../evilcharts/ORIGIN.md`.  */
+ * 圈由 EvilCharts 的 `EvilRadialChart` 画，颜色按 `chart-1`…`chart-6` 循环，满圈是最长那段的
+ * 1.1 倍（`radialCeiling`）。段数超过六个时并掉尾部（`radialSlices`），不为 0 的段至少画一小截
+ * 弧（`radialArc`），浮层与读数仍是原始数。高亮是 React 状态：指针进出与点选各管一件事——扫过去是看一眼，
+ * 点下去是钉住。图下那排格子是同一份状态的按钮，键盘也够得着；上游的可点选图例只有一个
+ * 选中态，分不出「看一眼」和「钉住」，所以圈的形状与点击走 `radialBarProps` 接到这里。
+ * 差异登记在 `../evilcharts/ORIGIN.md`。 */
 import { useState } from 'react';
 import { Sector, type SectorProps } from 'recharts';
 
@@ -18,13 +18,13 @@ import { ChartTip } from '../charts/chart-tip';
 import { SourceMark } from '../settings/section';
 import { radialArc, radialBarSize, radialCeiling, radialSlices, type RadialSlice } from './stats';
 
-/** seis档Imagen表色循环. 类名写成Completo串, Tailwind 扫得到.  */
+/** 六档图表色循环。类名写成整串，Tailwind 扫得到。 */
 const TILE_SWATCH = [
   'bg-chart-1', 'bg-chart-2', 'bg-chart-3',
   'bg-chart-4', 'bg-chart-5', 'bg-chart-6',
 ];
-/* 钉住某uno段时eseuno格换成esteuno段自己Color: antiguo `.board-radial-tiles>button[aria-pressed]`
- * es同色 10% 混底加uno圈 1px 同色interior描边. 换成en proceso性色话, seis格dentro哪uno格被钉住es认No出来.  */
+/* 钉住某一段时那一格换成这一段自己的颜色：旧 `.board-radial-tiles>button[aria-pressed]`
+ * 是同色 10% 混底加一圈 1px 同色内描边。换成中性色的话，六格里哪一格被钉住是认不出来的。 */
 const TILE_PINNED = [
   'aria-pressed:bg-chart-1/10 aria-pressed:ring-chart-1',
   'aria-pressed:bg-chart-2/10 aria-pressed:ring-chart-2',
@@ -35,10 +35,10 @@ const TILE_PINNED = [
 ];
 
 export function RadialCard(
-  { title, rows, empty, unit = ' video(s)' }: { title: string; rows: RadialSlice[]; empty: string; unit?: string },
+  { title, rows, empty, unit = '个视频' }: { title: string; rows: RadialSlice[]; empty: string; unit?: string },
 ) {
-  /* 钉住eseuno段 y 指针扫过eseuno段分开记: 扫过去要能回到钉住eseuno段, 合成unoEstado话
-     鼠标uno离开就用户点abajoSeleccionar也擦.  */
+  /* 钉住的那一段和指针扫过的那一段分开记：扫过去要能回到钉住的那一段，合成一个状态的话
+     鼠标一离开就把用户点下的选择也擦了。 */
   const [pinned, setPinned] = useState(-1);
   const [hovered, setHovered] = useState(-1);
   const slices = radialSlices(rows);
@@ -88,7 +88,7 @@ export function RadialCard(
             onPointerEnter={() => setHovered(index)} onPointerLeave={() => setHovered(-1)}
             onFocus={() => setHovered(index)} onBlur={() => setHovered(-1)}
             className={`flex min-w-0 cursor-pointer flex-col items-start gap-1 rounded-xl bg-background-tertiary-default p-2.5 text-left outline-none aria-pressed:ring-1 aria-pressed:ring-inset focus-visible:ring-2 focus-visible:ring-border-focus-ring ${TILE_PINNED[index % 6]}`}>
-            {/* 名字折成几行时色跟No.uno行对齐, No悬En几行en proceso间.  */}
+            {/* 名字折成几行时色块跟第一行对齐，不悬在几行中间。 */}
             <span className="flex min-w-0 max-w-full items-start gap-1.5 text-caption-1-regular text-text-secondary">
               <i aria-hidden className={`mt-0.5 size-3 shrink-0 rounded-sm ${TILE_SWATCH[index % 6]}`} />
               <span className="inline-flex min-w-0 items-start gap-1.5 wrap-anywhere">

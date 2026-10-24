@@ -1,12 +1,12 @@
-/* primeropáginaarriba方eseunoCompleto: 两排Avatar(Actriz, Sello), 加uno两排玻璃浮层(arriba排cuatro视ImagenyEtiqueta, abajo排读数, 
- * 换uno批, 卡片版yOrdenarClave), 再加正文dentroCuadrículaarriba面ese交集. 
+/* 首页上方那一整块：两排头像（女优、厂牌），加一块两排的玻璃浮层（上排四枚视图与标签，下排读数、
+ * 换一批、卡片版式与排序键），再加正文里网格上面那条交集条。
  *
- * EstadoTodoEn壳dentro: Filtrar, 当anterior视Imagen, Ordenar, 成员y读数都当 props 递进来, 点abajo去动作回壳, 壳En发Por favor求之anterior
- * 先推unoNuevo按abajo态, 所以 `aria-pressed` y滑动玻璃当场就到, Noetc.esteuno趟取数. 
+ * 状态全在壳里：筛选、当前视图、排序、成员与读数都当 props 递进来，点下去的动作回壳，壳在发请求之前
+ * 先推一份新的按下态，所以 `aria-pressed` 与滑动玻璃当场就到位，不等这一趟取数。
  *
- * 加unoFiltrarNopesado画este几排: 成员(`tiers.key` yEtiqueta顺序)No变, React Solo改按abajo态, 人横着续到No.
- * seisdiez, 停EnNo. 600 像素en laeseuno排Original样Deja着. 换口径或换uno批, 壳给Nuevo `tiers.key`, 两排从头摆. 
- * Detalles浮窗Abrir期间壳No推任何东西, 关掉回来还es同uno批节点(`buildBars` ese段Anotación讲Como什么).  */
+ * 加一条筛选不重画这几排：成员（`tiers.key` 与标签的顺序）不变，React 只改按下态，人横着续到第
+ * 六十枚、停在第 600 像素上的那一排原样留着。换了口径或换了一批，壳给新的 `tiers.key`，两排从头摆。
+ * 详情浮窗打开期间壳不推任何东西，关掉回来还是同一批节点（`buildBars` 那段注释讲了为什么）。 */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { fitSkeleton, popBadges, popCount } from '@peach/legacy/ui';
@@ -23,15 +23,15 @@ import {
   type TierPerformer, type TierStudio,
 } from './catalog-filter';
 
-/* Anterior次写出去读数. 读数eseuno格每次取数都换成微光再建回来, 靠它分清"换数" y "刚出现": 
-   SoloConanterior者按错峰largo出来. 跨Consulta, 跨pesado挂都要记得, 所以放En模dentro.  */
+/* 上一次写出去的读数。读数那一格每次取数都换成微光再建回来，靠它分清「换了个数」和「刚出现」：
+   只有前者按位错峰长出来。跨查询、跨重挂都要记得，所以放在模块里。 */
 let lastReadout = '';
 
 export function CatalogFilterPage(props: CatalogFilterProps) {
   const loading = !props.tiers;
   const combo = useComboHost(props.comboHost);
-  /* 收起时(资料página, 索引páginayGestionarpágina)SoloDeja两排Avatar: 回到同uno口径primeropágina时eseuno批Original样还En, Nopesado摆, Nopesado取Imagen. 
-     浮层ese两排 y 资料página, 索引página浮层es同uno组组件, 同uno组属性, 藏着unoEnpágina面arriba, 就es两套同名Controles.  */
+  /* 收起时（资料页、索引页与管理页）只留两排头像：回到同一口径的首页时那一批原样还在，不重摆、不重取图。
+     浮层那两排和资料页、索引页的浮层是同一组组件、同一组属性，藏着一份在页面上，就是两套同名的控件。 */
   return (
     <div data-catalog-root="" data-loading={loading || undefined} data-refreshing={props.refreshing || undefined}
       className="contents">
@@ -42,7 +42,7 @@ export function CatalogFilterPage(props: CatalogFilterProps) {
   );
 }
 
-/** 玻璃浮层两排: arriba排cuatro视ImagenyEtiqueta, abajo排读数, 换uno批, 版yOrdenarClave.  */
+/** 玻璃浮层两排：上排四枚视图与标签，下排读数、换一批、版式与排序键。 */
 function Glass(props: CatalogFilterProps) {
   const { actions, helpers } = props;
   const pane = useRef<HTMLSpanElement>(null);
@@ -53,8 +53,8 @@ function Glass(props: CatalogFilterProps) {
   const [singleRow, setSingleRow] = useState(false);
   const glide = useViewGlide(pane, viewRow, '[data-catalog-view][aria-pressed="true"]', props.state);
 
-  /* Etiquetaeseuno格es `overflow-x:auto` 加隐藏滚动, 鼠标够No着, 所以登记Todo站横向行ese套拖动加滚轮. 
-     estrecho屏abajo滚esexterior面ese层(视Imagen跟着uno起走), 两层都登记; abajo排estrecho屏abajoCompleto横滚, 同uno套.  */
+  /* 标签那一格是 `overflow-x:auto` 加隐藏滚动条，鼠标够不着，所以登记全站横向行那套拖动加滚轮。
+     窄屏下滚的是外面那层（视图跟着一起走），两层都登记；下排窄屏下整条横滚，同一套。 */
   useEffect(() => {
     helpers.wireDrag(tagRow.current);
     helpers.wireScroller(scroll.current);
@@ -79,18 +79,18 @@ function Glass(props: CatalogFilterProps) {
     measure();
     return () => observer.disconnect();
   }, [tags, props.count, props.layout, props.sorts]);
-  /* 计数徽标变值ese几弹unoabajo(遗Deja层 `popBadges`, 按Anterior次值判断, No按节点NuevoNoNuevo).  */
+  /* 计数徽标变了值的那几枚弹一下（遗留层 `popBadges`，按上一次的值判断，不按节点新不新）。 */
   useLayoutEffect(() => { popBadges(tagRow.current, 'tagbar') }, [tags]);
 
   return (
-    <FilterGlassRows label="Filtrar y ordenar" topLabel="Vista y etiquetas"
+    <FilterGlassRows label="筛选与排序" topLabel="视图与标签"
       attrs={{ 'data-filter-frame': '', 'data-catalog-frame': '', ...(singleRow ? { 'data-single-row': '' } : {}) }}
       className="mx-4" topClassName="gap-1.5 overflow-visible" bottomClassName={props.trash ? 'hidden' : 'min-h-12'}
       bottomRef={bottomRow} busy={props.count === null || props.refreshing}
       panes={<span ref={pane} data-view-glide="" aria-hidden="true" />}
       top={
         <div ref={scroll} data-catalog-scroll="">
-          <div ref={viewRow} role="group" aria-label="Vista" data-catalog-views="" onPointerLeave={glide.leave}>
+          <div ref={viewRow} role="group" aria-label="视图" data-catalog-views="" onPointerLeave={glide.leave}>
             {props.views.map((view) => (
               <a key={view.k} href={view.href} data-catalog-view={view.k} data-entity-press=""
                 aria-pressed={props.state === view.k} onPointerEnter={glide.hover}
@@ -119,7 +119,7 @@ function TagPill({ tag, onPress }: { tag: CatalogTag; onPress(tag: string): void
   );
 }
 
-/** 两排Avatar. 空uno排仍占 28px, 画出来就esuno什么都Sin空带, 所以没人就No画eseuno排.  */
+/** 两排头像。空的一排仍占 28px，画出来就是一条什么都没有的空带，所以没人就不画那一排。 */
 function Tiers(props: CatalogFilterProps) {
   const { actions, helpers } = props;
   const tiers = props.tiers ?? { key: '', performers: [], studios: [] };
@@ -127,7 +127,7 @@ function Tiers(props: CatalogFilterProps) {
   const performers = useRef<HTMLDivElement>(null);
   const studios = useRef<HTMLDivElement>(null);
   const more = useCallback((kind: TierKind) => () => actions.moreTops(kind), [actions]);
-  /* 占ese几排SinSiguientepáginapuede要.  */
+  /* 占位那几排没有下一页可要。 */
   const shownPerformers = usePaged(performers, tiers.performers, tiers.key, ROW_FIRST,
     empty ? undefined : more('performers'));
   const shownStudios = usePaged(studios, tiers.studios, tiers.key, ROW_FIRST, empty ? undefined : more('studios'));
@@ -164,8 +164,8 @@ function Tiers(props: CatalogFilterProps) {
   );
 }
 
-/** Sello标识. 兜底Solo剩"装pero读No出来"esteuno: Archivo坏, 或归uno漏掉, Imagenpequeño到verNo出es什么; 
- *  没装标识壳根本No给地址, No出esteImagen.  */
+/** 厂牌标识。兜底只剩「装了但读不出来」这一种：文件坏了，或归一漏掉、图小到看不出是什么；
+ *  没装标识的壳根本不给地址，不出这张图。 */
 function StudioMark({ studio }: { studio: TierStudio }) {
   const [broken, setBroken] = useState(false);
   return (
@@ -178,7 +178,7 @@ function StudioMark({ studio }: { studio: TierStudio }) {
   );
 }
 
-/** 空馆藏占: 每排seisdiezcuatro格, 由容Dispositivo裁到puede用ancho度. 它NoesControles, Nocontinuar指针.  */
+/** 空馆藏的占位：每排六十四格，由容器裁到可用宽度。它不是控件，不接指针。 */
 function Placeholders({ kind }: { kind: 'performer' | 'studio' | 'tag' }) {
   const slots = Array.from({ length: EMPTY_SLOTS }, (_, index) => index);
   if (kind === 'tag') {
@@ -195,7 +195,7 @@ function Placeholders({ kind }: { kind: 'performer' | 'studio' | 'tag' }) {
   );
 }
 
-/** abajo排: 读数, 换uno批, 版yOrdenar. 回收站No出esteuno排.  */
+/** 下排：读数、换一批、版式与排序。回收站不出这一排。 */
 function Head({ count, refreshing, layout, sorts, actions }: CatalogFilterProps) {
   const view = useCatalogView();
   const [shuffling, setShuffling] = useState(false);
@@ -208,7 +208,7 @@ function Head({ count, refreshing, layout, sorts, actions }: CatalogFilterProps)
       <span data-catalog-summary=""><Readout count={count} /><LibraryShortcuts currentHref={actions.currentHref} /></span>
       <span data-entity-sorts="">
         <Shuffle onPress={shuffle} busy={shuffling || refreshing} />
-        {/* 按名字换Clave: JAV yprimeropágina各uno组, React Aria 单选组挂arriba之posteriorNo改 `name`.  */}
+        {/* 按名字换键：JAV 与首页各一组，React Aria 的单选组挂上之后不改 `name`。 */}
         {layout && view === 'cards' ? <Segments key={layout.name} name={layout.name} label={layout.label} value={layout.value} options={layout.options}
           onChange={actions.setLayout} /> : null}
         <CatalogViewToggle />
@@ -220,11 +220,11 @@ function Head({ count, refreshing, layout, sorts, actions }: CatalogFilterProps)
 }
 
 
-/** 读数: `1,234 que cumple · 显示 24`. etc.esteuno趟取数时换成unoancho度定死微光, 180ms interior就到手uno帧都No露.  */
+/** 读数：`1,234 个符合 · 显示 24`。等这一趟取数时换成一条宽度定死的微光，180ms 内就到手的一帧都不露。 */
 function Readout({ count }: { count: CatalogFilterProps['count'] }) {
   const readout = useRef<HTMLSpanElement>(null);
   const skeleton = useRef<HTMLSpanElement>(null);
-  const text = count ? `${count.total.toLocaleString()} que cumple · Mostrar ${count.shown.toLocaleString()}` : '';
+  const text = count ? `${count.total.toLocaleString()} 个符合 · 显示 ${count.shown.toLocaleString()}` : '';
   useLayoutEffect(() => {
     if (count === false) return;
     if (!count) { fitSkeleton(skeleton.current); return }
@@ -245,7 +245,7 @@ function Readout({ count }: { count: CatalogFilterProps['count'] }) {
     );
 }
 
-/** 交集宿主: `#combo` dentro另建uno层 `.peach-react`, 样作用域要它. Desinstalar时撤掉, 行本身还给壳.  */
+/** 交集条的宿主：`#combo` 里另建一层 `.peach-react`，样式作用域要它。卸载时撤掉，行本身还给壳。 */
 function useComboHost(row: Element | null): HTMLElement | null {
   const [host, setHost] = useState<HTMLElement | null>(null);
   useLayoutEffect(() => {
@@ -261,9 +261,9 @@ function useComboHost(row: Element | null): HTMLElement | null {
 
 interface Page<T> { key: string; limit: number; fetched: T[]; drained: boolean }
 
-/** uno排先摆 `first` , 横滚到离derecha端 320px 就再续 12 , 续到esteuno排真溢出Como止: ancho屏Anterior批puede能
- *  还IntroduceNo满uno行, 而没溢出就滚No动, 滚No动就再SinNo.dos次 `scroll` 来continuar着续. 手arribaeste用完再经
- *  `more` 要Siguientepágina, 要回空就es到底. `key` 变从头摆.  */
+/** 一排先摆 `first` 枚，横滚到离右端 320px 就再续 12 枚，续到这一排真的溢出为止：宽屏上一批可能
+ *  还填不满一行，而没溢出就滚不动，滚不动就再没有第二次 `scroll` 来接着续。手上这份用完再经
+ *  `more` 要下一页，要回空的就是到底了。`key` 变了从头摆。 */
 function usePaged<T>(row: RefObject<HTMLElement | null>, items: T[], key: string, first: number,
   more?: () => Promise<unknown[]>): T[] {
   const initial = (): Page<T> => ({ key, limit: first, fetched: [], drained: !more });
@@ -285,8 +285,8 @@ function usePaged<T>(row: RefObject<HTMLElement | null>, items: T[], key: string
     }
     if (now.drained || !next || fetching.current === now.key) return;
     fetching.current = now.key;
-    /* 要Siguientepáginaeste段Tiempodentro人还En滚, `fetching` 挡住同uno名单pesado入, 免得同unopágina要两遍. 按 `key` 记: 
-     * antiguo名单eseunopágina还En路arriba时名单换, Nuevo名单照样续página, No然antiguoPor favor求回来被丢掉posterioresteuno排就停EnNo.unopágina.  */
+    /* 要下一页的这段时间里人还在滚，`fetching` 挡住同一份名单重入，免得同一页要两遍。按 `key` 记：
+     * 旧名单那一页还在路上时名单换了，新名单照样续页，不然旧请求回来被丢掉后这一排就停在第一页。 */
     void next().catch(() => []).then((rows) => {
       if (fetching.current === now.key) fetching.current = null;
       setPage((p) => {

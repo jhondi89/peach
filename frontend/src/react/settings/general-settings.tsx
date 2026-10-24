@@ -1,4 +1,4 @@
-/* "应用y维护"en proceso开机自启, 桌面rápido捷MétodoyVersiónActualizar.  */
+/* 「应用与维护」中的开机自启、桌面快捷方式与版本更新。 */
 import { useState, type FormEvent } from 'react';
 
 import { SettingsRow } from '@/components/application/settings/settings-rows';
@@ -18,7 +18,7 @@ import { busyProps, useAction } from './use-action';
 export function GeneralSettings({ data, receipt, panel }: ConfigurationGroupProps) {
   return (
     <div {...groupRoot(panel)}>
-      {data.remote_reporting || data.library_sharing ? <Section title="DatosSubir">
+      {data.remote_reporting || data.library_sharing ? <Section title="数据上传">
         {data.remote_reporting ? <RemoteReportingSettings initial={data.remote_reporting} receipt={receipt} /> : null}
         {data.library_sharing ? <div className="border-t border-separator-border">
           <LibrarySharingSettings initial={data.library_sharing} receipt={receipt} />
@@ -36,28 +36,28 @@ export function StartupSettings({ startup, receipt }: { startup: StartupState; r
   const [silent, setSilent] = useState(startup.silent);
   const [desktop, setDesktop] = useState(startup.desktop);
   const action = useAction();
-  // 桌面rápido捷MétodoSoloCon Windows Con, 桌面arribaya经摆着另unoInstalarImagen标时也No给动; 两情况posterior端
-  // 都En desktop_message dentro说Original因, 所以按它ConSincontenido判禁用, NoEnanterior端判Plataforma. 
+  // 桌面快捷方式只有 Windows 有，桌面上已经摆着另一份安装的图标时也不给动；两种情况后端
+  // 都在 desktop_message 里说了原因，所以按它有没有内容判禁用，不在前端判平台。
   const desktopReady = startup.available && !startup.desktop_message;
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!startup.available) return;
     void action.run('save', (signal) => apiSend('/api/configuration/startup', { enabled, silent, desktop }, 'POST', signal),
-      () => receipt('Configuración guardada'));
+      () => receipt('已保存配置'));
   };
 
   return (
-    <Section title="Inicio automático" onSubmit={submit}>
+    <Section title="开机自启" onSubmit={submit}>
       <Rows>
-        <SettingsRow label="Iniciar Peach al arrancar">
-          <Switch aria-label="Iniciar Peach al arrancar" isSelected={enabled} isDisabled={!startup.available} onChange={setEnabled} />
+        <SettingsRow label="开机后启动 Peach">
+          <Switch aria-label="开机后启动 Peach" isSelected={enabled} isDisabled={!startup.available} onChange={setEnabled} />
         </SettingsRow>
-        <SettingsRow label="Solo iniciar en la bandeja del sistema, no abrir página web">
-          <Switch aria-label="Solo iniciar en la bandeja del sistema, no abrir página web" isSelected={silent} isDisabled={!startup.available || !enabled} onChange={setSilent} />
+        <SettingsRow label="只启动托盘，不打开网页">
+          <Switch aria-label="只启动托盘，不打开网页" isSelected={silent} isDisabled={!startup.available || !enabled} onChange={setSilent} />
         </SettingsRow>
-        <SettingsRow label="Crear acceso directo en el escritorio" description={startup.desktop_message || undefined}>
-          <Switch aria-label="Crear acceso directo en el escritorio" isSelected={desktop} isDisabled={!desktopReady} onChange={setDesktop} />
+        <SettingsRow label="在桌面创建快捷方式" description={startup.desktop_message || undefined}>
+          <Switch aria-label="在桌面创建快捷方式" isSelected={desktop} isDisabled={!desktopReady} onChange={setDesktop} />
         </SettingsRow>
       </Rows>
       {startup.message || action.error ? (
@@ -67,7 +67,7 @@ export function StartupSettings({ startup, receipt }: { startup: StartupState; r
         </Stack>
       ) : null}
       <Footer>
-        <Button type="submit" disabled={!startup.available} {...busyProps(action.busy === 'save')}>Guardar configuración</Button>
+        <Button type="submit" disabled={!startup.available} {...busyProps(action.busy === 'save')}>保存配置</Button>
       </Footer>
     </Section>
   );

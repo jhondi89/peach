@@ -1,10 +1,10 @@
-/* 粘En顶栏abajo沿ese玻璃操作: unopequeñoTítuloposterior面uno排胶囊Clave, 或者arribaabajo两排Filtrar浮层. 
+/* 粘在顶栏下沿的那条玻璃操作条：一个小标题后面一排胶囊键，或者上下两排的筛选浮层。
  *
- * 料(漂移两团, 斜光, interior嵌边y落影)由 `web/board.css`  `[data-glass-pane]` uno处给, 
- * 几何, 饱 y 度y文字色En `../styles.css`  `[data-filter-glass]`, alto对比y减menos透明度回退
- * 也Eneseunoarriba. 吸到顶栏abajo沿eseuno刻由 `use-stuck.ts` 标 `data-stuck`, 影换成抬起来eseuno档. 
- * 胶囊Clave 30px alto, 透明底, uno圈 `--glass-low`, 
- * Pasar el ratón换成 `--glass-rim` 边加 `--glass-pick-fill` 底—玻璃en laClaveNoes BoardUI ese实心按钮.  */
+ * 料（漂移的两团、斜光、内嵌边与落影）由 `web/board.css` 的 `[data-glass-pane]` 一处给，
+ * 几何、饱和度与文字色在 `../styles.css` 的 `[data-filter-glass]`，高对比与减少透明度的回退
+ * 也在那一条上。吸到顶栏下沿那一刻由 `use-stuck.ts` 标 `data-stuck`，影换成抬起来那一档。
+ * 胶囊键 30px 高、透明底、一圈 `--glass-low`，
+ * 悬停换成 `--glass-rim` 边加 `--glass-pick-fill` 底——玻璃上的键不是 BoardUI 那种实心按钮。 */
 import { useRef, type ReactNode, type RefObject } from 'react';
 import { cx } from '@/utils/cx';
 import { IconButton, type IconButtonProps } from '@/components/base/buttons/icon-button';
@@ -14,9 +14,9 @@ import { useStuck } from './use-stuck';
 import { useHorizontalScroller } from './use-horizontal-scroller';
 
 const BusyIcon = ({ className }: { className?: string }) => <span aria-hidden className={className}
-  dangerouslySetInnerHTML={{ __html: spinnerHtml('Procesando') }} />;
+  dangerouslySetInnerHTML={{ __html: spinnerHtml('正在处理') }} />;
 
-/** Filtrar栏动作使用 30px 尺寸 y 蓝色动作表面.  */
+/** 筛选栏动作使用 30px 尺寸和蓝色动作表面。 */
 export function FilterIconButton({ label, icon, busy = false, onPress, ...props }:
   Omit<IconButtonProps, 'aria-label' | 'size' | 'onClick'> & { label: string; busy?: boolean; onPress(): void }) {
   return <IconButton {...props} data-filter-action="" size="small" icon={busy ? BusyIcon : icon}
@@ -36,16 +36,16 @@ export function FilterGlass({ title, children }: { title: string; children: Reac
   );
 }
 
-/** 两排eseuno副: primeropágina, Etiquetapáginay实体páginaFiltrar浮层. arriba排esuno行横滚Filtrar药丸, abajo排es读数 y 
- *  esteuno屏视ImagenControles. 几何同壳 `.board-filter-frame`: arriba排 48px alto, 8px/12px Relleno, abajo排最矮
- *  46px, 格间 12px. Completo吸En顶栏abajo沿, 粘住时仍es同uno玻璃. 
+/** 两排的那一副：首页、标签页与实体页的筛选浮层。上排是一行横滚的筛选药丸，下排是读数和
+ *  这一屏的视图控件。几何同壳的 `.board-filter-frame`：上排 48px 高、8px／12px 内边距，下排最矮
+ *  46px、格间 12px。整块吸在顶栏下沿，粘住时仍是同一块玻璃。
  *
- *  实体páginaeseuno副几何差uno点(arriba排格间 6px, abajo排最矮 48px), arriba排也NoesCompleto排uno起滚—izquierda端
- *  媒体Clave钉住, SoloCondentro面eseuno格滚. este些由调用方En `className`/`topClassName`/`bottomClassName`
- *  dentro改写, `cx` 合y时posterior写赢. `panes` es直continuar挂En浮层根en laese几滑动玻璃
- *  (`use-view-glide.ts`), `attrs` 给根补壳要认Etiqueta(estrecho屏让认 `data-filter-frame`). 
- *  `busy` 标Enabajo排arriba: 读数Enetc.esteuno趟取数, abajo排dentro认它动效(换批Clave描线)跟着走. arriba排Sinpuede放
- *  东西时 `top` 给 `null`, Completo行No出, 玻璃Solo剩abajo排.  */
+ *  实体页那一副的几何差一点（上排格间 6px、下排最矮 48px），上排也不是整排一起滚——左端的
+ *  媒体键钉住，只有里面那一格滚。这些由调用方在 `className`／`topClassName`／`bottomClassName`
+ *  里改写，`cx` 合并时后写的赢。`panes` 是直接挂在浮层根上的那几块滑动玻璃
+ *  （`use-view-glide.ts`），`attrs` 给根补壳要认的标记（窄屏让位认 `data-filter-frame`）。
+ *  `busy` 标在下排上：读数在等这一趟取数，下排里认它的动效（换批键描线）跟着走。上排没有可放的
+ *  东西时 `top` 给 `null`，整行不出，玻璃只剩下排。 */
 export function FilterGlassRows(
   { label, topLabel, top, bottom, className, topClassName, bottomClassName, panes, attrs, busy, bottomRef }: {
     label: string;
@@ -84,8 +84,8 @@ export function FilterGlassRows(
   );
 }
 
-/* 浮层en laFiltrar药丸: 8px 圆角, 13px 字, no选en procesoesuno圈虚线 `--glass-low`, Pasar el ratón转实线; 选en proceso
- * 线yIntroduce充归调用方(EtiquetaTipo药丸取自己Tipo色, 见 `../styles.css`  `[data-tag-pill]`).  */
+/* 浮层上的筛选药丸：8px 圆角、13px 字，未选中是一圈虚线 `--glass-low`，悬停转实线；选中的
+ * 线与填充归调用方（标签类型药丸取自己的类型色，见 `../styles.css` 的 `[data-tag-pill]`）。 */
 const FILTER_PILL = 'flex h-7.5 flex-none cursor-pointer items-center gap-1.75 rounded-lg border border-dashed'
   + ' border-(--glass-low) bg-transparent px-2.5 text-body-2-regular leading-5 whitespace-nowrap text-inherit'
   + ' outline-none hover:border-solid focus-visible:ring-2 focus-visible:ring-border-focus-ring';
@@ -102,8 +102,8 @@ export function FilterPill(
   );
 }
 
-/* 浮层en la动作Clave: 平时uno圈 `--glass-low` 细线, Pasar el ratón浮起unoprimeropáginaese提亮玻璃(料En `../styles.css`
- *  `[data-glass-pill]`). Solo换Introduce充话, superficial色abajoeseuno档白压En同样发白浮层arriba分No出来.  */
+/* 浮层上的动作键：平时一圈 `--glass-low` 细线，悬停浮起一块首页那种提亮的玻璃（料在 `../styles.css`
+ * 的 `[data-glass-pill]`）。只换填充的话，浅色下那一档白压在同样发白的浮层上分不出来。 */
 const PILL = 'h-7.5 cursor-pointer rounded-full border border-(--glass-low) bg-transparent px-3'
   + ' text-body-2-regular leading-none whitespace-nowrap text-inherit outline-none'
   + ' focus-visible:ring-2 focus-visible:ring-border-focus-ring'

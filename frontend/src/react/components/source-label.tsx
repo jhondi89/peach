@@ -10,7 +10,7 @@ function PikPakIcon({ className }: { className?: string }) {
 }
 export const PROVIDER_ICONS = { '115': Cloud115Icon, pikpak: PikPakIcon };
 
-/** 站点标识经本站缓存读取.  */
+/** 站点标识经本站缓存读取。 */
 export function SiteLabel({ site, label }: { site: string; label: string }) {
   const [failed, setFailed] = useState(false);
   const source = site === 'javdb' ? '/site-mark?source=javdb' : '/site-mark?domain=missav.com';
@@ -20,7 +20,7 @@ export function SiteLabel({ site, label }: { site: string; label: string }) {
   </span>;
 }
 
-/** 网盘y本地来源共用ya登记标识.  */
+/** 网盘与本地来源共用已登记的标识。 */
 export function SourceLabel({ source, label }: { source: string; label: string }) {
   return <span className="inline-flex min-w-0 items-center gap-1.5">
     <SourceMark mark={MEDIA_SOURCE_ICONS[source] || (source === 'local' ? 'hard-drive' : 'database')} />

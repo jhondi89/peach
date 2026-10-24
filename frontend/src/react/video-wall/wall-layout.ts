@@ -1,5 +1,5 @@
-/* 矩形拼贴参考 Folia  blockTemplates/layout, AGPL-3.0, 固定 revision
- * 9a01e788ed52d25ea01b1f0d37934e5e371ae82b. Peach 按ExplorarUbicacióncontinuar续馆藏.  */
+/* 矩形块拼贴参考 Folia 的 blockTemplates/layout，AGPL-3.0，固定 revision
+ * 9a01e788ed52d25ea01b1f0d37934e5e371ae82b。Peach 按浏览位置接续馆藏。 */
 import { getBlockTemplate, getBlockReflow } from './folia/blockTemplates';
 import type { MediaItem } from '../catalog-grid/types';
 export interface WallRect { x: number; y: number; width: number; height: number }
@@ -28,12 +28,12 @@ function blockSlot(column: number, row: number, slot: number): WallRect {
     width: w * PITCH - GAP, height: h * PITCH - GAP };
 }
 
-/** Solocontinuar受Con实际Portada引用视频; 缩略ImagenConfiguraciónNo改变入Muro资格.  */
+/** 只接受有实际封面引用的视频；缩略图设置不改变入墙资格。 */
 export function wallHasCover(item: MediaItem): boolean {
   return (!item.medium || item.medium === 'video') && !!item.has_cover && !!(item.cover_key || item.code);
 }
 
-/** 按实例Clave定, No依赖视口RecortarResultado, 展开ReproducirDispositivopuedeDejaEn屏exterior.  */
+/** 按实例键定位，不依赖视口裁剪结果，展开播放器可留在屏外。 */
 export function wallTileAt(count: number, finite: boolean, key: string): WallTile | null {
   if (!count) return null;
   const [column,row,slot] = key.split(':').map(Number);
@@ -48,14 +48,14 @@ export function wallTileAt(count: number, finite: boolean, key: string): WallTil
   return { ...rect, index:rank % count, key };
 }
 
-/** LimitadoMuroColaSeleccionar落到Obras唯unoUbicación.  */
+/** 有限墙队列选择落到作品的唯一位置。 */
 export function finiteWallTile(count: number, index: number): WallTile | null {
   if (index < 0 || index >= count) return null;
   const block = Math.floor(index / SLOTS);
   return wallTileAt(count, true, `${block % 3}:${Math.floor(block / 3)}:${index % SLOTS}`);
 }
 
-/** Folia Original让表: 展开成 6×6, 所En另exteriordiezuno格Sincronizar换.  */
+/** Folia 原始让位表：展开成 6×6，所在块的另外十一格同步换位。 */
 export function expandedWallTiles(_count: number, _finite: boolean, active: WallTile): Map<string, WallRect> {
   const [column,row,slot] = active.key.split(':').map(Number);
   const reflow = getBlockReflow(column!, row!, slot!);
@@ -73,7 +73,7 @@ export function wallExtent(count: number): WallSize {
     width = Math.max(width, rect.x + rect.width);
     height = Math.max(height, rect.y + rect.height);
   }
-  // 满行ancho度No会因最posterioruno行Solo占uno而缩回去. 
+  // 满行的宽度不会因最后一行只占一块而缩回去。
   return { width: count >= SLOTS * 3 ? 3 * BLOCK_W - GAP : width, height };
 }
 
@@ -108,7 +108,7 @@ export function visibleWallTiles(count: number, finite: boolean, camera: WallCam
   return result;
 }
 
-/** 按Explorar顺序分配Obras, 续páginaNo改变ya分配Ubicación; TodoRango耗尽才循环.  */
+/** 按浏览顺序分配作品，续页不改变已分配位置；全范围耗尽才循环。 */
 export class WallExploration {
   private readonly positions = new Map<string, number>();
   private readonly used = new Set<number>();

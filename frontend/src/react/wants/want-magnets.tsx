@@ -1,4 +1,4 @@
-/* 卡片abajo方磁链候选. puede见时Consulta, 提交复用云Descargar幂etc.yFalloCategoría.  */
+/* 卡片下方的磁链候选。可见时查询，提交复用云下载的幂等与失败分类。 */
 import { useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
 import { RiLink, RiHardDrive2Line, RiFileList2Line,
   RiCalendarLine, RiPriceTag3Line, RiExternalLinkLine, RiFileCopyLine, RiCloudLine, RiRefreshLine } from '@remixicon/react';
@@ -69,7 +69,7 @@ export function WantMagnets({ want, readOnly, downloads, provider, toast, onSour
     },
     initialData: cached?.result, initialDataUpdatedAt: cached?.saved,
     enabled: visible, retry: false,
-    // LanzamientoFechay来源Tiempo戳判定Con效性, 定时DispositivoSolo负责uno天interiorinterior存回收. 
+    // 发行日期与来源时间戳判定有效性，定时器只负责一天内的内存回收。
     staleTime: (state) => resourcesFresh(state.state.data,
       Date.parse(state.state.data?.checked_at || '') || state.state.dataUpdatedAt, want.release_date) ? Infinity : 0,
     gcTime: 86_400_000,
@@ -93,36 +93,36 @@ export function WantMagnets({ want, readOnly, downloads, provider, toast, onSour
         magnet: candidate.uri, provider: configured.key, target: configured.target,
         code: want.code, title: want.title, origin: queryUrl ? `work:${want.code}` : `wishlist:${want.id}`,
       }, 'POST', signal);
-      if (!result.ok) throw new Error(result.task.failure_detail || result.task.failure_label || 'AñadirError de descarga');
+      if (!result.ok) throw new Error(result.task.failure_detail || result.task.failure_label || '添加下载失败');
       return result;
     }, (result) => {
       setSubmitted((current) => [...current, candidate.id]);
-      toast(result.outcome === 'submitted' ? `YaAñadirDescargas: ${candidate.name}` : `YaAsociar现ConDescargas: ${candidate.name}`);
+      toast(result.outcome === 'submitted' ? `已添加下载：${candidate.name}` : `已关联现有下载：${candidate.name}`);
       void client.invalidateQueries({ queryKey: DOWNLOADS_KEY });
     });
   };
   const copy = (candidate: MagnetCandidate) => {
     void action.run(`copy:${candidate.id}`, () => navigator.clipboard.writeText(candidate.uri),
-      () => toast('Copiado链continuar'));
+      () => toast('已复制链接'));
   };
   const waiting = query.isFetching || query.data?.state === 'busy';
   const failure = query.error ? errorMessage(query.error) : query.data?.error;
   return (
     <div ref={root} data-want-magnets="" className="flex min-w-0 flex-col gap-3 border-t border-separator-border pt-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h4 className="text-body-medium text-text-primary">资源链continuar{query.data?.items.length ? ` · ${query.data.items.length}` : ''}</h4>
+        <h4 className="text-body-medium text-text-primary">资源链接{query.data?.items.length ? ` · ${query.data.items.length}` : ''}</h4>
         <Button variant="secondary" size="small" leadingIcon={RiRefreshLine} {...busyProps(waiting)} onClick={() => {
           if (!waiting) { refresh.current = true; void query.refetch() }
-        }}>Consultar de nuevo</Button>
+        }}>重新查询</Button>
       </div>
-      {waiting ? <LoadingDots label="ProcesandoBuscar recursos链continuar..." /> : null}
-      {failure ? <Note tone="error" title="Recurso链continuarNo disponible">{failure}</Note> : null}
+      {waiting ? <LoadingDots label="正在查找资源链接…" /> : null}
+      {failure ? <Note tone="error" title="资源链接未取得">{failure}</Note> : null}
       {query.data?.warnings?.map((warning) => <Note key={warning} tone="neutral">{resourceNotice(warning)}</Note>)}
       {query.data?.warnings?.length && query.data.source_url ? <ButtonLink variant="secondary" size="small" className="self-start"
-        trailingIcon={RiExternalLinkLine} href={query.data.source_url} target="_blank" rel="noopener noreferrer">verFuentepágina</ButtonLink> : null}
+        trailingIcon={RiExternalLinkLine} href={query.data.source_url} target="_blank" rel="noopener noreferrer">查看来源页</ButtonLink> : null}
       {query.data?.state === 'ready' && !query.data.items.length && !query.data.warnings?.length
-        ? <Note tone="neutral">暂No找到Recurso链continuar. </Note> : null}
-      {action.error ? <Note tone="error" title="Operación no completada">{action.error}</Note> : null}
+        ? <Note tone="neutral">暂未找到资源链接。</Note> : null}
+      {action.error ? <Note tone="error" title="操作未完成">{action.error}</Note> : null}
       {query.data?.items.length ? (() => {
         const rows = query.data.items.map((candidate) => {
           const added = submitted.includes(candidate.id) || downloads?.tasks.some((task) => candidate.protocol === 'magnet' &&
@@ -131,33 +131,33 @@ export function WantMagnets({ want, readOnly, downloads, provider, toast, onSour
             <div data-resource-main="" className="flex min-w-0 flex-col gap-1">
               <div className="flex min-w-0 flex-wrap items-center gap-2">
                 <Chip variant="caption" color={candidate.protocol === 'magnet' ? 'blue' : candidate.protocol === 'ed2k' ? 'purple' : 'neutral'}>
-                  {candidate.protocol === 'magnet' ? 'Enlace magnético' : candidate.protocol === 'ed2k' ? 'ED2K' : 'Enlace web'}
+                  {candidate.protocol === 'magnet' ? '磁链' : candidate.protocol === 'ed2k' ? 'ED2K' : '网页链接'}
                 </Chip>
                 <p data-resource-title="" title={candidate.name} className="min-w-0 flex-1 text-body-2-medium text-text-primary">{candidate.name}</p>
               </div>
               <div data-resource-facts="" className="flex flex-wrap gap-x-2 gap-y-1 text-caption-1-regular text-text-secondary">
                 <ResourceFact icon={RiLink}>{candidate.source}</ResourceFact>
-                <ResourceFact icon={RiHardDrive2Line} title={`FuenteTamaño: ${candidate.size}`}>{resourceSize(candidate.size)}</ResourceFact>
-                {candidate.files ? <ResourceFact icon={RiFileList2Line}>{candidate.files.replaceAll('個', '')}</ResourceFact> : null}
-                <ResourceFact icon={RiCalendarLine} title={candidate.source === 'Comentarios de JavDB' ? '评论Fecha' : 'CatalogarFecha'}>{candidate.date ? candidate.date.slice(0, 10) : 'FechaDesconocido'}</ResourceFact>
-                {candidate.attributes.filter(value => value !== 'HD').map((value) => <ResourceFact key={value} icon={RiPriceTag3Line}>{value}</ResourceFact>)}
+                <ResourceFact icon={RiHardDrive2Line} title={`来源大小：${candidate.size}`}>{resourceSize(candidate.size)}</ResourceFact>
+                {candidate.files ? <ResourceFact icon={RiFileList2Line}>{candidate.files.replaceAll('個', '个')}</ResourceFact> : null}
+                <ResourceFact icon={RiCalendarLine} title={candidate.source === 'JavDB 评论' ? '评论日期' : '收录日期'}>{candidate.date ? candidate.date.slice(0, 10) : '日期未知'}</ResourceFact>
+                {candidate.attributes.filter(value => value !== '高清').map((value) => <ResourceFact key={value} icon={RiPriceTag3Line}>{value}</ResourceFact>)}
               </div>
             </div>
             <div data-resource-actions="" className="flex flex-wrap gap-2">
               {candidate.protocol === 'magnet' ?
-              <Button variant="primary" size="small" leadingIcon={configured ? PROVIDER_ICONS[configured.key] : RiCloudLine} title={configured ? `Descargar a ${configured.label}` : undefined} disabled={readOnly || !downloads?.available || !configured || added}
+              <Button variant="primary" size="small" leadingIcon={configured ? PROVIDER_ICONS[configured.key] : RiCloudLine} title={configured ? `下载到 ${configured.label}` : undefined} disabled={readOnly || !downloads?.available || !configured || added}
                 {...busyProps(action.busy === candidate.id)} onClick={() => add(candidate)}>
-                {added ? 'YaAñadir' : 'AñadirDescargas'}
+                {added ? '已添加' : '添加下载'}
               </Button> : null}
               <Button variant={candidate.protocol === 'magnet' ? 'secondary' : 'primary'} size="small" leadingIcon={RiFileCopyLine} {...busyProps(action.busy === `copy:${candidate.id}`)}
-                onClick={() => copy(candidate)}>Copiar链continuar</Button>
-              <ButtonLink data-button-link="" variant="secondary" size="small" trailingIcon={RiExternalLinkLine} href={candidate.source_url} target="_blank" rel="noopener noreferrer">链continuarFuente</ButtonLink>
+                onClick={() => copy(candidate)}>复制链接</Button>
+              <ButtonLink data-button-link="" variant="secondary" size="small" trailingIcon={RiExternalLinkLine} href={candidate.source_url} target="_blank" rel="noopener noreferrer">链接来源</ButtonLink>
             </div>
           </li>;
         });
         return <>
           <ul className="flex min-w-0 flex-col gap-4">{rows.slice(0, 3)}</ul>
-          {rows.length > 3 ? <Disclosure summary={`MásRecurso(${rows.length - 3} Resultado)`}>
+          {rows.length > 3 ? <Disclosure summary={`更多资源（${rows.length - 3} 条）`}>
             <ul className="flex min-w-0 flex-col gap-4">{rows.slice(3)}</ul>
           </Disclosure> : null}
         </>;

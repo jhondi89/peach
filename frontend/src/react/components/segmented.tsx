@@ -1,4 +1,4 @@
-/* 分段Controles选en proceso面IndependienteMover, 文字, 焦点y业务Estado即时Actualizar.  */
+/* 分段控件的选中面独立移动，文字、焦点与业务状态即时更新。 */
 import { RadioGroup, TabList, type RadioGroupProps, type TabListProps } from 'react-aria-components';
 import { useMovingSurface } from './use-moving-surface';
 import { useHorizontalScroller } from './use-horizontal-scroller';
@@ -13,13 +13,13 @@ export function SegmentedRadioGroup(props: RadioGroupProps) {
   return <RadioGroup {...props} ref={ref} />;
 }
 
-/** 轨道. ancho度按contenido收, estrecho屏装Noabajo时自己横向滚, Nopágina面撑出滚动.  */
+/** 轨道。宽度按内容收，窄屏装不下时自己横向滚，不把页面撑出滚动条。 */
 export const SEGMENTED_TRACK = 'inline-flex w-max max-w-full items-center gap-0.5 overflow-x-auto'
   + ' overscroll-x-contain rounded-2lg bg-background-tertiary-default p-1';
 
-/* profundo色abajo选en proceso面用 `background-primary-hover`: profundo色 `background-primary-default` y轨道
- * (`background-tertiary-default`)es同uno档 neutral-800, 画arriba去verNo见.  */
-/* Teléfonoancho度每格izquierdaderecha各收 2px: cuatroen proceso文página签En 320 ancho轨道dentro刚bien排abajo, No被轨道裁掉último字.  */
+/* 深色下选中面用 `background-primary-hover`：深色的 `background-primary-default` 与轨道
+ * （`background-tertiary-default`）是同一档 neutral-800，画上去看不见。 */
+/* 手机宽度每格左右各收 2px：四个中文页签在 320 宽的轨道里刚好排下，不被轨道裁掉末字。 */
 export const SEGMENT = 'flex min-h-7 flex-none cursor-pointer items-center gap-1.5 rounded-md px-2.5 py-1 max-sm:px-2'
   + ' text-body-medium whitespace-nowrap text-text-secondary outline-none transition-colors'
   + ' hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring'
@@ -27,14 +27,14 @@ export const SEGMENT = 'flex min-h-7 flex-none cursor-pointer items-center gap-1
   + ' data-selected:bg-background-primary-default data-selected:text-text-primary data-selected:shadow-card'
   + ' dark:data-selected:bg-background-primary-hover';
 
-/** `aria-selected` 而Noes `data-selected` 宿主(自己写 `<button role="tab">`)用esteuno串.  */
+/** `aria-selected` 而不是 `data-selected` 的宿主（自己写的 `<button role="tab">`）用这一串。 */
 export const SEGMENT_ARIA = 'flex min-h-7 flex-none cursor-pointer items-center gap-1.5 rounded-md px-2.5 py-1 max-sm:px-2'
   + ' text-body-medium whitespace-nowrap text-text-secondary outline-none transition-colors'
   + ' hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring'
   + ' aria-selected:bg-background-primary-default aria-selected:text-text-primary aria-selected:shadow-card'
   + ' dark:aria-selected:bg-background-primary-hover';
 
-/** Solo摆字形eseuno档(版, grandeImagen/紧凑): 每格正方, 字形 16px, 配arriba面 `SEGMENTED_TRACK`.  */
+/** 只摆字形的那一档（版式、大图／紧凑）：每格正方，字形 16px，配上面的 `SEGMENTED_TRACK`。 */
 export const SEGMENT_ICON = 'flex size-7 flex-none cursor-pointer items-center justify-center rounded-md'
   + ' text-text-secondary outline-none transition-colors'
   + ' hover:text-text-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring'
@@ -42,9 +42,9 @@ export const SEGMENT_ICON = 'flex size-7 flex-none cursor-pointer items-center j
   + ' data-selected:bg-background-primary-default data-selected:text-text-primary data-selected:shadow-card'
   + ' dark:data-selected:bg-background-primary-hover';
 
-/* 玻璃浮层en laeseuno档. flat 面eseuno副(灰轨道衬unoNo透明白滑)摆到浮层arriba就esCompletodentro
- * 唯unouno实心面, 读起来像贴arriba去另unoControles: 轨道撤掉, 字色按este玻璃自己文字色降到
- * seis成, 选en procesoeseuno格换成浮层选en proceso态ese玻璃(`../styles.css`  `[data-glass-segment]`).  */
+/* 玻璃浮层上的那一档。flat 面那一副（灰轨道衬一枚不透明的白滑块）摆到浮层上就是整条里
+ * 唯一一块实心的面，读起来像贴上去的另一个控件：轨道撤掉，字色按这块玻璃自己的文字色降到
+ * 六成，选中那一格换成浮层选中态那块玻璃（`../styles.css` 的 `[data-glass-segment]`）。 */
 export const SEGMENTED_GLASS_TRACK = 'inline-flex w-max max-w-full flex-none items-center gap-0.5 rounded-lg';
 
 export const SEGMENT_GLASS = 'relative flex size-7.5 flex-none cursor-pointer items-center justify-center rounded-lg'

@@ -1,24 +1,24 @@
-/* primeropáginaFiltrar(`catalog-filter` página面interior组件, ADR-0031 No. 11b 步): Datos形状. 
+/* 首页筛选条（`catalog-filter` 页面内组件，ADR-0031 第 11b 步）：数据形状。
  *
- * 壳(`Application`  `buildBars` uno族)拥ConDirectorioFiltrar, 路由y取数: 两排Avatar, Etiqueta成员y
- * 按abajo态, cuatro视Imagen, 读数, OrdenarClave y 版都由壳算bien当 props 递进来, 岛Solo画. Filtraruno变壳就用
- * `updateManagedRoute` 推unoNuevo, Nopesado挂; 按abajo去Comentarios(`aria-pressed` y滑动玻璃)靠壳En发Por favor求之anterior
- * 先推uno次. 动作Todo回壳, 岛No自己拼Por favor求: Ordenar, 换uno批y版回壳posterior走 `loadCatalog`, 也就es
- * `catalog-grid` yaConesepesado取入口. 
+ * 壳（`Application` 的 `buildBars` 一族）拥有目录的筛选、路由与取数：两排头像、标签条的成员与
+ * 按下态、四枚视图、读数、排序键和版式都由壳算好当 props 递进来，岛只画。筛选一变壳就用
+ * `updateManagedRoute` 推一份新的，不重挂；按下去的反馈（`aria-pressed` 与滑动玻璃）靠壳在发请求之前
+ * 先推一次。动作全部回壳，岛不自己拼请求：排序、换一批与版式回壳后走 `loadCatalog`，也就是
+ * `catalog-grid` 已有的那条重取入口。
  *
- * 交集yOrdenarClave, 换uno批, 版开关 y 资料páginaeseuno(`entity-filter`)es同uno清单, 同uno组组件.  */
+ * 交集条与排序键、换一批、版式开关和资料页那一条（`entity-filter`）是同一份清单、同一组组件。 */
 import type { EntityComboItem, EntitySortKey, SegmentOption } from '../entity-filter/entity-filter';
 
 export type { EntityComboItem, EntitySortKey, SegmentOption };
 
-/** Avataren launoActriz. 圆框dentroese两层(primero字母yAvatarImagen)由遗Deja层 `entityFaceImg` 拼: 取景, 
- *  回落Imageny异步解码都Enesedentro, React No拥Condentro面节点.  */
+/** 头像条上的一位女优。圆框里那两层（首字母与头像图）由遗留层 `entityFaceImg` 拼：取景、
+ *  回落图与异步解码都在那里，React 不拥有里面的节点。 */
 export interface TierPerformer {
   name: string;
   ringHtml: string;
 }
 
-/** Selloeseuno排uno. `logo` es方形Imagen标地址, 没装标识时Como空, Solo画primero两字.  */
+/** 厂牌那一排的一枚。`logo` 是方形图标的地址，没装标识时为空，只画首两个字。 */
 export interface TierStudio {
   name: string;
   logo: string;
@@ -27,16 +27,16 @@ export interface TierStudio {
 
 export type TierKind = 'performers' | 'studios';
 
-/** 两排Avatar. 每排手arribaestees壳esteuno趟取回Completopágina; 岛先摆uno屏, 横滚到derecha端再往abajo续, 手en la用完
- *  再经 `actions.moreTops` 要Siguientepágina. `key` 变(换口径或换uno批)两排从头摆.  */
+/** 两排头像。每排手上这份是壳这一趟取回的整页；岛先摆一屏，横滚到右端再往下续，手上的用完
+ *  再经 `actions.moreTops` 要下一页。`key` 变了（换了口径或换了一批）两排从头摆。 */
 export interface CatalogTiers {
   key: string;
   performers: TierPerformer[];
   studios: TierStudio[];
 }
 
-/** Etiquetaen launo. `n` Como空Descripcióneste生效EtiquetaNoEnesteuno批dentro, No印数字: 印 0 会说成
- *  "esteEtiquetaabajo什么都Sin", 而它此刻正筛着uno屏contenido.  */
+/** 标签条上的一枚。`n` 为空说明这枚生效的标签不在这一批里，不印数字：印 0 会说成
+ *  「这个标签下什么都没有」，而它此刻正筛着一屏内容。 */
 export interface CatalogTag {
   k: string;
   label: string;
@@ -44,14 +44,14 @@ export interface CatalogTag {
   selected: boolean;
 }
 
-/** izquierda端cuatro视Imagen: Todo, 没ver过, 稍posteriorver, yaEtiqueta. `href` es它自己地址, React 包没到时照常换página.  */
+/** 左端四枚视图：全部、没看过、稍后看、已标记。`href` 是它自己的地址，React 包没到时照常换页。 */
 export interface CatalogView {
   k: string;
   label: string;
   href: string;
 }
 
-/** 读数derecha边ese组分段开关: primeropáginay JAV 各存uno卡片版.  */
+/** 读数右边那组分段开关：首页与 JAV 各存一份卡片版式。 */
 export interface CatalogLayout {
   name: 'home-layout' | 'jav-layout';
   label: string;
@@ -61,66 +61,66 @@ export interface CatalogLayout {
 
 export interface CatalogFilterActions {
   currentHref?(): string;
-  /** Avataren launo格: Abrireseuno资料página.  */
+  /** 头像条上的一格：打开那一位的资料页。 */
   openEntity(kind: 'performer' | 'studio', name: string): void;
-  /** cuatro视Imagenen launo.  */
+  /** 四枚视图里的一枚。 */
   setView(view: string): void;
   toggleTag(tag: string): void;
-  /** 撤掉交集en launo创作者/Sello/归属.  */
+  /** 撤掉交集条上的一颗创作者／厂牌／归属。 */
   clearFilter(key: string): void;
-  /** 交集último尾"TodoBorrar".  */
+  /** 交集条末尾的「全部清除」。 */
   clearAll(): void;
   setSort(key: string): void;
-  /** 换uno批: Cuadrículaytres层成员uno起换, 换批Clave转圈到este Promise 落定.  */
+  /** 换一批：网格与三层成员一起换，换批键转圈到这个 Promise 落定。 */
   reshuffle(): Promise<void>;
   setLayout(value: string): void;
-  /** 某uno排手arribaeste摆完, 要Siguientepágina. 返回空数组就es到底.  */
+  /** 某一排手上这份摆完了，要下一页。返回空数组就是到底了。 */
   moreTops(kind: TierKind): Promise<TierPerformer[] | TierStudio[]>;
 }
 
-/** 仍由遗Deja层给continuar线.  */
+/** 仍由遗留层给的接线。 */
 export interface CatalogFilterHelpers {
-  /** 横滚行continuararriba拖动y滚轮(`wireDrag`).  */
+  /** 横滚行接上拖动与滚轮（`wireDrag`）。 */
   wireDrag(row: Element | null): void;
-  /** Solocontinuar滚轮y两端渐隐, Nocontinuar拖动(`wireHorizontalScroller`): estrecho屏abajo才溢出exterior层用它.  */
+  /** 只接滚轮与两端渐隐、不接拖动（`wireHorizontalScroller`）：窄屏下才溢出的外层用它。 */
   wireScroller(row: Element | null): void;
 }
 
 export interface CatalogFilterProps {
-  /** 两排Avatar. primero屏还Enetc.两聚合Consulta时Como空: 两排yEtiqueta摆占加uno道微光, cuatro视Imagenyabajo排照常.  */
+  /** 两排头像。首屏还在等两个聚合查询时为空：两排与标签条摆占位加一道微光，四枚视图与下排照常。 */
   tiers: CatalogTiers | null;
-  /** 空馆藏: 两排yEtiqueta摆uno行占, 说es"aquí将来会Con东西".  */
+  /** 空馆藏：两排与标签条摆一行占位，说的是「这里将来会有东西」。 */
   empty: boolean;
-  /** Etiqueta成员, ya选排En最anterior; anterior `tagFirst` 先摆, 其余横滚到derecha端再续.  */
+  /** 标签条成员，已选的排在最前；前 `tagFirst` 枚先摆，其余横滚到右端再续。 */
   tags: CatalogTag[];
   tagFirst: number;
   views: readonly CatalogView[];
-  /** 当anterior视Imagen: '', fresh, later, flagged, trash.  */
+  /** 当前视图：''、fresh、later、flagged、trash。 */
   state: string;
-  /** 读数. 取数期间Como空, 换成uno微光; `false` esesteuno趟取数Fallo, 读数收起, FalloyReintentar由CuadrículaeseSugerencia说.  */
+  /** 读数。取数期间为空，换成一条微光；`false` 是这一趟取数失败，读数收起，失败与重试由网格那条提示说。 */
   count: { total: number; shown: number } | null | false;
-  /** 回收站es待LimpiarCola: 读数挂EnDescripción行arriba, aquíSinabajo排.  */
+  /** 回收站是待清理队列：读数挂在说明行上，这里没有下排。 */
   trash: boolean;
   sorts: EntitySortKey[];
   layout: CatalogLayout | null;
-  /** 换uno批esteuno趟: tres层yEtiqueta铺uno层微光, 换批Clave转圈.  */
+  /** 换一批这一趟：三层与标签铺一层微光，换批键转圈。 */
   refreshing: boolean;
-  /** Filtrar被收起(资料página, 索引páginayGestionarpágina): 浮层两排No画, SoloDeja两排Avatar.  */
+  /** 筛选条被收起（资料页、索引页与管理页）：浮层两排不画，只留两排头像。 */
   offscreen: boolean;
   combo: EntityComboItem[];
-  /** 交集SoloEnDirectorio铺En屏幕arriba时Con所指; 索引página, 资料páginayGestionarpágina盖住Directorio时收起.  */
+  /** 交集条只在目录铺在屏幕上时有所指；索引页、资料页与管理页盖住目录时收起。 */
   comboHidden: boolean;
-  /** 交集宿主(`#combo`): 它住En正文dentro, Cuadrículaarriba面, No y Filtrar挨着.  */
+  /** 交集条的宿主（`#combo`）：它住在正文里、网格上面，不和筛选条挨着。 */
   comboHost: Element | null;
   actions: CatalogFilterActions;
   helpers: CatalogFilterHelpers;
 }
 
-/** primero屏先摆másmenos, 往posterioruno次续másmenos. uno排dentro每Avatar都esuno要解码Imagen, 手arribaesteTodo画出来
- *  etc.于让primero屏替unomásmedioNo会滚到ese么远人买单.  */
+/** 首屏先摆多少、往后一次续多少。一排里每个头像都是一张要解码的图，把手上这份全画出来
+ *  等于让首屏替一个多半不会滚到那么远的人买单。 */
 export const ROW_FIRST = 24;
 export const ROW_BATCH = 12;
-/** 离derecha端还剩este么más就续: 滚到eseuno刻才Empezar画, 手底abajoya经esuno段空白.  */
+/** 离右端还剩这么多就续：滚到那一刻才开始画，手底下已经是一段空白了。 */
 export const ROW_AHEAD = 320;
-/** 空馆藏占每排摆másmenos格, 由容Dispositivo裁到puede用ancho度.  */
+/** 空馆藏占位每排摆多少格，由容器裁到可用宽度。 */
 export const EMPTY_SLOTS = 64;

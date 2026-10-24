@@ -1,16 +1,16 @@
-/* 关注páginauno卡: unoObras, 本站 alt y WIP, 跨站另见都折Endentro面. 
+/* 关注页的一张卡：一个作品，本站的 alt 与 WIP、跨站的另见都折在里面。
  *
- * 形状同馆藏Obras卡(`../components/media-card.tsx`): Portada格Enarriba, abajo面uno行Avatar, 两行Título, uno行署名
- * yTiempo, 再往abajoesEtiqueta y "媒体no取得". Portada格izquierdaarribaes来源y另见角标, derechaabajoesDuración, derechaarribaes合y
- * 计数; Guardar, yaver, 忽略几圆ClavePasar el ratón或Clave盘聚焦时出现En计数eseUbicación, 计数淡出, 触屏arriba常驻y排En计数abajo面. 
+ * 形状同馆藏作品卡（`../components/media-card.tsx`）：封面格在上，下面一行头像、两行标题、一行署名
+ * 与时间，再往下是标签和「媒体未取得」。封面格左上是来源与另见角标，右下是时长，右上是合并
+ * 计数；保存、已看、忽略几枚圆键悬停或键盘聚焦时出现在计数那个位置、计数淡出，触屏上常驻并排在计数下面。
  *
- * 结构y样钩子沿用Obras卡 `data-media-*`(几何, Pasar el ratón面, 选en proceso描边, 勾选圆都En
- * `../components/media-card.css`), 关注卡自己más出来几格用 `data-follow-*`, 写En
- * `./follow-feed.css`. TítuloanteriorVersión字样, 另见徽章, Avatar圆框y来源Imagen标es `./follow-marks.ts` 拼
- * HTML 串, 类名沿用遗Deja样表, Detallesdentro用es同uno, esteuno格 React No拥Condentro面节点. 
+ * 结构与样式钩子沿用作品卡的 `data-media-*`（几何、悬停面、选中描边、勾选圆都在
+ * `../components/media-card.css`），关注卡自己多出来的几格用 `data-follow-*`，写在
+ * `./follow-feed.css`。标题前的版本字样、另见徽章、头像圆框与来源图标是 `./follow-marks.ts` 拼的
+ * HTML 串，类名沿用遗留样式表，详情里用的是同一份，这一格 React 不拥有里面的节点。
  *
- * uno叠(`isMix`)Pasar el ratón时逐翻过组dentro彼此No同Imagen, 时序y门槛同 Mix 卡(`../components/use-stack-flip.ts`). 
- * 翻es卡片渲染时就En手en la缩略Imagen, Pasar el ratónNoComo动画再发Por favor求; No.unoes静止Portada本身.  */
+ * 一叠（`isMix`）悬停时逐张翻过组里彼此不同的画面，时序与门槛同 Mix 卡（`../components/use-stack-flip.ts`）。
+ * 翻的是卡片渲染时就在手上的缩略图，悬停不为动画再发请求；第一张是静止封面本身。 */
 import { memo, useCallback, useEffect, useRef, useState, type ComponentPropsWithoutRef, type MouseEvent } from 'react';
 import { esc, fmtDur, icon, entityPath } from '@peach/legacy/core';
 import { tagLabel } from '@peach/legacy/tags';
@@ -26,7 +26,7 @@ import {
   learnFollowDims, sourceMark,
 } from './follow-marks';
 
-/** DuraciónSoloEnes真Duración时写: 来源没给, 给 0 或给uno明显es占数, 都No出esteuno格.  */
+/** 时长只在是真时长时写：来源没给、给了 0 或给了一个明显是占位的数，都不出这一格。 */
 const realDuration = (value: unknown) => Number(value) > 0;
 
 export function FollowAuthorLink({ name, actions, children, ...attrs }: {
@@ -44,13 +44,13 @@ export interface FollowCardProps {
   variant?: 'grid' | 'next';
   retryKey?: number;
   group: FollowGroup;
-  /** este卡创作者名abajoese几来源: Avatary署名读它.  */
+  /** 这张卡的创作者名下那几个来源：头像与署名读它。 */
   authorSources: readonly FollowSource[];
   media: FollowMedia;
   context: FollowContext;
   selected: boolean;
   selectMode: boolean;
-  /** este卡En curso写eseunoabajo(Estado或Guardar),  y 写Fallo时DejaEn卡en laeseuno句.  */
+  /** 这张卡正在写的那一下（状态或保存），和写失败时留在卡上的那一句。 */
   busy: string;
   failure: string;
   actions: Pick<FollowFeedActions, 'openDetail' | 'openAuthor' | 'canFlip'> & Partial<Pick<FollowFeedActions, 'toggleSelection'>>;
@@ -58,12 +58,12 @@ export interface FollowCardProps {
   onSave?(id: number): void;
 }
 
-/** 卡面SinImagen时eseuno格: 来源站标居en proceso,  y 本来就没给缩略Imagen卡同uno样子.  */
+/** 卡面没有画面时的那一格：来源的站标居中，和本来就没给缩略图的卡同一个样子。 */
 const NoThumb = ({ provider }: { provider: string }) => (
   <span data-follow-nothumb="" dangerouslySetInnerHTML={{ __html: sourceMark(provider) }} />
 );
 
-/** 卡面Imagen片Fallo时尝试OriginalImagenProxy; DatosActualizar时允许FalloImagen片pesadoNuevo取Imagen.  */
+/** 卡面图片失败时尝试原图代理；数据刷新时允许失败图片重新取图。 */
 function Thumb({ src, fallback, width, height, provider, onLearn, retryKey }: {
   src: string; fallback?: string; width?: number; height?: number; provider: string;
   retryKey?: number;
@@ -100,10 +100,10 @@ function FollowCardView(props: FollowCardProps) {
   const imageFallback = imageView && item.playable
     ? `/follow-stream?id=${item.id}${selectedMedia ? `&media=${selectedMedia.index}` : ''}`
     : undefined;
-  /* width/height 让Explorar dispositivoEnImagen片Llegaranterior按固ConRelación占; Imagen片视Imagen补齐尺寸, 视频卡片No回写. 
-     Relación取卡面arribaesteImagen自己: 卡面es媒体清单dentroese就落Enesearriba; 
-     卡面就esEntrada自己缩略Imagen时落EnEntradaarriba. 都Sin就NoGrave猜, 走Sin尺寸占ese套, yEnesteImagenCargar完posterior
-     使用固Con尺寸y回写给它主人.  */
+  /* width/height 让浏览器在图片落地前按固有比例占位；图片视图补齐尺寸，视频卡片不回写。
+     比例取卡面上这张图自己的：卡面是媒体清单里那张就落在那张上；
+     卡面就是条目自己的缩略图时落在条目上。都没有就不硬猜，走无尺寸占位那套，并在这张图加载完后
+     使用固有尺寸并回写给它的主人。 */
   const cardMedia = selectedMedia && selectedMedia.thumb_url === thumbUrl ? selectedMedia : null;
   const itemOwnsCard = !cardMedia || thumbUrl === item.thumb_url;
   const sized = imageView
@@ -115,7 +115,7 @@ function FollowCardView(props: FollowCardProps) {
   const videos = media === 'videos' ? videoItems(group) : [];
   const embedded = item.media_items || [];
   const mixTarget = embedded.length > 1 ? item.id : (videos[0]?.id || item.id);
-  /* 角标y翻卡都取服务端对Completo组判定(`group.stack`): 同unoImagenSolo翻uno次, 跨站Repetir算来源.  */
+  /* 角标与翻卡都取服务端对整组的判定（`group.stack`）：同一个画面只翻一次，跨站重复算来源。 */
   const stack = followStack({
     cover: thumbUrl, coverFace: (selectedMedia?.thumb_url ? selectedMedia : item).face, stack: group.stack,
     imageView, limit: MIX_FLIP_FACES,
@@ -126,7 +126,7 @@ function FollowCardView(props: FollowCardProps) {
     load: async () => faces.current, canFlip: () => faces.current.length > 1 && actions.canFlip(),
     referrerPolicy: 'no-referrer',
   });
-  /* 壳En滚动, 换página y 开más选时按 `_stopHover` 收掉uno切Pasar el ratón动效, este卡翻página也En其en proceso.  */
+  /* 壳在滚动、换页和开多选时按 `_stopHover` 收掉一切悬停动效，这张卡的翻页也在其中。 */
   const stop = useRef(flip.onPointerLeave);
   stop.current = flip.onPointerLeave;
   const attach = useCallback((el: (HTMLElement & { _stopHover?: () => void }) | null) => {
@@ -143,7 +143,7 @@ function FollowCardView(props: FollowCardProps) {
 
   const click = (event: MouseEvent<HTMLElement>) => {
     const target = event.target as HTMLElement;
-    /* EtiquetaEneste卡arribaSoloes读, 点它什么都No做, más选dentro也No算点este卡.  */
+    /* 标签在这张卡上只是读的，点它什么都不做，多选里也不算点了这张卡。 */
     if (target.closest('[data-media-tag]')) return;
     if (actions.toggleSelection && (selectMode || event.shiftKey || event.ctrlKey || event.metaKey)) {
       event.preventDefault();
@@ -160,7 +160,7 @@ function FollowCardView(props: FollowCardProps) {
       data-selected={selected ? '' : undefined} onClick={click} onMouseDown={suppressShiftTextSelection}
       onMouseEnter={flip.onPointerEnter} onMouseLeave={flip.onPointerLeave}>
       <div data-follow-visual="" data-mix-stack={stack.isMix ? '' : undefined}>
-        <button type="button" data-follow-open="" aria-label={`Abrir ${title} Detalles`} />
+        <button type="button" data-follow-open="" aria-label={`打开 ${title} 详情`} />
         <div data-media-pic="">
           {thumbUrl
             ? <Thumb key={thumbUrl} src={thumbUrl} fallback={imageFallback} width={sized?.width} height={sized?.height}
@@ -177,7 +177,7 @@ function FollowCardView(props: FollowCardProps) {
           ) : null}
           <div data-follow-sources="">
             <span data-media-badge="" title={item.provider_label || item.provider}
-              aria-label={`Fuente: ${item.provider_label || item.provider}`}
+              aria-label={`来源：${item.provider_label || item.provider}`}
               dangerouslySetInnerHTML={{ __html: sourceMark(item.provider, item.provider_label) }} />
             {badges ? <span data-follow-badges="" dangerouslySetInnerHTML={{ __html: badges }} /> : null}
           </div>
@@ -195,23 +195,23 @@ function FollowCardView(props: FollowCardProps) {
               </button>
             ) : null}
             {props.variant !== 'next' ? <div data-follow-actions="">
-              <button type="button" data-follow-save={item.id} title={saved ? 'Guardado' : 'Guardar en base de datos'}
-                aria-label={saved ? 'Guardado' : 'Guardar en base de datos'} disabled={saved}
+              <button type="button" data-follow-save={item.id} title={saved ? '已保存' : '保存到数据库'}
+                aria-label={saved ? '已保存' : '保存到数据库'} disabled={saved}
                 aria-busy={busy === 'save' || undefined} aria-disabled={busy === 'save' || undefined}
                 onClick={(event) => act(event, () => props.onSave?.(item.id))}
                 dangerouslySetInnerHTML={{ __html: icon(saved ? 'check' : 'bookmark-plus') }} />
-              <button type="button" data-follow-status={item.id} data-to="seen" title="Marcar como visto" aria-label="Marcar como visto"
+              <button type="button" data-follow-status={item.id} data-to="seen" title="标记已看" aria-label="标记已看"
                 disabled={item.status === 'seen'} aria-busy={busy === 'seen' || undefined}
                 aria-disabled={busy === 'seen' || undefined}
                 onClick={(event) => act(event, () => props.onStatus?.(item.id, 'seen'))}
                 dangerouslySetInnerHTML={{ __html: icon('eye') }} />
-              <button type="button" data-follow-status={item.id} data-to="ignored" title="Ignorar" aria-label="Ignorar"
+              <button type="button" data-follow-status={item.id} data-to="ignored" title="忽略" aria-label="忽略"
                 disabled={item.status === 'ignored'} aria-busy={busy === 'ignored' || undefined}
                 aria-disabled={busy === 'ignored' || undefined}
                 onClick={(event) => act(event, () => props.onStatus?.(item.id, 'ignored'))}
                 dangerouslySetInnerHTML={{ __html: icon('eye-off') }} />
               {item.status === 'seen' || item.status === 'ignored' ? (
-                <button type="button" data-follow-status={item.id} data-to="new" title="Restaurar no vistos" aria-label="Restaurar no vistos"
+                <button type="button" data-follow-status={item.id} data-to="new" title="恢复未看" aria-label="恢复未看"
                   aria-busy={busy === 'new' || undefined} aria-disabled={busy === 'new' || undefined}
                   onClick={(event) => act(event, () => props.onStatus?.(item.id, 'new'))}
                   dangerouslySetInnerHTML={{ __html: icon('rotate-ccw') }} />
@@ -223,8 +223,8 @@ function FollowCardView(props: FollowCardProps) {
       <div data-media-meta="">
         {identity.entityName ? (
           <FollowAuthorLink name={identity.entityName} actions={actions} data-media-avatar="" data-follow-avatar=""
-            aria-label={`ver ${identity.author} 作者página`} dangerouslySetInnerHTML={{ __html: identity.avatar }} />
-        ) : <span data-media-avatar="" data-follow-avatar="" title="CreadorAvatar"
+            aria-label={`查看 ${identity.author} 的作者页`} dangerouslySetInnerHTML={{ __html: identity.avatar }} />
+        ) : <span data-media-avatar="" data-follow-avatar="" title="创作者头像"
           dangerouslySetInnerHTML={{ __html: identity.avatar }} />}
         <div data-media-text="">
           <button type="button" data-media-title=""
@@ -254,5 +254,5 @@ function FollowCardView(props: FollowCardProps) {
   );
 }
 
-/** uno屏几cien, Seleccionary写操作之exteriorpesado画No该连带每uno: 比较都es引用, 壳递进来助手y动作身No变.  */
+/** 一屏几百张，选择与写操作之外的重画不该连带每一张：比较的都是引用，壳递进来的助手与动作身份不变。 */
 export const FollowCard = memo(FollowCardView);

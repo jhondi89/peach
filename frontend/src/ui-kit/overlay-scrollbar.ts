@@ -1,21 +1,21 @@
 interface Lane { axis: 'x' | 'y'; track: HTMLDivElement; thumb: HTMLDivElement; range: number; travel: number }
 
 /**
- * 覆盖滚动: 滑浮Encontenidoarriba, uno列ancho度都No占. 
+ * 覆盖式滚动条：滑块浮在内容上，一列宽度都不占。
  *
- * yaCon `.geist-scroller` 解决es另unomedio问题—它用两端渐隐Descripción"还能往abajo", 
- * peroSin滑, 读No出esteuno列Conmáslargo, 自己停En哪儿, 而且要求contenido套进它自己包装层. 
- * aquíSolo往既Con滚动容Dispositivo父元素arriba挂轨道, No动contenido结构, 两者puede以叠加使用. 
+ * 已有的 `.geist-scroller` 解决的是另一半问题——它用两端渐隐说明「还能往下」，
+ * 但没有滑块，读不出这一列有多长、自己停在哪儿，而且要求内容套进它自己的包装层。
+ * 这里只往既有滚动容器的父元素上挂轨道，不动内容结构，两者可以叠加使用。
  *
- * 轨道必须es容Dispositivo兄弟: 跟着contenidouno起滚轨道etc.于Sin轨道. 宿主因此得es定祖先, 
- * 而且Nouno定 y 容Dispositivouno样grande(Configuración面板卡片还含着Título栏), 所以轨道Ubicación每次都按
- * 两 rect 量出来, No假设它们同框. 两轴各uno轨道, 谁溢出谁显示—同uno容Dispositivo
- * puede能EnNo同版abajo换轴(ColaLista `[data-mix-list]` En带ColaDetalles格dentro就es横滚). 
- * Completopáginaeseunoes唯uno例exterior: `html` Sin元素父级, 轨道挂进 body y由 `.page` 改成
- * fixed, UbicaciónSolo认视口, No用量. 
- * 几何按 2026-09-05 实测 vercel.com 侧栏: 
- * 滑largo = puede视largo / contenidolargo × 轨道largo, 移 = 滚动Progreso × (轨道largo − 滑largo). 
- * 返回uno手动pesado算函数, 给ese些既No改容Dispositivo尺寸也No改子树情形(例如换Fuente de letraposteriorpesado排). 
+ * 轨道必须是容器的兄弟：跟着内容一起滚的轨道等于没有轨道。宿主因此得是定位祖先，
+ * 而且不一定和容器一样大（设置面板的卡片还含着标题栏），所以轨道的位置每次都按
+ * 两个 rect 量出来，不假设它们同框。两条轴各一条轨道，谁溢出谁显示——同一个容器
+ * 可能在不同版式下换轴（队列列表 `[data-mix-list]` 在带队列的详情格里就是横滚）。
+ * 整页那一条是唯一的例外：`html` 没有元素父级，轨道挂进 body 并由 `.page` 改成
+ * fixed，位置只认视口，不用量。
+ * 几何按 2026-09-05 实测 vercel.com 侧栏：
+ * 滑块长 = 可视长 / 内容长 × 轨道长，位移 = 滚动进度 × (轨道长 − 滑块长)。
+ * 返回一个手动重算函数，给那些既不改容器尺寸也不改子树的情形（例如换字体后重排）。
  */
 export function attachOverlayScrollbar(
   container: HTMLElement | null, { variant = '' }: { variant?: string } = {},
@@ -25,9 +25,9 @@ export function attachOverlayScrollbar(
   const host=root?document.body:container.parentElement;
   if(!host)return null;
   container.dataset.overlayScrollbar='true';
-  // 轨道按宿主Relleno框定, static 宿主会它甩到更exterior层某祖先arriba去. 
+  // 轨道按宿主的内边距框定位，static 的宿主会把它甩到更外层某个祖先上去。
   if(!root&&getComputedStyle(host).position==='static')host.style.position='relative';
-  // 局部纵向滚动Unificado显示边缘Sugerencia, Completopágina使用粘性导航层次. 
+  // 局部纵向滚动统一显示边缘提示，整页使用粘性导航层次。
   const edges=root?null:document.createElement('div');
   if(edges){
     edges.className='ui-ov-edges';
@@ -38,7 +38,7 @@ export function attachOverlayScrollbar(
   const axes:Lane['axis'][]=root?['y']:['y','x'];
   const lanes=axes.map((axis):Lane=>{
     const track=document.createElement('div');
-    // 两类名写Todo, 别拼 `ov-${axis}`: 样表SeleccionarDispositivo要能En源码dentro查到消费者. 
+    // 两个类名写全，别拼 `ov-${axis}`：样式表的选择器要能在源码里查到消费者。
     track.className=`ovtrack ${axis==='y'?'ov-y':'ov-x'}${variant?` ${variant}`:''}`;
     const thumb=document.createElement('div');
     thumb.className='ovthumb';
@@ -46,12 +46,12 @@ export function attachOverlayScrollbar(
     host.append(track);
     return {axis,track,thumb,range:0,travel:0};
   });
-  /* 容DispositivoEn宿主en la偏移, Solo能按Diseño盒子量. `getBoundingClientRect()` 给es变换posterior
-     几何, 而abajo面要拿它跟 `clientWidth` este类Diseño值相减—弹层开合动画正卡片按
-     `scale(.85)` 缩着ese 300ms dentro, 两者NoEn同uno坐标系, 算出来轨道Ubicación会落进
-     容Dispositivointerior部. 实测Configuración弹层primero帧derechaMargen 41px(应Como 0), 直到滚unoabajo触发pesado算才跳回derecha
-     边缘, ver着像"滚动从izquierda边跑到derecha边". `offsetLeft`/`offsetTop` No受变换影响, 
-     沿 offsetParent 链累加到宿主Como止; 走No到宿主(宿主Noes定祖先)才退回量 rect.  */
+  /* 容器在宿主里的偏移，只能按布局盒子量。`getBoundingClientRect()` 给的是变换后的
+     几何，而下面要拿它跟 `clientWidth` 这类布局值相减——弹层开合动画正把卡片按
+     `scale(.85)` 缩着的那 300ms 里，两者不在同一个坐标系，算出来的轨道位置会落进
+     容器内部。实测设置弹层首帧右边距 41px（应为 0），直到滚一下触发重算才跳回右
+     边缘，看着像「滚动条从左边跑到右边」。`offsetLeft`/`offsetTop` 不受变换影响，
+     沿 offsetParent 链累加到宿主为止；走不到宿主（宿主不是定位祖先）才退回量 rect。 */
   const offsetWithin=()=>{
     let left=0,top=0,node:Element|null=container;
     while(node&&node!==host){
@@ -75,7 +75,7 @@ export function attachOverlayScrollbar(
     }
   };
   let verticalRange=0,edgeState='';
-  // 滚动Solo读取Ubicación; 容Dispositivoy轨道尺寸由尺寸, contenido变化 y 手动pesado算Actualizar. 
+  // 滚动只读取位置；容器与轨道尺寸由尺寸、内容变化和手动重算刷新。
   const paintPosition=()=>{
     const top=container.scrollTop,left=container.scrollLeft;
     if(edges){
@@ -125,13 +125,13 @@ export function attachOverlayScrollbar(
       lane.range=range;
       lane.travel=0;
       if(range<=1){track.hidden=true;return}
-      // 先显再量: 藏起来轨道largo度es 0, 拿它当"量No到"会自己永久锁En隐藏态. 
+      // 先显再量：藏起来的轨道长度是 0，拿它当「量不到」会把自己永久锁在隐藏态。
       track.hidden=false;
       place(lane);
       const trackSize=vertical?track.clientHeight:track.clientWidth;
       if(!trackSize)return;
-      // corto到抓No住滑etc.于Sin滑: contenido特别largo时给它unoabajo限, 代价es滑Ubicacióny
-      // 滚动ProgresoNo再严格线性, peropuede拖动比puede换算pesado要. 
+      // 短到抓不住的滑块等于没有滑块：内容特别长时给它一个下限，代价是滑块位置与
+      // 滚动进度不再严格线性，但可拖动比可换算重要。
       const thumbSize=Math.max(24,Math.min(trackSize,size/content*trackSize));
       lane.travel=trackSize-thumbSize;
       thumb.style[vertical?'height':'width']=`${thumbSize}px`;
@@ -143,9 +143,9 @@ export function attachOverlayScrollbar(
   const resize=new ResizeObserver(sync);
   resize.observe(container);
   if(!root)container.addEventListener('load',sync,true);
-  // contenidolargocorto变pero容Dispositivo盒子没变(抽屉pesado建, 分区展开), 容Dispositivo自己 ResizeObserver uno声No响. 
-  // Completopáginaeseuno改ver body: 它alto度就escontenidoalto度, 而En documentElement arriba挂 subtree 
-  // MutationObserver etc.于每渲染uno卡都强制uno次pesado排. 
+  // 内容长短变了但容器盒子没变（抽屉重建、分区展开），容器自己的 ResizeObserver 一声不响。
+  // 整页那一条改看 body：它的高度就是内容高度，而在 documentElement 上挂 subtree 的
+  // MutationObserver 等于每渲染一张卡都强制一次重排。
   if(root)resize.observe(document.body);
   else{
     const observed=new Set<Element>();
@@ -155,7 +155,7 @@ export function attachOverlayScrollbar(
       children.forEach(child=>{if(!observed.has(child)){resize.observe(child);observed.add(child)}});
       sync();
     };
-    // contenido自身alto度变化也Actualizar几何, 折叠过渡yFuente de letrapesado排Sin需Esperando滚动. 
+    // 内容自身的高度变化也刷新几何，折叠过渡与字体重排无需等待滚动。
     contentChanged();
     container.addEventListener('transitionend',sync);
     new MutationObserver(contentChanged).observe(container,{childList:true});
@@ -169,7 +169,7 @@ export function attachOverlayScrollbar(
     if(travel<=0||range<=0)return;
     const point=(moved:PointerEvent)=>vertical?moved.clientY:moved.clientX;
     const head=vertical?thumbRect.top:thumbRect.left,tail=vertical?thumbRect.bottom:thumbRect.right;
-    // 按En滑arriba就保持按住eseuno点, 按En轨道空白处则滑en proceso心挪过来. 
+    // 按在滑块上就保持按住的那一点，按在轨道空白处则把滑块中心挪过来。
     const grab=point(event)>=head&&point(event)<=tail?point(event)-head
       :(vertical?thumbRect.height:thumbRect.width)/2;
     const origin=vertical?trackRect.top:trackRect.left;

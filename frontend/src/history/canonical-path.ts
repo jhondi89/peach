@@ -1,4 +1,4 @@
-/** 产品地址Normalizar化, API y媒体端点使用自己契约.  */
+/** 产品地址规范化，API 与媒体端点使用自己的契约。 */
 export function canonicalPath(path: string): string {
   const url = new URL(path, 'https://peach.invalid');
   const details: [RegExp, string][] = [[/^\/item\/(\d+)$/, '/assets/'],

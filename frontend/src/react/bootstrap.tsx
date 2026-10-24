@@ -3,7 +3,7 @@ import { installErrorReporting } from '../error-reporting';
 import { mountApplication } from './application';
 installErrorReporting();
 const host = document.getElementById('appRoot');
-if (!host) throw new Error('Host de la interfaz principal no encontrado');
+if (!host) throw new Error('主界面宿主缺失');
 mountApplication(host);
 export { peachHistory } from '../history';
 export { popCount } from '../ui-kit';

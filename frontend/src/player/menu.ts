@@ -1,31 +1,31 @@
-/* ReproducirDispositivoderechaClave菜单. 
+/* 播放器右键菜单。
  *
- * Proyecto照 YouTube ReproducirDispositivo f572e43c  .ytp-contextmenu 取舍: 循环Reproducir, 迷你ReproducirDispositivo(pequeño窗dentroes展开), 
- * 画en proceso画, Copiar视频网址, Copiar当anteriorTiempo视频网址, ReproducirEstadísticas; 嵌入代码, DepurarInformación y 排查Reproducir问题
- * Peach Sin对应能力, No列.  */
+ * 项目照 YouTube 播放器 f572e43c 的 .ytp-contextmenu 取舍：循环播放、迷你播放器（小窗里是展开）、
+ * 画中画、复制视频网址、复制当前时间的视频网址、播放统计；嵌入代码、调试信息和排查播放问题
+ * Peach 没有对应能力，不列。 */
 import { esc, icon } from '@peach/legacy/core';
 import { dismissMenu, presentMenu, scrollMovesAnchor } from '@peach/legacy/ui';
 
 import { playerHost } from './host';
 import type { VjsPlayer } from './types';
 
-/** 菜单dentro y pequeño窗Con关ese两项要问pequeño窗持Con方.  */
+/** 菜单里和小窗有关的那两项要问小窗的持有方。 */
 export interface PlayerMenuHooks {
-  /** esteReproducirDispositivo此刻EnNoEnpequeño窗dentro.  */
+  /** 这个播放器此刻在不在小窗里。 */
   inMiniplayer(player: VjsPlayer): boolean;
-  /** esteReproducirDispositivo放esObras还es关注Entrada: Copiar出来地址按它走.  */
+  /** 这个播放器放的是作品还是关注条目：复制出来的地址按它走。 */
   kind(player: VjsPlayer): 'item' | 'follow';
-  /** pequeño窗en la"展开".  */
+  /** 小窗里的「展开」。 */
   expand(): void;
-  /** Detallesen la"迷你ReproducirDispositivo": 越过Reproducir态判定, En curso放esteuno送进pequeño窗.  */
+  /** 详情里的「迷你播放器」：越过播放态判定，把正在放的这一条送进小窗。 */
   toMiniplayer(): void;
 }
 
 let hooks: PlayerMenuHooks | null = null;
 export function configurePlayerMenu(next: PlayerMenuHooks): void { hooks = next }
 
-/* 菜单节点归este模: No.uno次用到时建En body arriba, 舞开着时临时挪进舞, 关掉再放回来. 
-   它No进任何 React 树—被挪来挪去节点, React Desinstalar时会找No到它父级.  */
+/* 菜单节点归这个模块：第一次用到时建在 body 上，舞台开着时临时挪进舞台，关掉再放回来。
+   它不进任何 React 树——被挪来挪去的节点，React 卸载时会找不到它的父级。 */
 function menuElement(): HTMLElement {
   let menu = document.getElementById('playerMenu');
   if (!menu) {
@@ -34,7 +34,7 @@ function menuElement(): HTMLElement {
     menu.setAttribute('data-player-context-menu', '');
     menu.id = 'playerMenu';
     menu.setAttribute('role', 'menu');
-    menu.setAttribute('aria-label', 'Reproductor菜单');
+    menu.setAttribute('aria-label', '播放器菜单');
     menu.hidden = true;
     document.body.append(menu);
   }
@@ -43,7 +43,7 @@ function menuElement(): HTMLElement {
 
 let cleanup: (() => void) | null = null;
 
-/** 给Imagen标 `<svg>` 挂uno空 data 属性: Introduce色Imagen标y勾选记号各Conuno样.  */
+/** 给图标的 `<svg>` 挂一个空的 data 属性：填色图标与勾选记号各有一条样式。 */
 const mark = (svg: string, attribute: string) => attribute ? svg.replace('<svg', `<svg ${attribute}=""`) : svg;
 
 export function closePlayerMenu(): void {
@@ -59,7 +59,7 @@ async function copyTextToClipboard(text: string): Promise<boolean> {
     const area = document.createElement('textarea');
     area.value = text; area.setAttribute('readonly', ''); area.style.position = 'fixed'; area.style.opacity = '0';
     document.body.append(area); area.select();
-    let ok = false; try { ok = document.execCommand('copy') } catch { /* Explorar dispositivoNo给 */ }
+    let ok = false; try { ok = document.execCommand('copy') } catch { /* 浏览器不给 */ }
     area.remove(); return ok;
   }
 }
@@ -84,28 +84,28 @@ function playerMenuItems(player: VjsPlayer): MenuItem[] {
   };
   const copy = (withTime: boolean, receipt: string) => {
     void copyTextToClipboard(url(withTime)).then((ok) =>
-      playerHost().toast(ok ? receipt : 'CopiarFallido, Por favorManualCopiarDirección栏', { timeout: 4000, warn: !ok }));
+      playerHost().toast(ok ? receipt : '复制失败，请手动复制地址栏', { timeout: 4000, warn: !ok }));
   };
   const items: MenuItem[] = [
-    { icon: 'repeat', label: 'Reproducción en bucle', checked: !!player.loop(), run: () => player.loop(!player.loop()) },
-    mini ? { icon: 'maximize-2', label: 'Expandir', run: () => hooks?.expand() }
-      : { icon: 'picture-in-picture-2', label: '迷你Reproductor', run: () => hooks?.toMiniplayer() },
+    { icon: 'repeat', label: '循环播放', checked: !!player.loop(), run: () => player.loop(!player.loop()) },
+    mini ? { icon: 'maximize-2', label: '展开', run: () => hooks?.expand() }
+      : { icon: 'picture-in-picture-2', label: '迷你播放器', run: () => hooks?.toMiniplayer() },
   ];
   if (document.pictureInPictureEnabled) {
-    items.push({ icon: 'player-pip', fill: true, label: 'Imagen en imagen',
+    items.push({ icon: 'player-pip', fill: true, label: '画中画',
       run: () => player.el().querySelector<HTMLElement>('.vjs-picture-in-picture-control')?.click() });
   }
-  items.push({ icon: 'link', label: 'CopiarVideosURL', run: () => copy(false, 'CopiadoVideosURL') });
-  items.push({ icon: 'link', label: 'CopiarActualHoraVideosURL', run: () => copy(true, 'CopiadoActualHoraVideosURL') });
+  items.push({ icon: 'link', label: '复制视频网址', run: () => copy(false, '已复制视频网址') });
+  items.push({ icon: 'link', label: '复制当前时间的视频网址', run: () => copy(true, '已复制当前时间的视频网址') });
   const stats = document.getElementById('playerStatsBtn');
-  if (!mini && stats && !stats.hidden) items.push({ icon: 'chart', label: 'Estadísticas de reproducción', run: () => stats.click() });
+  if (!mini && stats && !stats.hidden) items.push({ icon: 'chart', label: '播放统计', run: () => stats.click() });
   return items;
 }
 
 export function openPlayerMenu(player: VjsPlayer, x: number, y: number): void {
   const menu = menuElement();
   closePlayerMenu();
-  /* 舞es模态 dialog, En顶层: 菜单要进它dentro面才盖得住, 否则落En遮罩底abajo.  */
+  /* 舞台是模态 dialog，在顶层：菜单要进它里面才盖得住，否则落在遮罩底下。 */
   const stage = playerHost().stage();
   if (stage instanceof HTMLDialogElement && stage.open) stage.append(menu);
   menu.setAttribute('popover', 'manual');
@@ -116,7 +116,7 @@ export function openPlayerMenu(player: VjsPlayer, x: number, y: number): void {
       mark(icon(item.icon), item.fill ? 'data-player-menu-fill' : '')}<span>${esc(item.label)}</span>${checkable ? mark(icon('check'), 'data-player-menu-check') : ''}</button>`;
   }).join('');
   presentMenu(menu); menu.showPopover();
-  // 量 offsetWidth/offsetHeight: 进场动画起手es scale(.95), getBoundingClientRect 量到es缩过框. 
+  // 量 offsetWidth／offsetHeight：进场动画起手是 scale(.95)，getBoundingClientRect 量到的是缩过的框。
   menu.style.left = `${Math.max(8, Math.min(x, innerWidth - menu.offsetWidth - 8))}px`;
   menu.style.top = `${Math.max(8, Math.min(y, innerHeight - menu.offsetHeight - 8))}px`;
   const buttons = [...menu.querySelectorAll<HTMLElement>('[data-player-menu]')];
@@ -127,7 +127,7 @@ export function openPlayerMenu(player: VjsPlayer, x: number, y: number): void {
   });
   const onDown = (event: Event) => { if (!menu.contains(event.target as Node)) closePlayerMenu() };
   const onKey = (event: KeyboardEvent) => {
-    /* esteunoabajo Escape Solo关菜单: `preventDefault` 同时拦住舞 dialog  `cancel`, 舞Deja着.  */
+    /* 这一下 Escape 只关菜单：`preventDefault` 同时拦住舞台 dialog 的 `cancel`，舞台留着。 */
     if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); closePlayerMenu(); return }
     if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
     event.preventDefault();

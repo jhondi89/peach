@@ -1,19 +1,19 @@
-/* uno排"你En哪儿"Claveabajo面ese滑动玻璃(React esteuno侧; primeropáginay关注páginaese几排归壳 `GLIDE_ROWS`). 
+/* 一排「你在哪儿」的键下面那块滑动玻璃（React 这一侧；首页与关注页那几排归壳的 `GLIDE_ROWS`）。
  *
- * 玻璃esuno常驻节点: 由组件画En浮层根arriba, Solo建uno次, 换Filtrar, 换视Imagen都Solo挪它, Nopesado建—换
- * 元素, 动画就从头起跑, ver到Soloes瞬移. 移y抻largo交给遗Deja层 `moveGlidePane`, Todo站SoloConesteuno
- * 动法; aquíSolo管"此刻落En哪unoarriba": 
+ * 玻璃是一个常驻节点：由组件画在浮层根上、只建一次，换筛选、换视图都只挪它，不重建——换了
+ * 元素，动画就从头起跑，看到的只是瞬移。位移与抻长交给遗留层的 `moveGlidePane`，全站只有这一种
+ * 动法；这里只管「此刻落在哪一枚上」：
  *
- * - 按abajo去立刻滑到eseuno(壳当场推Nuevo按abajo态, aquí跟着 `pressed` 变); 
- * - Pasar el ratón时滑到指针abajoeseuno, 离开esteuno排回到按abajoeseuno(触摸No跟); 
- * - esteuno排横滚或窗口改尺寸时Solopesado量, No动画; 
- * - esteuno排量No出ancho度(被 `hidden` 收起, 祖先 `display:none`)或目标滚出puede视区, 玻璃收起. 
+ * - 按下去立刻滑到那一枚（壳当场推新的按下态，这里跟着 `pressed` 变）；
+ * - 悬停时滑到指针下那一枚，离开这一排回到按下的那一枚（触摸不跟）；
+ * - 这一排横滚或窗口改尺寸时只重量、不动画；
+ * - 这一排量不出宽度（被 `hidden` 收起、祖先 `display:none`）或目标滚出了可视区，玻璃收起。
  *
- * 坐标以浮层根(玻璃父元素)ComoOriginal点, 扣掉en proceso间每uno层滚动量, 同壳 `viewGlideGeometry`: 
- * 玻璃住En滚动层exterior面, 纵向回弹No会被横滚容Dispositivo切平. 
+ * 坐标以浮层根（玻璃的父元素）为原点，扣掉中间每一层的滚动量，同壳的 `viewGlideGeometry`：
+ * 玻璃住在滚动层外面，纵向回弹不会被横滚容器切平。
  *
- * Predeterminadoesuno排横着Clave; `axis: 'y'` 给竖着uno列(侧栏导航): 移回弹换到纵轴, 滚出puede视区
- * 判据也换成纵向.  */
+ * 默认是一排横着的键；`axis: 'y'` 给竖着的一列（侧栏导航）：位移的回弹换到纵轴，滚出可视区
+ * 的判据也换成纵向。 */
 import { useCallback, useEffect, useLayoutEffect, useRef, type PointerEvent, type RefObject } from 'react';
 import { moveGlidePane } from '@peach/legacy/ui';
 
@@ -49,9 +49,9 @@ function geometry(pill: HTMLElement, host: HTMLElement, axis: Axis): Box | null 
   return { x, y, w: pill.offsetWidth, h: pill.offsetHeight };
 }
 
-/** `pane` es玻璃节点, `row` esesteuno排; `pressed` esesteuno排dentro按abajoeseunoSeleccionarDispositivo. `key` 变
- *  (按abajo态换, esteuno排出现或收起)就带动画落到Nuevo按abajo项arriba. 返回两ProcesarDispositivocontinuarEnClavey排arriba; 
- *  `sync` 给esteuno排自己知道Diseño变化(宿主改尺寸, arriba方插进别东西): 掐掉En跑移, Original地pesado量.  */
+/** `pane` 是玻璃节点，`row` 是这一排；`pressed` 是这一排里按下那一枚的选择器。`key` 变了
+ *  （按下态换了、这一排出现或收起）就带动画落到新的按下项上。返回的两个处理器接在键与排上；
+ *  `sync` 给这一排自己知道的布局变化（宿主改尺寸、上方插进了别的东西）：掐掉在跑的位移，原地重量。 */
 export function useViewGlide(
   pane: RefObject<HTMLElement | null>, row: RefObject<HTMLElement | null>, pressed: string, key: unknown,
   { axis = 'x' }: { axis?: Axis } = {},
@@ -60,8 +60,8 @@ export function useViewGlide(
   const place = useCallback((target: HTMLElement | null, animate: boolean) => {
     const glass = pane.current;
     const line = row.current;
-    /* 玻璃es浮层根直continuar子元素, 根es吸顶定, 所以根就es它定基准. No读 `offsetParent`: 
-       收起着玻璃eseuno项es null.  */
+    /* 玻璃是浮层根的直接子元素，根是吸顶定位的，所以根就是它的定位基准。不读 `offsetParent`：
+       收起着的玻璃那一项是 null。 */
     const host = glass?.parentElement;
     if (!glass) return;
     const active = line && line.offsetWidth ? target ?? line.querySelector<HTMLElement>(pressed) : null;
@@ -72,16 +72,16 @@ export function useViewGlide(
       last.current = null;
       return;
     }
-    /* 从收起到出现esNo.uno次落, No从Anterior次antiguo坐标飞进来.  */
+    /* 从收起到出现是第一次落位，不从上一次的旧坐标飞进来。 */
     const from = glass.hidden ? null : last.current;
     glass.hidden = false;
     last.current = box;
-    /* 同uno落点En切página取数时puedeRepetirarriba报, 保Deja它En cursoCompletado移.  */
+    /* 同一落点在切页取数时可重复上报，保留它正在完成的位移。 */
     if (animate && from && sameBox(from, box)) return;
     moveGlidePane(glass, animate ? from : null, box, axis);
   }, [pane, row, pressed, axis]);
 
-  /* primero次落No动画; 往posterior按abajo态uno变就滑过去. 放EnDiseño阶段: 画出来No.uno帧玻璃就Enarriba.  */
+  /* 首次落位不动画；往后按下态一变就滑过去。放在布局阶段：画出来的第一帧玻璃就在位上。 */
   const placed = useRef(false);
   useLayoutEffect(() => {
     const glass = pane.current;
@@ -90,7 +90,7 @@ export function useViewGlide(
     placed.current = true;
   }, [place, key]);
 
-  /* 横滚, 改尺寸Solopesado量. 滚动事件No冒泡, 所以En浮层根arriba按捕obtener阶段continuar住esteuno排dentro任何uno层滚动.  */
+  /* 横滚、改尺寸只重量。滚动事件不冒泡，所以在浮层根上按捕获阶段接住这一排里任何一层的滚动。 */
   useEffect(() => {
     const host = pane.current?.parentElement;
     let frame = 0;
@@ -100,7 +100,7 @@ export function useViewGlide(
     };
     host?.addEventListener('scroll', remeasure, { capture: true, passive: true });
     addEventListener('resize', remeasure, { passive: true });
-    /* 浮层puede以随página面收起, 也puede以En取数posterior补进另uno组Controles. 尺寸Restaurary相邻组变ancho都会改变落点.  */
+    /* 浮层可以随页面收起，也可以在取数后补进另一组控件。尺寸恢复与相邻组变宽都会改变落点。 */
     const observer = new ResizeObserver(() => {
       const line = row.current;
       const active = line?.offsetWidth ? line.querySelector<HTMLElement>(pressed) : null;

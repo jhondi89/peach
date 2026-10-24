@@ -1,22 +1,22 @@
-/* InmersivoModo(ADR-0031 No. 11e 步): `/immerse` Pantalla completa连播. 片单, 每uno格ReproducirDispositivo, CargarSugerencia, 手势, 
- * 动作Clave, 作者yTítulo都Enesteuno面dentro. 
+/* 沉浸模式（ADR-0031 第 11e 步）：`/immerse` 的全屏连播。片单、每一格的播放器、加载提示、手势、
+ * 动作键、作者与标题都在这一面里。
  *
- * 常驻组件 `immerse`(`router/managed-routes.tsx` 常驻表): 路由树它画进 body último尾常驻宿主
- * `[data-immerse-host]`, 宿主就esese节点本身, No.uno次AbrirInmersivoModo时由 `application-residents.ts`  `loadImmerse` 建bien, 
- * En画primero帧同unoTareadentro挂进Documentación. primero帧就es藏着exterior框. 壳Solo拿 `configureImmerse` 给命令入口: Inmersivo
- * Modo盖En所Conpágina面之arriba, 壳Clave盘, 换批yReproducirrápido捷Clave要随时Sincronizar问它开没开, 当anteriores哪uno video. 句柄写本模
- *  store 再 `flushSync` 通知, `open(startId)` dentro骨架, ListayReproducirDispositivoese几次绘制都En返回之anterior画完, 紧跟着读
- * DOM 代码读到就es刚画bien结构. 
+ * 常驻组件 `immerse`（`router/managed-routes.tsx` 的常驻表）：路由树把它画进 body 末尾的常驻宿主
+ * `[data-immerse-host]`，宿主就是那个节点本身，第一次打开沉浸模式时由 `application-residents.ts` 的 `loadImmerse` 建好、
+ * 在画首帧的同一个任务里挂进文档。首帧就是藏着的外框。壳只拿 `configureImmerse` 给的命令式入口：沉浸
+ * 模式盖在所有页面之上，壳的键盘、换批与播放快捷键要随时同步问它开没开、当前是哪一个 video。句柄写本模块
+ * 的 store 再 `flushSync` 通知，`open(startId)` 里骨架、列表与播放器那几次绘制都在返回之前画完，紧跟着读
+ * DOM 的代码读到的就是刚画好的结构。
  *
- * exterior框, 动作列, 作者TítuloyProgreso由 React 画; 每uno格(`[data-immerse-slide]` ydentro面 `<video>`)
- * 由控制DispositivoEn空轨道dentro命令建, 拆: Video.js 要占着ese DOM, arribaabajo滑动移按帧写En格子
- * `style.transform` arriba, Progresoancho度随 timeupdate 写, estetres样都No能etc.uno次pesado画. 
+ * 外框、动作列、作者标题与进度条由 React 画；每一格（`[data-immerse-slide]` 与里面的 `<video>`）
+ * 由控制器在空轨道里命令式建、拆：Video.js 要占着那块 DOM，上下滑动的位移按帧写在格子的
+ * `style.transform` 上，进度条的宽度随 timeupdate 写，这三样都不能等一次重画。
  *
- * 方向Clave, 改窗口Tamañoy离开página面estetres监听挂En模arriba, No挂En组件arriba: Error边界卸掉esteuno面之posterior, 壳照antiguo能
- * 开关它, 离开página面时还开着格照antiguo按会话Cancelar读取. 
+ * 方向键、改窗口大小与离开页面这三条监听挂在模块上、不挂在组件上：错误边界卸掉这一面之后，壳照旧能
+ * 开关它，离开页面时还开着的格照旧按会话取消读取。
  *
- * 宿主No包 `.peach-react`: estePantalla completa层排版uno直En Preflight 之exterior, 按钮, 链continuaryTamaño de fuente继承es遗Deja层
- * Todo局Regla, 样TodoEn `immerse.css`, No用工具类.  */
+ * 宿主不包 `.peach-react`：这块全屏层的排版一直在 Preflight 之外，按钮、链接与字号继承的是遗留层
+ * 的全局规则，样式全在 `immerse.css`，不用工具类。 */
 import { useLayoutEffect, useRef, useSyncExternalStore, type MouseEvent, type PointerEvent } from 'react';
 import { flushSync } from 'react-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -41,32 +41,32 @@ import {
 } from './immerse';
 import type { ImmerseApi, ImmerseHost } from './immerse-api';
 
-/* ── Estado ── */
+/* ── 状态 ── */
 
 interface Shown { item: ImmerseItem; index: number; length: number }
 
 interface View {
   open: boolean;
-  /** No.uno片子出画anteriorSoloDejaCargarSugerencia: 框, 动作列, 作者Título y Progreso按出画时形状uno起出现, No会先按
-   *  竖屏摆uno遍再跳. 片子En隐藏舞dentro照常缓冲.  */
+  /** 第一条片子出画前只留加载提示：框、动作列、作者标题和进度条按出画时的形状一起出现，不会先按
+   *  竖屏摆一遍再跳。片子在隐藏的舞台里照常缓冲。 */
   idle: boolean;
-  /** 舞形状SoloEnuno片子真正出画时换. Nuevo片预Cargar时antiguo片还En屏arriba, 形状提anterior翻过去, antiguo片就被塞进
-   *  另unoRelación框dentro.  */
+  /** 舞台形状只在一条片子真正出画时换。新片预加载时旧片还在屏上，形状提前翻过去，旧片就被塞进
+   *  另一种比例的框里。 */
   wide: boolean;
-  /** CargarSugerenciaCompleto句(带读取Velocidad度); null es收起.  */
+  /** 加载提示的整句（带读取速度）；null 是收起。 */
   loading: string | null;
   shown: Shown | null;
 }
 
-/** uno格: exterior层负责arribaabajo滑动, dentro面 video 交给 Video.js. 当anterior格用变量持Con, No按 id 查: Video.js
- *  挂载posterior会 video  id 挪到exterior包 div arriba.  */
+/** 一格：外层负责上下滑动，里面的 video 交给 Video.js。当前格用变量持有，不按 id 查：Video.js
+ *  挂载后会把 video 的 id 挪到外包的 div 上。 */
 interface Slide {
   el: HTMLDivElement;
   video: HTMLVideoElement;
   session: string;
   release: () => void;
   disposed: boolean;
-  /** 拆掉时兑现: 还Enetc.片源或etc.出画eseuno步No再干etc..  */
+  /** 拆掉时兑现：还在等片源或等出画的那一步不再干等。 */
   gone: Promise<void>;
   leave: () => void;
 }
@@ -79,7 +79,7 @@ let host: ImmerseHost | null = null;
 let dom: Dom | null = null;
 let view: View = CLOSED;
 const listeners = new Set<() => void>();
-/* 每次Abrir, Cerrar各换uno代: 取数yEsperando回来时代次No对就作废.  */
+/* 每次打开、关闭各换一代：取数与等待回来时代次不对就作废。 */
 let generation = 0;
 let seed = 0;
 let draw = 0;
@@ -93,12 +93,12 @@ const slides = new Set<Slide>();
 let loadingLabel = '';
 let loadingItem: ImmerseItem | null = null;
 let ticker = 0;
-/** Progreso拖动作用En哪uno格arriba; No.uno出画anteriory关掉之posteriorSin.  */
+/** 进度条拖动作用在哪一格上；第一条出画前与关掉之后没有。 */
 let scrubTarget: { video: HTMLVideoElement; duration: () => number } | null = null;
 let scrubbing = false;
 
 function immerseHost(): ImmerseHost {
-  if (!host) throw new Error('Modo inmersivoAún no haycontinuararriba宿主(configureImmerse)');
+  if (!host) throw new Error('沉浸模式还没有接上宿主（configureImmerse）');
   return host;
 }
 
@@ -111,19 +111,19 @@ function notify(): void {
   for (const listener of [...listeners]) listener();
 }
 
-/* 返回时ya经画完. esteuno面抛错, 被Error边界卸掉之posterior没人订阅, `view` 照antiguo写进 store, No画, No抛.  */
+/* 返回时已经画完。这一面抛错、被错误边界卸掉之后没人订阅，`view` 照旧写进 store，不画、不抛。 */
 function paint(): void {
   flushSync(notify);
 }
 
-/* ── CargarSugerencia ── */
+/* ── 加载提示 ── */
 
 function loadingText(): string {
   const speed = loadingItem ? streamSpeedBits(loadingItem.id) : 0;
   return speed ? `${loadingLabel} · ${fmtSpeed(speed)}` : loadingLabel;
 }
 
-/** Abrir, 收起CargarSugerencia. 开着时每 500ms 按当anterioreseunoActualizar读取Velocidad度.  */
+/** 打开、收起加载提示。开着时每 500ms 按当前那一条刷新读取速度。 */
 function setLoading(label: string | null, item: ImmerseItem | null = null): void {
   clearInterval(ticker);
   ticker = 0;
@@ -139,13 +139,13 @@ function setLoading(label: string | null, item: ImmerseItem | null = null): void
   }, 500);
 }
 
-/* ── 每uno格 ── */
+/* ── 每一格 ── */
 
 function createSlide(offset: number): Slide {
   const el = document.createElement('div');
   el.dataset.immerseSlide = '';
   if (offset) el.style.transform = `translateY(${offset}%)`;
-  // `video-js` 类要写En挂载anterior video arriba, Video.js 才会它带到exterior包 div arriba. 
+  // `video-js` 类要写在挂载前的 video 上，Video.js 才会把它带到外包 div 上。
   const video = document.createElement('video');
   video.className = 'video-js';
   video.playsInline = true;
@@ -160,7 +160,7 @@ function createSlide(offset: number): Slide {
   return slide;
 }
 
-/** 挂arribaesteuno格ReproducirDispositivo; 片源交给 video 之posterior兑现(拆得更早就随拆兑现).  */
+/** 挂上这一格的播放器；片源交给 video 之后兑现（拆得更早就随拆兑现）。 */
 function loadSlide(slide: Slide, item: ImmerseItem): Promise<void> {
   return new Promise((resolve) => {
     slide.release = mountPlayer(slide.video, {
@@ -171,7 +171,7 @@ function loadSlide(slide: Slide, item: ImmerseItem): Promise<void> {
   });
 }
 
-/** 拆uno格: 按会话Cancelar读取, 拆ReproducirDispositivo, 摘节点.  */
+/** 拆一格：按会话取消读取、拆播放器、摘节点。 */
 function disposeSlide(slide: Slide | null): void {
   if (!slide || slide.disposed) return;
   slide.disposed = true;
@@ -202,7 +202,7 @@ function waitReady(slide: Slide): Promise<void> {
   });
 }
 
-/* ── 铺满还es完Completo显示 ── */
+/* ── 铺满还是完整显示 ── */
 
 function fitVideo(video: HTMLVideoElement): void {
   const track = video.closest<HTMLElement>('[data-immerse-track]');
@@ -222,14 +222,14 @@ function applyFit(video: HTMLVideoElement): void {
   else video.addEventListener('loadedmetadata', () => fitVideo(video), { once: true });
 }
 
-/** 换舞形状, 框dentro每片子铺满判定跟着pesado算.  */
+/** 换舞台形状，框里每条片子的铺满判定跟着重算。 */
 function setStage(wide: boolean): void {
   view = { ...view, wide };
   paint();
   fitAll();
 }
 
-/* ── 片单y换 ── */
+/* ── 片单与换条 ── */
 
 const fetchDraw = (): Promise<ImmerseItem[]> => {
   const at = query;
@@ -253,13 +253,13 @@ async function show(direction = 0): Promise<void> {
   const item = list[index];
   if (!item || switching) return;
   const mine = generation;
-  /* 当anterioresteuno交给壳写进地址栏: 竖划diez之posteriorActualizarpágina面, 落回来该es同uno片子, 而NoespesadoNuevo抽uno批.  */
+  /* 当前这一条交给壳写进地址栏：竖划十条之后刷新页面，落回来的该是同一条片子，而不是重新抽一批。 */
   immerseHost().route(item.id);
   switching = true;
-  setLoading(direction ? 'Cambiando en proceso...' : 'Cargando...', item);
+  setLoading(direction ? '切换中…' : '加载中…', item);
   let incoming: Slide | null = null;
   try {
-    // esteuno刚被删掉(Detalles回 `{error}`)照样放: 作者y动作ClaveSoloesSinpuede画. 
+    // 这一条刚被删掉（详情回 `{error}`）照样放：作者与动作键只是没有可画的。
     await ensureDetail(item.id).catch((error: unknown) => { if (!(error instanceof ItemGone)) throw error });
     if (mine !== generation) return;
     const old = current, sliding = !!(direction && old);
@@ -277,7 +277,7 @@ async function show(direction = 0): Promise<void> {
         next.el.style.transform = '';
       }));
       await new Promise((resolve) => setTimeout(resolve, SLIDE_MS));
-      // 动画帧没跑到(página面Enposterior)也要落, 否则Nuevo片停En屏幕exterior. 
+      // 动画帧没跑到（页面在后台）也要落位，否则新片停在屏幕外。
       disposeSlide(old);
       next.el.style.transform = '';
     }
@@ -301,8 +301,8 @@ async function step(direction: number): Promise<void> {
   if (switching || !view.open) return;
   const mine = generation;
   index += direction;
-  setLoading('Cambiando en proceso...', list[index] ?? null);
-  // 滚到尾部就续取Siguiente批: Sin限流. 每次都esNuevoAleatorio抽样, 按 id 去pesadocontinuarEnposterior面. 
+  setLoading('切换中…', list[index] ?? null);
+  // 滚到尾部就续取下一批：无限流。每次都是新的随机抽样，按 id 去重接在后面。
   if (index >= list.length - 3 && !extending) {
     extending = true;
     try {
@@ -310,7 +310,7 @@ async function step(direction: number): Promise<void> {
       const more = await fetchDraw();
       if (mine === generation) list = extendList(list, more);
     } catch {
-      // 续取Fallo就EnyaConeseuno批dentro绕回. 
+      // 续取失败就在已有的那一批里绕回。
     } finally {
       extending = false;
     }
@@ -330,7 +330,7 @@ async function open(startId: number | null): Promise<void> {
   queryClient.removeQueries({ queryKey: ['immerse-list'] });
   view = { ...view, open: true, idle: true, shown: null };
   document.body.setAttribute('data-immerse-open', '');
-  setLoading('Cargando contenido...');
+  setLoading('加载内容…');
   try {
     let next = await fetchDraw();
     if (startId && !next.some((item) => item.id === startId)) {
@@ -344,7 +344,7 @@ async function open(startId: number | null): Promise<void> {
     list = next;
     if (!list.length) {
       close();
-      immerseHost().warn('ActualFiltrarabajoSinpuede直continuarReproducircontenido');
+      immerseHost().warn('当前筛选下没有可直接播放的内容');
       return;
     }
     index = Math.max(0, list.findIndex((item) => item.id === startId));
@@ -356,7 +356,7 @@ async function open(startId: number | null): Promise<void> {
   }
 }
 
-/** 拆掉所Con格, 收起Sugerenciay手势en proceso间态.  */
+/** 拆掉所有格、收起提示与手势的中间态。 */
 function teardown(): void {
   clearInterval(ticker);
   ticker = 0;
@@ -378,9 +378,9 @@ function close(): void {
   immerseHost().closed();
 }
 
-/* ── 单击, 双击y触屏手势 ──
-   Teléfonoarriba竖划切片, 横划拖Progreso. 横划En哪儿起手都行—屏幕最abajo沿eseProgresoEnTeléfonoarriba几乎摸No到. 
-   移按屏ancho换算成Duración相对量, 所以从任何Ubicación起手都es"往derecha = 往posterior".  */
+/* ── 单击、双击与触屏手势 ──
+   手机上竖划切片、横划拖进度。横划在哪儿起手都行——屏幕最下沿那条进度条在手机上几乎摸不到。
+   位移按屏宽换算成时长的相对量，所以从任何位置起手都是「往右 = 往后」。 */
 
 let tapTimer = 0;
 let lastTap: { side: number; at: number } | null = null;
@@ -394,7 +394,7 @@ function clearTap(): void {
   lastTap = null;
 }
 
-/** izquierdaderechamedio区: 同侧两abajorápido退rápido进, unoabajo切Reproducir(etc.双击窗口过去才兑现).  */
+/** 左右半区：同侧两下快退快进，一下切播放（等双击窗口过去才兑现）。 */
 function handleTap(clientX: number): void {
   const video = current?.video;
   if (!video) return;
@@ -405,7 +405,7 @@ function handleTap(clientX: number): void {
     seekVideoBy(video, immerseHost().seekSeconds() * side);
     return;
   }
-  // 两次点EnNo同medio区时, No.unoabajo仍esuno次完Completo单击; 立即兑现posterior再etc.当anterior点击. 
+  // 两次点在不同半区时，第一下仍是一次完整的单击；立即兑现后再等当前点击。
   if (tapTimer) { clearTimeout(tapTimer); tapTimer = 0; toggleVideoPlayback(video) }
   lastTap = { side, at: now };
   tapTimer = window.setTimeout(() => {
@@ -416,7 +416,7 @@ function handleTap(clientX: number): void {
 }
 
 function clickTrack(): void {
-  // 触屏合成 click 会紧跟 touchend; eseunoabajoya经由单击/双击判定continuar管, No能再切uno次. 
+  // 触屏的合成 click 会紧跟 touchend；那一下已经由单击／双击判定接管，不能再切一次。
   if (Date.now() < ignoreClickUntil) return;
   toggleVideoPlayback(current?.video);
 }
@@ -445,7 +445,7 @@ function onTouchMove(event: TouchEvent): void {
   if (touch.axis !== 'x') return;
   const video = current?.video, total = video ? video.duration || 0 : 0;
   if (!total) return;
-  event.preventDefault(); // 横划归Progreso, No交给página面滚动
+  event.preventDefault(); // 横划归进度，不交给页面滚动
   touch.to = Math.min(total, Math.max(0, touch.from + dx / window.innerWidth * total));
   paintProgress(touch.to / total);
 }
@@ -481,9 +481,9 @@ function onWheel(event: WheelEvent): void {
   void step(event.deltaY > 0 ? 1 : -1);
 }
 
-/* Progreso拖动. pointer uno套同时盖鼠标 y 触控, 捕obtener指针posterior手滑出Progreso也No会断. 拖动en procesoSolo画Progreso, 
-   松手才 seek—每帧都 seek 会让远程源uno直pesadoNuevo缓冲. 没拖动单击走同uno路: pointerdown ya经
-   画Progreso, pointerup Llegar.  */
+/* 进度条拖动。pointer 一套同时盖鼠标和触控，捕获指针后手滑出进度条也不会断。拖动中只画进度，
+   松手才 seek——每帧都 seek 会让远程源一直重新缓冲。没拖动的单击走同一条路：pointerdown 已经
+   画了进度，pointerup 落地。 */
 function barRatio(event: PointerEvent): number {
   const box = dom!.bar.getBoundingClientRect();
   return Math.min(1, Math.max(0, (event.clientX - box.left) / box.width));
@@ -515,12 +515,12 @@ function scrubCancel(): void {
   setBarScrubbing(false);
 }
 
-/* ── 动作Clave ── */
+/* ── 动作键 ── */
 
 type FeedbackKind = 'dislike' | 'seen' | 'o';
 interface FeedbackResult { feedback?: string | null; disposal?: string | null; o_count?: number }
 
-/** 写uno次Comentarios, 回执换进 `['item', id]`, Directoriodentro同uno卡跟着换.  */
+/** 写一次反馈，回执换进 `['item', id]`，目录里同一张卡跟着换。 */
 export async function sendFeedback(id: number, kind: string): Promise<FeedbackResult> {
   const result = await apiSend<FeedbackResult>(FEEDBACK_URL, { id, kind });
   const before = queryClient.getQueryData<DetailItem>(itemKey(id));
@@ -537,12 +537,12 @@ export async function sendFeedback(id: number, kind: string): Promise<FeedbackRe
 }
 
 const ACTIONS: { kind: FeedbackKind; glyph: string; label: string }[] = [
-  { kind: 'dislike', glyph: 'thumbs-down', label: '标ComoNo me gusta' },
-  { kind: 'seen', glyph: 'eye', label: '标ComoVisto' },
-  { kind: 'o', glyph: 'heart', label: 'Registrar un orgasmo' },
+  { kind: 'dislike', glyph: 'thumbs-down', label: '标为不喜欢' },
+  { kind: 'seen', glyph: 'eye', label: '标为看过' },
+  { kind: 'o', glyph: 'heart', label: '记一次高潮' },
 ];
 
-/** 当anterior出画eseunoDetalles: 出画anteriorya经取过(`ensureDetail`), aquíSolo读缓存, 跟着写回pesado画.  */
+/** 当前出画那一条的详情：出画前已经取过（`ensureDetail`），这里只读缓存、跟着写回重画。 */
 function useDetail(id: number | null) {
   return useQuery({
     queryKey: itemKey(id ?? 0),
@@ -571,7 +571,7 @@ function ImmerseAction({ kind, glyph, label, id }: { kind: FeedbackKind; glyph: 
       });
       if (kind === 'dislike' && result.feedback === 'dislike') setTimeout(() => { void step(1) }, DISLIKE_ADVANCE_MS);
     },
-    onError: (error) => immerseHost().failure('ActualizarComentarios', error),
+    onError: (error) => immerseHost().failure('更新反馈', error),
   });
   const busy = mutation.isPending;
   const pressed = kind !== 'o' && full ? (full.feedback === kind ? 'true' : 'false') : undefined;
@@ -583,22 +583,22 @@ function ImmerseAction({ kind, glyph, label, id }: { kind: FeedbackKind; glyph: 
         <svg viewBox="0 0 24 24"><use href={`#i-${glyph}`} /></svg>
       </button>
       <span data-immerse-label="">
-        {kind === 'dislike' ? 'No me gusta' : null}
-        {kind === 'seen' ? (full?.feedback === 'seen' ? 'Ya visto' : 'Visto') : null}
-        {kind === 'o' ? <>Orgasmo <b>{full?.o_count || 0}</b></> : null}
+        {kind === 'dislike' ? '不喜欢' : null}
+        {kind === 'seen' ? (full?.feedback === 'seen' ? '已看' : '看过') : null}
+        {kind === 'o' ? <>高潮 <b>{full?.o_count || 0}</b></> : null}
       </span>
     </div>
   );
 }
 
-/* ── 作者yTítulo ── */
+/* ── 作者与标题 ── */
 
 function Caption({ shown }: { shown: Shown | null }) {
   const item = shown?.item ?? null;
   const full = useDetail(item?.id ?? null);
   const owner = full ? ownerOf(full) : null;
   const helpers = immerseHost();
-  /* 点作者或Avatar: 先关掉, 再进Primero出镜者(Sin就es创作者)资料página.  */
+  /* 点作者或头像：先关掉，再进第一位出镜者（没有就是创作者）的资料页。 */
   const openOwner = (event: MouseEvent) => {
     event.preventDefault();
     if (!full) return;
@@ -607,8 +607,8 @@ function Caption({ shown }: { shown: Shown | null }) {
     else if (full.creator) helpers.openEntity('creator', full.creator);
     else helpers.openUnowned();
   };
-  /* Título进Detallespágina. InmersivoMododentroSolover得到Archivo名, 想verEtiqueta, 相关Recomendado或改东西都得先Cerrar sesión再去Listadentro
-     它找回来. Ruta y 旁边作者链continuaruno致: 先关, 再开.  */
+  /* 标题进详情页。沉浸模式里只看得到文件名，想看标签、相关推荐或改东西都得先退出再去列表里
+     把它找回来。路径和旁边的作者链接一致：先关，再开。 */
   const openTitle = () => {
     if (!item) return;
     close();
@@ -618,19 +618,19 @@ function Caption({ shown }: { shown: Shown | null }) {
   return (
     <div data-immerse-ui="">
       <div data-immerse-author="">
-        <button type="button" data-immerse-avatar="" aria-label="AbrirDetalles" onClick={openOwner}
+        <button type="button" data-immerse-avatar="" aria-label="打开资料" onClick={openOwner}
           dangerouslySetInnerHTML={{ __html: avatar }} />
         <a href="#" onClick={openOwner}>{owner?.who ?? ''}</a>
         <span>{shown && item ? `· ${fmtDur(item.duration)} · ${item.ctx_orient || ''} · ${shown.index + 1}/${shown.length}` : ''}</span>
       </div>
-      <button type="button" data-immerse-title="" onClick={openTitle}>{item ? helpers.displayName(item).trim() || 'Video sin nombre' : ''}</button>
+      <button type="button" data-immerse-title="" onClick={openTitle}>{item ? helpers.displayName(item).trim() || '未命名视频' : ''}</button>
     </div>
   );
 }
 
-/* ── exterior框 ── */
+/* ── 外框 ── */
 
-const SPINNER = { __html: spinnerHtml('MediosCargarEn proceso') };
+const SPINNER = { __html: spinnerHtml('媒体加载中') };
 
 function ImmerseView({ view: at }: { view: View }) {
   const frame = useRef<HTMLDivElement>(null);
@@ -640,8 +640,8 @@ function ImmerseView({ view: at }: { view: View }) {
   useLayoutEffect(() => {
     const el = frame.current!;
     dom = { root: el, track: track.current!, bar: bar.current!, progress: progress.current! };
-    /* 横划要 `preventDefault`, React 触摸y滚轮事件挂En根arribaes被动, 拦No住página面滚动: este几直continuar挂
-       En节点arriba.  */
+    /* 横划要 `preventDefault`，React 的触摸与滚轮事件挂在根上是被动的，拦不住页面滚动：这几条直接挂
+       在节点上。 */
     el.addEventListener('touchstart', onTouchStart, { passive: true });
     el.addEventListener('touchmove', onTouchMove, { passive: false });
     el.addEventListener('touchend', onTouchEnd, { passive: false });
@@ -670,7 +670,7 @@ function ImmerseView({ view: at }: { view: View }) {
         <span data-immerse-spinner="" dangerouslySetInnerHTML={SPINNER} />
         <span>{at.loading ?? ''}</span>
       </div>
-      <button type="button" data-immerse-close="" title="Desactivar" aria-label="Desactivar" onClick={close}>
+      <button type="button" data-immerse-close="" title="关闭" aria-label="关闭" onClick={close}>
         <svg viewBox="0 0 24 24"><use href="#i-x" /></svg>
       </button>
       <div ref={bar} data-immerse-bar="" onPointerDown={scrubStart} onPointerMove={scrubMove}
@@ -682,7 +682,7 @@ function ImmerseView({ view: at }: { view: View }) {
   );
 }
 
-/* ── 对壳入口 ── */
+/* ── 对壳的入口 ── */
 
 const api: ImmerseApi = {
   open,
@@ -693,30 +693,30 @@ const api: ImmerseApi = {
 
 function onKeyDown(event: KeyboardEvent): void {
   if (!view.open) return;
-  // Introducir态No抢Clave: Buscar框, Etiqueta弹窗 y 任何puedeEditar区域en la按Clave归它们自己Procesar. 
+  // 输入态不抢键：搜索框、标签弹窗和任何可编辑区域里的按键归它们自己处理。
   const target = event.target as HTMLElement | null;
   if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable)) return;
   if (event.ctrlKey || event.metaKey || event.altKey) return;
-  // 纵向切片,  y 竖屏corto视频手势方向保持uno致. 
+  // 纵向切片，和竖屏短视频的手势方向保持一致。
   if (event.key === 'ArrowDown') void step(1);
   if (event.key === 'ArrowUp') void step(-1);
 }
 
-/** continuararriba壳给宿主, 拿回InmersivoModo命令入口. Solo调uno次; 壳 `loadImmerse` continuar着En路由树dentroAbriresteuno面, 
- *  藏着exterior框画arriba之posterior才交出句柄, No.uno次Abrir之anterior它就En.  */
+/** 接上壳给的宿主，拿回沉浸模式的命令式入口。只调一次；壳的 `loadImmerse` 接着在路由树里打开这一面，
+ *  藏着的外框画上之后才交出句柄，第一次打开之前它就在。 */
 export function configureImmerse(next: ImmerseHost): ImmerseApi {
   const first = !host;
   host = next;
   if (first) {
     document.addEventListener('keydown', onKeyDown);
-    // RotarTeléfono或改窗口Tamañoposterior, 同uno视频铺满/完Completo显示判定puede能Voltear. 
+    // 旋转手机或改窗口大小后，同一条视频的铺满／完整显示判定可能翻转。
     addEventListener('resize', () => { if (view.open) fitAll() });
     addEventListener('pagehide', () => { slides.forEach((slide) => cancelStreamSession(slide.session)) });
   }
   return api;
 }
 
-/** 常驻表en laeseuno面: 读本模 store, 宿主还没continuararriba时No画.  */
+/** 常驻表里的那一面：读本模块的 store，宿主还没接上时不画。 */
 export function ImmerseSurface() {
   const at = useSyncExternalStore(subscribe, () => view);
   return host ? <ImmerseView view={at} /> : null;
