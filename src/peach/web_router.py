@@ -91,6 +91,7 @@ from .web_organize import (
 from .web_orphan_records import q_orphan_records, w_orphan_attach
 from .web_playlists import q_playlist, q_playlists, w_playlist
 from .web_custom_metadata import q_custom_metadata, w_custom_metadata
+from .web_search import q_web_search
 from .web_resource_sync import w_purge_missing, w_resource_sync_apply, w_resource_sync_scan
 from .web_review import q_review, w_review_decision, w_review_genre
 from .web_settings import q_settings, w_settings
@@ -367,6 +368,7 @@ GET_HANDLERS = {
     "/api/duplicates": q_duplicates,
     "/api/quality-goals": q_quality_goals,
     "/api/wants": q_wants,
+    "/api/web-search": q_web_search,
     "/api/wants/magnets": q_want_magnets,
     "/api/stats": _get_stats,
     "/api/tops": _get_tops,

@@ -16,6 +16,7 @@ import { CloudDownloadDialog, type DownloadPrefill } from '../activity/cloud-dow
 import { Note } from '../components/note';
 import { EmptyState } from '../components/empty-state';
 import { WantList } from '../wants/want-list';
+import { WebSearch } from './web-search';
 import { addWant, invalidateWants } from '../wants/wants';
 import { busyProps, useAction } from '../settings/use-action';
 import { discoveryArtwork, discoveryKey, fetchDiscoveries, type DiscoveryScope } from './jav';
@@ -26,6 +27,7 @@ import { LibraryShortcuts } from '../library-shortcuts/shortcut-controls';
 import { ArtSlot } from '../components/art-slot';
 import { Segments, SortKeys } from '../entity-filter/entity-filter-page';
 import { TaskProgress } from '../components/task-progress';
+import { tagLabel } from '../../core/tags';
 import { DISCOVERY_SORTS, discoveryScore, recommendationScore, type DiscoverySort } from './discovery-sorts';
 
 const SearchGlyph = spriteGlyph('search');
@@ -48,11 +50,13 @@ export function JavPage({ tab, readOnly, navigate, receipt }: {
   const search = (event: FormEvent) => { event.preventDefault() };
   return <div className="flex w-full flex-col gap-6">
     <JavHeader tab={tab} navigate={navigate} find={() => setDownload({})} />
-    <form aria-label={tab === 'discover' ? 'Filtrar recomendados' : 'Filtrar deseados'} onSubmit={search}>
+    {tab === 'search' ? null : <form aria-label={tab === 'discover' ? 'Filtrar recomendados' : 'Filtrar deseados'} onSubmit={search}>
       <Input type="search" aria-label={tab === 'discover' ? 'Filtrar recomendados' : 'Filtrar deseados'} placeholder="Filtrar por código, actriz o título" leadingIcon={SearchGlyph}
         value={text} onChange={setText} enterKeyHint="search" />
-    </form>
-    {tab === 'discover'
+    </form>}
+    {tab === 'search'
+      ? <WebSearch readOnly={readOnly} receipt={receipt} navigate={navigate} initial={text} />
+      : tab === 'discover'
       ? <Discover readOnly={readOnly} receipt={receipt} resource={setDownload} query={text.trim()} navigate={navigate} clearText={() => setText('')} />
       : <WantList readOnly={readOnly} toast={receipt} query={text.trim()} />}
     <CloudDownloadDialog prefill={download} close={() => setDownload(null)} receipt={receipt} />
@@ -123,7 +127,7 @@ function Discover({ readOnly, receipt, resource, query, navigate, clearText }: {
         <span data-entity-sep="" aria-hidden="true" />
       </div><div data-catalog-tags="" dangerouslySetInnerHTML={waiting ? { __html: javTagSkeleton() } : undefined}>
         {waiting ? null : tags.map(name => <FilterPill key={name} data-catalog-tag={name} data-entity-press="" pressed={tag === name} onPress={() => setTag(tag === name ? '' : name)}>
-          {name}<span data-count-badge="">{all.filter(item => item.tags?.includes(name)).length}</span>
+          {tagLabel(name)}<span data-count-badge="">{all.filter(item => item.tags?.includes(name)).length}</span>
         </FilterPill>)}
       </div></div>} bottom={<>
         <span data-catalog-readout="">{waiting ? <span data-skeleton="count" aria-hidden className="relative inline-block h-3.5 w-37.5 rounded-md align-middle skeleton-sheen" /> : `${items.length} obras`}</span>
@@ -188,7 +192,7 @@ function Discover({ readOnly, receipt, resource, query, navigate, clearText }: {
             <Chip color={recommendation.color}>{recommendation.label}</Chip>
           </button>
           {(item.tags || []).slice(0, 4).map(name =>
-          <button type="button" data-media-tag="" key={name} aria-pressed={tag === name} onClick={() => setTag(tag === name ? '' : name)}>{name}</button>)}</div>
+          <button type="button" data-media-tag="" key={name} aria-pressed={tag === name} onClick={() => setTag(tag === name ? '' : name)}>{tagLabel(name)}</button>)}</div>
           </div>
         </div>
         <div data-jav-actions="" className="flex flex-wrap gap-2">

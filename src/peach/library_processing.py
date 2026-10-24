@@ -1399,7 +1399,7 @@ class _RemoteSession:
         from .custom_metadata import load
         kind = metadata_routes.classify(code, *evidence)
         return [entry for entry in load(self._config.directory('secrets'))
-                if entry['enabled'] and kind in entry['content_types']]
+                if entry['enabled'] and entry.get('endpoint') and kind in entry['content_types']]
 
     def _chain(self, code, *evidence):
         from .custom_metadata import source_key

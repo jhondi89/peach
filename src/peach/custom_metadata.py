@@ -53,6 +53,41 @@ def _valid_selector(value: object) -> bool:
     return True
 
 
+def _check_endpoint(endpoint: str, marker: str, sample: str, what: str) -> None:
+    """Dirección HTTPS pública fija con exactamente un `marker` fuera del dominio."""
+    if endpoint.count(marker) != 1 or '{' in endpoint.replace(marker, '') or '}' in endpoint.replace(marker, ''):
+        raise ValueError(f"La dirección de {what} debe incluir un {marker}")
+    parsed = urlsplit(endpoint.replace(marker, sample))
+    if (not public_https_url(endpoint.replace(marker, sample)) or parsed.port not in (None, 443)
+            or not re.fullmatch(r'[a-z0-9-]+(?:\.[a-z0-9-]+)+', parsed.hostname or '')
+            or parsed.fragment or marker in endpoint.split('://', 1)[-1].split('/', 1)[0]
+            or len(endpoint) > 2048 or any(ord(c) < 33 for c in endpoint)):
+        raise ValueError(f"La dirección de {what} debe ser HTTPS con dominio público fijo y puerto 443")
+
+
+SEARCH_FIELDS = ('item', 'title', 'link', 'code', 'image', 'date')
+
+
+def _search_config(raw: dict) -> tuple[str, dict]:
+    """Búsqueda opcional de una fuente web: página con `{query}` y selectores de cada resultado."""
+    search_endpoint = str(raw.get('search_endpoint') or '').strip()
+    fields = raw.get('search_fields') or {}
+    if not isinstance(fields, dict) or set(fields) - set(SEARCH_FIELDS):
+        raise ValueError("Los selectores de búsqueda no son válidos")
+    fields = {key: str(value).strip() for key, value in fields.items() if value and str(value).strip()}
+    if not search_endpoint:
+        return '', {}
+    _check_endpoint(search_endpoint, '{query}', 'julia', 'búsqueda')
+    if not fields.get('item') or '@' in fields['item'] or not _valid_selector(fields['item']):
+        raise ValueError("Escribe el selector CSS de cada resultado (sin @atributo)")
+    if not fields.get('title'):
+        raise ValueError("Escribe el selector del título de cada resultado")
+    bad = [key for key, value in fields.items() if key != 'item' and not _valid_selector(value)]
+    if bad:
+        raise ValueError(f"El selector de búsqueda de {bad[0]} no es válido; usa `selector` o `selector@atributo`")
+    return search_endpoint, fields
+
+
 def validate(raw: dict) -> dict:
     if not isinstance(raw, dict):
         raise ValueError("La configuración de la fuente debe ser un objeto")
@@ -60,29 +95,26 @@ def validate(raw: dict) -> dict:
     endpoint = str(raw.get('endpoint', '')).strip()
     if not name or len(name) > 80:
         raise ValueError("El nombre de la fuente debe tener entre 1 y 80 caracteres")
-    if endpoint.count('{code}') != 1 or '{' in endpoint.replace('{code}', '') or '}' in endpoint.replace('{code}', ''):
-        raise ValueError("La dirección de la API debe incluir un {code}")
-    parsed = urlsplit(endpoint.replace('{code}', 'ABW-001'))
-    if (not public_https_url(endpoint.replace('{code}', 'ABW-001')) or parsed.port not in (None, 443)
-            or not re.fullmatch(r'[a-z0-9-]+(?:\.[a-z0-9-]+)+', parsed.hostname or '')
-            or parsed.fragment or '{code}' in endpoint.split('://', 1)[-1].split('/', 1)[0]
-            or len(endpoint) > 2048 or any(ord(c) < 33 for c in endpoint)):
-        raise ValueError("La API debe usar una dirección HTTPS con dominio público fijo y puerto 443")
     kind = raw.get('kind', 'json')
     if kind not in KINDS:
         raise ValueError("Elige si la fuente es una API JSON o una página web")
-    mapping = raw.get('fields')
+    search_endpoint, search_fields = _search_config(raw) if kind == 'html' else ('', {})
+    if endpoint or not search_endpoint:
+        _check_endpoint(endpoint, '{code}', 'ABW-001', 'la fuente' if kind == 'html' else 'la API')
+    mapping = raw.get('fields') or {}
     if not isinstance(mapping, dict) or set(mapping) - set(FIELDS):
         raise ValueError("La asignación de campos no es válida")
     mapping = {key: value for key, value in mapping.items() if value}
-    if kind == 'json':
+    if kind == 'html' and not endpoint:
+        mapping = {}
+    elif kind == 'json':
         if not mapping.get('code'):
             raise ValueError("Escribe la ruta del campo de código en la respuesta")
         if any(not isinstance(v, str) or not _PATH.fullmatch(v) for v in mapping.values()):
             raise ValueError("La asignación de campos solo acepta rutas con puntos formadas por claves de objeto o índices de lista")
     else:
         if not mapping.get('title'):
-            raise ValueError("Escribe al menos el selector del título")
+            raise ValueError("Escribe al menos el selector del título de la ficha")
         bad = [key for key, value in mapping.items() if not _valid_selector(value)]
         if bad:
             raise ValueError(f"El selector CSS de {bad[0]} no es válido; usa `selector` o `selector@atributo`")
@@ -97,7 +129,8 @@ def validate(raw: dict) -> dict:
     code_format = raw.get('code_format', 'original')
     if code_format not in ('original', 'lowercase', 'compact', 'underscore'):
         raise ValueError("El formato del código no es válido")
-    return dict(name=name, kind=kind, endpoint=endpoint, fields=dict(mapping),
+    extra = dict(search_endpoint=search_endpoint, search_fields=search_fields) if search_endpoint else {}
+    return dict(name=name, kind=kind, endpoint=endpoint, fields=dict(mapping), **extra,
                 content_types=list(dict.fromkeys(kinds)), enabled=raw.get('enabled', False), network=network,
                 code_format=code_format)
 
@@ -256,6 +289,74 @@ def parse_html(config: dict, code: str, html: str) -> SiteRecord:
                       performers=tuple({'japanese_name': name} for name in performers),
                       tags=many('tags'), cover_urls=_cover(one('cover'), endpoint(config, code)),
                       confidence=0.5)
+
+
+_CODE_IN_TEXT = re.compile(r'\b([A-Za-z]{2,10}-?\d{2,6})\b')
+
+
+def parse_search(fields: dict, base_url: str, html: str, limit: int = 24) -> list[dict]:
+    """Resultados de una página de búsqueda: un elemento por `item`, cada dato con su selector.
+
+    El código sale de su selector o, si no hay, del título o del enlace; las direcciones relativas
+    se resuelven contra la página y solo se aceptan enlaces http(s) e imágenes https."""
+    from .catalog_rules import release_code_from_text
+    page = BeautifulSoup(html, 'html.parser')
+
+    def read(root, field):
+        if field not in fields:
+            return ''
+        selector, attr = _selector(fields[field])
+        element = root.select_one(selector) if selector else root
+        if element is None:
+            return ''
+        value = element.get(attr) if attr else element.get_text(' ', strip=True)
+        if isinstance(value, list):
+            value = ' '.join(value)
+        return ' '.join(str(value or '').split())[:1000]
+
+    results, seen = [], set()
+    for item in page.select(fields['item'], limit=200):
+        title = read(item, 'title')
+        if not title:
+            continue
+        link = read(item, 'link') or (item.get('href') if item.name == 'a' else '')
+        link = urljoin(base_url, link) if link else ''
+        if link and urlsplit(link).scheme not in ('http', 'https'):
+            link = ''
+        image = read(item, 'image')
+        image = urljoin(base_url, image) if image else ''
+        if not image.startswith('https://'):
+            image = ''
+        raw_code = read(item, 'code')
+        code = release_code_from_text(raw_code) if raw_code else None
+        if not code:
+            match = _CODE_IN_TEXT.search(raw_code or title) or (_CODE_IN_TEXT.search(link) if link else None)
+            code = release_code_from_text(match.group(1)) if match else None
+        key = (link or title, code)
+        if key in seen:
+            continue
+        seen.add(key)
+        results.append({'title': title, 'url': link, 'image': image, 'code': code or '', 'date': read(item, 'date')})
+        if len(results) >= limit:
+            break
+    return results
+
+
+def search(config: dict, query: str, *, timeout: float = 15.0, secrets_root=None, fetch=None) -> list[dict]:
+    """Busca `query` en la página de búsqueda de una fuente web personalizada."""
+    checked = validate(config)
+    if not checked.get('search_endpoint'):
+        raise ValueError("Esta fuente no tiene página de búsqueda")
+    query = ' '.join(str(query or '').split())
+    if not query or len(query) > 100:
+        raise ValueError("Escribe entre 1 y 100 caracteres para buscar")
+    url = checked['search_endpoint'].replace('{query}', quote(query, safe=''))
+    options = None
+    if checked['network'] == 'peach_proxy' and secrets_root is not None:
+        from .peach_proxy import client_options
+        options = client_options(Path(secrets_root))
+    html = (fetch or fetch_html)(url, timeout, client_options=options)
+    return parse_search(checked['search_fields'], url, html)
 
 
 def _remaining_seconds(deadline: float) -> float:

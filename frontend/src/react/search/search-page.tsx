@@ -136,7 +136,14 @@ export function SearchPage(props: SearchProps) {
       {s.query && model.recent ? section(model.recent) : null}
       {columns(model.left, model.right)}
       {!s.query && model.recent ? section(model.recent) : null}
-      {model.empty ? <p data-search-empty="" role="status">No se encontró nada</p> : null}
+      {model.empty ? <p data-search-empty="" role="status">No se encontró nada en tu colección</p> : null}
+      {s.query.trim() ? <p data-search-web="" className="px-3 py-2">
+        <a href={`/jav?tab=search&q=${encodeURIComponent(s.query.trim())}`} onMouseDown={keep} className="underline"
+          onClick={event => {
+            if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+            event.preventDefault(); op.openPath(`/jav?tab=search&q=${encodeURIComponent(s.query.trim())}`);
+          }}>Buscar «{s.query.trim()}» en internet</a>
+      </p> : null}
     </div>
   );
 }
