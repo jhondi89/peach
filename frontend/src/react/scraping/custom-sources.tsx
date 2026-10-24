@@ -18,6 +18,9 @@ const FIELDS = [['code', 'Código'], ['title', 'Título'], ['studio', 'Estudio']
   ['release_date', 'Fecha de lanzamiento'], ['performers', 'Intérpretes (lista)'], ['tags', 'Etiquetas (lista)'],
   ['cover', 'Portada (dirección de imagen)']] as const;
 const KINDS: [string, string][] = [['html', 'Página web'], ['json', 'API JSON']];
+const SEARCH_FIELDS = [['item', 'Cada resultado', '.movie-list .item'], ['title', 'Título', '.video-title'],
+  ['link', 'Enlace', 'a@href'], ['code', 'Código (opcional)', '.video-title strong'], ['image', 'Imagen (opcional)', 'img@src'],
+  ['date', 'Fecha (opcional)', '.meta']] as const;
 const TYPES = [['censored', 'Con censura'], ['amateur', 'Amateur'], ['uncensored', 'Sin censura'], ['fc2', 'FC2'],
   ['kmib', 'MIB coreano'], ['other', 'Otros'], ['unsure', 'Código por verificar'], ['unknown', 'Desconocido']] as const;
 const blank = (): Source => ({ name: '', kind: 'html', endpoint: '', enabled: true,
@@ -60,6 +63,7 @@ function SourceForm({ initial, cancel, saved }: {
   const [source, setSource] = useState(initial);
   const [code, setCode] = useState('');
   const [preview, setPreview] = useState<string>('');
+  const [query, setQuery] = useState('');
   const revision = useRef(0);
   const action = useAction();
   const change = (patch: Partial<Source>) => { revision.current++; setSource((current) => ({ ...current, ...patch })); setPreview('') };
@@ -112,6 +116,25 @@ function SourceForm({ initial, cancel, saved }: {
             if (current === revision.current) setPreview(JSON.stringify(result.record, null, 2));
           }, (cause) => { if (current === revision.current) action.setError(errorMessage(cause)) });
       }} />
+      {html ? <>
+        <FieldLabel>Búsqueda (opcional)</FieldLabel>
+        <Help>Si el sitio tiene buscador, pon la dirección de su página de resultados con {'{query}'} donde va lo que buscas (por ejemplo https://sitio.com/search?q={'{query}'}). Así aparecerá en JAV → Buscar en internet. Si solo quieres usarla para buscar, puedes dejar vacía la dirección de la ficha.</Help>
+        <Input label="Dirección de la página de búsqueda" value={source.search_endpoint || ''} maxLength={2048}
+          placeholder="https://example.com/search?q={query}" onChange={(search_endpoint) => change({ search_endpoint })} />
+        {SEARCH_FIELDS.map(([field, label, hint]) => <Input key={field} label={`Selector de búsqueda · ${label}`}
+          value={source.search_fields?.[field] || ''} placeholder={hint}
+          onChange={(value) => { const fields = { ...(source.search_fields || {}) }; if (value) fields[field] = value; else delete fields[field]; change({ search_fields: fields }) }} />)}
+        <Input label="Prueba de búsqueda (Enter para buscar)" value={query} onChange={(value) => { revision.current++; setQuery(value); setPreview('') }}
+          onKeyDown={(event) => {
+            if (event.key !== 'Enter' || event.nativeEvent.isComposing) return;
+            event.preventDefault();
+            const current = revision.current;
+            void action.run('preview', (signal) => apiSend<{ items: unknown[] }>(URL,
+              { ...source, query, action: 'search-preview' }, 'POST', signal), (result) => {
+                if (current === revision.current) setPreview(JSON.stringify(result.items, null, 2));
+              }, (cause) => { if (current === revision.current) action.setError(errorMessage(cause)) });
+          }} />
+      </> : null}
       {action.busy === 'preview' ? <Help role="status"><span dangerouslySetInnerHTML={{ __html: spinnerHtml('Probando la fuente') }} />Probando la fuente…</Help> : null}
       {preview ? <CodeBlock code={preview} language="json" label="Datos leídos de la fuente" /> : null}
       {action.error ? <ErrorText>{action.error}</ErrorText> : null}

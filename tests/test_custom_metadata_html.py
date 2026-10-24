@@ -2,7 +2,7 @@
 import tempfile
 import unittest
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from peach import custom_metadata as custom
 
@@ -70,6 +70,46 @@ class HtmlSourceTests(unittest.TestCase):
             saved = custom.save(Path(tmp), definition())[0]
             self.assertEqual(custom.load(Path(tmp))[0]['kind'], 'html')
             self.assertEqual(saved['fields']['cover'], 'img.portada@src')
+
+
+SEARCH_PAGE = """<div class="lista"><div class="r"><a href="/v/1"><img src="https://img.ejemplo.com/1.jpg">
+<span class="t">ABW-001 Primera obra</span></a></div>
+<div class="r"><a href="/v/2"><span class="t">Otra sin código</span></a></div>
+<div class="r"><a href="javascript:alert(1)"><span class="t">SSIS-950 Enlace raro</span></a></div></div>"""
+
+
+class WebSearchSourceTests(unittest.TestCase):
+    def search_source(self, **changes):
+        return dict(dict(name='Buscador', kind='html', endpoint='', fields={},
+                         search_endpoint='https://ejemplo.com/buscar?q={query}',
+                         search_fields={'item': '.r', 'title': '.t', 'link': 'a@href', 'image': 'img@src'},
+                         content_types=['censored'], enabled=True), **changes)
+
+    def test_search_only_source_is_valid_and_skipped_for_metadata(self):
+        checked = custom.validate(self.search_source())
+        self.assertEqual(checked['endpoint'], '')
+        self.assertEqual(checked['search_fields']['item'], '.r')
+
+    def test_results_resolve_links_detect_codes_and_drop_bad_links(self):
+        items = custom.parse_search(self.search_source()['search_fields'], 'https://ejemplo.com/buscar?q=x', SEARCH_PAGE)
+        self.assertEqual(items[0], {'title': 'ABW-001 Primera obra', 'url': 'https://ejemplo.com/v/1',
+                                    'image': 'https://img.ejemplo.com/1.jpg', 'code': 'ABW-001', 'date': ''})
+        self.assertEqual(items[1]['code'], '')
+        self.assertEqual(items[2]['url'], '')
+        self.assertEqual(items[2]['code'], 'SSIS-950')
+
+    def test_search_uses_the_query_in_the_address(self):
+        fetch = Mock(return_value=SEARCH_PAGE)
+        custom.search(self.search_source(), 'julia boin', fetch=fetch)
+        self.assertEqual(fetch.call_args.args[0], 'https://ejemplo.com/buscar?q=julia%20boin')
+
+    def test_search_settings_are_checked(self):
+        for changes in ({'search_endpoint': 'http://ejemplo.com/?q={query}'},
+                        {'search_endpoint': 'https://ejemplo.com/buscar'},
+                        {'search_fields': {'item': '.r@href', 'title': '.t'}},
+                        {'search_fields': {'item': '.r'}}):
+            with self.subTest(changes=changes), self.assertRaises(ValueError):
+                custom.validate(self.search_source(**changes))
 
 
 if __name__ == '__main__':

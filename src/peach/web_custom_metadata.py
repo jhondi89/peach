@@ -7,6 +7,9 @@ def q_custom_metadata(contract, args):
 
 
 def w_custom_metadata(contract, body):
+    if body.get('action') == 'search-preview':
+        items = custom_metadata.search(body, str(body.get('query', '')), secrets_root=contract.follow_secrets_root)
+        return {'items': items}
     if body.get('action') == 'preview':
         record = custom_metadata.query(body, str(body.get('code', '')), secrets_root=contract.follow_secrets_root)
         return {'record': record.payload(), 'source': record.source, 'confidence': record.confidence}
