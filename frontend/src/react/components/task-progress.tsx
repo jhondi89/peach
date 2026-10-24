@@ -2,7 +2,7 @@ import { cardClass } from './card';
 import { LoadingDots } from './loading-dots';
 import { Progress } from './progress';
 
-/** 独立任务带框；卡片或结果分区内的任务复用所在容器。 */
+/** IndependienteTarea带框; 卡片或Resultado分区interiorTarea复用所En容Dispositivo.  */
 export function TaskProgress({ label, value = 0, total, embedded = false }: {
   label: string; value?: number; total?: number | null; embedded?: boolean;
 }) {

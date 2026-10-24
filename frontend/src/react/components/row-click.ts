@@ -1,8 +1,8 @@
-/* 整行可选的列表：点在一行的空白处就是选这一行，点在行里的控件、链接或输入框上不算。
+/* Completo行puede选Lista: 点Enuno行空白处就es选esteuno行, 点En行en laControles, 链continuar或Introducir框arribaNo算. 
  *
- * 勾选框本来就在行首，但它只有 16px，一整行的其余部分点了没反应的话，选几条就要瞄几次。
- * 判「空白」看的是点到的元素往上找有没有可交互的祖先，找到行为止：行外面的祖先不算，
- * 否则整张表包在一个 `label` 里时每一下都成了「点在控件上」。 */
+ * 勾选框本来就En行primero, pero它SoloCon 16px, unoCompleto行其余部分点没反应话, 选几就要瞄几次. 
+ * 判"空白"veres点到元素往arriba找ConSinpuede交互祖先, 找到行Como止: 行exterior面祖先No算, 
+ * 否则Completo表包Enuno `label` dentro时每unoabajo都成"点EnControlesarriba".  */
 import type { MouseEvent, SyntheticEvent } from 'react';
 
 const INTERACTIVE = [
@@ -10,7 +10,7 @@ const INTERACTIVE = [
   '[role="checkbox"]', '[role="switch"]', '[role="button"]', '[role="link"]', '[role="menu"]',
 ].join(',');
 
-/** 这一下是不是点在 `row` 的空白处。`row` 是整行的元素，事件可以从它的任何后代冒上来。 */
+/** esteunoabajoesNoes点En `row` 空白处. `row` esCompleto行元素, 事件puede以从它任何posterior代冒arriba来.  */
 export function clickedBlank(event: SyntheticEvent | Event, row: Element): boolean {
   const target = event.target;
   if (!(target instanceof Element) || !row.contains(target)) return false;
@@ -18,8 +18,8 @@ export function clickedBlank(event: SyntheticEvent | Event, row: Element): boole
   return !control || !row.contains(control) || control === row;
 }
 
-/** 卡片网格的 `onMouseDown`：按着 Shift 点卡是范围多选，这一下不让浏览器把两次点击之间的
- * 文字一并刷成选区。只拦按下，`click` 照常冒上来交给选择逻辑。 */
+/** 卡片Cuadrícula `onMouseDown`: 按着 Shift 点卡esRangomás选, esteunoabajoNo让Explorar dispositivo两次点击之间
+ * 文字unoy刷成选区. Solo拦按abajo, `click` 照常冒arriba来交给Seleccionar逻辑.  */
 export function suppressShiftTextSelection(event: MouseEvent): void {
   if (event.shiftKey) event.preventDefault();
 }

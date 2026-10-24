@@ -1,12 +1,12 @@
-/* 关注列表：同一份来源集合的两种视图，外加检查更新那一趟后台任务。
+/* 关注Lista: 同uno来源集合两视Imagen, exterior加VerificarActualizareseuno趟posteriorTarea. 
  *
- * 两种视图共用一个勾选集合（身份是来源 ID）和一份排序状态。表格视图由
- * `@tanstack/react-table` 驱动：列定义、排序状态、行选择与分页都在它手里，行数据是
- * 已经按共用比较器排好的**全集**——排序作用在全部结果上，分页只切最后一步，所以
- * 「下一页」看到的是真的下一批，而不是本页内部重排。
+ * 两视Imagen共用uno勾选集合(身es来源 ID) y unoOrdenarEstado. 表格视Imagen由
+ * `@tanstack/react-table` 驱动: 列定义, OrdenarEstado, 行Seleccionary分página都En它手dentro, 行Datoses
+ * ya经按共用比较Dispositivo排bien**Todo集**—Ordenar作用En todoResultadoarriba, 分páginaSolo切最posterioruno步, 所以
+ * "Siguientepágina"ver到es真Siguiente批, 而Noes本páginainterior部pesado排. 
  *
- * 选择跨页也跨视图：换页、换排序、从卡片切到表格，选中的仍是同一批来源，底部那条批量
- * 操作发出去的也是整个 ID 集合，而不是屏幕上这一页。 */
+ * Seleccionar跨página也跨视Imagen: 换página, 换Ordenar, 从卡片切到表格, 选en proceso仍es同uno批来源, 底部ese批量
+ * 操作发出去也esCompleto ID 集合, 而Noes屏幕arribaesteunopágina.  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   RiArrowDownLine, RiArrowDownSLine, RiArrowUpLine, RiArrowUpSLine, RiCheckDoubleLine,
@@ -63,19 +63,19 @@ const sourceTableFeatures = tableFeatures({
 
 const count = (value: unknown) => (Number(value) || 0).toLocaleString();
 
-/** 列头点的就是工具栏里的那一档排序，所以两边共用同一张对照表，方向也共用一个值。 */
+/** 列头点就es工具栏en laeseuno档Ordenar, 所以两边共用同uno对照表, 方向也共用uno值.  */
 const SORT_COLUMN = Object.fromEntries(
   Object.entries(COLUMN_SORT).map(([column, sort]) => [sort, column]),
 ) as Partial<Record<SortKey, string>>;
 
-/** 工具行窄到这个宽度以下，带字的按钮就只留字形。取自旧版实测的那条断点。 */
+/** 工具行estrecho到esteancho度以abajo, 带字按钮就SoloDeja字形. 取自antiguo版实测ese断点.  */
 const TOOLBAR_COMPACT_PX = 740;
 
-/** 这一行自己有多宽。
+/** esteuno行自己Conmásancho. 
  *
- * 判据只能是这一行自己的宽度，不是视口的：同一个视口下侧栏收起与展开留给它的宽度差两百
- * 像素，按视口断点会在一边早折、在另一边照样超框。塌下去用的是 `Button` 自己的 `iconOnly`
- * ——外面改它的内外边距会被 `no-restyle` 挡下，那条规则说的就是间距归控件自己。 */
+ * 判据Solo能esesteuno行自己ancho度, Noes视口: 同uno视口abajo侧栏收起y展开Deja给它ancho度差两cien
+ * 像素, 按视口断点会Enuno边早折, En另uno边照样超框. 塌abajo去用es `Button` 自己 `iconOnly`
+ * —exterior面改它interiorMargen exterior会被 `no-restyle` 挡abajo, eseRegla说就esEspaciado归Controles自己.  */
 function useCompactToolbar(): [(node: HTMLDivElement | null) => void, boolean] {
   const [compact, setCompact] = useState(false);
   const observer = useRef<ResizeObserver | null>(null);
@@ -92,14 +92,14 @@ function useCompactToolbar(): [(node: HTMLDivElement | null) => void, boolean] {
 }
 
 const COLUMN_LABELS: Record<string, string> = {
-  select: '选择', author: '创作者', source: '来源', provider: '站点',
-  status: '状态', checked: '上次检查', actions: '操作',
+  select: 'Seleccionar', author: 'Creador', source: 'Fuente', provider: 'Sitio',
+  status: 'Estado', checked: 'Última verificación', actions: 'Acción',
 };
 
-/** 行上那两个动作由调用方给，但列定义不该跟着每一次渲染重建；两者之间放一个当前值的盒子。 */
+/** 行arribaese两动作由调用方给, pero列定义No该跟着每uno次渲染pesado建; 两者之间放uno当anterior值盒子.  */
 interface RowHandlers {
   check(ids: number[]): void;
-  /** 行尾的启用开关：只写这一条，不动勾选、不弹批量那句 toast，和订阅源表的开关一样。 */
+  /** 行尾启用开关: Solo写esteuno, No动勾选, No弹批量ese句 toast,  y 订阅源表开关uno样.  */
   toggle(source: FollowSource, enabled: boolean): void;
   remove(source: FollowSource): void;
   busy: boolean;
@@ -124,29 +124,29 @@ export interface SourceListProps {
   openFollow(): void;
 }
 
-/** 页码。上一页／下一页在两端，页码居中，页数多时两侧折成「…」。 */
+/** página码. Anteriorpágina/SiguientepáginaEn两端, página码居en proceso, página数más时两侧折成"...".  */
 export { Pagination } from '../components/table-pagination';
 
-/** 一条来源在创作者卡里的那一行：勾选、名字、站点、状态、上次检查、动作。 */
+/** uno来源En创作者卡en laeseuno行: 勾选, 名字, 站点, Estado, Última vezVerificar, 动作.  */
 function SourceRow(
   { source, selected, onToggle, handlers }:
   { source: FollowSource; selected: boolean; onToggle(on: boolean): void; handlers: RowHandlers },
 ) {
-  /* 点这一行的空白处就是勾上或取消：勾选框只有 16px，一行里其余的地方点了没反应的话，选几条要瞄几次。
-     窄屏固定两行：上一行勾选、名字、站标与状态，下一行上次检查、开关与两枚动作键。 */
+  /* 点esteuno行空白处就es勾arriba或Cancelar: 勾选框SoloCon 16px, uno行dentro其余地方点没反应话, 选几要瞄几次. 
+     estrecho屏固定两行: Anterior行勾选, 名字, 站标yEstado, Siguiente行Última vezVerificar, 开关y两动作Clave.  */
   return (
     <div data-selected={selected || undefined} data-follow-source-row=""
       className="flex min-h-16 flex-wrap items-center gap-3 px-2 py-3 max-sm:gap-x-2"
       onClick={(event) => { if (clickedBlank(event, event.currentTarget)) onToggle(!selected) }}>
-      <Checkbox isSelected={selected} onChange={onToggle} aria-label={`选择 ${source.label}`} />
-      {/* 名字列从零宽起长：长名字和报错在列内折行或截断，不把站标、状态和操作键挤到下一行。 */}
+      <Checkbox isSelected={selected} onChange={onToggle} aria-label={`Seleccionar ${source.label}`} />
+      {/* 名字列从ceroancho起largo: largo名字 y 报错En列interior折行或截断, No站标, Estado y 操作Clave挤到Siguiente行.  */}
       <span className="flex min-w-0 grow basis-0 flex-col gap-0.5">
         <SourceLink source={source} />
         {source.last_error ? <ErrorLine text={source.last_error} /> : null}
       </span>
-      {/* 卡片里站名只出一枚图标：这一行紧挨着的就是作者名和状态徽章，站名写出来是同一个词
-          并排两次。名字仍在 DOM 里，读屏和取不到图标时都还读得到；表格那边「站点」是独立
-          一列，列头就叫这个名字，那里才出文字。 */}
+      {/* 卡片dentro站名Solo出unoImagen标: esteuno行紧挨着就es作者名 y Estado徽章, 站名写出来es同uno词
+          y排两次. 名字仍En DOM dentro, 读屏 y 取No到Imagen标时都还读得到; 表格ese边"站点"esIndependiente
+          uno列, 列头就叫este名字, esedentro才出文字.  */}
       <span className="flex shrink-0 items-center gap-1.5 text-body-2-regular text-text-secondary"
         title={source.provider_label}>
         <SourceIcon provider={source.provider} label={source.provider_label} />
@@ -156,15 +156,15 @@ function SourceRow(
         <span className="shrink-0 text-body-2-regular whitespace-nowrap text-text-secondary max-sm:mr-auto max-sm:text-caption-1-regular">
           {checkedText(source)}
         </span>
-        <Switch aria-label={`启用 ${source.label}`} isSelected={source.enabled}
+        <Switch aria-label={`Activar ${source.label}`} isSelected={source.enabled}
           isDisabled={handlers.readOnly} onChange={(on) => handlers.toggle(source, on)} />
         <span className="flex shrink-0 items-center gap-1">
           <Button variant="secondary" size="small" iconOnly leadingIcon={RiRefreshLine}
-            aria-label={`检查 ${source.label} 的更新`}
+            aria-label={`Verificar ${source.label} Actualizar`}
             disabled={!source.enabled || handlers.readOnly} {...busyProps(handlers.busy)}
             onClick={() => handlers.check([source.id])} />
           <Button variant="secondary" size="small" iconOnly leadingIcon={RiDeleteBinLine}
-            aria-label={`移除 ${source.label}`} disabled={handlers.readOnly}
+            aria-label={`Quitar ${source.label}`} disabled={handlers.readOnly}
             onClick={() => handlers.remove(source)} />
         </span>
       </span>
@@ -172,7 +172,7 @@ function SourceRow(
   );
 }
 
-/** 一位创作者一张卡。同一个人在几个站上的来源收在一处，标题行给出这个人的整体状态。 */
+/** uno创作者uno卡. 同uno人En几站en la来源收Enuno处, Título行给出este人Completo体Estado.  */
 function AuthorCard(
   { group, name, open, selected, handlers, onOpen, onToggleGroup, onToggle }:
   {
@@ -186,11 +186,11 @@ function AuthorCard(
   const ids = group.map((source) => source.id);
   const enabled = group.filter((source) => source.enabled).map((source) => source.id);
   const bad = group.filter(isBroken).length;
-  const providers = [...new Set(group.map((source) => source.provider_label || source.provider))].join('、');
+  const providers = [...new Set(group.map((source) => source.provider_label || source.provider))].join(', ');
   const panel = `follow-author-${group[0]!.id}`;
   const state = selectionState(selected, ids);
   return (
-    <section aria-label={`${name} 的关注来源`}
+    <section aria-label={`${name} Seguir fuente`}
       className={cardClass({
         variant: 'raised', padding: 'none', className: 'flex flex-col overflow-hidden p-2',
       })}>
@@ -199,27 +199,27 @@ function AuthorCard(
         <AuthorAvatar group={group} name={name} />
         <b className="min-w-0 grow text-body-medium wrap-anywhere text-text-primary max-sm:basis-0">{name}</b>
         <Button variant="secondary" size="small" iconOnly leadingIcon={RiRefreshLine}
-          aria-label={`检查 ${name} 的全部来源`} disabled={!enabled.length || handlers.readOnly}
+          aria-label={`Verificar ${name} TodoFuente`} disabled={!enabled.length || handlers.readOnly}
           {...busyProps(handlers.busy)} onClick={() => handlers.check(enabled)} />
-        {/* 窄屏固定两行：上一行头像、名字与检查键，下一行站标、失败数与全选、收起。 */}
+        {/* estrecho屏固定两行: Anterior行Avatar, 名字yVerificarClave, Siguiente行站标, Fallo数ySeleccionar todo, 收起.  */}
         <span data-follow-author-controls="" className="contents max-sm:flex max-sm:w-full max-sm:items-center max-sm:gap-2">
           <span className="flex shrink-0 items-center gap-1 max-sm:mr-auto max-sm:min-w-0 max-sm:shrink max-sm:flex-wrap" title={providers}>
             {group.map((source) => <SourceIcon key={source.id} provider={source.provider} />)}
-            {/* 只读屏用的文字走 `VisuallyHidden`：它把样式写在元素上，不会生成一个和旧
-                样式表同名的工具类（`web/css/01-base.css` 里那条 `.sr-only` 带 !important）。 */}
-            <VisuallyHidden>{`来源：${providers}`}</VisuallyHidden>
+            {/* Solo读屏用文字走 `VisuallyHidden`: 它样写En元素arriba, No会生成uno y antiguo
+                样表同名工具类(`web/css/01-base.css` dentroese `.sr-only` 带 !important).  */}
+            <VisuallyHidden>{`Fuente: ${providers}`}</VisuallyHidden>
           </span>
           {bad
-            ? <span className="shrink-0 text-body-2-regular text-text-error-primary">{`${bad} 个失败`}</span>
+            ? <span className="shrink-0 text-body-2-regular text-text-error-primary">{`${bad} Fallido`}</span>
             : null}
           <Button variant="secondary" size="small" leadingIcon={RiCheckDoubleLine}
             aria-pressed={state.all ? 'true' : state.some ? 'mixed' : 'false'}
-            aria-label={`${state.all ? '取消全选' : '全选'} ${name} 的来源`}
-            onClick={() => onToggleGroup(!state.all)}>{state.all ? '取消全选' : '全选'}</Button>
+            aria-label={`${state.all ? 'Deseleccionar todo' : 'Seleccionar todo'} ${name} Fuente`}
+            onClick={() => onToggleGroup(!state.all)}>{state.all ? 'Deseleccionar todo' : 'Seleccionar todo'}</Button>
           <Button variant="secondary" size="small" aria-expanded={open} aria-controls={panel}
             leadingIcon={open ? RiArrowUpSLine : RiArrowDownSLine}
-            aria-label={`${open ? '收起' : '展开'} ${name} 的来源`}
-            onClick={() => onOpen(!open)}>{open ? '收起' : '展开'}</Button>
+            aria-label={`${open ? 'Colapsar' : 'Expandir'} ${name} Fuente`}
+            onClick={() => onOpen(!open)}>{open ? 'Colapsar' : 'Expandir'}</Button>
         </span>
       </div>
       <div id={panel} hidden={!open} data-source-divider>
@@ -254,7 +254,7 @@ export function SourceList(props: SourceListProps) {
     onError: (cause) => setProblem(errorMessage(cause)),
     onFinish: (state) => {
       void reloadFollowManage();
-      toast(state.status === 'failed' ? (state.error || '检查失败') : checkReceipt(state));
+      toast(state.status === 'failed' ? (state.error || 'Error de verificación') : checkReceipt(state));
     },
   });
 
@@ -267,20 +267,20 @@ export function SourceList(props: SourceListProps) {
   const toggleOne = (id: number, on: boolean) => onSelected(toggleGroup(selected, [id], on));
   const toggleMany = (ids: number[], on: boolean) => onSelected(toggleGroup(selected, ids, on));
 
-  /* 单条移除只把那一条从缓存里去掉，顺手把它从勾选里也去掉：否则底部那条会一直算着
-     一个已经不存在的来源。 */
+  /* 单QuitarSoloeseuno从缓存dentro去掉, 顺手它从勾选dentro也去掉: 否则底部ese会uno直算着
+     unoya经No存En来源.  */
   const remove = useMutation({
     mutationFn: (id: number) => removeSource(id),
     onSuccess: (_result, id) => {
       dropSources([id]);
       onSelected(toggleGroup(selected, [id], false));
-      toast('已取消关注来源');
+      toast('YaDejar de seguirFuente');
     },
     onError: (cause) => setProblem(errorMessage(cause)),
   });
 
-  /* 行尾的开关只写这一条并改本地那一行；批量那条路会顺手清勾选、弹「已启用 n 个」，
-     一枚开关不该有这两样动静。 */
+  /* 行尾开关Solo写esteunoy改本地eseuno行; 批量ese路会顺手清勾选, 弹"ya启用 n ", 
+     uno开关No该Coneste两样动静.  */
   const toggleEnabled = useMutation({
     mutationFn: (work: { id: number; enabled: boolean }) => setSourceEnabled(work.id, work.enabled),
     onSuccess: (_result, work) => {
@@ -291,12 +291,12 @@ export function SourceList(props: SourceListProps) {
   });
 
   const removeSourceRow = (source: FollowSource) => void confirmModal({
-    title: '取消关注来源', body: '将移除这个来源及已抓取的条目，媒体文件保留。',
-    confirmLabel: '取消关注来源', danger: true,
+    title: 'Dejar de seguirFuente', body: '将Quitareste fuente(s)及YaObtenerResultado目, MediosArchivoConservar. ',
+    confirmLabel: 'Dejar de seguirFuente', danger: true,
     onConfirm: () => remove.mutateAsync(source.id),
   });
 
-  /** 批量：一次请求一条，有界并发。串行发几百条是实测的卡点，一次全发出去又会自己挤自己。 */
+  /** 批量: uno次Por favor求uno, Con界y发. 串行发几cienes实测卡点, uno次Todo发出去又会自己挤自己.  */
   const bulk = useMutation({
     mutationFn: async (work: { ids: number[]; action: 'enabled' | 'paused' | 'remove' }) => {
       const results = await mapLimit(work.ids, 4, async (id: number) => {
@@ -311,17 +311,17 @@ export function SourceList(props: SourceListProps) {
       onSelected(toggleGroup(selected, result.done, false));
       const failed = result.results.filter((row) => !row.ok);
       if (failed.length) {
-        setProblem(`${failed.length}/${result.ids.length} 个来源未更新：${errorMessage(failed[0]?.error)}`);
+        setProblem(`${failed.length}/${result.ids.length}  fuente(s)NoActualizar: ${errorMessage(failed[0]?.error)}`);
         return;
       }
       setProblem('');
-      const word = result.action === 'remove' ? '删除' : result.action === 'enabled' ? '启用' : '暂停';
-      toast(`已${word} ${result.done.length} 个关注来源`);
+      const word = result.action === 'remove' ? 'Eliminar' : result.action === 'enabled' ? 'Activar' : 'Pausar';
+      toast(`Ya${word} ${result.done.length} Seguir fuente`);
     },
     onError: (cause) => setProblem(errorMessage(cause)),
   });
 
-  /** 未看条目的批量标记。先取一趟待处理清单，再逐条写。 */
+  /** noverEntrada批量Etiqueta. 先取uno趟待Procesar清单, 再逐写.  */
   const markAll = useMutation({
     mutationFn: async (to: string) => {
       const pending = await fetchPending();
@@ -334,11 +334,11 @@ export function SourceList(props: SourceListProps) {
     onSuccess: (result) => {
       void reloadFollowManage();
       if (result.failed.length) {
-        setProblem(`批量更新 ${result.failed.length}/${result.ids.length} 项未完成`);
+        setProblem(`LoteActualizar ${result.failed.length}/${result.ids.length} 项NoFinalizar`);
         return;
       }
       setProblem('');
-      toast(`已批量标记 ${result.ids.length} 项`);
+      toast(`YaMarcar en lote ${result.ids.length} 项`);
     },
     onError: (cause) => setProblem(errorMessage(cause)),
   });
@@ -358,7 +358,7 @@ export function SourceList(props: SourceListProps) {
   };
   const rowHandlers = handlers.current;
 
-  /* ── 表格视图：列定义、排序、行选择与分页都交给 TanStack Table ── */
+  /* ── 表格视Imagen: 列定义, Ordenar, 行Seleccionary分página都交给 TanStack Table ── */
   const columns = useMemo(() => {
     const column = createColumnHelper<typeof sourceTableFeatures, SourceTableRow>();
     const label = (id: string) => () => COLUMN_LABELS[id] || id;
@@ -366,12 +366,12 @@ export function SourceList(props: SourceListProps) {
       column.display({
         id: 'select',
         header: label('select'),
-        /* `slot={null}`：表格自带一个叫 selection 的插槽，摆进去的勾不声明归属就会被它
-           拦下报错。这一列的勾归 TanStack Table 那份行选择管，不走 Table 自己的选择。 */
+        /* `slot={null}`: 表格自带uno叫 selection 插槽, 摆进去勾No声明归属就会被它
+           拦abajo报错. esteuno列勾归 TanStack Table ese行Seleccionar管, No走 Table 自己Seleccionar.  */
         cell: (context) => (
           <Checkbox slot={null} isSelected={context.row.getIsSelected()}
             onChange={(on) => context.row.toggleSelected(on)}
-            aria-label={`选择 ${context.row.original.source.label}`} />
+            aria-label={`Seleccionar ${context.row.original.source.label}`} />
         ),
       }),
       column.accessor((row) => row.author, {
@@ -419,16 +419,16 @@ export function SourceList(props: SourceListProps) {
         header: label('actions'),
         cell: (context) => (
           <span className="flex items-center gap-1">
-            <Switch aria-label={`启用 ${context.row.original.source.label}`}
+            <Switch aria-label={`Activar ${context.row.original.source.label}`}
               isSelected={context.row.original.source.enabled} isDisabled={rowHandlers.readOnly}
               onChange={(on) => handlers.current.toggle(context.row.original.source, on)} />
             <Button variant="secondary" size="small" iconOnly leadingIcon={RiRefreshLine}
-              aria-label={`检查 ${context.row.original.source.label} 的更新`}
+              aria-label={`Verificar ${context.row.original.source.label} Actualizar`}
               disabled={!context.row.original.source.enabled || rowHandlers.readOnly}
               {...busyProps(rowHandlers.busy)}
               onClick={() => handlers.current.check([context.row.original.source.id])} />
             <Button variant="secondary" size="small" iconOnly leadingIcon={RiDeleteBinLine}
-              aria-label={`移除 ${context.row.original.source.label}`} disabled={rowHandlers.readOnly}
+              aria-label={`Quitar ${context.row.original.source.label}`} disabled={rowHandlers.readOnly}
               onClick={() => handlers.current.remove(context.row.original.source)} />
           </span>
         ),
@@ -444,19 +444,19 @@ export function SourceList(props: SourceListProps) {
     () => Object.fromEntries([...selected].map((id) => [String(id), true])), [selected]);
 
   const asTable = layout === 'table';
-  // 越界的页码落到末页：地址栏里挂着的可能是上一次、来源更多时的页码。
+  // 越界página码落到últimoPágina: 地址栏dentro挂着puede能esAnterior次, 来源更más时página码. 
   const win = pageWindow(asTable ? rows.length : groups.length, pageSize, page);
 
   const table = useTable({
     features: sourceTableFeatures,
     data: rows,
     columns,
-    /* 行的身份是来源 ID，不是它在这一页里的下标：换页、换排序之后 `rowSelection` 里记着的
-       仍是同一批来源，卡片视图读的也是同一组数。 */
+    /* 行身es来源 ID, Noes它Enesteunopáginaen laabajo标: 换página, 换Ordenar之posterior `rowSelection` dentro记着
+       仍es同uno批来源, 卡片视Imagen读也es同uno组数.  */
     getRowId: (row) => String(row.source.id),
     state: { sorting, rowSelection, pagination: { pageIndex: win.page - 1, pageSize } },
-    /* 排序由共用的比较器算好再交进来：表格自己再排一遍的话，卡片视图与表格视图会各有一套
-       顺序，同一份数据在两个视图里的先后就不一样了。 */
+    /* Ordenar由共用比较Dispositivo算bien再交进来: 表格自己再排uno遍话, 卡片视Imageny表格视Imagen会各Conuno套
+       顺序, 同unoDatosEn两视Imagenen la先posterior就Nouno样.  */
     manualSorting: true,
     enableRowSelection: true,
     onSortingChange: (updater) => {
@@ -492,36 +492,36 @@ export function SourceList(props: SourceListProps) {
 
   if (!sources.length) {
     return (
-      /* 去处写成地址：遗留层那个全局点击处理器认这条链接，已经在关注管理页上时只换到「添加关注」页签。 */
-      <EmptyState shell="plain" icon={RiRssLine} title="还没有关注来源" actions={
-        <ButtonLink variant="primary" size="small" href="/subscriptions?tab=add">添加关注</ButtonLink>
-      }>关注来源及其检查状态会显示在这里。</EmptyState>
+      /* 去处写成地址: 遗Deja层eseTodo局点击ProcesarDispositivo认este链continuar, ya经En关注Gestionarpáginaarriba时Solo换到"添加关注"página签.  */
+      <EmptyState shell="plain" icon={RiRssLine} title="Aún no haySeguir fuente" actions={
+        <ButtonLink variant="primary" size="small" href="/subscriptions?tab=add">Agregar seguimiento</ButtonLink>
+      }>Seguir fuente及其VerificarEstado会MostrarEnaquí. </EmptyState>
     );
   }
 
   return (
-    /* 旧 `.followmanage .fmain>.fsec`：整块关注列表是一张填充卡，标题、工具条、创作者分组
-       和底下那条汇总都在同一张卡里，不是一个描边容器套着几行。 */
+    /* antiguo `.followmanage .fmain>.fsec`: Completo关注ListaesunoIntroduce充卡, Título, 工具, 创作者Agrupar
+        y 底abajoese汇Total都En同uno卡dentro, Noesuno描边容Dispositivo套着几行.  */
     <div className={cardClass({
       padding: 'none',
       className: 'flex flex-col gap-4 px-6 py-5 max-sm:px-4',
     })}>
-      {/* 放不下时带字的按钮先收成图标，再让整行换行。收起后名字由 `aria-label` 接着说。
-          窄屏固定两行：上一行标题、读数与检查全部，下一行版式、排序与全部收起。 */}
+      {/* 放Noabajo时带字按钮先收成Imagen标, 再让Completo行换行. 收起posterior名字由 `aria-label` continuar着说. 
+          estrecho屏固定两行: Anterior行Título, 读数yVerificarTodo, Siguiente行版, OrdenaryTodo收起.  */}
       <div ref={toolbar} data-follow-toolbar="" className="flex flex-wrap items-center gap-2">
         <span className="contents max-sm:flex max-sm:min-w-0 max-sm:flex-1 max-sm:flex-col">
-          <h3 className="mr-auto text-title-2-medium text-text-primary">关注列表</h3>
+          <h3 className="mr-auto text-title-2-medium text-text-primary">Lista de seguidos</h3>
           <span className="text-body-2-regular text-text-secondary">
-            {`${sources.length.toLocaleString()} 个来源${counts.new ? ` · ${count(counts.new)} 条未看` : ''}`}
+            {`${sources.length.toLocaleString()}  fuente(s)${counts.new ? ` · ${count(counts.new)} ResultadoNover` : ''}`}
           </span>
         </span>
         <Button variant="primary" leadingIcon={RiRefreshLine} disabled={readOnly}
-          aria-label="检查全部" iconOnly={compact}
-          {...busyProps(rowHandlers.busy)} onClick={() => startChecking([])}>检查全部</Button>
+          aria-label="Verificar todo" iconOnly={compact}
+          {...busyProps(rowHandlers.busy)} onClick={() => startChecking([])}>Verificar todo</Button>
         {failedSourceIds.length ? <Button variant="secondary" disabled={readOnly}
-          {...busyProps(rowHandlers.busy)} onClick={() => startChecking(failedSourceIds)}>检查失败项</Button> : null}
+          {...busyProps(rowHandlers.busy)} onClick={() => startChecking(failedSourceIds)}>Error de verificación项</Button> : null}
         <span data-follow-toolbar-controls="" className="contents max-sm:flex max-sm:w-full max-sm:items-center max-sm:gap-2">
-          <span data-button-group role="group" aria-label="关注列表版式">
+          <span data-button-group role="group" aria-label="Lista de seguidos版">
             <Button variant="ghost" iconOnly
               leadingIcon={RiLayoutGridLine} aria-label={LAYOUTS[0][1]} aria-pressed={!asTable}
               onClick={() => onLayout('default')} />
@@ -529,7 +529,7 @@ export function SourceList(props: SourceListProps) {
               leadingIcon={RiTableLine} aria-label={LAYOUTS[1][1]} aria-pressed={asTable}
               onClick={() => onLayout('table')} />
           </span>
-          <Select aria-label="关注列表排序" selectedKey={sort}
+          <Select aria-label="Lista de seguidosOrdenar" selectedKey={sort}
             onSelectionChange={(key) => {
               if (key === null) return;
               const next = String(key) as SortKey;
@@ -537,7 +537,7 @@ export function SourceList(props: SourceListProps) {
             }}>
             {SORT_OPTIONS.map(([key, name]) => <SelectItem key={key} id={key}>{name}</SelectItem>)}
           </Select>
-          {/* 箭头是装饰，方向由无障碍名称说，而且说的是点下去会得到的那一头。 */}
+          {/* 箭头es装饰, 方向由Sin障碍名称说, 而且说es点abajo去会得到eseuno头.  */}
           <Button variant="secondary" iconOnly
             leadingIcon={dir === 'asc' ? RiArrowUpLine : RiArrowDownLine}
             aria-label={sortLabel(sort, dir)}
@@ -545,60 +545,60 @@ export function SourceList(props: SourceListProps) {
           {asTable ? null : (
             <Button variant="secondary" iconOnly={compact}
               leadingIcon={allCollapsed ? RiArrowDownSLine : RiArrowUpSLine}
-              aria-label={allCollapsed ? '全部展开' : '全部收起'}
+              aria-label={allCollapsed ? 'TodoExpandir' : 'Colapsar todo'}
               onClick={() => setCollapsed(allCollapsed
                 ? new Set<string>()
                 : new Set(groups.map((group) => String(group[0]!.author_key || group[0]!.id))))}>
-              {allCollapsed ? '全部展开' : '全部收起'}
+              {allCollapsed ? 'TodoExpandir' : 'Colapsar todo'}
             </Button>
           )}
         </span>
       </div>
 
-      {/* 这一趟在后台跑，关掉页面还在继续，所以状态留在页面上而不是只让按钮转一下。 */}
+      {/* esteuno趟Enposterior跑, 关掉página面还EnContinuar, 所以EstadoDejaEnpágina面arriba而NoesSolo让按钮转unoabajo.  */}
       <div aria-live="polite" className="flex flex-col gap-3 empty:hidden">
         {running ? <TaskProgress embedded label={job?.message || (job?.total
-          ? `${job.older ? '抓取历史' : '检查更新'}：已完成 ${job.checked || 0}/${job.total} 个来源`
-          : '正在准备检查任务')} value={job?.checked} total={job?.total} /> : null}
-        {problem ? <Note tone="error" title="操作未完成">{problem}</Note> : null}
+          ? `${job.older ? 'Historial de búsqueda' : 'Comprobar actualizaciones'}: Completado ${job.checked || 0}/${job.total}  fuente(s)`
+          : 'Procesando准备VerificarTarea')} value={job?.checked} total={job?.total} /> : null}
+        {problem ? <Note tone="error" title="Operación no completada">{problem}</Note> : null}
         {!running && outcome?.results?.length ? (
-          <Note tone="neutral" title="检查结果">{checkSummary(outcome)}</Note>
+          <Note tone="neutral" title="Resultado de verificación">{checkSummary(outcome)}</Note>
         ) : null}
         {failures.length ? (
-          <Note tone="error" title={`${failures.length} 个来源检查失败`}
+          <Note tone="error" title={`${failures.length}  fuente(s)Error de verificación`}
             extra={<ul className="flex flex-col gap-0.5 text-body-2-regular">
               {failures.map((row, at) => (
                 <li key={`${row.provider || ''}-${row.ref || at}`}>
-                  {`${row.provider_label || row.provider || ''} ${row.author || row.label || row.ref || ''}：${errorHeadline(row.error || '') || '未说明原因'}`}
+                  {`${row.provider_label || row.provider || ''} ${row.author || row.label || row.ref || ''}: ${errorHeadline(row.error || '') || 'Motivo no especificado'}`}
                 </li>
               ))}
             </ul>}>
-            这些来源这一轮没有取到更新。
+            este些来源esteuno轮Sin取到Actualizar. 
           </Note>
         ) : null}
-        {evidence ? <Note tone="warning">{`条目已保存，但这次未保存来源的原始响应：${evidence}`}</Note> : null}
+        {evidence ? <Note tone="warning">{`Resultado目Guardado, peroeste次NoGuardarFuenteOriginalRespuesta: ${evidence}`}</Note> : null}
       </div>
 
-        <SelectionDock label="关注来源批量操作" visible={chosen.length > 0} count={`已选 ${chosen.length} 个来源`}>
+        <SelectionDock label="Seguir fuenteOperación en lote" visible={chosen.length > 0} count={`Ya选 ${chosen.length}  fuente(s)`}>
           <Button variant="secondary" size="small" disabled={readOnly}
-            {...busyProps(rowHandlers.busy)} onClick={() => startChecking(chosen)}>检查所选</Button>
+            {...busyProps(rowHandlers.busy)} onClick={() => startChecking(chosen)}>Verificar seleccionados</Button>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(bulk.isPending)}
-            onClick={() => bulk.mutate({ ids: chosen, action: 'enabled' })}>启用</Button>
+            onClick={() => bulk.mutate({ ids: chosen, action: 'enabled' })}>Activar</Button>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(bulk.isPending)}
-            onClick={() => bulk.mutate({ ids: chosen, action: 'paused' })}>暂停</Button>
+            onClick={() => bulk.mutate({ ids: chosen, action: 'paused' })}>Pausar</Button>
           <Button variant="danger" size="small" disabled={readOnly} {...busyProps(bulk.isPending)}
             onClick={() => void confirmModal({
-              title: `删除 ${chosen.length} 个关注来源`,
-              body: '将移除所选关注来源及其已抓取条目，媒体文件保留。',
-              confirmLabel: '删除所选来源', danger: true,
+              title: `Eliminar ${chosen.length} Seguir fuente`,
+              body: '将Quitar所选Seguir fuente及其YaObtenerResultado目, MediosArchivoConservar. ',
+              confirmLabel: 'Eliminar所选Fuente', danger: true,
               onConfirm: () => bulk.mutateAsync({ ids: chosen, action: 'remove' }),
-            })}>删除</Button>
-          <Button variant="ghost" size="small" onClick={() => onSelected(new Set())}>取消选择</Button>
+            })}>Eliminar</Button>
+          <Button variant="ghost" size="small" onClick={() => onSelected(new Set())}>Deseleccionar</Button>
         </SelectionDock>
 
       {asTable ? (
         <DataTableFrame follow onRowClick={(key) => toggleOne(Number(key), !selected.has(Number(key)))}>
-          <Table aria-label="关注来源" size="sm"
+          <Table aria-label="Seguir fuente" size="sm"
             sortDescriptor={sorting[0]
               ? { column: sorting[0].id, direction: sorting[0].desc ? 'descending' : 'ascending' }
               : undefined}
@@ -624,7 +624,7 @@ export function SourceList(props: SourceListProps) {
                 );
               })}
             </TableHeader>
-            <TableBody renderEmptyState={() => '这一页没有来源'}>
+            <TableBody renderEmptyState={() => 'esteunopáginaSinFuente'}>
               {pageRows.map((row) => (
                 <TableRow key={row.id} id={row.id}
                   data-follow-selected={row.getIsSelected() || undefined}>
@@ -641,7 +641,7 @@ export function SourceList(props: SourceListProps) {
       ) : (
         <>
           <Checkbox isSelected={pageState.all} isIndeterminate={pageState.some}
-            onChange={(on) => toggleMany(pageIds, on)} aria-label="全选本页来源">全选本页</Checkbox>
+            onChange={(on) => toggleMany(pageIds, on)} aria-label="Seleccionar toda la páginaFuente">Seleccionar toda la página</Checkbox>
           <div className="flex flex-col gap-3">
             {groups.slice(win.start, win.end).map((group) => {
               const key = String(group[0]!.author_key || group[0]!.id);
@@ -661,27 +661,27 @@ export function SourceList(props: SourceListProps) {
         </>
       )}
 
-      <DataTableFooter label="关注列表" total={win.total} pagination={{ pageIndex: win.page - 1, pageSize }}
-        unit={asTable ? '个来源' : '位创作者'} pageUnit={asTable ? '条' : '位'}
+      <DataTableFooter label="Lista de seguidos" total={win.total} pagination={{ pageIndex: win.page - 1, pageSize }}
+        unit={asTable ? ' fuente(s)' : ' resultado(s)Creador'} pageUnit={asTable ? 'Resultado' : ' resultado(s)'}
         onChange={(next) => { if (next.pageSize !== pageSize) table.setPageSize(next.pageSize); else table.setPageIndex(next.pageIndex); }} />
 
       {counts.new ? (
-        /* 旧 `.fsecfoot`：汇总与它的动作是卡底那一条带，比卡面暗一点点，通到卡片左右两沿。 */
+        /* antiguo `.fsecfoot`: 汇Totaly它动作es卡底eseuno带, 比卡面暗uno点点, 通到卡片izquierdaderecha两沿.  */
         <div className="-mx-6 -mb-5 flex flex-wrap items-center gap-2 border-t border-separator-border rounded-b-2xl bg-card-footer px-6 py-4 max-sm:-mx-4 max-sm:px-4">
           <span className="mr-auto text-body-2-regular text-text-secondary">
-            {`未看 ${count(counts.new)} · 已看 ${count(counts.seen)} · 已保存 ${count(counts.saved)} · 已忽略 ${count(counts.ignored)}`}
+            {`Nover ${count(counts.new)} · Ya visto ${count(counts.seen)} · Guardado ${count(counts.saved)} · Ignorado ${count(counts.ignored)}`}
           </span>
-          <Button variant="secondary" size="small" onClick={openFollow}>去看更新</Button>
+          <Button variant="secondary" size="small" onClick={openFollow}>去verActualizar</Button>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(markAll.isPending)}
             onClick={() => void confirmModal({
-              title: '标记已看', body: '将把当前未看作品标记为已看。', confirmLabel: '标记已看',
+              title: 'Marcar como visto', body: '将ActualNoverObraMarcarComoYa visto. ', confirmLabel: 'Marcar como visto',
               onConfirm: () => markAll.mutateAsync('seen'),
-            })}>全部标记已看</Button>
+            })}>TodoMarcar como visto</Button>
           <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(markAll.isPending)}
             onClick={() => void confirmModal({
-              title: '标记已忽略', body: '将把当前未看作品标记为已忽略。', confirmLabel: '标记已忽略',
+              title: 'MarcarIgnorado', body: '将ActualNoverObraMarcarComoIgnorado. ', confirmLabel: 'MarcarIgnorado',
               onConfirm: () => markAll.mutateAsync('ignored'),
-            })}>全部忽略</Button>
+            })}>TodoIgnorar</Button>
         </div>
       ) : null}
     </div>

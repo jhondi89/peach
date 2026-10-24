@@ -1,40 +1,40 @@
-/* 滚动那一组：横排的滚轮转向、拖动与橡皮筋、横排自动滚动、选中底板的滑动、Geist Scroller，
-   以及按名单批量挂覆盖式滚动条。由共享源码直接引用，随 `peach-app.js` 发出；
-   已绑定的横排、自动滚动的那几排与弹簧取值都是模块级状态，只有一份。 */
+/* 滚动eseuno组: 横排滚轮转向, 拖动y橡皮筋, 横排自动滚动, 选en proceso底板滑动, Geist Scroller, 
+   以及按名单批量挂覆盖滚动. 由共享源码直continuar引用, 随 `peach-app.js` 发出; 
+   ya绑定横排, 自动滚动ese几排y弹簧取值都es模级Estado, SoloConuno.  */
 import { esc } from '../core';
 
 import { attachOverlayScrollbar } from './overlay-scrollbar';
 
 const horizontalControls=new Map<Element,any>();
 let horizontalCleanup:MutationObserver|null|undefined;
-/* 两次滚轮事件隔多久算下一次手势。触控板的惯性尾巴一格一格地来，间隔在几十毫秒；
-   人停下来再滚一次，中间隔的比这长得多。 */
+/* 两次滚轮事件隔más久算Siguiente次手势. 触控板惯性尾巴uno格uno格地来, 间隔En几diez毫秒; 
+   人停abajo来再滚uno次, en proceso间隔比estelargo得más.  */
 const WHEEL_GESTURE_GAP=240;
-/* 一格滚轮至少这么大才平滑着走。鼠标滚轮一格是整整一段（Windows 上 100px 起），直接
-   改 `scrollLeft` 会一格一格地跳，而页面自己滚的时候每一格都是一段动画；触控板一次只
-   给几个像素、一秒几十次，本来就是连续的，再套动画只会拖慢跟手。 */
+/* uno格滚轮至menoseste么grande才平滑着走. 鼠标滚轮uno格esCompletoCompletouno段(Windows arriba 100px 起), 直continuar
+   改 `scrollLeft` 会uno格uno格地跳, 而página面自己滚时候每uno格都esuno段动画; 触控板uno次Solo
+   给几像素, uno秒几diez次, 本来就es连续, 再套动画Solo会拖lento跟手.  */
 const WHEEL_SMOOTH_STEP=50;
-/* 平滑那一段由这一排自己逐帧走，不用 `scrollTo({behavior:'smooth'})`：那条动画每接一格
-   都从零速重新起步，连续转滚轮时一格一顿，实测每两格之间有两三帧完全停住。这里每帧
-   朝终点走剩下距离的一截（时间常数 70ms），新的一格只把终点往前挪，速度连着走，不断档。 */
+/* 平滑eseuno段由esteuno排自己逐帧走, No用 `scrollTo({behavior:'smooth'})`: ese动画每continuaruno格
+   都从ceroVelocidadpesadoNuevo起步, 连续转滚轮时uno格uno顿, 实测每两格之间Con两tres帧完Todo停住. aquí每帧
+   朝终点走剩abajo距离uno截(Tiempo常数 70ms), Nuevouno格Solo终点往anterior挪, Velocidad度连着走, No断档.  */
 const WHEEL_GLIDE_MS=70;
-/* 横排滚到头还往前推，内容多走一小段再弹回来。transitions.dev 没有这一条配方，越界位移
-   借 UIScrollView 那条橡皮筋公式 `(1 - 1/(x·c/d + 1))·d`（c = 0.55，use-gesture 的
-   `rubberband` 是同一条）：推得越远越推不动，怎么推也到不了容器那么宽。弹回走站内那条
-   采样弹簧 `--spring-pane`，冲过原位再荡回来，和筛选条那块底板一个手感。 */
+/* 横排滚到头还往anterior推, contenidomás走unopequeño段再弹回来. transitions.dev Sinesteuno配方, 越界移
+   借 UIScrollView ese橡皮筋公 `(1 - 1/(x·c/d + 1))·d`(c = 0.55, use-gesture 
+   `rubberband` es同uno): 推得越远越推No动, 怎么推也到No容Dispositivoese么ancho. 弹回走站interiorese
+   采样弹簧 `--spring-pane`, 冲过Original再荡回来,  y Filtrarese底板uno手感.  */
 const RUBBER_BAND=.55;
-/* 滚轮没有「手还按着」那一段，推到头的那一下按这一格的力度弹一次：一格滚轮当作手拖了它
-   的三成半，放在最多 480px 宽的橡皮筋上算。宽屏上一整排一千多像素，按整排算，一格
-   推出去的量会大到像是整排滑脱了。 */
+/* 滚轮Sin"手还按着"eseuno段, 推到头eseunoabajo按esteuno格力度弹uno次: uno格滚轮当作手拖它
+   tres成medio, 放En最más 480px ancho橡皮筋arriba算. ancho屏AnteriorCompleto排unomilmás像素, 按Completo排算, uno格
+   推出去量会grande到像esCompleto排滑脱.  */
 const WHEEL_PULL=.35;
 const WHEEL_PULL_SPAN=480;
 export function rubberBand(distance:number,dimension:number):number{
   if(!distance||!(dimension>0))return 0;
   return Math.sign(distance)*(1-1/(Math.abs(distance)*RUBBER_BAND/dimension+1))*dimension;
 }
-/* 位移挂在这一排的子元素上（`.edgepull>*`，读 `--edge-pull`），不挂在容器自己身上：容器
-   一挪，贴着它的渐隐遮罩和外面那一层的边界跟着一起走，右移时还会把整页撑出横向滚动条。
-   动画只在越界那一下挂类名，平时子元素上什么都不多。 */
+/* 移挂Enesteuno排子元素arriba(`.edgepull>*`, 读 `--edge-pull`), No挂En容Dispositivo自己身arriba: 容Dispositivo
+   uno挪, 贴着它渐隐遮罩 y exterior面eseuno层边界跟着uno起走, derecha移时还会Completopágina撑出横向滚动. 
+   动画SoloEn越界eseunoabajo挂类名, 平时子元素arriba什么都Nomás.  */
 function edgeBounce(el:HTMLElement){
   let spring:Animation|null=null,pulled=0;
   const idle=()=>typeof el.animate!=='function'||matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -45,7 +45,7 @@ function edgeBounce(el:HTMLElement){
     spring.onfinish=settle;
   };
   return {
-    /* 拖动跟手：越界多少就按橡皮筋收成多少，松手 `release` 弹回。 */
+    /* 拖动跟手: 越界másmenos就按橡皮筋收成másmenos, 松手 `release` 弹回.  */
     drag(excess:number){
       if(idle())return;
       spring?.cancel();spring=null;
@@ -58,7 +58,7 @@ function edgeBounce(el:HTMLElement){
       const from=pulled,ease=glideEase();pulled=0;el.style.removeProperty('--edge-pull');
       play([{'--edge-pull':`${from}px`,easing:ease.easing},{'--edge-pull':'0px'}],ease.duration);
     },
-    /* 滚轮顶到头：冲出去那一段减速，荡回来那段走弹簧。一次手势只弹一下，调用方判。 */
+    /* 滚轮顶到头: 冲出去eseuno段减Velocidad, 荡回来ese段走弹簧. uno次手势Solo弹unoabajo, 调用方判.  */
     kick(delta:number){
       if(idle()||pulled)return;
       const peak=-rubberBand(delta*WHEEL_PULL,Math.min(el.clientWidth,WHEEL_PULL_SPAN));
@@ -69,15 +69,15 @@ function edgeBounce(el:HTMLElement){
     },
   };
 }
-/** 同一容器只绑定一次。指针在这一排上时滚轮只滚这一排，滚到头弹一下，不带着整页走。 */
-/** 会超宽的横向滚动层：两端按滚动位置渐隐，竖向滚轮转成横向，`drag` 为真时可拖。 */
+/** 同uno容DispositivoSolo绑定uno次. 指针Enesteuno排arriba时滚轮Solo滚esteuno排, 滚到头弹unoabajo, No带着Completopágina走.  */
+/** 会超ancho横向滚动层: 两端按滚动Ubicación渐隐, 竖向滚轮转成横向, `drag` Como真时puede拖.  */
 export function wireHorizontalScroller(el:any,{drag=false,fade=true}={}):any{
   if(!el)return;
   const existing=horizontalControls.get(el);
   if(existing){existing.options.drag ||= drag;existing.options.fade ||= fade;existing.update();return existing}
   const options={drag,fade},abort=new AbortController(),bounce=edgeBounce(el);
   let start:{x:number;left:number}|null=null,moved=0,heldUntil=0,target=0,kicked=false,glide=0,glideAt=0,pos=0,pending=0;
-  /* 值没变就不写：自动滚动每一帧都触发一次 `scroll`，同值重写属性照样让样式重算一遍。 */
+  /* 值没变就No写: 自动滚动每uno帧都触发uno次 `scroll`, 同值pesado写属性照样让样pesado算uno遍.  */
   const mark=(key:string,value:string)=>{if(el.dataset[key]!==value)el.dataset[key]=value};
   const scrollable=()=>['auto','scroll','hidden'].includes(getComputedStyle(el).overflowX);
   const update=()=>{if(options.fade){const active=scrollable();mark('overflowLeft',String(active&&el.scrollLeft>1));mark('overflowRight',String(active&&el.scrollLeft+el.clientWidth<el.scrollWidth-1))}};
@@ -85,8 +85,8 @@ export function wireHorizontalScroller(el:any,{drag=false,fade=true}={}):any{
   listen(el,'scroll',update,{passive:true});
   const kick=(delta:number)=>{if(!kicked){kicked=true;bounce.kick(delta)}};
   const stopGlide=()=>{cancelAnimationFrame(glide);glide=0;pending=0};
-  /* 位置自己记一份小数：一帧只走零点几个像素时，`scrollLeft` 读回来是取整后的值。
-     推过头的那一下等走到头再弹，半路就弹看起来是没到头先弹了。 */
+  /* Ubicación自己记unopequeño数: uno帧Solo走cero点几像素时, `scrollLeft` 读回来es取Completoposterior值. 
+     推过头eseunoabajoetc.走到头再弹, medio路就弹ver起来es没到头先弹.  */
   const frame=(now:number)=>{
     const dt=Math.min(Math.max(now-glideAt,0),64);glideAt=now;
     pos+=(target-pos)*(1-Math.exp(-dt/WHEEL_GLIDE_MS));
@@ -96,11 +96,11 @@ export function wireHorizontalScroller(el:any,{drag=false,fade=true}={}):any{
     glide=0;
     if(pending){const delta=pending;pending=0;kick(delta)}
   };
-  /* 页面那边开了头的手势拦不住：Chrome 把一串滚轮事件认作同一次手势，第一下没被拦下，
-     后面那些就再也拦不住。页面滚着滚着让这一排经过指针底下时，这些原样留给页面。
-     在这一排上开头的手势整段都归这一排：还没滚完、滚到头以后，都不把剩下的交给页面；
-     要滚整页，指针挪到这一排外面去。推过头就弹一下，一次手势只弹一次：触控板的惯性
-     尾巴一格一格地撞在边上，每格都弹就是一串抖动。 */
+  /* página面ese边开头手势拦No住: Chrome uno串滚轮事件认作同uno次手势, No.unoabajo没被拦abajo, 
+     posterior面ese些就再也拦No住. página面滚着滚着让esteuno排经过指针底abajo时, este些Original样Deja给página面. 
+     Enesteuno排arriba开头手势Completo段都归esteuno排: 还没滚完, 滚到头以posterior, 都No剩abajo交给página面; 
+     要滚Completopágina, 指针挪到esteuno排exterior面去. 推过头就弹unoabajo, uno次手势Solo弹uno次: 触控板惯性
+     尾巴uno格uno格地撞En边arriba, 每格都弹就esuno串抖动.  */
   listen(el,'wheel',event=>{
     const max=el.scrollWidth-el.clientWidth;
     if(event.defaultPrevented||!event.cancelable||Math.abs(event.deltaY)<=Math.abs(event.deltaX)||max<=0||!scrollable())return;
@@ -108,7 +108,7 @@ export function wireHorizontalScroller(el:any,{drag=false,fade=true}={}):any{
     const now=performance.now(),step=Math.abs(event.deltaY);
     if(now>heldUntil)kicked=false;
     heldUntil=now+WHEEL_GESTURE_GAP;
-    // 平滑那一段还在半路时，下一格从上一格的终点接着算。
+    // 平滑eseuno段还Enmedio路时, Siguiente格从Anterior格终点continuar着算. 
     const from=glide?target:el.scrollLeft,want=from+event.deltaY;
     target=Math.min(max,Math.max(0,want));
     const over=want===target?0:event.deltaY;
@@ -140,18 +140,18 @@ export function wireHorizontalScroller(el:any,{drag=false,fade=true}={}):any{
   update();return control;
 }
 
-/* 一排横卡自己缓缓往前走，走到头停一下再往回走。一秒 24px 是看得出在动、又不催人读的
-   速度：一张 168px 的卡七秒走过去。两端各停两秒，最后一张和第一张都看得清。 */
+/* uno排横卡自己缓缓往anterior走, 走到头停unoabajo再往回走. uno秒 24px esver得出En动, 又No催人读
+   Velocidad度: uno 168px 卡siete秒走过去. 两端各停两秒, 最posterioruno y No.uno都ver得清.  */
 const AUTO_SCROLL_SPEED=24;
 const AUTO_SCROLL_DWELL=2000;
-/* 人手动过之后隔多久再接着走：刚滚到想看的那张，这一排马上又自己挪走，等于跟人抢。 */
+/* 人手动过之posterior隔más久再continuar着走: 刚滚到想verese, esteuno排马arriba又自己挪走, etc.于跟人抢.  */
 const AUTO_SCROLL_RESUME=3000;
 const autoScrollers=new Map<Element,()=>void>();
 const autoScrollWakeups=new Set<()=>void>();
 let autoScrollVisibility:MutationObserver|null=null;
 /**
- * 横排自动滚动。指针停在上面、焦点在里面、这一排不在屏幕上、页面切到后台时都停；
- * 人滚过或拖过之后从人停下的位置接着走。系统要求减少动态效果时不动。
+ * 横排自动滚动. 指针停Enarriba面, 焦点Endentro面, esteuno排NoEn屏幕arriba, página面切到posterior时都停; 
+ * 人滚过或拖过之posterior从人停abajoUbicacióncontinuar着走. 系统要求减menos动态效果时No动. 
  */
 export function wireAutoScroll(el:any):void{
   if(!el||autoScrollers.has(el))return;
@@ -159,8 +159,8 @@ export function wireAutoScroll(el:any):void{
   const abort=new AbortController();
   let pos=el.scrollLeft,dir=1,last=0,frame=0,hovered=false,holdUntil=0;
   const listen=(target:EventTarget,type:string,fn:()=>void)=>target.addEventListener(type,fn,{passive:true,signal:abort.signal});
-  /* 在不在屏幕上每帧量一次，不另挂观察器：页面观察器只留给「载入更多」那一份。
-     滚出屏幕后循环停下，页面再滚动时由下面的捕获监听叫醒。 */
+  /* EnNoEn屏幕arriba每帧量uno次, No另挂观察Dispositivo: página面观察DispositivoSoloDeja给"载入更más"eseuno. 
+     滚出屏幕posterior循环停abajo, página面再滚动时由abajo面捕obtener监听叫醒.  */
   const onscreen=()=>{const r=el.getBoundingClientRect();return r.width>0&&r.bottom>0&&r.top<innerHeight};
   const running=()=>el.isConnected&&!hovered&&!document.hidden&&
     (!document.body.hasAttribute('data-detail-open')||!!el.closest('#stage'))&&!el.matches(':focus-within')&&onscreen();
@@ -172,16 +172,16 @@ export function wireAutoScroll(el:any):void{
     const dt=last?Math.min(now-last,64):0;last=now;
     const max=el.scrollWidth-el.clientWidth;
     if(now<holdUntil||max<=1)return;
-    /* 位置自己记一份小数：一帧只走零点几个像素，`scrollLeft` 读回来是取整后的值，
-       拿它接着加会一直原地不动。 */
+    /* Ubicación自己记unopequeño数: uno帧Solo走cero点几像素, `scrollLeft` 读回来es取Completoposterior值, 
+       拿它continuar着加会uno直Original地No动.  */
     pos=Math.min(max,Math.max(0,pos+dir*AUTO_SCROLL_SPEED*dt/1000));
     el.scrollLeft=pos;
     if(pos>=max||pos<=0){dir=pos>=max?-1:1;holdUntil=now+AUTO_SCROLL_DWELL}
   };
-  // 重画换掉了这一排时，挂在 document 上的监听要在下一次叫醒时跟着撤掉。
+  // pesado画换掉esteuno排时, 挂En document en la监听要EnSiguiente次叫醒时跟着撤掉. 
   const wake=()=>{if(!el.isConnected)stop();else if(!frame&&running()){last=0;frame=requestAnimationFrame(tick)}};
   const hold=()=>{holdUntil=performance.now()+AUTO_SCROLL_RESUME};
-  // 读回来和自己记的差不到一个像素就是自己那一帧；差得多是人滚的，从人停下的地方接着走。
+  // 读回来 y 自己记差No到uno像素就es自己eseuno帧; 差得máses人滚, 从人停abajo地方continuar着走. 
   listen(el,'scroll',()=>{if(Math.abs(el.scrollLeft-pos)>1){pos=el.scrollLeft;hold()}});
   listen(el,'pointerenter',()=>{hovered=true});
   listen(el,'pointerleave',()=>{hovered=false;hold();wake()});
@@ -198,11 +198,11 @@ export function wireAutoScroll(el:any):void{
 }
 export function stopAutoScroll(el:Element):void{autoScrollers.get(el)?.()}
 
-/* 一排里标出「当前是哪一个」的那块底板，全站只有这一种动法：滑过去、冲过落点、荡回来。
-   筛选条上那块玻璃、抽屉那一列、分段控件里那块白底，在人眼里是同一件事，各写一段就会
-   各自漂移成三种手感。
-   弹簧曲线和它的时长都写在 `board.css` 的 `--spring-pane` 上，这里只读一次：那串数是一次
-   弹簧模拟的采样结果，抄第二份就没人再改得动它。 */
+/* uno排dentro标出"当anteriores哪uno"ese底板, Todo站SoloConesteuno动法: 滑过去, 冲过落点, 荡回来. 
+   Filtrararribaese玻璃, 抽屉eseuno列, 分段Controlesdentroese白底, En人眼dentroes同uno件事, 各写uno段就会
+   各自漂移成tres手感. 
+   弹簧曲线 y 它Duración都写En `board.css`  `--spring-pane` arriba, aquíSolo读uno次: ese串数esuno次
+   弹簧模拟采样Resultado, 抄No.dos就没人再改得动它.  */
 let paneSpring:{easing:string;duration:number}|null=null;
 export function glideEase():{easing:string;duration:number}{
   if(!paneSpring){
@@ -212,19 +212,19 @@ export function glideEase():{easing:string;duration:number}{
   }
   return paneSpring;
 }
-/* 位移走 `translate`、形变走 `scale`，两个独立属性各挂一段动画，不挤进同一条
-   `transform`：一条属性上只放得下一段，而这两下的时间形状不是同一条曲线——位移冲过
-   落点再荡回来，抻开是中途最大、两头归一。分开写，两段仍然都在合成线程上。
-   都不碰 `width`：宽度是布局属性，逐帧改它等于让整份文档重新排版一遍，合成线程碰不
-   到它，主线程一忙这块底板就跟着卡住。
-   `from` 给 null 就只落位不动画：第一次出现的那块不该从别处飞进来。 */
+/* 移走 `translate`, 形变走 `scale`, 两Independiente属性各挂uno段动画, No挤进同uno
+   `transform`: uno属性arribaSolo放得Siguiente段, 而este两abajoTiempo形状Noes同uno曲线—移冲过
+   落点再荡回来, 抻开esen proceso途最grande, 两头归uno. 分开写, 两段仍然都En合成线程arriba. 
+   都No碰 `width`: ancho度esDiseño属性, 逐帧改它etc.于让CompletoDocumentaciónpesadoNuevo排版uno遍, 合成线程碰No
+   到它, 主线程uno忙este底板就跟着卡住. 
+   `from` 给 null 就Solo落No动画: No.uno次出现eseNo该从别处飞进来.  */
 export function moveGlidePane(
   pane:HTMLElement,
   from:{x:number;y:number;w:number;h:number}|null,
   box:{x:number;y:number;w:number;h:number},
   axis:'x'|'y'='x',
 ):void{
-  /* 原地重量也要撤掉还在跑的位移与形变，动画不能继续覆盖新落点。 */
+  /* Original地pesado量也要撤掉还En跑移y形变, 动画No能Continuar覆盖Nuevo落点.  */
   pane.getAnimations().forEach(a=>a.cancel());
   pane.style.width=`${box.w}px`;pane.style.height=`${box.h}px`;
   const span=axis==='y'?'h':'w',head=axis==='y'?'y':'x';
@@ -233,11 +233,11 @@ export function moveGlidePane(
     const ease=glideEase();
     pane.animate([{translate:axis==='y'?`${box.x}px ${from.y}px`:`${from.x}px ${box.y}px`},
       {translate:settled}],{duration:ease.duration,easing:ease.easing,fill:'none'});
-    /* 一块被拽着走的软东西，跑起来在跑的方向上抻开，停下来收回去。抻多少按这一跳跨了
-       自己几个身位算，封在一个半身位：再远也不该更长，那时候读起来不是被拉长的同一
-       块，是换上来的另一块。峰值压在前三成——加速那一段才拉得动它。
-       形变只在这一排排布的方向上：另一根轴的尺寸是这一排给定的，在那儿拉扯会让它看
-       起来不是这一排里的东西。 */
+    /* uno被拽着走软东西, 跑起来En跑方向arriba抻开, 停abajo来收回去. 抻másmenos按esteuno跳跨
+       自己几身算, 封Enunomedio身: 再远也No该更largo, ese时候读起来Noes被拉largo同uno
+       , es换arriba来另uno. 峰值压Enanteriortres成—加Velocidadeseuno段才拉得动它. 
+       形变SoloEnesteuno排排布方向arriba: 另uno根轴尺寸esesteuno排给定, Enese儿拉扯会让它ver
+       起来Noesesteuno排en la东西.  */
     const reach=Math.min(Math.abs(box[head]-from[head])/box[span],1.5),grow=1+reach*.12;
     pane.animate([{scale:'1 1',offset:0},
       {scale:axis==='y'?`1 ${grow}`:`${grow} 1`,offset:.3},{scale:'1 1',offset:1}],
@@ -247,7 +247,7 @@ export function moveGlidePane(
 }
 
 /** Geist Scroller: one-axis overflow with edge fades as the scroll affordance. */
-export function scrollerHtml(content:string,{className='',label='可滚动内容',overflow='y'}={}){
+export function scrollerHtml(content:string,{className='',label='Contenido desplazable',overflow='y'}={}){
   const axis=new Set(['x','y','both']).has(overflow)?overflow:'y';
   return `<div class="ui-geist-scroller${className?` ${esc(className)}`:''}" data-geist-scroller>
     <div class="ui-geist-scroller-overlay" aria-hidden="true"></div>
@@ -279,11 +279,11 @@ export function wireScrollers(root:ParentNode=document):void{
   });
 }
 
-/** 挂覆盖式滚动条的滚动容器。列表只写在这一处，样式那边认的是挂上之后的属性。
+/** 挂覆盖滚动滚动容Dispositivo. ListaSolo写Enesteuno处, 样ese边认es挂arriba之posterior属性. 
  *
- * `[data-stage-scroll]` 是详情浮窗里所有内容的外层。窄屏下整块内容自己纵向滚，滚的得是它而不是
- * `<dialog data-stage>` 本身：轨道必须是滚动容器的兄弟，而 dialog 在顶层，挂在它
- * 父级上的轨道会落到遮罩底下。宽屏下它不溢出，组件自己量得出来，轨道不显示。 */
+ * `[data-stage-scroll]` esDetalles浮窗dentro所Concontenidoexterior层. estrecho屏abajoCompletocontenido自己纵向滚, 滚得es它而Noes
+ * `<dialog data-stage>` 本身: 轨道必须es滚动容Dispositivo兄弟, 而 dialog En顶层, 挂En它
+ * 父级en la轨道会落到遮罩底abajo. ancho屏abajo它No溢出, 组件自己量得出来, 轨道No显示.  */
 const OVERLAY_SCROLLERS=[
   '[data-stage-side-content]','[data-stage-scroll]','.tagpickbody','[data-mix-list]','.playlistpicklist',
   '[data-player-stats]',
@@ -292,16 +292,16 @@ const OVERLAY_SCROLLERS=[
   '.reviewtabs','.ftablewrap','.ui-board-local-nav','[data-manage-menu]',
   '.follow-workspace-switch','.fmanagenav','[role="listbox"]',
 ].join(',');
-/* Board 层里会超宽的横向滚动层：两端按滚动位置渐隐说明「那边还有」，鼠标停在上面时竖向
-   滚轮转成横向。边线留给外层框，渐隐只落在这一层。
-   这里登记的都是 `frontend/` 或 board.css 画出来的层，它们不经过 `wireAllDrag` 那份按 id
-   点名的清单，漏登记就是「看得见、够不着」：一排分区在 390px 下溢出两百多像素，
-   却既没有渐隐也不接滚轮。组件自己量溢出，不溢出的宽度上登记等于空转，所以按可能
-   溢出的层登记，不按某一个断点登记。React 档的页面自己用 `overflow-x-auto`，不进这份清单。 */
+/* Board 层dentro会超ancho横向滚动层: 两端按滚动Ubicación渐隐Descripción"ese边还Con", 鼠标停Enarriba面时竖向
+   滚轮转成横向. 边线Deja给exterior层框, 渐隐Solo落Enesteuno层. 
+   aquí登记都es `frontend/` 或 board.css 画出来层, 它们No经过 `wireAllDrag` ese按 id
+   点名清单, 漏登记就es"ver得见, 够No着": uno排分区En 390px abajo溢出两cienmás像素, 
+   却既Sin渐隐也Nocontinuar滚轮. 组件自己量溢出, No溢出ancho度arriba登记etc.于空转, 所以按puede能
+   溢出层登记, No按某uno断点登记. React 档página面自己用 `overflow-x-auto`, No进este清单.  */
 const BOARD_EDGE_SCROLLERS='.reviewtabs,.ftablewrap,.ui-board-local-nav,[data-manage-menu],'
   +'.follow-workspace-switch,.fmanagenav';
 
-/** 把这一批 DOM 里所有该有覆盖式滚动条的容器接上；重复调用只接新出现的那些。 */
+/** esteuno批 DOM dentro所Con该Con覆盖滚动容Dispositivocontinuararriba; Repetir调用SolocontinuarNuevo出现ese些.  */
 export function wireOverlayScrollbars(root:ParentNode=document):void{
   root.querySelectorAll<HTMLElement>(OVERLAY_SCROLLERS).forEach(el=>{
     if(el.matches(BOARD_EDGE_SCROLLERS)){

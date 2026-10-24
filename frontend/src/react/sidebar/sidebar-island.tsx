@@ -1,26 +1,26 @@
-/* 侧栏（ADR-0031 第 11f 步）：左侧抽屉里滚动的那一层。
+/* 侧栏(ADR-0031 No. 11f 步): izquierda侧抽屉dentro滚动eseuno层. 
  *
- * 常驻组件 `sidebar`（`router/managed-routes.tsx` 的常驻表）：路由树把它画进壳常驻的 `#drawerScroll`，宿主就是
- * 那个节点本身（覆盖式滚动条挂在它上面，轨道住在 `#drawer` 里）。壳启动时先同步在宿主里写一份同结构的导航
- * 骨架（`sidebarSkeletonHtml`）；打开这一面时 `place` 清掉骨架，路由树在同一个任务里画出首帧（只有导航），
- * 壳紧接着经 `attached` 把品牌与开合键挪进标题行，再拿到句柄、把手上那份 props 推进来。
+ * 常驻组件 `sidebar`(`router/managed-routes.tsx` 常驻表): 路由树它画进壳常驻 `#drawerScroll`, 宿主就es
+ * ese节点本身(覆盖滚动挂En它arriba面, 轨道住En `#drawer` dentro). 壳启动时先SincronizarEn宿主dentro写uno同结构导航
+ * 骨架(`sidebarSkeletonHtml`); Abriresteuno面时 `place` 清掉骨架, 路由树En同unoTareadentro画出primero帧(SoloCon导航), 
+ * 壳紧continuar着经 `attached` marcay开合Clave挪进Título行, 再拿到句柄, 手arribaese props 推进来. 
  *
- * 之后壳只经 `configureSidebar` 给的句柄说话：`render(props)` 与 `navChanged()` 写本模块的 store 再
- * `flushSync` 通知，返回时已经画好——`navChanged` 跑在壳 `route()` 的同步段里，玻璃拿到的是旧位置到新位置。
- * 换页、换筛选、换语境都落在同一个组件上，导航那一列和它上面的玻璃从头到尾是同一批节点——换了节点，
- * 玻璃的位移就从头起跑，看到的只是当前项换了个地方亮起来。
+ * 之posterior壳Solo经 `configureSidebar` 给句柄说话: `render(props)` y `navChanged()` 写本模 store 再
+ * `flushSync` 通知, 返回时ya经画bien—`navChanged` 跑En壳 `route()` Sincronizar段dentro, 玻璃拿到esantiguoUbicación到NuevoUbicación. 
+ * 换página, 换Filtrar, 换语境都落En同uno组件arriba, 导航eseuno列 y 它arriba面玻璃从头到尾es同uno批节点—换节点, 
+ * 玻璃移就从头起跑, ver到Soloes当anterior项换地方亮起来. 
  *
- * 玻璃画在 `#drawer` 上（portal），不在滚动层里：它要跟着那一列纵滚，又不能被滚动层切掉回弹的那一截。
- * 位移与抻长交给 `useViewGlide` 的纵轴版，同筛选条那几排是同一种动法。
+ * 玻璃画En `#drawer` arriba(portal), NoEn滚动层dentro: 它要跟着eseuno列纵滚, 又No能被滚动层切掉回弹eseuno截. 
+ * 移y抻largo交给 `useViewGlide` 纵轴版, 同Filtrarese几排es同uno动法. 
  *
- * 标题行 `[data-sidebar-head]` 画成一个没有子节点的空槽：品牌与开合键是壳的节点，由壳挪进来，组件不往这个
- * 槽里画任何东西，重画也就不碰它们。
+ * Título行 `[data-sidebar-head]` 画成unoSin子节点空槽: marcay开合Clavees壳节点, 由壳挪进来, 组件No往este
+ * 槽dentro画任何东西, pesado画也就No碰它们. 
  *
- * 分组的开合走共用 Collapse 的 `setCollapseOpen`（同设置页的 `Disclosure`）：原生 `details` 给键盘与
- * 无障碍语义，`open` 不写成受控属性，收起的那段过渡里它才不会被重新画成展开。
+ * Agrupar开合走共用 Collapse  `setCollapseOpen`(同Configuraciónpágina `Disclosure`): Original生 `details` 给Clave盘y
+ * Sin障碍语义, `open` No写成受控属性, 收起ese段过渡dentro它才No会被pesadoNuevo画成展开. 
  *
- * 宿主不包 `.peach-react`：这一列一直在 Preflight 之外，按钮与字号继承的是遗留层的全局规则，样式全在
- * `sidebar.css`，不用工具类。 */
+ * 宿主No包 `.peach-react`: esteuno列uno直En Preflight 之exterior, 按钮yTamaño de fuente继承es遗Deja层Todo局Regla, 样TodoEn
+ * `sidebar.css`, No用工具类.  */
 import {
   createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore,
   type DragEvent, type MouseEvent, type ReactNode,
@@ -36,16 +36,16 @@ import type {
 } from './sidebar-api';
 import { moveSidebarKey, useCommitSidebarOrder } from './sidebar-order';
 
-/* 首页那一项的键是空串；空串写进 dataTransfer 等于没写，给它一个占位。 */
+/* primeropáginaeseuno项Clavees空串; 空串写进 dataTransfer etc.于没写, 给它uno占.  */
 const HOME = '__home__';
-/* 「展开全部」之前每组先露多少条。 */
+/* "展开Todo"之anterior每组先露másmenos.  */
 const LIMITS = { creator: 26, tag: 30, tech: 16 } as const;
-/* 时长拉条的量程（分钟）：右端拉到头是「不限」。 */
+/* Duración拉量程(分钟): derecha端拉到头es"No限".  */
 const DURATION_MAX = 180;
 
 let host: SidebarHost | null = null;
-/* store 里的一份：壳推来的 props 与导航按下态的代次（壳说「重读一遍」时加一，玻璃按新的按下项落位）。
-   每次写入换一个新对象，订阅者按引用判断变没变。 */
+/* store en launo: 壳推来 props y导航按abajo态代次(壳说"pesado读uno遍"时加uno, 玻璃按Nuevo按abajo项落). 
+   每次写入换unoNuevo对象, 订阅者按引用判断变没变.  */
 let shown: { props: SidebarProps; epoch: number } = { props: { content: null, filters: {}, latest: null }, epoch: 0 };
 const listeners = new Set<() => void>();
 
@@ -58,27 +58,27 @@ function notify(): void {
   for (const listener of [...listeners]) listener();
 }
 
-/* 这一面抛错、被错误边界卸掉之后没人订阅，推进来的只写进 store，不画、不抛。 */
+/* esteuno面抛错, 被Error边界卸掉之posterior没人订阅, 推进来Solo写进 store, No画, No抛.  */
 const api: SidebarApi = {
   render(next) { shown = { ...shown, props: next }; flushSync(notify) },
   navChanged() { shown = { ...shown, epoch: shown.epoch + 1 }; flushSync(notify) },
 };
 
-/** 接上壳给的宿主，拿回侧栏的命令式入口。只调一次；壳的 `loadSidebar` 接着在路由树里打开这一面，首帧只画
- *  导航，画上之后调 `attached`、交出句柄，壳随即把手上那份 props 推进来。 */
+/** continuararriba壳给宿主, 拿回侧栏命令入口. Solo调uno次; 壳 `loadSidebar` continuar着En路由树dentroAbriresteuno面, primero帧Solo画
+ *  导航, 画arriba之posterior调 `attached`, 交出句柄, 壳随即手arribaese props 推进来.  */
 export function configureSidebar(next: SidebarHost): SidebarApi {
   host = next;
   shown = { ...shown, props: { content: null, filters: {}, latest: null } };
   return api;
 }
 
-/** 常驻表里的那一面：读本模块的 store，宿主还没接上时不画。 */
+/** 常驻表en laeseuno面: 读本模 store, 宿主还没continuararriba时No画.  */
 export function SidebarSurface() {
   const current = useSyncExternalStore(subscribe, () => shown);
   return host ? <Sidebar host={host} props={current.props} epoch={current.epoch} /> : null;
 }
 
-/* ── 整列 ── */
+/* ── Completo列 ── */
 
 function Sidebar({ host: at, props: view, epoch }: { host: SidebarHost; props: SidebarProps; epoch: number }) {
   const version = useSyncExternalStore(at.store.subscribe, at.store.version);
@@ -105,8 +105,8 @@ function Navigation({ host: at, epoch, version }: { host: SidebarHost; epoch: nu
   const glide = useViewGlide(pane, column, '[data-nav][aria-pressed="true"]', glideKey, { axis: 'y' });
   const { sync } = glide;
 
-  /* 抽屉开合（桌面上宽度在 60 与 260 之间过渡）、滚动层改尺寸、标题行里品牌挪进来，都只重量、
-     不动画；开合之后悬停的那一格不算数，回到当前项。 */
+  /* 抽屉开合(桌面arribaancho度En 60 y 260 之间过渡), 滚动层改尺寸, Título行dentromarca挪进来, 都Solopesado量, 
+     No动画; 开合之posteriorPasar el ratóneseuno格No算数, 回到当anterior项.  */
   useEffect(() => {
     const scroll = at.scroll, drawer = scroll.parentElement;
     const head = scroll.querySelector<HTMLElement>(':scope > [data-sidebar-head]');
@@ -162,7 +162,7 @@ function Navigation({ host: at, epoch, version }: { host: SidebarHost; epoch: nu
   );
 }
 
-/* ── 筛选分组 ── */
+/* ── FiltrarAgrupar ── */
 
 interface GroupSpec {
   title: string;
@@ -190,8 +190,8 @@ function Groups({ host: at, content, filters, latest }: {
     : `follow:${content.selected.join(',')}:${content.tags.map((row) => row.value).join(',')}`
       + `:${(content.providers || []).map((row) => row.value).join(',')}:${filters.provider ?? ''}`
       + `:${content.duration ? 1 : 0}:${filters.dur_min ?? ''}:${filters.dur_max ?? ''}`;
-  /* 计数徽标弹不弹由 `popBadges` 按上一次见到的值判断，不按节点是不是新建的判断：每来一份新聚合
-     问一次，换一条筛选时整列计数才不会一起弹。 */
+  /* 计数徽标弹No弹由 `popBadges` 按Anterior次见到值判断, No按节点esNoesNuevo判断: 每来unoNuevo聚合
+     问uno次, 换unoFiltrar时Completo列计数才No会uno起弹.  */
   useLayoutEffect(() => { if (content.kind === 'catalog') popBadges(at.scroll, 'drawer') }, [at, key, content.kind]);
   const groups = content.kind === 'catalog'
     ? catalogGroups(at, content.facets, filters, latest, key)
@@ -226,25 +226,25 @@ function catalogGroups(
     };
   };
   return [
-    spec('来源', 'src', facets.locations, 'loc', true),
+    spec('Fuente', 'src', facets.locations, 'loc', true),
     facets.duration
-      ? { title: '时长', kind: 'meta', active: false, body: <Duration host={at} filters={filters} /> }
+      ? { title: 'Duración', kind: 'meta', active: false, body: <Duration host={at} filters={filters} /> }
       : null,
-    /* 产地紧挨着来源：两者回答的都是「这批片打哪来」，一个说存储，一个说发行体系。可多选。 */
-    spec('产地', 'general', facets.regions, 'region', true),
-    spec('画幅', 'meta', facets.orientations, 'orient', false),
-    spec('创作者', 'artist', facets.creators, 'creator', false, 'creator'),
-    spec('内容标签', 'general', facets.tags, 'tag', false, 'tag'),
-    spec('影片属性', 'meta', facets.tech, 'tag', false, 'tech'),
+    /* 产地紧挨着来源: 两者回答都es"este批片打哪来", uno说存储, uno说Lanzamiento体系. puedemás选.  */
+    spec('Origen', 'general', facets.regions, 'region', true),
+    spec('Formato de imagen', 'meta', facets.orientations, 'orient', false),
+    spec('Creador', 'artist', facets.creators, 'creator', false, 'creator'),
+    spec('Etiquetas de contenido', 'general', facets.tags, 'tag', false, 'tag'),
+    spec('Propiedades del video', 'meta', facets.tech, 'tag', false, 'tech'),
     facets.followTags.length ? {
-      title: '关注标签', kind: 'online', active: false,
+      title: 'SeguirEtiqueta', kind: 'online', active: false,
       body: <FollowChips rows={facets.followTags} host={at} selected={null} badges />,
     } : null,
   ];
 }
 
-/* 关注页与关注详情：次序同目录那一列，来源、时长在前，内容标签在后。来源与时长回的是关注页的筛选，
-   不是目录的 `commitContextFilter`。 */
+/* 关注páginay关注Detalles: 次序同Directorioeseuno列, 来源, DuraciónEnanterior, contenidoEtiquetaEnposterior. 来源yDuración回es关注páginaFiltrar, 
+   NoesDirectorio `commitContextFilter`.  */
 function followGroups(
   at: SidebarHost, content: Extract<SidebarContent, { kind: 'follow' }>, filters: SidebarProps['filters'],
 ): (GroupSpec | null)[] {
@@ -253,25 +253,25 @@ function followGroups(
   const selected = new Set(content.selected);
   return [
     providers.length ? {
-      title: '来源', kind: 'src', active: providers.some((row) => provider.includes(row.value)),
+      title: 'Fuente', kind: 'src', active: providers.some((row) => provider.includes(row.value)),
       body: <ChipList rows={providers} filterKey="provider" multi={false} selected={provider} counts={null} host={at}
         onToggle={(_key, value) => at.selectFollowProvider(value)} />,
     } : null,
     content.duration
-      ? { title: '时长', kind: 'meta', active: false, body: <Duration host={at} filters={filters} commit={at.setFollowDuration} /> }
+      ? { title: 'Duración', kind: 'meta', active: false, body: <Duration host={at} filters={filters} commit={at.setFollowDuration} /> }
       : null,
     content.tags.length ? {
-      title: '内容标签', kind: 'online', active: content.tags.some((row) => selected.has(row.value)),
+      title: 'Etiquetas de contenido', kind: 'online', active: content.tags.some((row) => selected.has(row.value)),
       body: <FollowChips rows={content.tags} host={at} selected={selected} badges={false} />,
     } : null,
   ];
 }
 
-/* 一进来只有正在生效的那几组是展开的。挑两组常驻展开等于替人决定他这次要按哪个维度筛，而侧栏一屏
-   就那么长，展开的部分把别的组挤到看不见的地方去。人自己开合过的组按这一次会话记住。 */
+/* uno进来SoloConEn curso生效ese几组es展开. 挑两组常驻展开etc.于替人决定他este次要按哪维度筛, 而侧栏uno屏
+   就ese么largo, 展开部分别组挤到verNo见地方去. 人自己开合过组按esteuno次会话记住.  */
 function wantOpen(title: string, active: boolean): boolean {
   let saved: string | null = null;
-  try { saved = sessionStorage.getItem(`peach.sidebar.group.${title}`) } catch { /* 存储不可用就按按下态 */ }
+  try { saved = sessionStorage.getItem(`peach.sidebar.group.${title}`) } catch { /* 存储Nopuede用就按按abajo态 */ }
   return saved !== null ? saved === 'open' : active;
 }
 
@@ -282,7 +282,7 @@ function Group({ title, kind, active, index, epoch, children }: {
   const body = useRef<HTMLDivElement | null>(null);
   const [open, setOpen] = useState(() => wantOpen(title, active));
   const mounted = useRef(false);
-  /* 第一次挂上时把初始状态落到 DOM；往后每来一份新聚合，没被人开合过的组重新按按下态定。 */
+  /* No.uno次挂arriba时初始Estado落到 DOM; 往posterior每来unoNuevo聚合, 没被人开合过组pesadoNuevo按按abajo态定.  */
   useLayoutEffect(() => {
     const node = details.current, collapse = body.current;
     if (!node || !collapse) return;
@@ -301,7 +301,7 @@ function Group({ title, kind, active, index, epoch, children }: {
     const next = !open;
     setCollapseOpen(details.current, body.current, next);
     setOpen(next);
-    try { sessionStorage.setItem(`peach.sidebar.group.${title}`, next ? 'open' : 'closed') } catch { /* 只是不记住 */ }
+    try { sessionStorage.setItem(`peach.sidebar.group.${title}`, next ? 'open' : 'closed') } catch { /* SoloesNo记住 */ }
   };
   const collapseId = `sidebar-collapse-${index}`;
   return (
@@ -320,7 +320,7 @@ function Group({ title, kind, active, index, epoch, children }: {
   );
 }
 
-/* 名单末尾那枚「收起」收的是整组：组的开合在 `Group` 手里，经这一层递下去。 */
+/* 名单último尾ese"收起"收esCompleto组: 组开合En `Group` 手dentro, 经esteuno层递abajo去.  */
 const GroupToggle = createContext<() => void>(() => {});
 
 function Dot({ dot }: { dot?: SidebarDot }) {
@@ -333,7 +333,7 @@ function Dot({ dot }: { dot?: SidebarDot }) {
 function ChipList({ rows, filterKey, multi, selected, counts, host: at, onToggle = at.toggleChip }: {
   rows: SidebarChip[]; filterKey: string; multi: boolean; selected: string[];
   counts: Map<string, number> | null; host: SidebarHost;
-  /** 点下去回给谁：缺省是目录筛选，关注页换成它自己的。 */
+  /** 点abajo去回给谁: 缺省esDirectorioFiltrar, 关注página换成它自己.  */
   onToggle?: SidebarHost['toggleChip'];
 }) {
   return (
@@ -355,15 +355,15 @@ function ChipList({ rows, filterKey, multi, selected, counts, host: at, onToggle
   );
 }
 
-/* 展开键接在名单末尾，它说的是「这张名单还没完」——那句话要跟名单断掉的地方在一起。身量取排名那枚
-   展开药丸：一个箭头就说得完的事不必再配一句字。摊开照最新那一份聚合重排整组。 */
+/* 展开ClavecontinuarEn名单último尾, 它说es"este名单还没完"—ese句话要跟名单断掉地方Enuno起. 身量取排名ese
+   展开药丸: uno箭头就说得完事No必再配uno句字. 摊开照最Nuevoeseuno聚合pesado排Completo组.  */
 function MoreList({ epoch, title, rows, latest, limit, filterKey, selected, counts, host: at, expandable }: {
   epoch: string; title: string; rows: SidebarChip[]; latest: SidebarChip[] | null; limit: number; filterKey: string;
   selected: string[]; counts: Map<string, number> | null; host: SidebarHost; expandable: boolean;
 }) {
   const toggleGroup = useContext(GroupToggle);
   const [shown, setShown] = useState<{ rows: SidebarChip[]; all: boolean } | null>(null);
-  /* 新的一份聚合到来时名单从头摊：成员换回这一份的前几条，展开键回到「展开全部」。 */
+  /* Nuevouno聚合到来时名单从头摊: 成员换回esteunoanterior几, 展开Clave回到"展开Todo".  */
   const [seen, setSeen] = useState(epoch);
   if (seen !== epoch) { setSeen(epoch); setShown(null) }
   const grow = useRef<{ body: HTMLElement; before: number; scroller: HTMLElement; keep: number } | null>(null);
@@ -371,8 +371,8 @@ function MoreList({ epoch, title, rows, latest, limit, filterKey, selected, coun
   const expanded = !!shown?.all;
   const list = shown ? shown.rows : rows;
 
-  /* 这一列的位置归人自己管：摊开的内容全在按下的这个点以下，把他挪过去等于替他决定现在要看第几条。
-     名单一变长，浏览器会顺着焦点和锚定把这一列推走，所以记下再放回。 */
+  /* esteuno列Ubicación归人自己管: 摊开contenidoTodoEn按abajoeste点以abajo, 他挪过去etc.于替他决定现En要verNo.几. 
+     名单uno变largo, Explorar dispositivo会顺着焦点 y 锚定esteuno列推走, 所以记abajo再放回.  */
   useLayoutEffect(() => {
     const run = grow.current;
     if (!run) return;
@@ -395,8 +395,8 @@ function MoreList({ epoch, title, rows, latest, limit, filterKey, selected, coun
     grow.current = { body, before: body.getBoundingClientRect().height, scroller, keep: scroller.scrollTop };
     const source = latest ?? rows;
     setShown({ rows: source, all: !expanded });
-    /* 收起收的是整组。名单已经摊到最长，把它退回二十几条只是换一个断点，人还站在同一列读不完的东西
-       前面；他按这一下要的是把这一组放回去。 */
+    /* 收起收esCompleto组. 名单ya经摊到最largo, 它退回dosdiez几Soloes换uno断点, 人还站En同uno列读No完东西
+       anterior面; 他按esteunoabajo要esesteuno组放回去.  */
     if (expanded) toggleGroup();
   };
   return (
@@ -405,7 +405,7 @@ function MoreList({ epoch, title, rows, latest, limit, filterKey, selected, coun
         counts={counts} host={at} />
       {expandable && rows.length > limit
         ? <button type="button" ref={button} data-sidebar-more={filterKey} aria-expanded={expanded}
-            aria-label={`${expanded ? '收起' : '展开全部'}${title}`} onClick={more}><Icon name="chevron-down" /></button>
+            aria-label={`${expanded ? 'Colapsar' : 'ExpandirTodo'}${title}`} onClick={more}><Icon name="chevron-down" /></button>
         : null}
     </>
   );
@@ -430,22 +430,22 @@ function FollowChips({ rows, host: at, selected, badges }: {
   );
 }
 
-/* ── 时长 ──
-   时长只有一处读数：手柄上方那枚气泡。另起一行写「不限 — 不限」是同一件事说第二遍，而且滑块不动时
-   它永远是那句话。两端都常显：这里是唯一报数的地方，藏起来的话不碰滑块就看不出当前筛的是哪一段。 */
+/* ── Duración ──
+   DuraciónSoloConuno处读数: 手柄arriba方ese气泡. 另起uno行写"No限 — No限"es同uno件事说No.dos遍, 而且滑No动时
+   它永远esese句话. 两端都常显: aquíes唯uno报数地方, 藏起来话No碰滑就verNo出当anterior筛es哪uno段.  */
 
 const minutesOf = (seconds: unknown, fallback: number) =>
   seconds ? Math.min(DURATION_MAX, Number(seconds) / 60) : fallback;
 
 function Duration({ host: at, filters, commit: onCommit = at.setDuration }: {
   host: SidebarHost; filters: SidebarProps['filters'];
-  /** 松手时回给谁：缺省是目录筛选，关注页换成它自己的。 */
+  /** 松手时回给谁: 缺省esDirectorioFiltrar, 关注página换成它自己.  */
   commit?: SidebarHost['setDuration'];
 }) {
   const source = `${filters.dur_min ?? ''}:${filters.dur_max ?? ''}`;
   const [seen, setSeen] = useState(source);
   const [range, setRange] = useState(() => [minutesOf(filters.dur_min, 0), minutesOf(filters.dur_max, DURATION_MAX)]);
-  /* 刚动过的那枚压在上面：两端拖到一起时它们会叠，底下那枚报的是自己停下的位置。 */
+  /* 刚动过ese压Enarriba面: 两端拖到uno起时它们会叠, 底abajoese报es自己停abajoUbicación.  */
   const [active, setActive] = useState<'min' | 'max'>('max');
   if (seen !== source) {
     setSeen(source);
@@ -466,7 +466,7 @@ function Duration({ host: at, filters, commit: onCommit = at.setDuration }: {
     return [nextLo, nextHi];
   };
 
-  /* 拖动只改读数，松手（`change`）才提交：React 的 onChange 接的是每一步 input。 */
+  /* 拖动Solo改读数, 松手(`change`)才提交: React  onChange continuares每uno步 input.  */
   useEffect(() => {
     const commit = () => onCommit(latest.current[0], latest.current[1]);
     const inputs = [minInput.current, maxInput.current];
@@ -474,9 +474,9 @@ function Duration({ host: at, filters, commit: onCommit = at.setDuration }: {
     return () => inputs.forEach((input) => input?.removeEventListener('change', commit));
   }, [onCommit]);
 
-  /* 已选那一截与两枚气泡的位置写在样式变量与 `left` 上。气泡对着手柄居中，伸出轨道的那一截按实测
-     溢出量收回来：侧栏只比轨道宽出一点点，越界的半截被侧栏裁掉，读数就只剩一半。量之前先把上一次的
-     位移清掉，否则量到的是已经收过一次的位置，越拖越偏。 */
+  /* ya选eseuno截y两气泡Ubicación写En样变量y `left` arriba. 气泡对着手柄居en proceso, 伸出轨道eseuno截按实测
+     溢出量收回来: 侧栏Solo比轨道ancho出uno点点, 越界medio截被侧栏裁掉, 读数就Solo剩unomedio. 量之anterior先Anterior次
+     移清掉, 否则量到esya经收过uno次Ubicación, 越拖越偏.  */
   useLayoutEffect(() => {
     const node = group.current;
     if (!node) return;
@@ -495,7 +495,7 @@ function Duration({ host: at, filters, commit: onCommit = at.setDuration }: {
 
   const tip = (end: 'min' | 'max', value: number) => (
     <output data-sidebar-range-tip="" data-range-end={end} data-range-active={active === end ? '' : undefined} aria-hidden="true">
-      {end === 'max' && value >= DURATION_MAX ? '不限' : `${value} 分钟`}
+      {end === 'max' && value >= DURATION_MAX ? 'Sin límite' : `${value} minuto(s)`}
     </output>
   );
   return (
@@ -503,9 +503,9 @@ function Duration({ host: at, filters, commit: onCommit = at.setDuration }: {
       <div data-sidebar-range="" id="durationRange" ref={group}>
         <span data-sidebar-range-base="" />
         <span data-sidebar-range-fill="" />
-        <input id="durMin" type="range" min="0" max={DURATION_MAX} step="5" value={lo} aria-label="最短时长（分钟）"
+        <input id="durMin" type="range" min="0" max={DURATION_MAX} step="5" value={lo} aria-label="最cortoDuración(minuto(s))"
           ref={minInput} onChange={(event) => move('min', Number(event.currentTarget.value))} />
-        <input id="durMax" type="range" min="0" max={DURATION_MAX} step="5" value={hi} aria-label="最长时长（分钟）"
+        <input id="durMax" type="range" min="0" max={DURATION_MAX} step="5" value={hi} aria-label="El más largoDuración(minuto(s))"
           ref={maxInput} onChange={(event) => move('max', Number(event.currentTarget.value))} />
         {tip('min', lo)}
         {tip('max', hi)}

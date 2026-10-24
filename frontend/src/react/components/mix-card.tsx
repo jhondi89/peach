@@ -1,12 +1,12 @@
-/* 一叠视频的卡片：播放列表页的每一份列表，和首页那张 Mix 卡是同一件东西。
+/* uno叠视频卡片: ReproducirListapágina每unoLista,  y primeropáginaese Mix 卡es同uno件东西. 
  *
- * 封面后面压着两层纸边，说明它是一叠；悬停时逐张翻过这一叠里的画面（`use-stack-flip.ts`）。
- * 封面右下角是条数徽标，下面一行是这一叠里出镜最多的那几位的头像，标题与一行来源，
- * 最右边留一格给次要动作（点点点菜单）。整块封面是「打开」的点击区，头像各自通往资料页。
+ * Portadaposterior面压着两层纸边, Descripción它esuno叠; Pasar el ratón时逐翻过esteuno叠en laImagen(`use-stack-flip.ts`). 
+ * Portadaderechaabajo角es数徽标, abajo面uno行esesteuno叠dentro出镜最másese几Avatar, Títuloyuno行来源, 
+ * 最derecha边Dejauno格给次要动作(点点点菜单). CompletoPortadaes"Abrir"点击区, Avatar各自通往资料página. 
  *
- * 卡是媒体卡，不是 Board 的填充卡：透明底、无内边距，面只在封面那一块。纸边、翻页、
- * 徽标底色与叠放头像的让位几何写在 `../styles.css` 的 `[data-mix-*]` 那一组规则里：
- * 伪元素、`color-mix` 与相邻兄弟选择器在工具类里写不出来。 */
+ * 卡es媒体卡, Noes Board Introduce充卡: 透明底, SinRelleno, 面SoloEnPortadaeseuno. 纸边, 翻página, 
+ * 徽标底色y叠放Avatar让几何写En `../styles.css`  `[data-mix-*]` eseuno组Regladentro: 
+ * 伪元素, `color-mix` y相邻兄弟SeleccionarDispositivoEn工具类dentro写No出来.  */
 import { useCallback, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { avatarInner, representativeOf } from '@peach/card-art';
 import { firstGrapheme } from '@peach/legacy/core';
@@ -19,7 +19,7 @@ export { MIX_FLIP_FACES, MIX_FLIP_LEAD_MS, MIX_FLIP_MS } from './use-stack-flip'
 
 const PLAY = spriteGlyph('play');
 
-/** 署名行的一位。`kind` 是 `performer`／`creator`。 */
+/** 署名行uno. `kind` es `performer`/`creator`.  */
 export interface MixCardFace {
   kind: string;
   id: number;
@@ -30,48 +30,48 @@ export interface MixCardFace {
 }
 
 export interface MixCardProps {
-  /** 标题，同时是点击区与菜单的无障碍名称里那个名字。 */
+  /** Título, 同时es点击区y菜单Sin障碍名称dentroese名字.  */
   name: string;
-  /** 标题下那一行：这一叠从哪儿来。 */
+  /** Títuloabajoeseuno行: esteuno叠从哪儿来.  */
   caption: ReactNode;
-  /** 徽标上的条数。 */
+  /** 徽标en la数.  */
   count: number;
-  /** 静止封面的地址。没有就写「无预览」。 */
+  /** 静止Portada地址. Sin就写"Sin vista previa".  */
   poster: string | null;
-  /** 悬停时翻过的那几张图的地址，按顺序；最多取前 `MIX_FLIP_FACES` 张。 */
+  /** Pasar el ratón时翻过ese几Imagen地址, 按顺序; 最más取anterior `MIX_FLIP_FACES` .  */
   flipImages(): Promise<readonly string[]>;
-  /** 此刻能不能翻（壳的多选、遮挡、减少动效、滚动中）。 */
+  /** 此刻能No能翻(壳más选, 遮挡, 减menos动效, 滚动en proceso).  */
   canFlip(): boolean;
-  /** 署名行的人，最多画五位；一位都没有时画标题首字。 */
+  /** 署名行人, 最más画cinco; uno都Sin时画Títuloprimero字.  */
   faces: readonly MixCardFace[];
-  /** 点头像：去这个人的资料页。 */
+  /** 点Avatar: 去este人资料página.  */
   onOpenEntity(kind: string, name: string): void;
-  /** 点封面。不给就是这一叠没有去处（空列表），点击区不可点。参数是这张卡本身，壳拿它当
-   *  打开动画的起点。 */
+  /** 点Portada. No给就esesteuno叠Sin去处(空Lista), 点击区Nopuede点. Parámetroeseste卡本身, 壳拿它当
+   *  Abrir动画起点.  */
   onOpen?: (card: HTMLElement) => void;
-  /** 封面点击区的无障碍名称，例如「打开播放列表 周末慢看」。 */
+  /** Portada点击区Sin障碍名称, 例如"AbrirReproducirLista 周últimolentover".  */
   openLabel: string;
-  /** 署名行最右那一格：次要动作的菜单。 */
+  /** 署名行最derechaeseuno格: 次要动作菜单.  */
   menu?: ReactNode;
-  /** 封面格的宽高比。不给就是 16:9；首页那张跟着这一屏卡片的版式走。 */
+  /** Portada格anchoalto比. No给就es 16:9; primeropáginaese跟着esteuno屏卡片版走.  */
   ratio?: number;
-  /** 静止封面改用遗留层拼的那段图片 HTML（番号作品的取景链要接管它），封面格同时带上作品卡
-   *  的封面格钩子（`data-media-pic`），模糊衬底与取景和作品卡同一条路。 */
+  /** 静止Portada改用遗Deja层拼ese段Imagen片 HTML(Código JAVObras取景链要continuar管它), Portada格同时带arribaObras卡
+   *  Portada格钩子(`data-media-pic`), Difuso衬底y取景 y Obras卡同uno路.  */
   artwork?: { kind: string; html: string };
-  /** 静止封面去掉版式后的身份与原地换版式，见 `./art-slot.tsx`。 */
+  /** 静止Portada去掉版posterior身yOriginal地换版, 见 `./art-slot.tsx`.  */
   artworkIdentity?: string;
   relayoutArt?(root: HTMLElement): void;
-  /** 翻页的每一张也用 HTML 画，和静止封面长得一样；参数是 `flipImages` 给的那个地址。 */
+  /** 翻página每uno也用 HTML 画,  y 静止Portadalargo得uno样; Parámetroes `flipImages` 给ese地址.  */
   faceHtml?(src: string): string;
-  /** 徽标上的字。不给就是「N 个视频」。 */
+  /** 徽标en la字. No给就es"N 视频".  */
   badge?: string;
-  /** 署名行换成一枚播放字形，不画头像：首页那张 Mix 说的是「以它为种子的相似作品」。 */
+  /** 署名行换成unoReproducir字形, No画Avatar: primeropáginaese Mix 说es"以它ComoSemilla相似Obras".  */
   glyph?: boolean;
-  /** 整张卡都是点击区（首页那张）。不给就只有封面可点，署名行的头像各自通往资料页。 */
+  /** Completo卡都es点击区(primeropáginaese). No给就SoloConPortadapuede点, 署名行Avatar各自通往资料página.  */
   wholeCard?: boolean;
 }
 
-/** 静止封面。取不到时把图撤掉，只剩黑底，同遗留层 `data-drop="self"`。 */
+/** 静止Portada. 取No到时Imagen撤掉, Solo剩黑底, 同遗Deja层 `data-drop="self"`.  */
 function Poster({ src }: { src: string }) {
   const [broken, setBroken] = useState(false);
   if (broken) return null;
@@ -81,12 +81,12 @@ function Poster({ src }: { src: string }) {
   );
 }
 
-/** 圆框共用的那一副：38px 正圆，图铺满，首字母居中。 */
+/** 圆框共用eseuno副: 38px 正圆, Imagen铺满, primero字母居en proceso.  */
 const RING = 'relative inline-grid size-9.5 flex-none place-items-center overflow-hidden rounded-full'
   + ' bg-background-secondary-default text-body-2-regular text-text-secondary'
   + ' [&_img]:absolute [&_img]:inset-0 [&_img]:block [&_img]:size-full [&_img]:object-cover';
 
-/** 圆框里那段 HTML 由 `avatarInner` 拼：有图走图，没图退首字母，代表作头像查同一张代表作表。 */
+/** 圆框dentroese段 HTML 由 `avatarInner` 拼: ConImagen走Imagen, 没Imagen退primero字母, Obra representativaAvatar查同unoObra representativa表.  */
 function Avatars({ faces, fallback, onOpenEntity }: {
   faces: readonly MixCardFace[]; fallback: string; onOpenEntity: MixCardProps['onOpenEntity'];
 }) {
@@ -96,8 +96,8 @@ function Avatars({ faces, fallback, onOpenEntity }: {
   return (
     <div data-mix-avatars="">
       {faces.slice(0, 5).map((face) => (
-        <button key={`${face.kind}:${face.id}`} type="button" title={`打开资料页：${face.name}`}
-          aria-label={`打开资料页：${face.name}`} onClick={() => onOpenEntity(face.kind, face.name)}
+        <button key={`${face.kind}:${face.id}`} type="button" title={`AbrirDetallesPágina: ${face.name}`}
+          aria-label={`AbrirDetallesPágina: ${face.name}`} onClick={() => onOpenEntity(face.kind, face.name)}
           className={`${RING} cursor-pointer outline-none`}
           dangerouslySetInnerHTML={{ __html: avatarInner(face.name, face, representativeOf(face.name), face.kind) }} />
       ))}
@@ -111,7 +111,7 @@ export function MixCard({
   ...data
 }: MixCardProps & Record<`data-${string}`, string>) {
   const flip = useStackFlip({ load: flipImages, canFlip });
-  /* 壳在滚动、换页和开多选时按 `_stopHover` 收掉一切悬停动效，这张卡的翻页也在其中。 */
+  /* 壳En滚动, 换página y 开más选时按 `_stopHover` 收掉uno切Pasar el ratón动效, este卡翻página也En其en proceso.  */
   const stop = useRef(flip.onPointerLeave);
   stop.current = flip.onPointerLeave;
   const card = useRef<HTMLElement | null>(null);
@@ -133,7 +133,7 @@ export function MixCard({
             ? <ArtSlot artwork={artwork} identity={artworkIdentity} relayout={relayoutArt} />
             : poster
               ? <Poster key={poster} src={poster} />
-              : <span className="text-caption-1-regular tracking-caps text-text-secondary uppercase">无预览</span>}
+              : <span className="text-caption-1-regular tracking-caps text-text-secondary uppercase">Sin vista previa</span>}
           <div data-mix-faces="" hidden={!flip.faces.length}>
             {flip.faces.map((src, index) => (
               <div key={src} data-mix-face={index === flip.current ? 'on' : index === flip.leaving ? 'off' : ''}>
@@ -148,7 +148,7 @@ export function MixCard({
           <span data-mix-badge=""
             className="absolute right-2.25 bottom-2.25 z-6 flex min-h-7 items-center gap-1.5 rounded-2lg px-2.25 py-1 text-caption-1-semibold text-text-white">
             <PLAY aria-hidden className="size-3.75" />
-            {badge ?? `${count.toLocaleString()} 个视频`}
+            {badge ?? `${count.toLocaleString()}  video(s)`}
           </span>
         </div>
       </div>

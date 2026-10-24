@@ -49,7 +49,7 @@ function clipped(node: HTMLElement): boolean {
   return false;
 }
 
-/** 全站 title 共用提示；完整可见文字无需复述，图标、补充说明和截断原文保留。 */
+/** Todo站 title 共用Sugerencia; 完Completopuede见文字Sin需复述, Imagen标, complementarDescripción y 截断Original文保Deja.  */
 export function initBoardTooltip() {
   const tip = document.createElement('div');
   tip.className = 'ui-board-tooltip'; tip.id = 'board-control-tooltip'; tip.role = 'tooltip';

@@ -1,4 +1,4 @@
-/** 选择仅使用当前展示顺序，业务身份与默认选择归调用方。 */
+/** Seleccionar仅使用当anterior展示顺序, 业务身yPredeterminadoSeleccionar归调用方.  */
 export function selectRange<T>(selected: Set<T>, order: T[], anchor: T | null, key: T, range: boolean, checked = range || !selected.has(key)): T {
   const first = anchor === null ? -1 : order.indexOf(anchor), last = order.indexOf(key);
   if (range && first >= 0 && last >= 0) order.slice(Math.min(first,last),Math.max(first,last)+1).forEach(id=>selected.add(id));

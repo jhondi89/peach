@@ -1,4 +1,4 @@
-/* 用户自配索引器；地址和 API key 分开保存，读取时只返回凭据是否存在。 */
+/* 用户自配索引Dispositivo; 地址 y  API key 分开Guardar, 读取时Solo返回Credencialeses否存En.  */
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -20,7 +20,7 @@ interface State { indexers: Indexer[]; max_indexers: number }
 export function IndexerSettings({ receipt }: { receipt(message: string): void }) {
   const query = useQuery({ queryKey: ['indexers'], queryFn: ({ signal }) => apiGet<State>(URL, signal), refetchOnMount: 'always' });
   if (query.error) return <ErrorText>{errorMessage(query.error)}</ErrorText>;
-  if (query.isFetching) return <LoadingDots label="正在读取资源搜索设置" />;
+  if (query.isFetching) return <LoadingDots label="CargandoRecursoBuscarConfiguración" />;
   return query.data ? <IndexerForm initial={query.data} receipt={receipt} /> : null;
 }
 
@@ -33,33 +33,33 @@ function IndexerForm({ initial, receipt }: { initial: State; receipt(message: st
     event.preventDefault();
     void action.run('save', (signal) => apiSend<State>(URL, { indexers: rows }, 'POST', signal), (result) => {
       setRows(result.indexers);
-      receipt('已保存索引器');
+      receipt('GuardadoIndexarDispositivo');
     });
   };
   return (
-    <Section title="资源搜索" onSubmit={save}>
+    <Section title="RecursoBuscar" onSubmit={save}>
       <Stack>
-        <Disclosure summary="索引器连接帮助"><Help>填写 Prowlarr 或 Jackett 提供的 Torznab 地址和 API key。</Help>
-          <ExternalLink href="https://github.com/peach-mitao/peach/blob/master/docs/RESOURCE_SEARCH.md">详细配置说明</ExternalLink>
+        <Disclosure summary="IndexarDispositivoConectarAyuda"><Help>Introduce写 Prowlarr 或 Jackett 提供 Torznab Dirección y  API key. </Help>
+          <ExternalLink href="https://github.com/peach-mitao/peach/blob/master/docs/RESOURCE_SEARCH.md">DetalladoConfiguraciónDescripción</ExternalLink>
         </Disclosure>
         {rows.map((row, index) => (
           <div key={row.key} className="flex min-w-0 flex-col gap-4 border-t border-separator-border pt-4">
-            <Input label={`索引器 ${index + 1} 名称`} value={row.name} maxLength={80}
+            <Input label={`IndexarDispositivo ${index + 1} Nombre`} value={row.name} maxLength={80}
               isDisabled={Boolean(action.busy)} onChange={(name) => update(row.key, { name })} />
-            <Input label={`索引器 ${index + 1} Torznab 地址`} value={row.url} type="url" autoComplete="off"
-              placeholder="索引器提供的 API 地址" isDisabled={Boolean(action.busy)}
+            <Input label={`IndexarDispositivo ${index + 1} Torznab Dirección`} value={row.url} type="url" autoComplete="off"
+              placeholder="IndexarDispositivo提供 API Dirección" isDisabled={Boolean(action.busy)}
               onChange={(url) => update(row.key, { url })} />
-            <Input label={`索引器 ${index + 1} API key`} type="password" autoComplete="new-password"
-              value={row.api_key || ''} placeholder={row.api_key_set ? '已保存，留空不改' : undefined}
+            <Input label={`IndexarDispositivo ${index + 1} API key`} type="password" autoComplete="new-password"
+              value={row.api_key || ''} placeholder={row.api_key_set ? 'Guardado. Dejar vacío para no cambiar.' : undefined}
               isDisabled={Boolean(action.busy)} onChange={(api_key) => update(row.key, { api_key })} />
             <Checkbox isSelected={row.enabled} isDisabled={Boolean(action.busy)}
-              onChange={(enabled) => update(row.key, { enabled })}>启用</Checkbox>
+              onChange={(enabled) => update(row.key, { enabled })}>Activar</Checkbox>
             {row.api_key_set ? <Checkbox isSelected={Boolean(row.clear_api_key)}
               isDisabled={Boolean(action.busy)} onChange={(clear_api_key) => update(row.key, { clear_api_key })}>
-              清除已保存的 API key
+              BorraryaGuardar API key
             </Checkbox> : null}
             <div><Button variant="danger" type="button" disabled={Boolean(action.busy)}
-              onClick={() => setRows(rows.filter((item) => item.key !== row.key))}>移除索引器 {index + 1}</Button></div>
+              onClick={() => setRows(rows.filter((item) => item.key !== row.key))}>Quitar索引Dispositivo {index + 1}</Button></div>
           </div>
         ))}
         {action.error ? <ErrorText>{action.error}</ErrorText> : null}
@@ -67,9 +67,9 @@ function IndexerForm({ initial, receipt }: { initial: State; receipt(message: st
       <Footer>
         <Button variant="secondary" type="button" disabled={Boolean(action.busy) || rows.length >= initial.max_indexers}
           onClick={() => setRows([...rows, { key: crypto.randomUUID(), name: '', url: '', enabled: true, api_key_set: false }])}>
-          添加索引器
+          添加索引Dispositivo
         </Button>
-        <Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button>
+        <Button type="submit" {...busyProps(action.busy === 'save')}>Guardar configuración</Button>
       </Footer>
     </Section>
   );

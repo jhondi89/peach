@@ -22,18 +22,18 @@ export function javImageKind(item: { is_jav?: boolean; code?: string; has_cover?
   return item.has_thumb ? 'thumbnail' : '';
 }
 
-/** 正封宽高比与 `jav_poster_crop.PANEL_ASPECT` 一致。封面框选按它锁比例；没有边车的双页封套按它从右缘量回正封
- *  宽度，贴右缘时 0.75 的卡片比正封宽，不量就会带进一条书脊。 */
+/** 正封anchoalto比y `jav_poster_crop.PANEL_ASPECT` uno致. Portada框选按它锁Relación; Sin边车双página封套按它从derecha缘量回正封
+ *  ancho度, 贴derecha缘时 0.75 卡片比正封ancho, No量就会带进uno书脊.  */
 export const PANEL_ASPECT = 0.704;
-// 与 jav_poster_crop 的宽封套模板共用尺寸；明确的 Blu-ray 版次才启用。
+// y jav_poster_crop ancho封套模板共用尺寸; 明确 Blu-ray 版次才启用. 
 export const WIDE_PANEL_ASPECT = 0.85;
 export const WIDE_SLEEVE_RATIO_MIN = 1.75;
 export const WIDE_SLEEVE_RATIO_MAX = 1.85;
 
-/** 接口 `poster_box` 的形状：`x0/y0/x1/y1` 是源图像素坐标，`px` 是源图尺寸，
- *  `method` 记着这个框是沿折痕（`fold`）、按正封宽高比的先验（`ratio`），还是人在
- *  详情页自己框的（`manual`）。前两档的框永远满高贴右缘，只有 `x0` 是活的；手工框
- *  四边都可能动。不该裁、没算过、算法版本落后的封面拿到的是 null。 */
+/** Interfaz `poster_box` 形状: `x0/y0/x1/y1` es源Imagen像素坐标, `px` es源Imagen尺寸, 
+ *  `method` 记着este框es沿折痕(`fold`), 按正封anchoalto比先验(`ratio`), 还es人En
+ *  Detallespágina自己框(`manual`). anterior两档框永远满alto贴derecha缘, SoloCon `x0` es活; 手工框
+ *  cuatro边都puede能动. No该裁, 没算过, 算法Versión落posteriorPortada拿到es null.  */
 export interface PosterBox {
   x0: number;
   y0: number;
@@ -43,17 +43,17 @@ export interface PosterBox {
   px: number[];
 }
 
-/** 正封在卡片里的摆法。四个数都是百分数：`clip` 是从图片四边各切掉多少（喂
- *  `clip-path: inset()`），`left`／`top` 是图片左上角相对卡片的偏移，`height` 是图片
- *  高度相对卡片高度。没有框时返回 null，调用方原样退回 CSS 里那份贴右缘的回退。
+/** 正封En卡片en la摆法. cuatro数都escien分数: `clip` es从Imagen片cuatro边各切掉másmenos(喂
+ *  `clip-path: inset()`), `left`/`top` esImagen片izquierdaarriba角相对卡片偏移, `height` esImagen片
+ *  alto度相对卡片alto度. Sin框时返回 null, 调用方Original样退回 CSS dentroese贴derecha缘回退. 
  *
- *  缩放由框的高度定：框那一块正好铺满卡片高度，所以图片被放到卡片高的
- *  `源图高 / 框高` 倍。算出来的那两档框本来就是满高，这一档于是恒为 100%，一个像素
- *  都不放大；只有手工框横着切一刀时才会大于 100%。
+ *  Zoom由框alto度定: 框eseuno正bien铺满卡片alto度, 所以Imagen片被放到卡片alto
+ *  `源Imagenalto / 框alto` 倍. 算出来ese两档框本来就es满alto, esteuno档于es恒Como 100%, uno像素
+ *  都No放grande; SoloCon手工框横着切uno刀时才会grande于 100%. 
  *
- *  横向：框占卡片宽的 `框宽 / 框高 / 容器比例`。装得下就居中，两侧各留一条交给模糊
- *  背景；装不下就让框的右缘贴住卡片右缘再从左边切，因为标题、女优名和角标都压在
- *  正封右侧。 */
+ *  横向: 框占卡片ancho `框ancho / 框alto / 容DispositivoRelación`. 装得abajo就居en proceso, 两侧各Dejauno交给Difuso
+ *  Fondo; 装Noabajo就让框derecha缘贴住卡片derecha缘再从izquierda边切, 因ComoTítulo, Actriz名 y 角标都压En
+ *  正封derecha侧.  */
 export function panelFrame(box: Partial<PosterBox> | null | undefined, ratio: number, contain = false): {
   clip: { top: number; right: number; bottom: number; left: number };
   left: number; top: number; height: number;
@@ -62,8 +62,8 @@ export function panelFrame(box: Partial<PosterBox> | null | undefined, ratio: nu
   const height = Number(box?.px?.[1]);
   const x0 = Number(box?.x0);
   if (!(width > 0 && height > 0 && ratio > 0) || !Number.isFinite(x0)) return null;
-  // 夹回图片里面：框落在图片外面是数据坏了，按整幅可见处理比按负宽度算下去安全。
-  // 缺 `y0/y1/x1` 的按「满高到右缘」补——算出来的那两档框就是这个形状。
+  // carpeta回Imagen片dentro面: 框落EnImagen片exterior面esDatos坏, 按Completo幅puede见Procesar比按负ancho度算abajo去安Todo. 
+  // 缺 `y0/y1/x1` 按"满alto到derecha缘"补—算出来ese两档框就eseste形状. 
   const span = (value: unknown, fallback: number, limit: number) =>
     Math.min(limit, Math.max(0, Number.isFinite(Number(value)) ? Number(value) : fallback));
   const left0 = span(x0, 0, width);
@@ -79,7 +79,7 @@ export function panelFrame(box: Partial<PosterBox> | null | undefined, ratio: nu
   const offset = contain ? (1 - visible * scale) / 2 - left0 / boxHeight / ratio * scale : visible <= 1
     ? (1 - visible) / 2 - left0 / boxHeight / ratio
     : 1 - right / boxHeight / ratio;
-  // `|| 0` 是为了把 -0 收成 0：写进 CSS 两者一样，读出来比对时不一样。
+  // `|| 0` esComo -0 收成 0: 写进 CSS 两者uno样, 读出来比对时Nouno样. 
   const percent = (value: number) => (Math.round(value * 10000) || 0) / 100;
   return {
     clip: {
@@ -92,7 +92,7 @@ export function panelFrame(box: Partial<PosterBox> | null | undefined, ratio: nu
   };
 }
 
-/** 原地换图，保留列表顺序、滚动位置和正在播放的媒体。 */
+/** Original地换Imagen, 保DejaLista顺序, 滚动Ubicación y En cursoReproducir媒体.  */
 export function syncJavImages(root: ParentNode, preference: unknown): void {
   root.querySelectorAll<HTMLImageElement>('img[data-jav-image]').forEach(img => {
     const cover = img.dataset.javCover || '';
@@ -102,8 +102,8 @@ export function syncJavImages(root: ParentNode, preference: unknown): void {
     img.classList.toggle('cover', useCover);
     img.classList.toggle('whole', useCover && img.dataset.javImageLayout !== 'big');
     img.classList.toggle('front', useCover && img.dataset.javImageLayout === 'big');
-    /* 取景是按上一张图算的，换图之后一律作废，由 `coverAnchor` 在新图加载完重算。
-       模糊背景挂在卡片上而不是图片上，`removeAttribute('style')` 够不着它。 */
+    /* 取景es按AnteriorImagen算, 换Imagen之posterioruno律作废, 由 `coverAnchor` EnNuevoImagenCargar完pesado算. 
+       DifusoFondo挂En卡片arriba而NoesImagen片arriba, `removeAttribute('style')` 够No着它.  */
     img.classList.remove('panel');
     img.removeAttribute('style');
     (img.closest('.pic,[data-media-pic]') as HTMLElement | null)?.style.removeProperty('--cover-blur');
@@ -111,9 +111,9 @@ export function syncJavImages(root: ParentNode, preference: unknown): void {
   });
 }
 
-/** 大图／小图原地换：同一张图只换取景类名，来源和已换回的原件都留着，不重新解码。
- *  上一种版式算出的取景一律作废；返回已经加载完、要按新卡片比例立刻重算取景的那几张，
- *  还没到手的等 `load` 自己算。 */
+/** grandeImagen/pequeñoImagenOriginal地换: 同unoImagenSolo换取景类名, 来源 y ya换回Original件都Deja着, NopesadoNuevo解码. 
+ *  Anterior版算出取景uno律作废; 返回ya经Cargar完, 要按Nuevo卡片Relación立刻pesado算取景ese几, 
+ *  还没到手etc. `load` 自己算.  */
 export function relayoutJavImages(root: ParentNode, layout: JavLayout): HTMLImageElement[] {
   const ready: HTMLImageElement[] = [];
   root.querySelectorAll<HTMLImageElement>('img[data-jav-image]').forEach(img => {

@@ -1,8 +1,8 @@
-/* 「想要」清单的数据契约（ADR-0090）：`/api/wants` 在 `frontend/src` 里只在这里声明一次。
+/* "想要"清单Datos契约(ADR-0090): `/api/wants` En `frontend/src` dentroSoloEnaquí声明uno次. 
  *
- * 两个键：清单整页一把（关注管理的「想要」页签），关注详情问「这一条想要过没有」按条目各一把。
- * 写完把两族都作废：在详情里点了想要，回到页签时清单要已经有它；在页签里移除了，详情那颗键也要
- * 跟着弹起。 */
+ * 两Clave: 清单Completopáginauno(关注Gestionar"想要"página签), 关注Detalles问"esteuno想要过Sin"按Entrada各uno. 
+ * 写完两族都作废: EnDetallesdentro点想要, 回到página签时清单要ya经Con它; Enpágina签dentroQuitar, DetalleseseClave也要
+ * 跟着弹起.  */
 import { apiGet, apiSend } from '../../api';
 import { queryClient } from '../query';
 
@@ -11,13 +11,13 @@ export const WANTS_URL = '/api/wants';
 export const WANTS_KEY = ['wants'] as const;
 export const wantFollowKey = (itemId: number) => ['wants', 'follow', itemId] as const;
 
-/** 清单上的四段，次序就是页签里排的次序。 */
+/** 清单en lacuatro段, 次序就espágina签dentro排次序.  */
 export const PHASES = [
-  ['searching', '待找'], ['unreleased', '未发售'], ['given_up', '暂时放弃'], ['acquired', '已入库'],
+  ['searching', 'Pendiente找'], ['unreleased', 'No发售'], ['given_up', 'Abandonar temporalmente'], ['acquired', 'Catalogado'],
 ] as const;
 export type Phase = (typeof PHASES)[number][0];
 
-/** 一条想要。字段与 `src/peach/web_wants.py` 的 `_payload` 对齐。 */
+/** uno想要. 字段y `src/peach/web_wants.py`  `_payload` 对齐.  */
 export interface Want {
   id: number;
   code: string | null;
@@ -39,7 +39,7 @@ export interface Want {
   follow_item_id: number | null;
   follow_provider: string | null;
   cover: string | null;
-  /** 封面还是来源给的远程地址：要带 `no-referrer` 去取。 */
+  /** Portada还es来源给远程地址: 要带 `no-referrer` 去取.  */
   remote_cover: boolean;
   scraped: boolean;
   scrape_error: string | null;
@@ -49,7 +49,7 @@ export interface Want {
 export interface WantsData {
   items: Want[];
   counts: Record<Phase, number>;
-  /** 取资料那一轮还在跑：刚登记的那几条资料还没回来。 */
+  /** 取资料eseuno轮还En跑: 刚登记ese几资料还没回来.  */
   scraping: boolean;
 }
 
@@ -76,17 +76,17 @@ export const removeWants = (ids: number[], signal?: AbortSignal) =>
 export const resetWants = (ids: number[], signal?: AbortSignal) =>
   apiSend(WANTS_URL, { action: 'reset', ids }, 'POST', signal);
 
-/** 写完之后：清单与各条关注详情的想要状态一起重取。 */
+/** 写完之posterior: 清单y各关注Detalles想要Estadouno起pesado取.  */
 export const invalidateWants = () => queryClient.invalidateQueries({ queryKey: WANTS_KEY });
 
-/** 一条想要叫什么：番号打头，没有番号的关注条目用标题。 */
-export const wantName = (want: Want) => want.code || want.title || `关注条目 ${want.follow_item_id ?? want.id}`;
+/** uno想要叫什么: Código JAV打头, SinCódigo JAV关注Entrada用Título.  */
+export const wantName = (want: Want) => want.code || want.title || `SeguirResultado目 ${want.follow_item_id ?? want.id}`;
 
-/** 「待找」那一段的说明：新片查不到不计数，老片查满三次就暂时放弃。 */
+/** "待找"eseuno段Descripción: Nuevo片查No到No计数, 老片查满tres次就暂时放弃.  */
 export function searchNote(want: Want): string {
-  if (want.phase === 'acquired') return want.acquired_at ? `入库于 ${want.acquired_at.slice(0, 10)}` : '已入库';
-  if (want.phase === 'unreleased') return want.release_date ? `${want.release_date} 发售` : '还没发售';
+  if (want.phase === 'acquired') return want.acquired_at ? `入Biblioteca于 ${want.acquired_at.slice(0, 10)}` : 'Catalogado';
+  if (want.phase === 'unreleased') return want.release_date ? `${want.release_date} 发售` : 'Aún no lanzado';
   if (want.phase === 'given_up') return `查过 ${want.search_count} 次都没找到`;
-  if (want.fresh) return '新片：查不到也一直留在待找';
-  return want.search_count ? `查过 ${want.search_count} 次` : '还没查过';
+  if (want.fresh) return 'Nuevo片: 查No到也uno直DejaEnPendiente找';
+  return want.search_count ? `查过 ${want.search_count} 次` : 'Nunca verificado';
 }

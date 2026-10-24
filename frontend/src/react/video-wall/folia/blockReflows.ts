@@ -9,9 +9,9 @@ import type { BlockSlot } from './blockTemplates';
 // the existing cards least. Do not hand-edit - regenerate if the templates or gears change.
 
 export const BLOCK_REFLOWS: BlockSlot[][][] = [
-    // 变体 0 的 12 张让位表，下标 = 被展开的槽位
+    // 变体 0  12 让表, abajo标 = 被展开槽
     [
-        // 展开槽位 0
+        // 展开槽 0
         [
             { x: 0, y: 0, cols: 6, rows: 6 },
             { x: 6, y: 0, cols: 4, rows: 4 },
@@ -26,7 +26,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 8, y: 4, cols: 2, rows: 2 },
             { x: 10, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 1
+        // 展开槽 1
         [
             { x: 0, y: 0, cols: 3, rows: 2 },
             { x: 3, y: 0, cols: 6, rows: 6 },
@@ -41,7 +41,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 10, y: 6, cols: 2, rows: 2 },
             { x: 9, y: 4, cols: 3, rows: 2 },
         ],
-        // 展开槽位 2
+        // 展开槽 2
         [
             { x: 0, y: 0, cols: 3, rows: 2 },
             { x: 3, y: 0, cols: 3, rows: 4 },
@@ -56,7 +56,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 2, y: 6, cols: 2, rows: 2 },
             { x: 2, y: 4, cols: 2, rows: 2 },
         ],
-        // 展开槽位 3
+        // 展开槽 3
         [
             { x: 2, y: 0, cols: 2, rows: 2 },
             { x: 4, y: 0, cols: 6, rows: 2 },
@@ -71,7 +71,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 8, y: 4, cols: 2, rows: 2 },
             { x: 10, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 4
+        // 展开槽 4
         [
             { x: 0, y: 0, cols: 3, rows: 2 },
             { x: 3, y: 0, cols: 4, rows: 2 },
@@ -86,7 +86,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 7, y: 0, cols: 3, rows: 2 },
             { x: 2, y: 2, cols: 4, rows: 2 },
         ],
-        // 展开槽位 5
+        // 展开槽 5
         [
             { x: 0, y: 0, cols: 3, rows: 2 },
             { x: 5, y: 0, cols: 4, rows: 2 },
@@ -101,7 +101,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 10, y: 6, cols: 2, rows: 2 },
             { x: 10, y: 4, cols: 2, rows: 2 },
         ],
-        // 展开槽位 6
+        // 展开槽 6
         [
             { x: 0, y: 0, cols: 4, rows: 2 },
             { x: 4, y: 0, cols: 3, rows: 2 },
@@ -116,7 +116,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 7, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 2, cols: 2, rows: 4 },
         ],
-        // 展开槽位 7
+        // 展开槽 7
         [
             { x: 0, y: 0, cols: 4, rows: 2 },
             { x: 4, y: 0, cols: 4, rows: 2 },
@@ -131,7 +131,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 2, y: 4, cols: 2, rows: 2 },
             { x: 2, y: 2, cols: 4, rows: 2 },
         ],
-        // 展开槽位 8
+        // 展开槽 8
         [
             { x: 0, y: 0, cols: 4, rows: 2 },
             { x: 4, y: 0, cols: 3, rows: 2 },
@@ -146,7 +146,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 10, y: 6, cols: 2, rows: 2 },
             { x: 7, y: 0, cols: 2, rows: 2 },
         ],
-        // 展开槽位 9
+        // 展开槽 9
         [
             { x: 0, y: 0, cols: 4, rows: 2 },
             { x: 4, y: 0, cols: 4, rows: 2 },
@@ -161,7 +161,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 2, y: 6, cols: 2, rows: 2 },
             { x: 2, y: 2, cols: 4, rows: 2 },
         ],
-        // 展开槽位 10
+        // 展开槽 10
         [
             { x: 0, y: 0, cols: 4, rows: 2 },
             { x: 4, y: 0, cols: 4, rows: 2 },
@@ -176,7 +176,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 6, y: 2, cols: 6, rows: 6 },
             { x: 2, y: 2, cols: 4, rows: 2 },
         ],
-        // 展开槽位 11
+        // 展开槽 11
         [
             { x: 0, y: 0, cols: 4, rows: 2 },
             { x: 4, y: 0, cols: 4, rows: 2 },
@@ -192,9 +192,9 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 6, y: 2, cols: 6, rows: 6 },
         ],
     ],
-    // 变体 1 的 12 张让位表，下标 = 被展开的槽位
+    // 变体 1  12 让表, abajo标 = 被展开槽
     [
-        // 展开槽位 0
+        // 展开槽 0
         [
             { x: 0, y: 0, cols: 6, rows: 6 },
             { x: 6, y: 0, cols: 2, rows: 2 },
@@ -209,7 +209,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 8, y: 6, cols: 2, rows: 2 },
             { x: 10, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 1
+        // 展开槽 1
         [
             { x: 0, y: 0, cols: 2, rows: 3 },
             { x: 2, y: 0, cols: 6, rows: 6 },
@@ -224,7 +224,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 4, y: 6, cols: 2, rows: 2 },
             { x: 10, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 2
+        // 展开槽 2
         [
             { x: 0, y: 0, cols: 2, rows: 3 },
             { x: 2, y: 0, cols: 2, rows: 3 },
@@ -239,7 +239,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 4, y: 6, cols: 2, rows: 2 },
             { x: 10, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 3
+        // 展开槽 3
         [
             { x: 0, y: 0, cols: 2, rows: 3 },
             { x: 2, y: 0, cols: 2, rows: 3 },
@@ -254,7 +254,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 4, y: 6, cols: 2, rows: 2 },
             { x: 4, y: 4, cols: 2, rows: 2 },
         ],
-        // 展开槽位 4
+        // 展开槽 4
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 0, cols: 2, rows: 2 },
@@ -269,7 +269,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 8, y: 6, cols: 2, rows: 2 },
             { x: 10, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 5
+        // 展开槽 5
         [
             { x: 0, y: 0, cols: 2, rows: 4 },
             { x: 2, y: 0, cols: 2, rows: 3 },
@@ -284,7 +284,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 4, y: 6, cols: 2, rows: 2 },
             { x: 4, y: 2, cols: 2, rows: 2 },
         ],
-        // 展开槽位 6
+        // 展开槽 6
         [
             { x: 0, y: 0, cols: 2, rows: 4 },
             { x: 2, y: 0, cols: 2, rows: 3 },
@@ -299,7 +299,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 4, y: 6, cols: 2, rows: 2 },
             { x: 4, y: 2, cols: 2, rows: 2 },
         ],
-        // 展开槽位 7
+        // 展开槽 7
         [
             { x: 0, y: 0, cols: 2, rows: 4 },
             { x: 2, y: 0, cols: 2, rows: 3 },
@@ -314,7 +314,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 4, y: 2, cols: 2, rows: 2 },
             { x: 10, y: 0, cols: 2, rows: 2 },
         ],
-        // 展开槽位 8
+        // 展开槽 8
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 4, y: 0, cols: 2, rows: 2 },
@@ -329,7 +329,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 8, y: 6, cols: 2, rows: 2 },
             { x: 10, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 9
+        // 展开槽 9
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 0, cols: 2, rows: 2 },
@@ -344,7 +344,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 4, cols: 2, rows: 2 },
             { x: 10, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 10
+        // 展开槽 10
         [
             { x: 0, y: 0, cols: 2, rows: 3 },
             { x: 2, y: 0, cols: 2, rows: 4 },
@@ -359,7 +359,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 4, y: 2, cols: 6, rows: 6 },
             { x: 10, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 11
+        // 展开槽 11
         [
             { x: 0, y: 0, cols: 2, rows: 4 },
             { x: 2, y: 0, cols: 2, rows: 3 },
@@ -375,9 +375,9 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 6, y: 2, cols: 6, rows: 6 },
         ],
     ],
-    // 变体 2 的 12 张让位表，下标 = 被展开的槽位
+    // 变体 2  12 让表, abajo标 = 被展开槽
     [
-        // 展开槽位 0
+        // 展开槽 0
         [
             { x: 0, y: 0, cols: 6, rows: 6 },
             { x: 6, y: 0, cols: 6, rows: 2 },
@@ -392,7 +392,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 8, y: 6, cols: 2, rows: 2 },
             { x: 6, y: 2, cols: 2, rows: 2 },
         ],
-        // 展开槽位 1
+        // 展开槽 1
         [
             { x: 0, y: 0, cols: 4, rows: 4 },
             { x: 6, y: 0, cols: 6, rows: 6 },
@@ -407,7 +407,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 2, y: 4, cols: 2, rows: 2 },
             { x: 4, y: 0, cols: 2, rows: 4 },
         ],
-        // 展开槽位 2
+        // 展开槽 2
         [
             { x: 0, y: 0, cols: 4, rows: 4 },
             { x: 8, y: 0, cols: 2, rows: 2 },
@@ -422,7 +422,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 2, y: 4, cols: 2, rows: 2 },
             { x: 4, y: 0, cols: 2, rows: 4 },
         ],
-        // 展开槽位 3
+        // 展开槽 3
         [
             { x: 0, y: 0, cols: 4, rows: 4 },
             { x: 8, y: 0, cols: 2, rows: 2 },
@@ -437,7 +437,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 2, y: 4, cols: 2, rows: 2 },
             { x: 4, y: 0, cols: 4, rows: 2 },
         ],
-        // 展开槽位 4
+        // 展开槽 4
         [
             { x: 2, y: 0, cols: 4, rows: 2 },
             { x: 6, y: 0, cols: 6, rows: 2 },
@@ -452,7 +452,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 8, y: 4, cols: 2, rows: 2 },
             { x: 8, y: 2, cols: 4, rows: 2 },
         ],
-        // 展开槽位 5
+        // 展开槽 5
         [
             { x: 0, y: 0, cols: 4, rows: 4 },
             { x: 8, y: 0, cols: 2, rows: 2 },
@@ -467,7 +467,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 4, y: 0, cols: 4, rows: 2 },
             { x: 10, y: 0, cols: 2, rows: 2 },
         ],
-        // 展开槽位 6
+        // 展开槽 6
         [
             { x: 0, y: 0, cols: 4, rows: 4 },
             { x: 8, y: 0, cols: 2, rows: 2 },
@@ -482,7 +482,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 2, y: 4, cols: 2, rows: 2 },
             { x: 4, y: 0, cols: 4, rows: 2 },
         ],
-        // 展开槽位 7
+        // 展开槽 7
         [
             { x: 0, y: 0, cols: 4, rows: 2 },
             { x: 6, y: 0, cols: 6, rows: 2 },
@@ -497,7 +497,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 8, y: 4, cols: 2, rows: 2 },
             { x: 8, y: 2, cols: 2, rows: 2 },
         ],
-        // 展开槽位 8
+        // 展开槽 8
         [
             { x: 0, y: 0, cols: 6, rows: 2 },
             { x: 6, y: 0, cols: 6, rows: 2 },
@@ -512,7 +512,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 8, y: 2, cols: 2, rows: 2 },
             { x: 10, y: 4, cols: 2, rows: 2 },
         ],
-        // 展开槽位 9
+        // 展开槽 9
         [
             { x: 0, y: 0, cols: 4, rows: 4 },
             { x: 8, y: 0, cols: 2, rows: 2 },
@@ -527,7 +527,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 4, y: 0, cols: 4, rows: 2 },
             { x: 10, y: 0, cols: 2, rows: 2 },
         ],
-        // 展开槽位 10
+        // 展开槽 10
         [
             { x: 0, y: 0, cols: 4, rows: 4 },
             { x: 8, y: 0, cols: 2, rows: 2 },
@@ -542,7 +542,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 6, y: 2, cols: 6, rows: 6 },
             { x: 4, y: 0, cols: 2, rows: 4 },
         ],
-        // 展开槽位 11
+        // 展开槽 11
         [
             { x: 0, y: 0, cols: 4, rows: 4 },
             { x: 8, y: 0, cols: 2, rows: 2 },
@@ -558,9 +558,9 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 6, y: 2, cols: 6, rows: 6 },
         ],
     ],
-    // 变体 3 的 12 张让位表，下标 = 被展开的槽位
+    // 变体 3  12 让表, abajo标 = 被展开槽
     [
-        // 展开槽位 0
+        // 展开槽 0
         [
             { x: 0, y: 0, cols: 6, rows: 6 },
             { x: 6, y: 2, cols: 2, rows: 2 },
@@ -575,7 +575,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 2, y: 6, cols: 2, rows: 2 },
             { x: 4, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 1
+        // 展开槽 1
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 0, cols: 6, rows: 6 },
@@ -590,7 +590,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 4, cols: 2, rows: 4 },
             { x: 2, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 2
+        // 展开槽 2
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 0, cols: 2, rows: 3 },
@@ -605,7 +605,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 6, cols: 2, rows: 2 },
             { x: 2, y: 5, cols: 2, rows: 3 },
         ],
-        // 展开槽位 3
+        // 展开槽 3
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 0, cols: 2, rows: 2 },
@@ -620,7 +620,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 6, cols: 2, rows: 2 },
             { x: 4, y: 6, cols: 3, rows: 2 },
         ],
-        // 展开槽位 4
+        // 展开槽 4
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 0, cols: 2, rows: 2 },
@@ -635,7 +635,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 6, cols: 2, rows: 2 },
             { x: 4, y: 6, cols: 3, rows: 2 },
         ],
-        // 展开槽位 5
+        // 展开槽 5
         [
             { x: 3, y: 0, cols: 2, rows: 2 },
             { x: 6, y: 2, cols: 2, rows: 2 },
@@ -650,7 +650,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 0, cols: 3, rows: 2 },
             { x: 6, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 6
+        // 展开槽 6
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 0, cols: 2, rows: 2 },
@@ -665,7 +665,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 5, cols: 2, rows: 3 },
             { x: 8, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 7
+        // 展开槽 7
         [
             { x: 0, y: 0, cols: 2, rows: 3 },
             { x: 2, y: 0, cols: 2, rows: 2 },
@@ -680,7 +680,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 5, cols: 2, rows: 3 },
             { x: 2, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 8
+        // 展开槽 8
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 0, cols: 2, rows: 2 },
@@ -695,7 +695,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 5, cols: 2, rows: 3 },
             { x: 8, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 9
+        // 展开槽 9
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 0, cols: 3, rows: 2 },
@@ -710,7 +710,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 5, cols: 2, rows: 3 },
             { x: 2, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 10
+        // 展开槽 10
         [
             { x: 2, y: 0, cols: 3, rows: 2 },
             { x: 6, y: 2, cols: 2, rows: 2 },
@@ -725,7 +725,7 @@ export const BLOCK_REFLOWS: BlockSlot[][][] = [
             { x: 0, y: 2, cols: 6, rows: 6 },
             { x: 6, y: 6, cols: 2, rows: 2 },
         ],
-        // 展开槽位 11
+        // 展开槽 11
         [
             { x: 0, y: 0, cols: 2, rows: 2 },
             { x: 2, y: 0, cols: 4, rows: 2 },

@@ -1,12 +1,12 @@
-/* 设置偏好与 Peach 配置的三份服务端数据，各一个 Query 键。
+/* Configuración偏bieny Peach Configuracióntres服务端Datos, 各uno Query Clave. 
  *
- * - `['settings']`：跟数据库走、所有访问端同一份的那几项（`/api/settings`，`src/peach/web_settings.py`）。
- *   面板每次打开都重取一次，取回来交给壳对账（`host.syncRemote`）：界面偏好的真相仍是壳里那一份
- *   `appSettings`，这个键只是数据库那边的快照。写入同样走这个端点，成功后回来的整份写回这个键。
- * - `['follow-schedule']`：这台机器上关注自动更新的档位与上次运行状态。
- * - `['thumbnail-jobs']`：视频缩略图采集的档位与状态。档位跟着机器走，不存在浏览器里。
+ * - `['settings']`: 跟DatosBiblioteca走, 所ConAcceder端同unoese几项(`/api/settings`, `src/peach/web_settings.py`). 
+ *   面板每次Abrir都pesado取uno次, 取回来交给壳对账(`host.syncRemote`): 界面偏bien真相仍es壳dentroeseuno
+ *   `appSettings`, esteClaveSoloesDatosBibliotecaese边rápido照. 写入同样走este端点, Éxitoposterior回来Completo写回esteClave. 
+ * - `['follow-schedule']`: este机Dispositivoarriba关注自动Actualizar档yÚltima vez运行Estado. 
+ * - `['thumbnail-jobs']`: 视频缩略ImagenRecolectar档yEstado. 档跟着机Dispositivo走, No存EnExplorar dispositivodentro. 
  *
- * 面板常驻不卸载，每次打开重取设置；Peach 配置在挂载时重取各自的数据。 */
+ * 面板常驻NoDesinstalar, 每次Abrirpesado取Configuración; Peach ConfiguraciónEn挂载时pesado取各自Datos.  */
 import { useMutation, type QueryClient } from '@tanstack/react-query';
 
 import { apiGet, apiSend } from '../../api';
@@ -20,7 +20,7 @@ export const SETTINGS_KEY = ['settings'] as const;
 export const FOLLOW_SCHEDULE_KEY = ['follow-schedule'] as const;
 export const THUMBNAIL_JOBS_KEY = ['thumbnail-jobs'] as const;
 
-/** `q_settings` 返回的整份；写入时只送改了的那几个键，回来的仍是整份。 */
+/** `q_settings` 返回Completo; 写入时Solo送改ese几Clave, 回来仍esCompleto.  */
 export interface SyncedSettings {
   sidebarOrder?: string[];
   followInitialDays?: number;
@@ -28,7 +28,7 @@ export interface SyncedSettings {
   feedHideGroupCompilations?: boolean;
   feedHideSoloCompilations?: boolean;
   feedHideExcerpts?: boolean;
-  /** 数据库里还没存过时是 null：这台设备本地那个数替所有访问端先定下来。 */
+  /** DatosBibliotecadentro还没存过时es null: este设备本地ese数替所ConAcceder端先定abajo来.  */
   searchHistoryLimit?: number | null;
 }
 
@@ -55,14 +55,14 @@ export const fetchFollowSchedule = (signal?: AbortSignal) =>
 export const fetchThumbnailJobs = (signal?: AbortSignal) =>
   apiGet<ThumbnailJobStatus>(THUMBNAIL_JOBS_URL, signal);
 
-/** 打开偏好弹窗时重取共享设置；采集状态由 Peach 配置中的控件读取。 */
+/** Abrir偏bien弹窗时pesado取共享Configuración; RecolectarEstado由 Peach Configuraciónen procesoControles读取.  */
 export function refreshPanelData(client: QueryClient = queryClient): Promise<SyncedSettings | null> {
   return client.fetchQuery({
     queryKey: SETTINGS_KEY, queryFn: ({ signal }) => fetchSettings(signal), staleTime: 0,
   }).catch(() => null);
 }
 
-/** 写跟数据库走的那几项。回来的是合并之后的整份，写回 `['settings']`。 */
+/** 写跟DatosBiblioteca走ese几项. 回来es合y之posteriorCompleto, 写回 `['settings']`.  */
 export function useSaveSettings() {
   return useMutation({
     mutationFn: (patch: SyncedSettings) => apiSend<SyncedSettings>(SETTINGS_URL, patch),

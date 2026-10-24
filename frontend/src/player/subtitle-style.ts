@@ -1,14 +1,14 @@
-/* 字幕外观持久化与 TextTrack 时间轴显示。 */
+/* Subtítulosexterior观持久化y TextTrack Tiempo轴显示.  */
 export const CAPTION_OPTIONS = {
-  font: { label: '字体', values: [['sans', '无衬线'], ['mono', '等宽无衬线'], ['serif', '衬线'], ['mono-serif', '等宽衬线'], ['casual', '休闲'], ['cursive', '手写'], ['small-caps', '小型大写字母']] },
-  size: { label: '字号', values: ['50', '75', '100', '150', '200', '300', '400'].map(value => [value, `${value}%`]) },
-  color: { label: '文字颜色', values: [['white', '白色'], ['yellow', '黄色'], ['green', '绿色'], ['cyan', '青色'], ['blue', '蓝色'], ['magenta', '品红'], ['red', '红色'], ['black', '黑色']] },
-  opacity: { label: '文字不透明度', values: ['25', '50', '75', '100'].map(value => [value, `${value}%`]) },
-  background: { label: '背景颜色', values: [['black', '黑色'], ['white', '白色'], ['red', '红色'], ['green', '绿色'], ['blue', '蓝色'], ['yellow', '黄色'], ['magenta', '品红'], ['cyan', '青色']] },
-  backgroundOpacity: { label: '背景不透明度', values: ['0', '25', '50', '75', '100'].map(value => [value, `${value}%`]) },
-  window: { label: '窗口颜色', values: [['black', '黑色'], ['white', '白色'], ['red', '红色'], ['green', '绿色'], ['blue', '蓝色'], ['yellow', '黄色'], ['magenta', '品红'], ['cyan', '青色']] },
-  windowOpacity: { label: '窗口不透明度', values: ['0', '25', '50', '75', '100'].map(value => [value, `${value}%`]) },
-  edge: { label: '字符边缘样式', values: [['none', '无'], ['raised', '凸起'], ['depressed', '凹陷'], ['outline', '描边'], ['shadow', '阴影']] },
+  font: { label: 'Fuente', values: [['sans', 'NingunoSerifa'], ['mono', 'etc.anchoNingunoSerifa'], ['serif', 'Serifa'], ['mono-serif', 'Monoespaciado con serifa'], ['casual', 'Casual'], ['cursive', 'Manuscrito'], ['small-caps', 'Versalitas']] },
+  size: { label: 'Tamaño de fuente', values: ['50', '75', '100', '150', '200', '300', '400'].map(value => [value, `${value}%`]) },
+  color: { label: '文字Color', values: [['white', 'Blanco'], ['yellow', 'Amarillo'], ['green', 'Verde'], ['cyan', 'Cian'], ['blue', 'Azul'], ['magenta', 'Magenta'], ['red', 'Rojo'], ['black', 'Negro']] },
+  opacity: { label: '文字NoTransparencia', values: ['25', '50', '75', '100'].map(value => [value, `${value}%`]) },
+  background: { label: 'FondoColor', values: [['black', 'Negro'], ['white', 'Blanco'], ['red', 'Rojo'], ['green', 'Verde'], ['blue', 'Azul'], ['yellow', 'Amarillo'], ['magenta', 'Magenta'], ['cyan', 'Cian']] },
+  backgroundOpacity: { label: 'FondoNoTransparencia', values: ['0', '25', '50', '75', '100'].map(value => [value, `${value}%`]) },
+  window: { label: '窗口Color', values: [['black', 'Negro'], ['white', 'Blanco'], ['red', 'Rojo'], ['green', 'Verde'], ['blue', 'Azul'], ['yellow', 'Amarillo'], ['magenta', 'Magenta'], ['cyan', 'Cian']] },
+  windowOpacity: { label: '窗口NoTransparencia', values: ['0', '25', '50', '75', '100'].map(value => [value, `${value}%`]) },
+  edge: { label: 'Estilo de borde de carácter', values: [['none', 'Ninguno'], ['raised', 'Elevado'], ['depressed', 'Hundido'], ['outline', 'Contorno'], ['shadow', 'Sombra']] },
 } as const;
 export type CaptionKey = keyof typeof CAPTION_OPTIONS;
 export type CaptionStyle = Record<CaptionKey, string>;
@@ -20,7 +20,7 @@ const EDGES: Record<string, string> = { none: 'none', raised: '-1px -1px 0 #ddd,
 
 export function readCaptionStyle(): CaptionStyle {
   let saved: Partial<CaptionStyle> = {};
-  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {} } catch { /* 使用默认外观 */ }
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {} } catch { /* 使用Predeterminadoexterior观 */ }
   return Object.fromEntries(Object.entries(DEFAULTS).map(([key, fallback]) => [key,
     CAPTION_OPTIONS[key as CaptionKey].values.some(([value]) => value === saved[key as CaptionKey]) ? saved[key as CaptionKey] : fallback])) as CaptionStyle;
 }
@@ -66,8 +66,8 @@ export function mountCaptionStyle(root: HTMLElement, video: HTMLVideoElement, si
     set(key: CaptionKey, value: string) {
       if (!CAPTION_OPTIONS[key].values.some(([option]) => option === value)) return;
       style = { ...style, [key]: value }; paintStyle();
-      try { localStorage.setItem(KEY, JSON.stringify(style)) } catch { /* 当前会话保留外观 */ }
+      try { localStorage.setItem(KEY, JSON.stringify(style)) } catch { /* 当anterior会话保Dejaexterior观 */ }
     },
-    reset() { style = { ...DEFAULTS }; paintStyle(); try { localStorage.removeItem(KEY) } catch { /* 当前会话保留外观 */ } },
+    reset() { style = { ...DEFAULTS }; paintStyle(); try { localStorage.removeItem(KEY) } catch { /* 当anterior会话保Dejaexterior观 */ } },
   };
 }

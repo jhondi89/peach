@@ -1,23 +1,23 @@
-/* 目录的路由元素（ADR-0031「目录由路由树按匹配打开」）：页面组匹配到 `CATALOG_PATHS`（首页、三个筛选态、回收站与
- * 垃圾文件）时挂上，按地址重建目录筛选（`@peach/shell` 的 `state`），再交壳收舞台以外的事：搜索框、侧栏与顶栏、
- * 顶部三层和取数（`ShellActions.catalog`）。
+/* Directorio路由元素(ADR-0031"Directorio由路由树按匹配Abrir"): página面组匹配到 `CATALOG_PATHS`(primeropágina, tresFiltrar态, 回收站y
+ * 垃圾Archivo)时挂arriba, 按地址pesado建DirectorioFiltrar(`@peach/shell`  `state`), 再交壳收舞以exterior事: Buscar框, 侧栏y顶栏, 
+ * 顶部tres层 y 取数(`ShellActions.catalog`). 
  *
- * 元素按页面挂 key：首页、三个筛选态与回收站画的是同一张网格，共用一个元素；垃圾文件是另一页。没有背景的作品与
- * 队列地址（深链、刷新）也挂这个元素。换筛选、后退前进与壳要求重开都不重挂，元素在每一轮变化之后的微任务里按下面的
- * 次序判断做哪一件：
- * - 详情压在上面：条目记了背景（页面组按背景匹配）就什么都不做，下面那一页一直画着；没有背景时补画一次目录网格
- *   （`ShellActions.catalog.fill`），详情下面不留一张永远在读的骨架。
- * - 壳要求按当前地址从头重开（`pageOpens` 加一：启动、深链详情关掉补画来处、从管理条进回收站）：整页打开。
- * - 领了新的页面打开序号（后退前进、不认领的跳转）：整页打开；后退前进从别处回到首页时作废顶部三层的缓存、重掷取样种子，
- *   在目录里换来换去沿用这一粒。地址上写了 `seed` 就用它。
- * - 壳认领写了地址（换筛选、换排序、换一批、回首页）：筛选已经由壳写进 `state`，只重取；关掉详情回到压着的那一份
- *   地址、筛选也没变时不重取。这一页要是还没开过（后退落到压在别处之上的详情，挂上时就被盖着），整页打开。
- * `pageOpens` 还是 0 时壳没开始路由，元素只挂着。挂上那一刻按那一次历史变化认没认领分别算作后两种；路由根晚于
- * 壳开始路由才装上时，挂上那一刻算第一种。
+ * 元素按página面挂 key: primeropágina, tresFiltrar态y回收站画es同unoCuadrícula, 共用uno元素; 垃圾Archivoes另unopágina. SinFondoObrasy
+ * Cola地址(profundo链, Actualizar)也挂este元素. 换Filtrar, posterior退anterior进y壳要求pesado开都Nopesado挂, 元素En每uno轮变化之posterior微Tareadentro按abajo面
+ * 次序判断做哪uno件: 
+ * - Detalles压Enarriba面: Entrada记Fondo(página面组按Fondo匹配)就什么都No做, abajo面eseunopáginauno直画着; SinFondo时补画uno次DirectorioCuadrícula
+ *   (`ShellActions.catalog.fill`), Detallesabajo面NoDejauno永远En读骨架. 
+ * - 壳要求按当anterior地址从头pesado开(`pageOpens` 加uno: 启动, profundo链Detalles关掉补画来处, 从Gestionar进回收站): CompletopáginaAbrir. 
+ * - 领Nuevopágina面Abrir序号(posterior退anterior进, No认领Saltar a): CompletopáginaAbrir; posterior退anterior进从别处回到primeropágina时作废顶部tres层缓存, pesado掷取样Semilla, 
+ *   EnDirectoriodentro换来换去沿用esteuno粒. 地址arriba写 `seed` 就用它. 
+ * - 壳认领写地址(换Filtrar, 换Ordenar, 换uno批, 回primeropágina): Filtrarya经由壳写进 `state`, Solopesado取; 关掉Detalles回到压着eseuno
+ *   地址, Filtrar也没变时Nopesado取. esteunopágina要es还没开过(posterior退落到压En别处之en laDetalles, 挂arriba时就被盖着), CompletopáginaAbrir. 
+ * `pageOpens` 还es 0 时壳没Empezar路由, 元素Solo挂着. 挂arribaeseuno刻按eseuno次Historial变化认没认领分别算作posterior两; 路由根晚于
+ * 壳Empezar路由才装arriba时, 挂arribaeseuno刻算No.uno. 
  *
- * `?state=ads` 落在首页上时不打开，改写成垃圾文件的地址（不加条目），由垃圾文件那一页的元素接着打开。卸载时去处
- * 不是目录、详情、沉浸或资料页，就收起 `#grid` 与首页新作行：这些页面离开目录也留着它们。判断、改写与收起
- * 都排进微任务：路由根在历史变化的同一次调用里同步提交，壳订阅历史早于路由根，它写标题与侧栏的那一轮排在前面。 */
+ * `?state=ads` 落Enprimeropáginaarriba时NoAbrir, 改写成垃圾Archivo地址(No加Entrada), 由垃圾Archivoeseunopágina元素continuar着Abrir. Desinstalar时去处
+ * NoesDirectorio, Detalles, Inmersivo或资料página, 就收起 `#grid` yprimeropáginaNuevas obras行: este些página面离开Directorio也Deja着它们. 判断, 改写y收起
+ * 都排进微Tarea: 路由根EnHistorial变化同uno次调用dentroSincronizar提交, 壳订阅Historial早于路由根, 它写Títuloy侧栏eseuno轮排Enanterior面.  */
 import { useContext, useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { useLocation } from 'react-router';
@@ -37,8 +37,8 @@ import { CatalogFolders } from '../../catalog-folders/catalog-folders-page';
 
 const readOpens = () => pageOpens;
 
-/* 每一次历史变化认没认领、变化之前在哪一条路径上。模块一装载就听，排在路由根之前：路由根同步提交那一次读到的
-   已经是这一次。`initialSeq` 是装载那一刻的序号，挂上时序号还是它，说明路由根是装上那一下挂的这一页。 */
+/* 每uno次Historial变化认没认领, 变化之anteriorEn哪unoRutaarriba. 模uno装载就听, 排En路由根之anterior: 路由根Sincronizar提交eseuno次读到
+   ya经esesteuno次. `initialSeq` es装载eseuno刻序号, 挂arriba时序号还es它, Descripción路由根es装arribaeseunoabajo挂esteunopágina.  */
 const initialSeq = peachHistory.navigation.seq;
 let epoch = peachHistory.navigation.openEpoch;
 let here = peachHistory.navigation.location.pathname;
@@ -49,11 +49,11 @@ peachHistory.listen((navigation) => {
   here = navigation.location.pathname;
 });
 
-/* 首页上的 `?state=ads` 改写成垃圾文件地址那一下：垃圾文件那一页的元素挂上时取走，整页打开。 */
+/* primeropáginaen la `?state=ads` 改写成垃圾Archivo地址eseunoabajo: 垃圾Archivoeseunopágina元素挂arriba时取走, CompletopáginaAbrir.  */
 let junkRedirect = false;
 
-/** 元素上一次处理到哪儿：序号、页面打开序号、重开次数，那一刻有没有详情压着、页面组画的是哪一份地址与哪一套筛选，
- *  这一页开过没有。 */
+/** 元素Anterior次Procesar到哪儿: 序号, página面Abrir序号, pesado开次数, eseuno刻ConSinDetalles压着, página面组画es哪uno地址y哪uno套Filtrar, 
+ *  esteunopágina开过Sin.  */
 interface Seen {
   seq: number;
   epoch: number;
@@ -75,7 +75,7 @@ function seen(opened: boolean): Seen {
   };
 }
 
-/** 按地址重建的目录筛选，同壳启动时那一份的写法；回收站只钉死状态、清掉别的筛选。产地与缩略图不随地址重读。 */
+/** 按地址pesado建DirectorioFiltrar, 同壳启动时eseuno写法; 回收站Solo钉死Estado, 清掉别Filtrar. 产地y缩略ImagenNo随地址pesado读.  */
 function filtersAt(pathname: string, search: string, entering: boolean, shell: CatalogShell): CatalogFilters {
   const previous: CatalogFilters = { ...state };
   if (pathname === '/trash') return { ...previous, creator: '', studio: '', tag: '', orient: '', state: 'trash', q: '' };
@@ -99,7 +99,7 @@ function filtersAt(pathname: string, search: string, entering: boolean, shell: C
   };
 }
 
-/** 判断这一轮做哪一件，做掉；`mark` 换成这一刻。 */
+/** 判断esteuno轮做哪uno件, 做掉; `mark` 换成esteuno刻.  */
 function settle(mark: Seen, actions: ShellActions): void {
   const was = { ...mark };
   const now = seen(was.opened);
@@ -134,7 +134,7 @@ function settle(mark: Seen, actions: ShellActions): void {
   shell.open(pathname, { entering, retitle });
 }
 
-/* 去处还画着目录的东西就不收：目录几页之间换页由壳接着画；详情与沉浸压在上面；资料页铺开时只藏起它们。 */
+/* 去处还画着Directorio东西就No收: Directorio几página之间换página由壳continuar着画; DetallesyInmersivo压Enarriba面; 资料página铺开时Solo藏起它们.  */
 function keepsCatalog(pathname: string): boolean {
   return isCatalogPath(pathname) || pathname === '/trash' || isOverlayPath(pathname) || pathname === '/immerse'
     || !!entityTarget(pathname);
@@ -151,7 +151,7 @@ function CatalogOpen() {
     const own = live.current;
     own.mounted = true;
     const now = seen(!isOverlayPath(peachHistory.navigation.location.pathname));
-    /* 挂上这一刻就记下：之后壳在同一轮里要求重开（`pageOpens` 加一），微任务里比得出来。 */
+    /* 挂arribaesteuno刻就记abajo: 之posterior壳En同uno轮dentro要求pesado开(`pageOpens` 加uno), 微Tareadentro比得出来.  */
     if (!now.covered && now.opens > 0) {
       if (junkRedirect || last.seq === initialSeq) now.opens = -1;
       else if (!last.claimed) now.epoch = -1;
@@ -164,7 +164,7 @@ function CatalogOpen() {
         if (actions?.catalog && !keepsCatalog(peachHistory.navigation.location.pathname)) actions.catalog.release();
       });
     };
-    // 每次挂上只登记一次；之后的变化由下面那一格排进微任务。
+    // 每次挂arribaSolo登记uno次; 之posterior变化由abajo面eseuno格排进微Tarea. 
   }, []);
   useEffect(() => {
     const own = live.current;
@@ -178,8 +178,8 @@ function CatalogOpen() {
   return null;
 }
 
-/** 目录六条路径共用的元素：首页、三个筛选态与回收站一个 key，垃圾文件另一个；页面组按背景匹配时取背景那一页。
- *  覆盖地址的参数不是数字（`/assets/abc`）时什么都不挂：那不是一条详情，下面也不补画。 */
+/** DirectorioseisRuta共用元素: primeropágina, tresFiltrar态y回收站uno key, 垃圾Archivo另uno; página面组按Fondo匹配时取Fondoeseunopágina. 
+ *  覆盖地址ParámetroNoes数字(`/assets/abc`)时什么都No挂: eseNoesunoDetalles, abajo面也No补画.  */
 export function CatalogMatch() {
   const { pathname, search } = useLocation();
   useLayoutEffect(() => {

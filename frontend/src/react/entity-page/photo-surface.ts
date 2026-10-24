@@ -1,6 +1,6 @@
 import type { FollowPhotoLayout, FollowPhotoSize } from '../follow-feed/follow-feed';
 
-/** 资料页视图由 painted 报告；异步墙未落 DOM 时也能正确选择大小图控件。 */
+/** 资料página视Imagen由 painted Informe; 异步Murono落 DOM 时也能正确SeleccionarTamañoImagenControles.  */
 export interface PhotoSurfaceState {
   entityWall: boolean;
   entityCurrent: boolean;

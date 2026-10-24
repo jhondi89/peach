@@ -1,19 +1,19 @@
-/* 首页筛选栏与侧栏读的那两份聚合：`/api/facets`（侧栏各组与标签条）和 `/api/tops`（女优、厂牌两排）。
- * 存在全站那一个 `QueryClient` 里（`@peach/query`），壳启动时直接取，不等 React 包。
+/* primeropáginaFiltrar栏y侧栏读ese两聚合: `/api/facets`(侧栏各组yEtiqueta) y  `/api/tops`(Actriz, Sello两排). 
+ * 存En todo站eseuno `QueryClient` dentro(`@peach/query`), 壳启动时直continuar取, Noetc. React 包. 
  *
- * 两个键，参数串都由壳按当前语境算好递进来，查询函数不读壳的变量：
- * - `['facets', 口径串, 代次]`：口径是 JAV、资料页或详情的范围、状态页与那一组筛选。
- * - `['tops', 参数串, 口径串, 代次]`：参数串是请求方传的那一份（条数、种子、JAV、状态页），回退到全库口径
- *   之后键也不变。键里另带口径串：两份是一对，口径一变两份一起重取，侧栏刷新计数时上面那两排也照样取一次。
- * - `['tops', 参数串, 代次]`：续页（参数串带 `page`）。回包只由参数串决定，两排同时要同一页只发一次。
+ * 两Clave, Parámetro串都由壳按当anterior语境算bien递进来, Consulta函数No读壳变量: 
+ * - `['facets', 口径串, 代次]`: 口径es JAV, 资料página或DetallesRango, Estadopáginayeseuno组Filtrar. 
+ * - `['tops', Parámetro串, 口径串, 代次]`: Parámetro串esPor favor求方传eseuno(数, Semilla, JAV, Estadopágina), 回退到TodoBiblioteca口径
+ *   之posteriorClave也No变. Clavedentro另带口径串: 两esuno对, 口径uno变两uno起pesado取, 侧栏Actualizar计数时arriba面ese两排也照样取uno次. 
+ * - `['tops', Parámetro串, 代次]`: 续página(Parámetro串带 `page`). 回包Solo由Parámetro串决定, 两排同时要同unopáginaSolo发uno次. 
  *
- * 同一份口径 30 秒内直接复用，同时要同一份只发一次请求。写操作、换一批、回到首页由壳调 `dropBars()`：
- * 代次加一，下一次一定真的发请求；路上那一趟照样交给正在等它的调用方。 */
+ * 同uno口径 30 秒interior直continuar复用, 同时要同unoSolo发uno次Por favor求. 写操作, 换uno批, 回到primeropágina由壳调 `dropBars()`: 
+ * 代次加uno, Siguiente次uno定真发Por favor求; 路arribaeseuno趟照样交给En cursoetc.它调用方.  */
 import { api } from '@peach/legacy/core';
 
 import { queryClient } from './query';
 
-/** 两份聚合复用多久：换页回来不重取，半分钟后再进页就按新数据库取。 */
+/** 两聚合复用más久: 换página回来Nopesado取, medio分钟posterior再进página就按NuevoDatosBiblioteca取.  */
 export const BARS_STALE_MS = 30_000;
 
 let revision = 0;
@@ -26,10 +26,10 @@ export const topsPageKey = (params: string, generation = revision) => ['tops', p
 export interface TopsData { performers: unknown[]; studios: unknown[]; [field: string]: unknown }
 export type FacetsData = Record<string, unknown>;
 
-/* 状态页把顶部两排收窄到本页口径，为的是不列出「在这一页一个作品都没有」的人和厂牌。但集合窄到聚合
-   结果为空时（「已标记」常年只有几条），收窄就把整排一并收走了：同一条筛选条上换一格，页面顶上凭空少两层，
-   读起来是跳去了另一个页面而不是换了筛选。空了就退回全库口径。这一排点开的是实体页，本来就要离开当前
-   状态，它回答的从来不是「这一页里有谁」，而是「接下来去看谁」。续页（壳的 `moreTops`）也走这里。 */
+/* Estadopágina顶部两排收estrecho到本página口径, ComoesNo列出"EnesteunopáginaunoObras都Sin"人 y Sello. pero集合estrecho到聚合
+   ResultadoComo空时("yaEtiqueta"常年SoloCon几), 收estrecho就Completo排unoy收走: 同unoFiltrararriba换uno格, página面顶arriba凭空menos两层, 
+   读起来es跳去另unopágina面而Noes换Filtrar. 空就退回TodoBiblioteca口径. esteuno排点开es实体página, 本来就要离开当anterior
+   Estado, 它回答从来Noes"esteunopáginadentroCon谁", 而es"continuarabajo来去ver谁". 续página(壳 `moreTops`)也走aquí.  */
 export async function loadTops(params: string | URLSearchParams): Promise<TopsData> {
   const query = String(params);
   const scoped = await api(`/api/tops?${query}`) as TopsData;
@@ -39,7 +39,7 @@ export async function loadTops(params: string | URLSearchParams): Promise<TopsDa
   return await api(`/api/tops?${wide}`) as TopsData;
 }
 
-/** 两份一起取，各自命中各自的缓存；壳等两份都到了再一次画完。 */
+/** 两uno起取, 各自命en proceso各自缓存; 壳etc.两都到再uno次画完.  */
 export function fetchBars(scope: string, topsParams: string): Promise<[FacetsData, TopsData]> {
   return Promise.all([
     queryClient.fetchQuery({
@@ -55,7 +55,7 @@ export function fetchBars(scope: string, topsParams: string): Promise<[FacetsDat
   ]);
 }
 
-/** 顶部一排的下一页。两排各记各的页号，翻到同一页时参数串相同，共用一次请求。 */
+/** 顶部uno排Siguientepágina. 两排各记各página号, 翻到同unopágina时Parámetro串相同, 共用uno次Por favor求.  */
 export function fetchTopsPage(params: string): Promise<TopsData> {
   return queryClient.fetchQuery({
     queryKey: topsPageKey(params),
@@ -64,11 +64,11 @@ export function fetchTopsPage(params: string): Promise<TopsData> {
   });
 }
 
-/** 让两族已取的那些全部作废：代次加一，下一次 `fetchBars` 换键重取。
+/** 让两族ya取ese些Todo作废: 代次加uno, Siguiente次 `fetchBars` 换Clavepesado取. 
  *
- *  不整族移除：移除会静默取消路上那一趟，正在等它的调用方拿到的是一个 `CancelledError`。
- *  也不用 `invalidateQueries`：没有观察者的查询作废以后，路上那一趟会被下一次 `fetchQuery` 接着用，
- *  手动刷新就没有真的发请求。旧代次里已经落定的顺手移除，路上那几条回来以后没人再读，到 `gcTime` 回收。 */
+ *  NoCompleto族Quitar: Quitar会静predeterminaCancelar路arribaeseuno趟, En cursoetc.它调用方拿到esuno `CancelledError`. 
+ *  也No用 `invalidateQueries`: Sin观察者Consulta作废以posterior, 路arribaeseuno趟会被Siguiente次 `fetchQuery` continuar着用, 
+ *  手动Actualizar就Sin真发Por favor求. antiguo代次dentroya经落定顺手Quitar, 路arribaese几回来以posterior没人再读, 到 `gcTime` 回收.  */
 export function dropBars(): void {
   revision += 1;
   const settled = (query: { state: { fetchStatus: string } }) => query.state.fetchStatus === 'idle';

@@ -1,7 +1,7 @@
-/* 孤儿记录的数据契约：文件已不在盘上、带着个人记录的作品（ADR-0087）。
+/* HuérfanoRegistroDatos契约: ArchivoyaNoEn盘arriba, 带着人RegistroObras(ADR-0087). 
  *
- * 一个读端点、一个写端点。列表带每条在六张表里的记录数、行上的评分与次数和在库候选；
- * 接回把记录搬到选中的文件、删掉旧行，记一个可整批撤回的批次。彻底删除走批量接口的 `delete`。 */
+ * uno读端点, uno写端点. Lista带每Enseis表en laRegistro数, 行en laPuntuacióny次数 y EnBiblioteca候选; 
+ * continuar回Registro搬到选en procesoArchivo, 删掉antiguo行, 记unopuedeCompleto批撤回批次. 彻底Eliminar走批量Interfaz `delete`.  */
 import { apiGet, apiSend } from '../../api';
 import { BATCH_URL } from '../duplicates/duplicates';
 
@@ -9,7 +9,7 @@ export const ORPHAN_RECORDS_URL = '/api/orphan-records';
 export const ORPHAN_ATTACH_URL = '/api/orphan-records/attach';
 export const ORPHAN_RECORDS_KEY = ['orphan-records'] as const;
 
-/** 在库里可能是它新版本的那个文件。 */
+/** EnBibliotecadentropuede能es它NuevoVersióneseArchivo.  */
 export interface OrphanCandidate {
   id: number;
   location: string;
@@ -27,7 +27,7 @@ export interface OrphanRecord {
   size: number | null;
   vanished_at: number | null;
   has_thumb: boolean;
-  /** 六张表各有几条，加上行上的评分、高潮与播放次数；`last_played` 记过就是 1。没有的不出现。 */
+  /** seis表各Con几, 加arriba行en laPuntuación, alto潮yReproducir次数; `last_played` 记过就es 1. SinNo出现.  */
   records: Partial<Record<RecordKey, number>>;
   candidates: OrphanCandidate[];
 }
@@ -37,42 +37,42 @@ export interface OrphanRecordsData { total: number; items: OrphanRecord[] }
 export type RecordTable = 'asset_preference' | 'watch_queue' | 'playlist_item'
   | 'asset_quality_goal' | 'activity_event' | 'asset_tag_preference';
 
-/** 行上自己的四列个人记录。 */
+/** 行arriba自己cuatro列人Registro.  */
 export type RowRecord = 'rating' | 'o_count' | 'play_count' | 'last_played';
 
 export type RecordKey = RecordTable | RowRecord;
 
-/** 六张表在这一块里的名字，顺序就是显示顺序。 */
+/** seis表Enesteunoen la名字, 顺序就es显示顺序.  */
 export const RECORD_LABELS: ReadonlyArray<readonly [RecordTable, string]> = [
-  ['asset_preference', '喜欢与理由'],
-  ['watch_queue', '稍后看'],
-  ['playlist_item', '播放列表'],
-  ['asset_quality_goal', '寻找更好版本'],
-  ['activity_event', '观看历史'],
-  ['asset_tag_preference', '隐藏标签'],
+  ['asset_preference', 'Me gustay理由'],
+  ['watch_queue', 'Ver más tarde'],
+  ['playlist_item', 'Lista de reproducción'],
+  ['asset_quality_goal', 'Buscar mejor versión'],
+  ['activity_event', 'VerHistorial'],
+  ['asset_tag_preference', 'OcultarEtiqueta'],
 ];
 
 export const fetchOrphanRecords = (signal?: AbortSignal) =>
   apiGet<OrphanRecordsData>(ORPHAN_RECORDS_URL, signal);
 
-/** 把一条孤儿记录接到在库的某个文件上。真实 ledger 写入，旧行随之删除。 */
+/** unoHuérfanoRegistrocontinuar到EnBiblioteca某Archivoarriba. 真实 ledger 写入, antiguo行随之Eliminar.  */
 export const attachOrphan = (id: number, target: number) =>
   apiSend<{ ok: boolean; batch: string }>(ORPHAN_ATTACH_URL, { id, target });
 
-/** 彻底删除这一条和它带的记录。不可撤销，调用方必须先过危险档的确认弹层。
- *  文件又回到盘上的那一条落在 `blocked` 里、不删，下一轮扫描会把它接回在库。 */
+/** 彻底Eliminaresteuno y 它带Registro. NopuedeDeshacer, 调用方必须先过危险档Confirmar弹层. 
+ *  Archivo又回到盘en laeseuno落En `blocked` dentro, No删, Siguiente轮escanear会它continuar回EnBiblioteca.  */
 export const purgeOrphan = (id: number | number[]) =>
   apiSend<{ ok: boolean; purged: number; blocked: unknown[] }>(BATCH_URL, { ids: Array.isArray(id) ? id : [id], operation: 'delete' });
 
-/** 行上四列的写法：分值与次数照写；只记过最近播放、没有播放次数时写「播放过」。 */
+/** 行arribacuatro列写法: 分值y次数照写; Solo记过RecienteReproducir, SinReproducir次数时写"Reproducir过".  */
 const rowRecordsText = (records: OrphanRecord['records']) => [
-  records.rating ? `评分 ${records.rating}` : '',
-  records.play_count ? `播放 ${Number(records.play_count).toLocaleString()} 次`
-    : records.last_played ? '播放过' : '',
-  records.o_count ? `高潮 ${Number(records.o_count).toLocaleString()} 次` : '',
+  records.rating ? `Puntuación ${records.rating}` : '',
+  records.play_count ? `Reproducir ${Number(records.play_count).toLocaleString()} 次`
+    : records.last_played ? 'Reproducir过' : '',
+  records.o_count ? `Orgasmo ${Number(records.o_count).toLocaleString()} 次` : '',
 ];
 
-/** 一条带的记录排成一句：「喜欢与理由 1 · 观看历史 3 · 评分 4 · 播放 2 次」。 */
+/** uno带Registro排成uno句: "喜欢y理由 1 · 观verHistorial 3 · Puntuación 4 · Reproducir 2 次".  */
 export const recordsText = (records: OrphanRecord['records']) => [
   ...RECORD_LABELS
     .filter(([table]) => records[table])
@@ -80,8 +80,8 @@ export const recordsText = (records: OrphanRecord['records']) => [
   ...rowRecordsText(records),
 ].filter(Boolean).join(' · ');
 
-const minutes = (seconds: number | null) => (seconds ? `${Math.round(seconds / 60)} 分钟` : '');
+const minutes = (seconds: number | null) => (seconds ? `${Math.round(seconds / 60)} minuto(s)` : '');
 
-/** 下拉框里一个候选文件那一行。 */
+/** abajo拉框dentrouno候选Archivoeseuno行.  */
 export const candidateText = (item: OrphanCandidate) =>
   [item.name, minutes(item.duration)].filter(Boolean).join(' · ');

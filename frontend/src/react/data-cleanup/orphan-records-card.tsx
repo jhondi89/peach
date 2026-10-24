@@ -1,8 +1,8 @@
-/* 数据管理页上的「孤儿记录」：文件已不在盘上、带着个人记录的作品（ADR-0087）。
+/* DatosGestionarpáginaen la"HuérfanoRegistro": ArchivoyaNoEn盘arriba, 带着人RegistroObras(ADR-0087). 
  *
- * 每行一条已消失的作品：快照图供认片，后面是它带的记录、在库里可能是它新版本的文件。
- * 选一个文件接过去，记录搬到那个文件上、旧行删掉，整批可按批次号撤回；彻底删除连记录一起
- * 删，过危险档确认弹层。没有已消失的作品时整块不出现。 */
+ * 每行unoya消失Obras: rápido照Imagen供认片, posterior面es它带Registro, EnBibliotecadentropuede能es它NuevoVersiónArchivo. 
+ * 选unoArchivocontinuar过去, Registro搬到eseArchivoarriba, antiguo行删掉, Completo批puede按批次号撤回; 彻底Eliminar连Registrouno起
+ * 删, 过危险档Confirmar弹层. Sinya消失Obras时CompletoNo出现.  */
 import { useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { confirmModal } from '@peach/legacy/ui';
@@ -31,23 +31,23 @@ function OrphanActions({ item, toast }: { item: OrphanRecord; toast(message: str
   const [target, setTarget] = useState<number | null>(item.candidates[0]?.id ?? null);
   const attach = useMutation({
     mutationFn: () => attachOrphan(item.id, Number(target)),
-    onSuccess: (data) => { toast(`记录已接到新文件，批次 ${data.batch}`); void refresh(); },
+    onSuccess: (data) => { toast(`RegistroYacontinuar到Nuevo archivo, 批次 ${data.batch}`); void refresh(); },
     onError: (error) => toast(errorMessage(error)),
   });
   const purge = useMutation({
     mutationFn: () => purgeOrphan(item.id),
     onSuccess: (data) => {
       toast(data.blocked.length
-        ? `${item.name} 的文件又回到盘上，没有删除；下一次扫描会把它接回在库`
-        : `已彻底删除 ${item.name}`);
+        ? `${item.name} Archivo又回到盘arriba, SinEliminar; Siguiente次Escanear会它continuar回EnBiblioteca`
+        : `YaEliminar permanentemente ${item.name}`);
       void refresh();
     },
   });
   const remove = () => {
     void confirmModal({
-      title: '彻底删除',
-      body: `将删除「${item.name}」这一条和它带的记录（${recordsText(item.records)}）。此操作不可撤销。`,
-      confirmLabel: '彻底删除',
+      title: 'Eliminar permanentemente',
+      body: `将Eliminar"${item.name}"esteunoResultado y 它带Registro(${recordsText(item.records)}). 此AcciónNopuedeDeshacer. `,
+      confirmLabel: 'Eliminar permanentemente',
       danger: true,
       onConfirm: () => purge.mutateAsync(),
     });
@@ -56,7 +56,7 @@ function OrphanActions({ item, toast }: { item: OrphanRecord; toast(message: str
   return (
     <span className="flex min-w-48 flex-wrap items-center gap-2">
         {item.candidates.length
-          ? <Select aria-label={`把 ${item.name} 的记录接到哪个文件`} className="w-52" selectedKey={target}
+          ? <Select aria-label={` ${item.name} Registrocontinuar到哪Archivo`} className="w-52" selectedKey={target}
               onSelectionChange={(key) => { if (key !== null) setTarget(Number(key)) }}>
               {item.candidates.map((candidate) => (
                 <SelectItem key={candidate.id} id={candidate.id} textValue={candidateText(candidate)}>
@@ -64,12 +64,12 @@ function OrphanActions({ item, toast }: { item: OrphanRecord; toast(message: str
                 </SelectItem>
               ))}
             </Select>
-          : <span className="text-text-secondary">没有番号或文件名对得上的文件</span>}
+          : <span className="text-text-secondary">SinCódigo JAV或Nombre de archivo对得en laArchivo</span>}
         {item.candidates.length
           ? <Button size="small" disabled={target === null} {...busyProps(busy)}
-              onClick={() => attach.mutate()}>接到这个文件</Button>
+              onClick={() => attach.mutate()}>continuar到esteArchivo</Button>
           : null}
-        <Button variant="danger" size="small" {...busyProps(busy)} onClick={remove}>彻底删除</Button>
+        <Button variant="danger" size="small" {...busyProps(busy)} onClick={remove}>Eliminar permanentemente</Button>
     </span>
   );
 }
@@ -77,8 +77,8 @@ function OrphanActions({ item, toast }: { item: OrphanRecord; toast(message: str
 function OrphanIdentity({ item }: { item: OrphanRecord }) {
   return (
         <span className="flex min-w-0 items-center gap-3">
-          {/* 快照图供认片；没有图或取不到时留一格带描边的占位，和重复文件页的封面格同一个样子。
-              窄屏收起，把宽度让给名字与记录。 */}
+          {/* rápido照Imagen供认片; SinImagen或取No到时Dejauno格带描边占,  y RepetirArchivopáginaPortada格同uno样子. 
+              estrecho屏收起, ancho度让给名字yRegistro.  */}
           <span className="relative inline-grid aspect-16/10 w-24 flex-none place-items-center max-cleanup-tight:hidden overflow-hidden rounded-lg border border-separator-border bg-background-tertiary-default text-text-tertiary">
             <PLAY aria-hidden className="size-5" />
             {item.has_thumb
@@ -104,22 +104,22 @@ export function OrphanRecordsCard({ toast }: { toast(message: string): void }) {
   const purge = useMutation({
     mutationFn: (ids: number[]) => purgeOrphan(ids),
     onSuccess: (data) => {
-      toast(`已彻底删除 ${data.purged} 条记录${data.blocked.length ? `，${data.blocked.length} 条文件已恢复，未删除` : ''}`);
+      toast(`YaEliminar permanentemente ${data.purged}  registro(s)${data.blocked.length ? `, ${data.blocked.length} ResultadoArchivoYaRestaurar, NoEliminar` : ''}`);
       setSelected([]); void refresh();
     },
   });
   const removeSelected = (chosen: OrphanRecord[]) => void confirmModal({
-    title: '彻底删除所选记录',
-    body: `将删除以下 ${chosen.length} 条作品和它们带的全部记录。此操作不可撤销。`,
+    title: 'Eliminar permanentemente los registros seleccionados',
+    body: `将Eliminar以abajo ${chosen.length} ResultadoObra y 它们带TodoRegistro. 此AcciónNopuedeDeshacer. `,
     items: chosen.map((item) => item.name),
-    confirmLabel: '彻底删除所选记录', danger: true,
+    confirmLabel: 'Eliminar permanentemente los registros seleccionados', danger: true,
     onConfirm: () => purge.mutateAsync(chosen.map((item) => item.id)),
   });
   const columns: DataColumn<OrphanRecord>[] = [
-    { id: 'item', label: '作品', value: (item) => item.name, render: (item) => <OrphanIdentity item={item} /> },
-    { id: 'records', label: '带的记录', value: (item) => recordsText(item.records),
-      render: (item) => <span className="block min-w-28">{recordsText(item.records) || '无个人记录'}</span> },
-    { id: 'target', label: '接到与操作', value: (item) => item.candidates.length,
+    { id: 'item', label: 'Obra', value: (item) => item.name, render: (item) => <OrphanIdentity item={item} /> },
+    { id: 'records', label: '带Registro', value: (item) => recordsText(item.records),
+      render: (item) => <span className="block min-w-28">{recordsText(item.records) || 'Ninguno人Registro'}</span> },
+    { id: 'target', label: 'continuar到yAcción', value: (item) => item.candidates.length,
       render: (item) => <OrphanActions item={item} toast={toast} /> },
   ];
   if (!query.isError && !items.length) return null;
@@ -127,17 +127,17 @@ export function OrphanRecordsCard({ toast }: { toast(message: string): void }) {
     <section id="orphan-records" aria-labelledby="orphan-records-title" className="flex scroll-mt-20 flex-col gap-4">
         {query.isError
           ? <Fieldset layout="stack" labelledBy="orphan-records-title">
-              <FieldsetTitle id="orphan-records-title">孤儿记录</FieldsetTitle>
-              <Note tone="error" title="孤儿记录读取失败">{errorMessage(query.error)}</Note>
+              <FieldsetTitle id="orphan-records-title">Registros huérfanos</FieldsetTitle>
+              <Note tone="error" title="Registros huérfanos读取Fallido">{errorMessage(query.error)}</Note>
             </Fieldset>
-          : <DataTable label="文件已消失的作品" items={items} columns={columns}
-              title="孤儿记录" titleId="orphan-records-title" unit="条作品"
-              description="这些作品的文件已不在盘上，喜欢、稍后看、播放列表与观看历史都还留着。接到新文件后记录跟过去，旧的这一条删掉。"
+          : <DataTable label="ArchivoYa消失Obra" items={items} columns={columns}
+              title="Registros huérfanos" titleId="orphan-records-title" unit="ResultadoObra"
+              description="este些ObraArchivoYaNoEn盘arriba, Me gusta, Ver más tarde, Lista de reproducciónyVerHistorial都还Deja着. continuar到Nuevo archivoposteriorRegistro跟过去, antiguoesteunoResultado删掉. "
               rowId={(item) => String(item.id)} rowLabel={(item) => item.name}
               selected={selected} onSelected={setSelected}
               actions={(chosen) => <Button variant="danger" size="small" disabled={!chosen.length}
                 {...busyProps(purge.isPending)} onClick={() => removeSelected(chosen)}>
-                {`彻底删除所选（${chosen.length}）`}
+                {`Eliminar permanentemente所选(${chosen.length})`}
               </Button>} />}
     </section>
   );

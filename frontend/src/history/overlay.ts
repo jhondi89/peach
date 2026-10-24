@@ -1,18 +1,18 @@
-/* 详情类历史条目的背景（ADR-0031「覆盖式路由」）：作品详情、四种队列与关注详情压在一页上面，
- * 它们的历史条目在 `usr` 里记下压在哪一页上（`backgroundLocation`），条目自己说得清背景。
+/* Detalles类HistorialEntradaFondo(ADR-0031"覆盖路由"): ObrasDetalles, cuatroColay关注Detalles压Enunopáginaarriba面, 
+ * 它们HistorialEntradaEn `usr` dentro记abajo压En哪unopáginaarriba(`backgroundLocation`), Entrada自己说得清Fondo. 
  *
- * 写：壳在决定打开详情的那一刻调 `holdOverlayBackground` 记下背景，push 详情地址时用 `overlayState` 带上；
- * 队列地址要等取完数才 push，背景仍是决定那一刻的，不是 push 那一刻的地址。详情之间换条沿用上一条的
- * 背景、不嵌套；只存路径与查询串，不存 DOM、对象或条目 `key`（刷新后对不上任何活条目）。
+ * 写: 壳En决定AbrirDetalleseseuno刻调 `holdOverlayBackground` 记abajoFondo, push Detalles地址时用 `overlayState` 带arriba; 
+ * Cola地址要etc.取完数才 push, Fondo仍es决定eseuno刻, Noes push eseuno刻地址. Detalles之间换沿用Anterior
+ * Fondo, No嵌套; Solo存RutayConsulta串, No存 DOM, 对象或Entrada `key`(Actualizarposterior对Noarriba任何活Entrada). 
  *
- * 读：后退前进落到详情条目上时，路由树的覆盖元素（`react/router/pages/overlay.tsx`）调 `adoptOverlayState`
- * 接上这一条记的背景，壳打开详情的那一处再用 `takeOverlayReturn` 取来处，关掉回到那一页。冷启动（刷新、
- * 新标签页、深链）不读：条目跨刷新仍带着 `usr`，下面那页却从没画过，页面组照没有背景补画（`/assets/:id` 补画
- * 目录网格），关掉回各自的缺省来处。 */
+ * 读: posterior退anterior进落到DetallesEntradaarriba时, 路由树覆盖元素(`react/router/pages/overlay.tsx`)调 `adoptOverlayState`
+ * continuararribaesteuno记Fondo, 壳AbrirDetalleseseuno处再用 `takeOverlayReturn` 取来处, 关掉回到eseunopágina. 冷启动(Actualizar, 
+ * NuevoEtiquetapágina, profundo链)No读: Entrada跨Actualizar仍带着 `usr`, abajo面esepágina却从没画过, página面组照SinFondo补画(`/assets/:id` 补画
+ * DirectorioCuadrícula), 关掉回各自缺省来处.  */
 import { matchPath } from 'react-router';
 import { isPreferencePath } from './settings-route';
 
-/** 覆盖在页面上的那几种地址。不进 `isRoutedPath`：页面宿主不画它们。 */
+/** 覆盖Enpágina面en laese几地址. No进 `isRoutedPath`: página面宿主No画它们.  */
 export const OVERLAY_PATHS = [
   '/assets/:id',
   '/posts/:id',
@@ -23,7 +23,7 @@ export type OverlayPath = typeof OVERLAY_PATHS[number];
 
 export type OverlayKind = 'item' | 'follow' | 'jav';
 
-/** 一条覆盖地址要打开的那一条：作品详情、关注详情，或四种队列里的一条（`key` 是种子或播放列表）。 */
+/** uno覆盖地址要Abrireseuno: ObrasDetalles, 关注Detalles, 或cuatroColaen launo(`key` esSemilla或ReproducirLista).  */
 export type OverlayTarget =
   | { kind: 'jav'; code: string }
   | { kind: 'item' | 'follow'; id: number }
@@ -31,7 +31,7 @@ export type OverlayTarget =
 
 const QUEUES = ['mix', 'parts', 'editions', 'playlist'] as const;
 
-/** 地址匹配哪一条覆盖路径；本地条目使用数字，库外作品使用有效番号。 */
+/** 地址匹配哪uno覆盖Ruta; 本地Entrada使用数字, BibliotecaexteriorObras使用Con效Código JAV.  */
 export function overlayMatch(pathname: string, search = ''): { path: OverlayPath; target: OverlayTarget } | null {
   const address = new URL(pathname, 'https://peach.invalid');
   pathname = address.pathname;
@@ -63,7 +63,7 @@ export function overlayMatch(pathname: string, search = ''): { path: OverlayPath
   return null;
 }
 
-/** 地址要打开的那一条覆盖；路径或身份参数无效时是 null。 */
+/** 地址要Abrireseuno覆盖; Ruta或身ParámetroSin效时es null.  */
 export const overlayTarget = (pathname: string, search = ''): OverlayTarget | null => overlayMatch(pathname, search)?.target ?? null;
 
 export interface BackgroundLocation {
@@ -71,7 +71,7 @@ export interface BackgroundLocation {
   search: string;
 }
 
-/** 详情条目的 `usr`：压在哪一页上，压着的是哪一种详情。 */
+/** DetallesEntrada `usr`: 压En哪unopáginaarriba, 压着es哪unoDetalles.  */
 export interface OverlayState {
   backgroundLocation: BackgroundLocation;
   overlay: OverlayKind;
@@ -81,7 +81,7 @@ export const isOverlayPath = (pathname: string): boolean => (
   isPreferencePath(pathname.split(/[?#]/)[0]!) || OVERLAY_PATHS.some((pattern) => matchPath(pattern, pathname.split(/[?#]/)[0]!) !== null)
 );
 
-/** 条目里记的背景：详情与队列条目的 `usr` 里有 `{ backgroundLocation, overlay }`，别的条目没有。 */
+/** Entradadentro记Fondo: DetallesyColaEntrada `usr` dentroCon `{ backgroundLocation, overlay }`, 别EntradaSin.  */
 export function backgroundOf(state: unknown): BackgroundLocation | null {
   const background = (state as { backgroundLocation?: Partial<BackgroundLocation> } | null)?.backgroundLocation;
   if (typeof background?.pathname !== 'string') return null;
@@ -89,25 +89,25 @@ export function backgroundOf(state: unknown): BackgroundLocation | null {
 }
 
 let held: BackgroundLocation | null = null;
-/* 后退前进接上的那一条的来处，打开详情时取一次就清：只给条目自己打开的那一下用，换条、展开小窗、
- * 盘回来重开这些在打开之后才发生的动作照旧按壳记的来处走。 */
+/* posterior退anterior进continuaren laeseuno来处, AbrirDetalles时取uno次就清: Solo给Entrada自己Abrireseunoabajo用, 换, 展开pequeño窗, 
+ * 盘回来pesado开este些EnAbrir之posterior才发生动作照antiguo按壳记来处走.  */
 let pendingReturn: string | null = null;
 
-/** 决定打开详情的那一刻：当前在页面上就记下这一页；已经在详情地址上（同队列换条、关注组内换条、
- * 从详情点开另一条）沿用已记的背景，没有就不记，不把详情地址当背景。 */
+/** 决定AbrirDetalleseseuno刻: 当anteriorEnpágina面arriba就记abajoesteunopágina; ya经EnDetalles地址arriba(同Cola换, 关注组interior换, 
+ * 从Detalles点开另uno)沿用ya记Fondo, Sin就No记, NoDetalles地址当Fondo.  */
 export function holdOverlayBackground(): void {
   const { pathname, search } = window.location;
   if (!isOverlayPath(pathname)) held = { pathname, search };
 }
 
-/** 真正离开详情时清掉：关掉详情、删掉当前条目、后退前进与启动。 */
+/** 真正离开Detalles时清掉: 关掉Detalles, 删掉当anteriorEntrada, posterior退anterior进y启动.  */
 export function clearOverlayBackground(): void {
   held = null;
   pendingReturn = null;
 }
 
-/** 后退前进落到一条历史条目上：条目记了背景就接上，之后从这条详情换条、展开小窗照样带同一个背景；
- * 打开详情的那一处由 `takeOverlayReturn` 取它作来处。条目没记背景时什么都不做。 */
+/** posterior退anterior进落到unoHistorialEntradaarriba: Entrada记Fondo就continuararriba, 之posterior从esteDetalles换, 展开pequeño窗照样带同unoFondo; 
+ * AbrirDetalleseseuno处由 `takeOverlayReturn` 取它作来处. Entrada没记Fondo时什么都No做.  */
 export function adoptOverlayState(state: unknown): void {
   const background = backgroundOf(state);
   if (!background) return;
@@ -115,14 +115,14 @@ export function adoptOverlayState(state: unknown): void {
   pendingReturn = background.pathname + background.search;
 }
 
-/** 打开详情时取后退前进接上的来处（路径加查询串），取一次就清；没有就是 null，壳用自己的缺省。 */
+/** AbrirDetalles时取posterior退anterior进continuaren la来处(Ruta加Consulta串), 取uno次就清; Sin就es null, 壳用自己缺省.  */
 export function takeOverlayReturn(): string | null {
   const path = pendingReturn;
   pendingReturn = null;
   return path;
 }
 
-/** push 详情地址时带的 `usr`；没有背景就不带，和页面条目一样。 */
+/** push Detalles地址时带 `usr`; SinFondo就No带,  y página面Entradauno样.  */
 export function overlayState(overlay: OverlayKind): OverlayState | undefined {
   return held ? { backgroundLocation: { ...held }, overlay } : undefined;
 }

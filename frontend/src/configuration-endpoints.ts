@@ -1,5 +1,5 @@
-/* 配置页的端点。首屏取数和挂载状态那一块的刷新读的是同一条，两份产物各打包一份这个模块。 */
+/* Configuraciónpágina端点. primero屏取数 y 挂载EstadoeseunoActualizar读es同uno, 两产物各打包unoeste模.  */
 export const CONFIGURATION_URL = '/api/configuration';
 
-/** 让运行 Peach 的这台电脑弹系统文件夹对话框；浏览器自己拿不到本机绝对路径。 */
+/** 让运行 Peach este电脑弹系统Archivocarpeta对话框; Explorar dispositivo自己拿No到本机绝对Ruta.  */
 export const PICK_FOLDER_URL = '/api/pick-folder';

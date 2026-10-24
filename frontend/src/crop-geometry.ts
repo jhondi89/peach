@@ -1,10 +1,10 @@
-/* 框选那一块在源图里的坐标。纯算术，不碰 DOM，也不认识 React。
+/* 框选eseunoEn源Imagenen la坐标. 纯算术, No碰 DOM, 也No认识 React. 
  *
- * 一切都用**源图像素**表示，右下开区间——落盘的框、发给后端的框、`poster_box`
- * 那个字段都是这一套（`src/peach/jav_poster_crop.py` 的 `projection` 文档串）。
- * 屏幕上量到的是显示像素，换算只在进出这一层时各做一次：两边各按各的坐标算下去，
- * 框会在缩放比不是整数时差出一两个像素，而那一两个像素在屏幕上看不出来，只在
- * 事后对不上账。
+ * uno切都用**源Imagen像素**表示, derechaabajo开区间—落盘框, 发给posterior端框, `poster_box`
+ * ese字段都esesteuno套(`src/peach/jav_poster_crop.py`  `projection` Documentación串). 
+ * 屏幕arriba量到es显示像素, 换算SoloEn进出esteuno层时各做uno次: 两边各按各坐标算abajo去, 
+ * 框会EnZoom比NoesCompleto数时差出uno两像素, 而eseuno两像素En屏幕arribaverNo出来, SoloEn
+ * 事posterior对Noarriba账. 
  */
 
 export interface CropSize {
@@ -19,7 +19,7 @@ export interface CropBox {
   y1: number;
 }
 
-/** 框的最小边长，源图像素。再小就不是在框一块内容，而是在框噪点。 */
+/** 框最pequeño边largo, 源Imagen像素. 再pequeño就NoesEn框unocontenido, 而esEn框噪点.  */
 export const MIN_CROP_EDGE = 16;
 
 function whole(size: CropSize): CropBox {
@@ -38,9 +38,9 @@ export function isUsableSize(size: CropSize | null | undefined): size is CropSiz
     && size!.width > 0 && size!.height > 0;
 }
 
-/** 装得下的最大的那个框，按 `aspect`（宽/高）居中；`aspect` 为 null 时就是整张图。
+/** 装得abajo最grandeese框, 按 `aspect`(ancho/alto)居en proceso; `aspect` Como null 时就esCompletoImagen. 
  *
- *  正封那一路的默认框另有讲究，见 `defaultPanelBox`。 */
+ *  正封eseuno路Predeterminado框另Con讲究, 见 `defaultPanelBox`.  */
 export function centeredBox(size: CropSize, aspect: number | null): CropBox {
   if (!isUsableSize(size)) return { x0: 0, y0: 0, x1: 0, y1: 0 };
   if (aspect == null || !(aspect > 0)) return whole(size);
@@ -55,22 +55,22 @@ export function centeredBox(size: CropSize, aspect: number | null): CropBox {
   return round({ x0: left, y0: top, x1: left + width, y1: top + height });
 }
 
-/** 正封的默认框：满高、按比例取宽、贴右缘。
+/** 正封Predeterminado框: 满alto, 按Relación取ancho, 贴derecha缘. 
  *
- *  横版封套是「背面 | 书脊 | 正面」，正面在右侧，所以默认框就是「从右缘量回去
- *  一个正封那么宽」。人要改的多半只是折痕落在哪一列，默认框先把另外三条边摆对，
- *  少三次拖拽。装不下就退成整张图。 */
+ *  横版封套es"背面 | 书脊 | 正面", 正面Enderecha侧, 所以Predeterminado框就es"从derecha缘量回去
+ *  uno正封ese么ancho". 人要改másmedioSoloes折痕落En哪uno列, Predeterminado框先另exteriortres边摆对, 
+ *  menostres次拖拽. 装Noabajo就退成CompletoImagen.  */
 export function defaultPanelBox(size: CropSize, aspect: number): CropBox {
   if (!isUsableSize(size) || !(aspect > 0)) return whole(size);
   const width = Math.min(size.width, size.height * aspect);
   return round({ x0: size.width - width, y0: 0, x1: size.width, y1: size.height });
 }
 
-/** `focus` 里按 `aspect` 装得下的最大的框，中心对齐 `focus` 的中心。
+/** `focus` dentro按 `aspect` 装得abajo最grande框, en proceso心对齐 `focus` en proceso心. 
  *
- *  `focus` 是后端给的「该取景的那一块」（脸周围的方图或正封），形状不一定是
- *  `aspect`。取装得下的而不是围得住的：围住竖长的正封要带进书脊，围住脸那块方图
- *  的 3:4 格子会带进一截胸口，而这一块本来就是按「装进头像刚好」量出来的。 */
+ *  `focus` esposterior端给"该取景eseuno"(脸周围方Imagen或正封), 形状Nouno定es
+ *  `aspect`. 取装得abajo而Noes围得住: 围住竖largo正封要带进书脊, 围住脸ese方Imagen
+ *   3:4 格子会带进uno截胸口, 而esteuno本来就es按"装进Avatar刚bien"量出来.  */
 export function frameWithin(focus: CropBox, size: CropSize, aspect: number): CropBox {
   if (!isUsableSize(size) || !(aspect > 0)) return whole(size);
   const inside = clampBox(focus, size);
@@ -81,10 +81,10 @@ export function frameWithin(focus: CropBox, size: CropSize, aspect: number): Cro
   };
 }
 
-/** 把框收进源图里，并保证它还算一个框。
+/** 框收进源Imagendentro, y保证它还算uno框. 
  *
- *  `aspect` 给了就锁比例：先按 `anchor` 那一边定尺寸，装不下再换另一边定，仍然
- *  装不下就贴着图的边缘缩。四个角都夹过之后，宽高都至少 `MIN_CROP_EDGE`。 */
+ *  `aspect` 给就锁Relación: 先按 `anchor` eseuno边定尺寸, 装Noabajo再换另uno边定, 仍然
+ *  装Noabajo就贴着Imagen边缘缩. cuatro角都carpeta过之posterior, anchoalto都至menos `MIN_CROP_EDGE`.  */
 export function clampBox(box: CropBox, size: CropSize, aspect: number | null = null,
                          anchor: 'width' | 'height' = 'width'): CropBox {
   if (!isUsableSize(size)) return { x0: 0, y0: 0, x1: 0, y1: 0 };
@@ -106,7 +106,7 @@ export function clampBox(box: CropBox, size: CropSize, aspect: number | null = n
   return round({ x0: left, y0: top, x1: left + width, y1: top + height });
 }
 
-/** 整个框平移 `(dx, dy)` 源图像素，尺寸不变，碰到边就停。 */
+/** Completo框平移 `(dx, dy)` 源Imagen像素, 尺寸No变, 碰到边就停.  */
 export function moveBox(box: CropBox, dx: number, dy: number, size: CropSize): CropBox {
   const width = box.x1 - box.x0;
   const height = box.y1 - box.y0;
@@ -115,7 +115,7 @@ export function moveBox(box: CropBox, dx: number, dy: number, size: CropSize): C
   return round({ x0: left, y0: top, x1: left + width, y1: top + height });
 }
 
-/** 以框心为中心缩放。`factor` 大于 1 是放大框（看到的内容更多）。 */
+/** 以框心Comoen proceso心Zoom. `factor` grande于 1 es放grande框(ver到contenido更más).  */
 export function scaleBox(box: CropBox, factor: number, size: CropSize,
                          aspect: number | null = null): CropBox {
   if (!isUsableSize(size) || !(factor > 0)) return box;
@@ -129,7 +129,7 @@ export function scaleBox(box: CropBox, factor: number, size: CropSize,
   }, size, aspect);
 }
 
-/** 拖右下角：左上角钉住不动，右下角跟着指针走。 */
+/** 拖derechaabajo角: izquierdaarriba角钉住No动, derechaabajo角跟着指针走.  */
 export function resizeFromCorner(box: CropBox, x: number, y: number, size: CropSize,
                                  aspect: number | null = null): CropBox {
   const next = { x0: box.x0, y0: box.y0, x1: Math.max(box.x0 + 1, x), y1: Math.max(box.y0 + 1, y) };
@@ -138,7 +138,7 @@ export function resizeFromCorner(box: CropBox, x: number, y: number, size: CropS
   return clampBox(next, size, aspect, anchor);
 }
 
-/** 源图像素框 → 覆盖层的百分比位置。显示尺寸不参与：百分比是相对图片本身的。 */
+/** 源Imagen像素框 → 覆盖层cien分比Ubicación. 显示尺寸No参y: cien分比es相对Imagen片本身.  */
 export function boxPercent(box: CropBox, size: CropSize): {
   left: number; top: number; width: number; height: number;
 } {
@@ -151,11 +151,11 @@ export function boxPercent(box: CropBox, size: CropSize): {
   };
 }
 
-/** 框里那一块单独摆满一个容器时的 `background-size` / `background-position`。
+/** 框dentroeseuno单独摆满uno容Dispositivo时 `background-size` / `background-position`. 
  *
- *  预览不重新取一次图：同一个地址换成背景图，浏览器用的是同一份缓存字节。
- *  `background-position` 的百分比量的是「图比容器多出来的那部分」，所以框正好等于
- *  整张图时分母是 0，那时位置取 0 —— 图和容器一样大，摆哪里都一样。 */
+ *  Vista previaNopesadoNuevo取uno次Imagen: 同uno地址换成FondoImagen, Explorar dispositivo用es同uno缓存字节. 
+ *  `background-position` cien分比量es"Imagen比容Dispositivomás出来ese部分", 所以框正bienetc.于
+ *  CompletoImagen时分母es 0, ese时Ubicación取 0 — Imagen y 容Dispositivouno样grande, 摆哪dentro都uno样.  */
 export function previewStyle(box: CropBox, size: CropSize): {
   size: string; position: string;
 } {
@@ -170,11 +170,11 @@ export function previewStyle(box: CropBox, size: CropSize): {
   };
 }
 
-/** 框里那一块摆满一个同比例容器时，整张 `<img>` 按绝对定位该放在哪、放多大。
+/** 框dentroeseuno摆满uno同Relación容Dispositivo时, Completo `<img>` 按绝对定该放En哪, 放másgrande. 
  *
- *  和 `previewStyle` 是同一件事，给的是图片元素而不是背景：图片元素才有 `load`
- *  事件可接，淡入要等它。`left`／`width` 的百分比量的是容器宽，`top`／`height`
- *  量的是容器高，容器与框同比例，所以两个轴各按各的边长换算。 */
+ *   y  `previewStyle` es同uno件事, 给esImagen片元素而NoesFondo: Imagen片元素才Con `load`
+ *  事件puedecontinuar, 淡入要etc.它. `left`/`width` cien分比量es容Dispositivoancho, `top`/`height`
+ *  量es容Dispositivoalto, 容Dispositivoy框同Relación, 所以两轴各按各边largo换算.  */
 export function windowStyle(box: CropBox, size: CropSize): {
   left: string; top: string; width: string; height: string;
 } {
@@ -188,18 +188,18 @@ export function windowStyle(box: CropBox, size: CropSize): {
   };
 }
 
-/** 显示像素 → 源图像素。`rendered` 是 `<img>` 当前占的 CSS 像素尺寸。 */
+/** 显示像素 → 源Imagen像素. `rendered` es `<img>` 当anterior占 CSS 像素尺寸.  */
 export function toNatural(value: number, rendered: number, natural: number): number {
   if (!(rendered > 0)) return 0;
   return (value * natural) / rendered;
 }
 
-/** 框在屏幕上的短边小于这么多 CSS 像素时，改大小那枚角柄挪到框外。角柄 12px，框只比它
- *  大一点时整块都被角柄盖住，按下去只能改大小、拖不动框。 */
+/** 框En屏幕en lacorto边pequeño于este么más CSS 像素时, 改Tamañoese角柄挪到框exterior. 角柄 12px, 框Solo比它
+ *  grandeuno点时Completo都被角柄盖住, 按abajo去Solo能改Tamaño, 拖No动框.  */
 export const HANDLE_ROOM = 36;
 
-/** 角柄该不该放到框外：`rect` 是 `boxPercent` 的百分比，`shown` 是图当前的显示尺寸。
- *  显示尺寸还没量到时不挪。 */
+/** 角柄该No该放到框exterior: `rect` es `boxPercent` cien分比, `shown` esImagen当anterior显示尺寸. 
+ *  显示尺寸还没量到时No挪.  */
 export function handleOutside(
   rect: { width: number; height: number }, shown: CropSize | null,
 ): boolean {

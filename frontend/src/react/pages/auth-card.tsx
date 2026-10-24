@@ -1,10 +1,10 @@
-/* 独立页面的外框：页面底色上居中一张描边卡，卡头是站标、标题和可选的一句引言。
+/* Independientepágina面exterior框: página面底色arriba居en procesouno描边卡, 卡头es站标, Título y puede选uno句引言. 
  *
- * 注册表里没有 Auth Card，用 BoardUI token 组合，分层同配置页的设置区：整页 `background-full`
- * （由 `pages.css` 落在 body 上），卡面 `background-secondary-default` 加一条 `separator-border`，
- * 卡里的输入框与分段是 tertiary、文件夹行与次级按钮是 primary，深浅两色下都比卡面亮一档。
- * 24px 圆角，窄屏收内边距。
- * `busy` 时卡上写 `aria-busy`，题目还没取回来。 */
+ * Registrarse表dentroSin Auth Card, 用 BoardUI token 组合, 分层同ConfiguraciónpáginaConfiguración区: Completopágina `background-full`
+ * (由 `pages.css` 落En body arriba), 卡面 `background-secondary-default` 加uno `separator-border`, 
+ * 卡en laIntroducir框y分段es tertiary, Archivocarpeta行y次级按钮es primary, profundosuperficial两色abajo都比卡面亮uno档. 
+ * 24px 圆角, estrecho屏收Relleno. 
+ * `busy` 时卡arriba写 `aria-busy`, 题目还没取回来.  */
 import type { ReactNode } from 'react';
 
 export function AuthCard({ title, lede, busy = false, children }: {
@@ -28,7 +28,7 @@ export function AuthCard({ title, lede, busy = false, children }: {
   );
 }
 
-/** 卡里的一组：上面一条分隔线，24px 留白。第一组紧跟卡头，不画线。 */
+/** 卡en launo组: arriba面uno分隔线, 24px Deja白. No.uno组紧跟卡头, No画线.  */
 export function CardGroup({ first = false, labelledBy, children }: {
   first?: boolean;
   labelledBy?: string;
@@ -42,7 +42,7 @@ export function CardGroup({ first = false, labelledBy, children }: {
   );
 }
 
-/** 一级分组的标题。 */
+/** uno级AgruparTítulo.  */
 export function GroupTitle({ id, children }: { id?: string; children: ReactNode }) {
   return <h2 id={id} className="text-body-semibold text-text-primary">{children}</h2>;
 }

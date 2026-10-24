@@ -1,4 +1,4 @@
-/** 公开作品资料：发行期每天补齐，满一个月后的成功快照固定保存。 */
+/** 公开Obras资料: Lanzamiento期每天补齐, 满uno月posteriorÉxitorápido照固定Guardar.  */
 const DAY = 86_400_000;
 const calendarDay = (time: number) => {
   const day = new Date(time);

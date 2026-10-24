@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { firstGrapheme } from '@peach/legacy/core';
 import { apiGet } from '../../api';
 
-/** 来源头像与详情共用查询缓存；取图失败时保留首字。 */
+/** 来源AvataryDetalles共用Consulta缓存; 取ImagenFallo时保Dejaprimero字.  */
 export function SourceAvatar({ code, person, detail = false }: {
   code: string; person: { name: string; source_actor_id?: string }; detail?: boolean;
 }) {

@@ -1,22 +1,22 @@
-/* 原地换态的一组辅助：字形互换、文字换行、读数错峰、清空输入框、计数徽标与标题逐行揭示。
-   由共享源码直接引用，随 `peach-app.js` 发出；计数徽标上一次的值是模块级状态，只有一份。
+/* Original地换态uno组辅助: 字形互换, 文字换行, 读数错峰, 清空Introducir框, 计数徽标yTítulo逐行揭示. 
+   由共享源码直continuar引用, 随 `peach-app.js` 发出; 计数徽标Anterior次值es模级Estado, SoloConuno. 
 
-   形状和 CSS 在同目录的 `motion.css`（文字换行那一条在 `web/css/25-motion.css`），那里也写着每一条的
-   来源与取值。这一层只负责
-   「什么时候换」：动画本身一律交给 CSS，JS 不读也不写具体的毫秒数。 */
+   形状 y  CSS En同Directorio `motion.css`(文字换行eseunoEn `web/css/25-motion.css`), esedentro也写着每uno
+   来源y取值. esteuno层Solo负责
+   "什么时候换": 动画本身uno律交给 CSS, JS No读也No写具体毫秒数.  */
 import { esc, icon } from '../core';
 
 /**
- * 两枚字形叠在一格里，换态只改容器上的 `data-icon-state`。
+ * 两字形叠Enuno格dentro, 换态Solo改容Dispositivoen la `data-icon-state`. 
  *
- * 直接 `innerHTML=icon(...)` 的地方都可以换成它：重写 innerHTML 会把旧字形连同它正在
- * 走的动画一起丢掉，新字形也没有起点可走，读出来是一次硬切。
+ * 直continuar `innerHTML=icon(...)` 地方都puede以换成它: pesado写 innerHTML 会antiguo字形连同它En curso
+ * 走动画uno起丢掉, Nuevo字形也Sin起点puede走, 读出来esuno次Grave切. 
  */
 export function iconSwapHtml(a:string,b:string,state:'a'|'b'|(string&{})='a',{className='',iconClass='',label=''}={}):string{
   return `<span class="iconswap${className?' '+esc(className):''}" data-icon-swap data-icon-state="${state==='b'?'b':'a'}"${
     label?` aria-label="${esc(label)}"`:''}><span data-icon="a">${icon(a,iconClass)}</span><span data-icon="b">${icon(b,iconClass)}</span></span>`;
 }
-/** 把 `iconSwapHtml` 画出来的那一枚切到 a 或 b；`root` 可以是它本身或它的祖先。 */
+/**  `iconSwapHtml` 画出来eseuno切到 a 或 b; `root` puede以es它本身或它祖先.  */
 export function setIconSwap(root:any,state:'a'|'b'|boolean|(string&{})):any{
   const el=root&&(root.matches?.('[data-icon-swap]')?root:root.querySelector?.('[data-icon-swap]'));
   if(el)el.dataset.iconState=state==='b'||state===true?'b':'a';
@@ -24,10 +24,10 @@ export function setIconSwap(root:any,state:'a'|'b'|boolean|(string&{})):any{
 }
 
 /**
- * 一行字换成另一行字：旧字往上糊掉，新字从下方回到原位。
+ * uno行字换成另uno行字: antiguo字往arriba糊掉, Nuevo字从abajo方回到Original. 
  *
- * 值没变就什么也不做——同一次重绘里把同样的字再写一遍是常态，跟着抖一下会让页面看起来
- * 一直在变。首次写入（这一格还空着）也不放动画：那是内容第一次出现，归骨架那一段。
+ * 值没变就什么也No做—同uno次pesado绘dentro同样字再写uno遍es常态, 跟着抖unoabajo会让página面ver起来
+ * uno直En变. primero次写入(esteuno格还空着)也No放动画: eseescontenidoNo.uno次出现, 归骨架eseuno段. 
  */
 export function swapText(el:any,text:unknown,{html=false}={}):void{
   if(!el)return;
@@ -48,15 +48,15 @@ export function swapText(el:any,text:unknown,{html=false}={}):void{
   };
   const done=(event:Event)=>{if(event.target!==el)return;el.removeEventListener('transitionend',done);enter()};
   el.addEventListener('transitionend',done);
-  /* 兜底：`--motion-swap` 归零或元素此刻不可见时 `transitionend` 不会来，
-     不兜的话这一行就永远停在透明。 */
+  /* 兜底: `--motion-swap` 归cero或元素此刻Nopuede见时 `transitionend` No会来, 
+     No兜话esteuno行就永远停En透明.  */
   setTimeout(()=>{if(el.classList.contains('leaving')){el.removeEventListener('transitionend',done);enter()}},400);
 }
 
 /**
- * 读数按位错峰长出来。把 `text` 拆成一个个字符，数字各占一档延迟，分隔符跟着前一档。
+ * 读数按错峰largo出来.  `text` 拆成uno字符, 数字各占uno档延迟, 分隔符跟着anterioruno档. 
  *
- * 和 `swapText` 一样只在值真变时触发，首次写入不放动画。
+ *  y  `swapText` uno样SoloEn值真变时触发, primero次写入No放动画. 
  */
 export function popCount(el:any,text:unknown):void{
   if(!el)return;
@@ -68,8 +68,8 @@ export function popCount(el:any,text:unknown):void{
     if(/\d/.test(ch))at+=1;
     return `<span style="--digit-at:${Math.max(at,0)}">${esc(ch)}</span>`;
   }).join('')}</span>`;
-  /* 上一个值没登记过（这一格第一次出现）或压根没变，就只把字写上去。调用点整块重绘时
-     把上一次的读数写回 `dataset.popCount` 再调，这一格才知道自己是换了值还是刚建出来。 */
+  /* Anterior值没登记过(esteuno格No.uno次出现)或压根没变, 就Solo字写arriba去. 调用点Completopesado绘时
+     Anterior次读数写回 `dataset.popCount` 再调, esteuno格才知道自己es换值还es刚建出来.  */
   if(previous===undefined||previous===next)return;
   const group=el.firstElementChild;
   group.getBoundingClientRect();
@@ -77,11 +77,11 @@ export function popCount(el:any,text:unknown):void{
 }
 
 /**
- * 清空输入框，框里那段字往上飘着糊掉。
+ * 清空Introducir框, 框dentroese段字往arriba飘着糊掉. 
  *
- * 输入框的 value 是一瞬间没的，动画只能挂在别处：这里照着它此刻的位置和字体摆一份同样
- * 的字，让那一份去飘，真正的输入框当场就空了，光标和输入法一刻也不等。`host` 缺省取
- * 输入框的父元素，它必须是定位祖先，否则这一层会飘到页面左上角去。
+ * Introducir框 value esuno瞬间没, 动画Solo能挂En别处: aquí照着它此刻Ubicación y Fuente de letra摆uno同样
+ * 字, 让eseuno去飘, 真正Introducir框当场就空, 光标 y Introducir法uno刻也Noetc.. `host` 缺省取
+ * Introducir框父元素, 它必须es定祖先, 否则esteuno层会飘到página面izquierdaarriba角去. 
  */
 export function dissolveValue(input:any,host:any=input&&input.parentElement,
   {text=input&&input.value,scrollLeft=input&&input.scrollLeft||0}:{text?:string;scrollLeft?:number}={}):()=>void{
@@ -117,20 +117,20 @@ export function dissolveValue(input:any,host:any=input&&input.parentElement,
     if(!host.querySelector(':scope > .cleardissolve'))input.classList.remove('dissolving');
   };
   ghost.addEventListener('animationend',drop);
-  /* 兜底：`--motion-reveal` 归零或这一刻元素不可见时 `animationend` 不会来，
-     不兜的话这份复制品就永远盖在输入框上。 */
+  /* 兜底: `--motion-reveal` 归cero或esteuno刻元素Nopuede见时 `animationend` No会来, 
+     No兜话esteCopiar品就永远盖EnIntroducir框arriba.  */
   timer=setTimeout(drop,1000);
   return drop;
 }
 
-/* 计数徽标上一次是多少。徽标所在的那一排每次筛选都整块重画，节点本身留不住上一个值，
-   所以记在这里，键由调用方给的范围加徽标自己的键拼成。 */
+/* 计数徽标Anterior次esmásmenos. 徽标所Eneseuno排每次Filtrar都Completopesado画, 节点本身DejaNo住Anterior值, 
+   所以记Enaquí, Clave由调用方给Rango加徽标自己Clave拼成.  */
 const badgeCounts=new Map<string,string>();
 /**
- * 一排计数徽标里值真变了的那几枚弹一下，其余的不动。
+ * uno排计数徽标dentro值真变ese几弹unoabajo, 其余No动. 
  *
- * 首次见到某一枚不弹：那是它第一次出现在这个范围里，整排一起弹是一屏烟花，而它要说的
- * 是「这一枚刚变了」。`scope` 区分同一个键在不同排里的计数（顶部筛选条和抽屉各有一份）。
+ * primero次见到某unoNo弹: esees它No.uno次出现EnesteRangodentro, Completo排uno起弹esuno屏烟花, 而它要说
+ * es"esteuno刚变". `scope` 区分同unoClaveEnNo同排en la计数(顶部Filtrar y 抽屉各Conuno). 
  */
 export function popBadges(root:any,scope=''):void{
   if(!root)return;
@@ -147,17 +147,17 @@ export function popBadges(root:any,scope=''):void{
 }
 
 /**
- * 一段标题从模糊里逐行揭示出来。
+ * uno段Título从Difusodentro逐行揭示出来. 
  *
- * 按行不按词：逐词要把整句拆成一串 `<span>`，复制出来的文字会跟着散架，而这几处标题
- * 正是最常被复制走的那几段字。走完把类名和行序一起摘掉，终点帧不留下 `filter`。
+ * 按行No按词: 逐词要Completo句拆成uno串 `<span>`, Copiar出来文字会跟着散架, 而este几处Título
+ * 正es最常被Copiar走ese几段字. 走完类名 y 行序uno起摘掉, 终点帧NoDejaabajo `filter`. 
  */
 export function revealTexts(root:any,selector='[data-reveal-line]'):void{
   if(!root)return;
   const lines:HTMLElement[]=[...root.querySelectorAll(selector)];
   if(!lines.length)return;
-  /* 起止两个状态都挂在行自己身上，不挂在外面那一层：这几处标题里有一对是 `<body>` 的
-     直接子元素（页面标题和它的说明行），要共同的祖先就只剩 body 本身。 */
+  /* 起止两Estado都挂En行自己身arriba, No挂Enexterior面eseuno层: este几处TítulodentroConuno对es `<body>` 
+     直continuar子元素(página面Título y 它Descripción行), 要共同祖先就Solo剩 body 本身.  */
   lines.forEach((el,i)=>{el.classList.remove('revealing');el.classList.add('revealline');
     el.style.setProperty('--reveal-at',String(i))});
   lines[0]!.getBoundingClientRect();

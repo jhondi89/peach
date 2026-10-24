@@ -1,29 +1,29 @@
-/* 字段、分区、页面旁的持久提示。配置页与活动页共用这一份。
+/* 字段, 分区, página面旁持久Sugerencia. Configuraciónpáginay活动página共用esteuno. 
  *
- * 注册表里没有行内 Note：`notification` 条目是带关闭键和计时的浮动通知。这里按语气取
- * `status-*` 与 `notification-*` token 组合，差异登记在 `../boardui/ORIGIN.md`。 */
+ * Registrarse表dentroSin行interior Note: `notification` Entradaes带CerrarClave y 计时浮动通知. aquí按语气取
+ * `status-*` y `notification-*` token 组合, 差异登记En `../boardui/ORIGIN.md`.  */
 import type { ReactNode } from 'react';
 import { cx } from '@/utils/cx';
 
 type Tone = 'neutral' | 'info' | 'success' | 'warning' | 'error';
 
-/** 没有密码、保存失败、数据库缺表这类是当前状态，不和字段说明共用灰色小字。
+/** SinContraseña, GuardarFallo, DatosBiblioteca缺表este类es当anteriorEstado, No y 字段Descripción共用灰色pequeño字. 
  *
- *  `action` 是这条提示要人当场做的那件事，宽容器内与结论并排；窄容器或 below 布局独占下一行。
- *  `extra` 收结论以外的东西（折叠起来的问题清单）：它们讲的是
- *  同一件事，摆到 Note 外面就成了一句话加一块不知道属于谁的内容。
- *  正文是段落，塞不进这些块级内容。 */
+ *  `action` esesteSugerencia要人当场做ese件事, ancho容Dispositivointeriory结论y排; estrecho容Dispositivo或 below Diseño独占Siguiente行. 
+ *  `extra` 收结论以exterior东西(折叠起来问题清单): 它们讲es
+ *  同uno件事, 摆到 Note exterior面就成uno句话加unoNo知道属于谁contenido. 
+ *  正文es段落, 塞No进este些级contenido.  */
 export function Note(
   { tone, title, action, extra, children, actionLayout = 'inline', className }:
   { tone: Tone; title?: string; action?: ReactNode; extra?: ReactNode; children: ReactNode; actionLayout?: 'inline' | 'below'; className?: string },
 ) {
   const content = (
     <>
-      {/* 窄屏放不下时按钮换到下一行：挤成两个字一行的按钮比换行更难认。 */}
+      {/* estrecho屏放Noabajo时按钮换到Siguiente行: 挤成两字uno行按钮比换行更难认.  */}
       <div data-note-layout="" className={cx('flex flex-col items-start gap-3',
         actionLayout === 'inline' && '@xl:flex-row @xl:items-center @xl:justify-between')}>
         <div className="flex min-w-0 flex-1 flex-col justify-center gap-0.5 self-stretch">
-          {/* 正文常是服务端原话：长 URL、堆栈和多行原因照原样换行，不撑宽所在的卡。 */}
+          {/* 正文常es服务端Original话: largo URL, Pila y más行Original因照Original样换行, No撑ancho所En卡.  */}
           {title ? <p className="text-body-medium wrap-anywhere">{title}</p> : null}
           <p className="whitespace-pre-line text-body-2-regular wrap-anywhere">{children}</p>
         </div>

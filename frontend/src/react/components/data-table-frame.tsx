@@ -4,14 +4,14 @@ import { attachOverlayScrollbar } from '@peach/legacy/ui';
 import { clickedBlank } from './row-click';
 
 export interface DataTableFrameProps extends PropsWithChildren {
-  /** 关注来源表需要额外的排序图标规则；外框与行状态仍由这个共享组件负责。 */
+  /** 关注来源表需要额exteriorOrdenarImagen标Regla; exterior框y行Estado仍由este共享组件负责.  */
   follow?: boolean;
-  /** 给了就是整行可选：点在某一行的空白处时以那一行的 `data-key`（React Aria 写在 `tr` 上的
-   *  行 id）回调；点在行里的勾、键、链接上不算。 */
+  /** 给就esCompleto行puede选: 点En某uno行空白处时以eseuno行 `data-key`(React Aria 写En `tr` en la
+   *  行 id)回调; 点En行en la勾, Clave, 链continuararribaNo算.  */
   onRowClick?(key: string): void;
 }
 
-/** BoardUI Table 的 Data Table 外框：主表面、完整边线、圆角与选中行反馈。 */
+/** BoardUI Table  Data Table exterior框: 主表面, 完Completo边线, 圆角y选en proceso行Comentarios.  */
 export function DataTableFrame({ children, follow = false, onRowClick }: DataTableFrameProps) {
   const host = useRef<HTMLDivElement>(null);
   useEffect(() => {

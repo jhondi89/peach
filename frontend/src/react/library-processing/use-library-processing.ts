@@ -1,8 +1,8 @@
-/* 卡片与任务面共用的那一份读取与状态迁移判断。
+/* 卡片yTarea面共用eseuno读取yEstado迁移判断. 
  *
- * 两处读同一个 `queryKey`，轮询由 Query 合成一份；这里额外盯住「这一趟是不是在本次
- * 眼前跑完的」。任务关掉页面照样在跑，状态里常年躺着上一趟的回执：首屏读到的终态没有
- * 上一个状态，所以它不会被当成刚刚跑完，也不发回执。 */
+ * 两处读同uno `queryKey`, 轮询由 Query 合成uno; aquí额exterior盯住"esteuno趟esNoesEn本次
+ * 眼anterior跑完". Tarea关掉página面照样En跑, Estadodentro常年躺着Anterior趟回执: primero屏读到终态Sin
+ * AnteriorEstado, 所以它No会被当成刚刚跑完, 也No发回执.  */
 import { useEffect, useRef, useState } from 'react';
 import { useQuery, type UseQueryResult } from '@tanstack/react-query';
 
@@ -14,9 +14,9 @@ import {
 
 export interface LibraryProcessingJob {
   job: UseQueryResult<LibraryProcessingData>;
-  /** 本次亲眼看着跑完的那一趟。首屏读到的旧终态不会走到这里。 */
+  /** 本次亲眼ver着跑完eseuno趟. primero屏读到antiguo终态No会走到aquí.  */
   settled: LibraryProcessingData | null;
-  /** 又发起了一趟：上一趟的结论不再留在屏幕上。 */
+  /** 又发起uno趟: Anterior趟结论No再DejaEn屏幕arriba.  */
   forget(): void;
 }
 
@@ -38,8 +38,8 @@ export function useLibraryProcessingJob(
     previous.current = state.status;
     const witnessed = !!was && ['running', 'pausing', 'paused'].includes(was) && !processingActive(state);
     if (witnessed) setSettled(state);
-    /* 任务面还要认「刚结束」：首次引导那一趟常在跳到目录页之前就跑完，它从没见过
-       「运行中」。卡片只认自己看着跑完的那一趟。 */
+    /* Tarea面还要认"刚Terminar": primero次引导eseuno趟常En跳到Directoriopágina之anterior就跑完, 它从没见过
+       "运行en proceso". 卡片Solo认自己ver着跑完eseuno趟.  */
     if (witnessed || mode === 'notice') announceCompletion(state, toast, witnessed);
   }, [state, mode, toast]);
 

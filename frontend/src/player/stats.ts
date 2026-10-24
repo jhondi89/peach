@@ -1,13 +1,13 @@
-/* 播放统计：缓冲读数、加载速度与统计面板的小图。
+/* ReproducirEstadísticas: 缓冲读数, CargarVelocidad度yEstadísticas面板pequeñoImagen. 
  *
- * 渐进下载（HTTP Range）量不到网络：浏览器用一条长连接边下边播，请求在播放期间不结束，
- * resource timing 里就一直不出现新条目。实测本地 MP4 播到 37 秒时仍只有挂载那两条、字节数停在
- * 862 KB，面板于是显示「— · 0 请求」。HLS 是另一回事，每个分片都是一次独立完成的请求，VHS
- * 自己也报 bandwidth，resource timing 那套口径只对它成立。
- * 渐进源改看缓冲前沿的推进：每秒新推进的秒数 × 平均码率就是字节速率。码率要有文件大小才算得
- * 出来，关注条目的大小由 `/follow-qualities` 回源 HEAD 带回；连上游都不给 content-length 时没有
- * 任何办法把秒换成字节，角标改报还能往前放多久。缓冲吃满后浏览器停拉，增量归零，此时保留上一次
- * 读数而不是跳回 0——那不是速度掉了，是没有在下载。 */
+ * 渐进Descargar(HTTP Range)量No到网络: Explorar dispositivo用unolargoConectar边abajo边播, Por favor求EnReproducir期间NoTerminar, 
+ * resource timing dentro就uno直No出现NuevoEntrada. 实测本地 MP4 播到 37 秒时仍SoloCon挂载ese两, 字节数停En
+ * 862 KB, 面板于es显示"— · 0 Por favor求". HLS es另uno回事, 每分片都esuno次IndependienteCompletadoPor favor求, VHS
+ * 自己也报 bandwidth, resource timing ese套口径Solo对它成立. 
+ * 渐进源改ver缓冲anterior沿推进: 每秒Nuevo推进秒数 × 平均码率就es字节Velocidad率. 码率要ConArchivoTamaño才算得
+ * 出来, 关注EntradaTamaño由 `/follow-qualities` 回源 HEAD 带回; 连arriba游都No给 content-length 时Sin
+ * 任何办法秒换成字节, 角标改报还能往anterior放más久. 缓冲吃满posteriorExplorar dispositivo停拉, 增量归cero, 此时保DejaAnterior次
+ * 读数而Noes跳回 0—eseNoesVelocidad度掉, esSinEnDescargar.  */
 import { esc, icon, realDuration } from '@peach/legacy/core';
 
 import type { VjsPlayer } from './types';
@@ -20,8 +20,8 @@ export function bufferedAhead(video: HTMLVideoElement): number {
   return 0;
 }
 
-/* 缓冲前沿：当前播放位置所在那段缓冲的末端。看的是前沿而不是缓冲区总长——播放时浏览器会驱逐
-   播过的部分，总长几乎恒定，拿它当下载量会得出「一直是 0」。 */
+/* 缓冲anterior沿: 当anteriorReproducirUbicación所Enese段缓冲último端. veresanterior沿而Noes缓冲区Totallargo—Reproducir时Explorar dispositivo会驱逐
+   播过部分, Totallargo几乎恒定, 拿它当Descargar量会得出"uno直es 0".  */
 function bufferedFrontier(video: HTMLVideoElement): number {
   const at = video.currentTime || 0;
   for (let i = 0; i < video.buffered.length; i++) {
@@ -58,11 +58,11 @@ export function createBufferMeter(bitrate: number): BufferMeter {
       const at = performance.now(), frontier = bufferedFrontier(video), ct = video.currentTime || 0;
       if (last) {
         const gap = (at - last.at) / 1000;
-        /* seek 会把前沿整段挪走，那不是这一秒下载了几十分钟；判据是播放位置自己跳了。 */
+        /* seek 会anterior沿Completo段挪走, eseNoesesteuno秒Descargar几diez分钟; 判据esReproducirUbicación自己跳.  */
         const seeked = Math.abs(ct - last.ct) > gap * 4 + 1;
         const step = frontier - last.frontier;
         if (!seeked && step > 0) advanced += step;
-        /* 面板和角标都关着时没人采样，再打开时两点隔了几分钟，窗口要重新起算。 */
+        /* 面板 y 角标都关着时没人采样, 再Abrir时两点隔几分钟, 窗口要pesadoNuevo起算.  */
         if (gap * 1000 > BUFFER_METER_WINDOW_MS * 2) samples.length = 0;
       }
       last = { at, frontier, ct };
@@ -83,8 +83,8 @@ export function pushPlayerStat(samples: number[], value: number): void {
   if (samples.length > PLAYER_STATS_HISTORY) samples.splice(0, samples.length - PLAYER_STATS_HISTORY);
 }
 
-/** 设置面板和播放统计都盖在画面上，同时开就互相遮挡。开哪个都往 document 广播一次，另一个
- *  自己收起：两块面板挂在不同的作用域里，共享一个事件名比互相持有引用干净。 */
+/** Configuración面板 y ReproducirEstadísticas都盖EnImagenarriba, 同时开就互相遮挡. 开哪都往 document 广播uno次, 另uno
+ *  自己收起: 两面板挂EnNo同作用域dentro, 共享uno事件名比互相持Con引用干净.  */
 export const PLAYER_PANEL_EVENT = 'peach-player-panel';
 
 export function playerStatsPlot(samples: number[], kind: 'speed' | 'activity' | 'buffer', ceiling: number, label: string): string {
@@ -99,10 +99,10 @@ export function playerStatsPlot(samples: number[], kind: 'speed' | 'activity' | 
   return `<span data-player-stats-plot="${kind}" role="img" aria-label="${esc(label)}">${bars}</span>`;
 }
 
-/** 统计键、加载速度角标与统计面板。作品详情与关注详情共用这一组；挂载在 Video.js 包住
- *  `<video>` 之前插到它前面，Video.js 一包，`video` 的父级就换成它自己的那层了。 */
+/** EstadísticasClave, CargarVelocidad度角标yEstadísticas面板. ObrasDetallesy关注Detalles共用esteuno组; 挂载En Video.js 包住
+ *  `<video>` 之anterior插到它anterior面, Video.js uno包, `video` 父级就换成它自己ese层.  */
 export function playerStatsOverlayHtml(): string {
-  return `<button data-player-stats-button="" id="playerStatsBtn" aria-label="播放统计" title="播放统计" aria-pressed="false" hidden>${icon('chart')}</button>
+  return `<button data-player-stats-button="" id="playerStatsBtn" aria-label="Estadísticas de reproducción" title="Estadísticas de reproducción" aria-pressed="false" hidden>${icon('chart')}</button>
        <div data-player-net="" id="playerNet" role="status" aria-live="polite" hidden></div>
        <div data-player-stats="" id="playerStats" role="status" hidden></div>`;
 }
@@ -123,21 +123,21 @@ export function streamSpeedBits(id: number, session = ''): number {
 
 export function playerSpeedBits(player: VjsPlayer | null, id: number, session = '', meter: BufferMeter | null = null): number {
   let bandwidth = 0;
-  try { bandwidth = Number(player?.bandwidth?.()) || 0 } catch { /* 播放引擎没有带宽读数 */ }
+  try { bandwidth = Number(player?.bandwidth?.()) || 0 } catch { /* Reproducir引擎Sin带ancho读数 */ }
   if (bandwidth > 0) return bandwidth;
-  /* 传了 meter 就是渐进源：它的 resource timing 本来就量不到，不能拿别的条目顶上。 */
+  /* 传 meter 就es渐进源: 它 resource timing 本来就量No到, No能拿别Entrada顶arriba.  */
   return meter ? Number(meter.bits) || 0 : streamSpeedBits(id, session);
 }
 
 export function fmtSpeed(bits: number): string {
-  if (!Number.isFinite(bits) || bits <= 0) return '加载中…';
+  if (!Number.isFinite(bits) || bits <= 0) return 'Cargando...';
   const bytes = bits / 8;
   return bytes >= 1048576 ? `${(bytes / 1048576).toFixed(1)} MB/s` : `${Math.max(1, Math.round(bytes / 1024))} KB/s`;
 }
 
-/** 码率未知时字节速率无从换算，退回已经缓冲的秒数：那是这种情况下唯一还能直接用的读数
- *  ——现在断网还能往前放多久。 */
+/** 码率no知时字节Velocidad率Sin从换算, 退回ya经缓冲秒数: eseeseste情况abajo唯uno还能直continuar用读数
+ *  —现En断网还能往anterior放más久.  */
 export function fmtLoadRate(bits: number, ahead: number): string {
   if (bits > 0) return fmtSpeed(bits);
-  return ahead > 0 ? `已缓冲 ${Math.round(ahead)} 秒` : fmtSpeed(0);
+  return ahead > 0 ? `Cargado ${Math.round(ahead)} segundo(s)` : fmtSpeed(0);
 }

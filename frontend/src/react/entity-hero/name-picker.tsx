@@ -1,16 +1,16 @@
-/* 名字右边那枚下拉：在这条实体已有的写法里挑一个当统称，或者添一个新的。
+/* 名字derecha边eseabajo拉: Eneste实体yaCon写法dentro挑uno当统称, 或者添unoNuevo. 
  *
- * 统称由用户自己定。同一个人在库里常有中文、日文、罗马字几种写法，哪一个该顶在标题上是他的
- * 偏好，数据库里没有能推出答案的字段。菜单只列这条实体名下已有的写法：换统称是换显示的那一个，
- * 不是改名。这枚下拉恒在，只有一个名字时也在——「她还叫过别的」要有入口，而恰恰是只剩一个
- * 名字的人最需要补。添别名是另一件事，隔一条线摆在末尾。
+ * 统称由用户自己定. 同uno人EnBibliotecadentro常Conen proceso文, 日文, 罗马字几写法, 哪uno该顶EnTítuloarribaes他
+ * 偏bien, DatosBibliotecadentroSin能推出答案字段. 菜单Solo列este实体名abajoyaCon写法: 换统称es换显示eseuno, 
+ * Noes改名. esteabajo拉恒En, SoloConuno名字时也En—"她还叫过别"要Con入口, 而恰恰esSolo剩uno
+ * 名字人最需要补. 添别名es另uno件事, 隔uno线摆Enúltimo尾. 
  *
- * 换统称写的是 `entity.canonical_name` 这个真相字段：确认、写回、回执与重进这一页都在壳里
- * （`actions.chooseName`），勾只在服务端换完、页面重画之后才挪。
+ * 换统称写es `entity.canonical_name` este真相字段: Confirmar, 写回, 回执ypesado进esteunopágina都En壳dentro
+ * (`actions.chooseName`), 勾SoloEn服务端换完, página面pesado画之posterior才挪. 
  *
- * 面板从按钮左缘往右开：往左开的话 260px 的菜单越过名字压在头像上（用户报过）。面板那身
- * 盒子取 BoardUI 的菜单面（`MENU_POPOVER_SURFACE`，同旧锚定菜单 `.popmenu` 的 16px 圆角、
- * 10px 内边距与投影），菜单项的几何写在 `./entity-hero.css`。 */
+ * 面板从按钮izquierda缘往derecha开: 往izquierda开话 260px 菜单越过名字压EnAvatararriba(用户报过). 面板ese身
+ * 盒子取 BoardUI 菜单面(`MENU_POPOVER_SURFACE`, 同antiguo锚定菜单 `.popmenu`  16px 圆角, 
+ * 10px Rellenoy投影), 菜单项几何写En `./entity-hero.css`.  */
 import { useEffect, useRef, useState } from 'react';
 import { Button, Menu, MenuItem, MenuSection, MenuTrigger, Popover, Separator } from 'react-aria-components';
 
@@ -26,18 +26,18 @@ export function NamePicker({ current, choices, onChoose, onAddAlias }: {
 }) {
   const [open, setOpen] = useState(false);
   const toggle = useRef<HTMLButtonElement>(null);
-  /* title 给壳的提示条用（board-controls 只认 [title]），和旧资料卡那枚一样悬停就出字。
-     react-aria 的 Button 不收 title，挂载后直接写到节点上；提示条收起时会把它放回来。 */
-  useEffect(() => { toggle.current?.setAttribute('title', '名字与别名') }, []);
+  /* title 给壳Sugerencia用(board-controls Solo认 [title]),  y antiguo资料卡eseuno样Pasar el ratón就出字. 
+     react-aria  Button No收 title, 挂载posterior直continuar写到节点arriba; Sugerencia收起时会它放回来.  */
+  useEffect(() => { toggle.current?.setAttribute('title', 'Nombre y alias') }, []);
   return (
     <MenuTrigger isOpen={open} onOpenChange={setOpen}>
-      <Button ref={toggle} data-namepick-toggle="" aria-label="名字与别名">
+      <Button ref={toggle} data-namepick-toggle="" aria-label="Nombre y alias">
         <Glyph name="chevron-down" />
       </Button>
-      {/* 离按钮 8px：旧锚定菜单 wireAnchoredMenu 就是 anchor.bottom + 8，另两枚弹层也是 8。 */}
+      {/* 离按钮 8px: antiguo锚定菜单 wireAnchoredMenu 就es anchor.bottom + 8, 另两弹层也es 8.  */}
       <Popover placement="bottom start" offset={8} containerPadding={8} className={MENU_POPOVER_SURFACE}
         data-namepick-menu="">
-        <Menu aria-label="名字与别名" data-namepick-list="">
+        <Menu aria-label="Nombre y alias" data-namepick-list="">
           <MenuSection selectionMode="single" disallowEmptySelection selectedKeys={[current]}
             onSelectionChange={(keys) => {
               const chosen = [...(keys as Set<string>)][0];
@@ -51,8 +51,8 @@ export function NamePicker({ current, choices, onChoose, onAddAlias }: {
           </MenuSection>
           <Separator data-namepick-rule="" />
           <MenuSection>
-            <MenuItem id="alias" textValue="添加别名" data-namepick-alias="" onAction={onAddAlias}>
-              <Glyph name="plus" /><span>添加别名…</span>
+            <MenuItem id="alias" textValue="AñadirAlias" data-namepick-alias="" onAction={onAddAlias}>
+              <Glyph name="plus" /><span>Añadir alias...</span>
             </MenuItem>
           </MenuSection>
         </Menu>

@@ -1,7 +1,7 @@
-/* 新作那一行的卡片区，首页与资料页共用：画进壳留好的 `section.feednew` 宿主里，卡片是壳拼的
- * 那一份模板（`feedNewCardHtml`）。忽略的那条当场消失，已看过的留在原位只是变淡，想要那颗键
- * 按下去换成填实的星；三样都直接改这一行的节点，不重画整行——重画会把横滚的位置和自动滚动
- * 一起打回起点。一条都没有就整块不出。 */
+/* Nuevas obraseseuno行卡片区, primeropáginay资料página共用: 画进壳Dejabien `section.feednew` 宿主dentro, 卡片es壳拼
+ * eseuno模板(`feedNewCardHtml`). 忽略ese当场消失, yaver过DejaEnOriginalSoloes变淡, 想要eseClave
+ * 按abajo去换成Introduce实星; tres样都直continuar改esteuno行节点, Nopesado画Completo行—pesado画会横滚Ubicación y 自动滚动
+ * uno起打回起点. uno都Sin就CompletoNo出.  */
 import { useContext, useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { ShellActionsContext } from '../router/router';
@@ -12,11 +12,11 @@ import type { FeedNew } from './feed-new';
 export function FeedNewRow({ feedNew, host, wire, act, settled }: {
   feedNew: FeedNew | null;
   host: HTMLElement;
-  /** 拖动、滚轮，按设置接自动滚动。 */
+  /** 拖动, 滚轮, 按Configuracióncontinuar自动滚动.  */
   wire(row: Element | null): void;
-  /** 卡上那三颗键的写操作。 */
+  /** 卡arribaesetresClave写操作.  */
   act(feedId: number, action: string): Promise<void>;
-  /** 有没有卡：画出来、或最后一张被收起时报一次。 */
+  /** ConSin卡: 画出来, 或最posterioruno被收起时报uno次.  */
   settled?(hasItems: boolean): void;
 }) {
   const actions = useContext(ShellActionsContext);
@@ -43,11 +43,11 @@ export function FeedNewRow({ feedNew, host, wire, act, settled }: {
     const action = button.dataset.feedAction || '';
     await act(Number(card.dataset.feedId), action);
     if (action === 'want' || action === 'unwant') {
-      // 想要是开关：同一颗键换成另一头，卡片不收起也不变淡。
+      // 想要es开关: 同unoClave换成另uno头, 卡片No收起也No变淡. 
       const wanted = action === 'want';
       button.dataset.feedAction = wanted ? 'unwant' : 'want';
       button.setAttribute('aria-pressed', String(wanted));
-      button.title = wanted ? '取消想要' : '想要';
+      button.title = wanted ? 'Quitar de deseados' : 'Deseado';
       return;
     }
     if (action === 'ignore') card.remove();

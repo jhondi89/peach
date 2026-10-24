@@ -1,10 +1,10 @@
-/* 后台任务仍在推进、但没有总量可言时的 Loading Dots（`peach-web-ui`）。
+/* posteriorTarea仍En推进, peroSinTotal量puede言时 Loading Dots(`peach-web-ui`). 
  *
- * 不用 Spinner：Spinner 只反馈用户刚刚点下的那一下。也不画没有分母的进度条。
- * 三颗点的错相由 `../styles.css` 的 `dot-wave-*` 给，减少动效时全局规则关掉动画。
+ * No用 Spinner: Spinner SoloComentarios用户刚刚点abajoeseunoabajo. 也No画Sin分母Progreso. 
+ * tres点错相由 `../styles.css`  `dot-wave-*` 给, 减menos动效时Todo局Regla关掉动画. 
  *
- * `inline` 那一档住在按钮里（「载入更多」按下去之后）：按钮里不能放段落，换成行内元素，
- * 字号跟着按钮走。 */
+ * `inline` eseuno档住En按钮dentro("载入更más"按abajo去之posterior): 按钮dentroNo能放段落, 换成行interior元素, 
+ * Tamaño de fuente跟着按钮走.  */
 
 export function LoadingDots({ label, inline = false }: { label: string; inline?: boolean }) {
   const dots = (

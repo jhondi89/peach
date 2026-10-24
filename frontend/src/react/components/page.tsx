@@ -1,4 +1,4 @@
-/* 管理区正文居中，宽度使用 `max-w-board` 对应的 `--board-content`；页面标题由页头独立布局。 */
+/* Gestionar区正文居en proceso, ancho度使用 `max-w-board` 对应 `--board-content`; página面Título由página头IndependienteDiseño.  */
 import type { ReactNode } from 'react';
 
 export function Page({ children }: { children: ReactNode }) {

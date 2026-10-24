@@ -1,7 +1,7 @@
-/* 界面偏好的默认值、启动归一化与唯一 store（peach.settings.v1）。
- * Application、设置面板、侧栏与配色弹层通过共享源码读写同一个对象。
- * 首次 appSettingsStore() 从 localStorage 读取、归一化并创建实例，启动阶段同步就位。
- * 存量只接受形状与范围合法的值，单项非法时取该项默认值。 */
+/* 界面偏bienPredeterminado值, 启动归uno化y唯uno store(peach.settings.v1). 
+ * Application, Configuración面板, 侧栏y配色弹层通过共享源码读写同uno对象. 
+ * primero次 appSettingsStore() 从 localStorage 读取, 归uno化yCrear实例, 启动阶段Sincronizar就. 
+ * 存量Solocontinuar受形状yRango合法值, 单项非法时取该项Predeterminado值.  */
 import { api } from '@peach/legacy/core';
 
 import { normalizeJavPreferences } from '../jav-artwork';
@@ -12,17 +12,17 @@ import { SORT_ALIASES, SORT_KEYS } from '../sort-preferences';
 import { DEFAULT_ACCENT, DEFAULT_HOME_GLOW, normalizeAccent, normalizeHomeGlow, type HomeGlow } from './home-glow';
 
 export const SETTINGS_KEY = 'peach.settings.v1';
-/* 主题三档，键名与 <html> 上的 data-theme 同一套写法：web/css/01-base.css 的色板
-   已经按 `prefers-color-scheme` 和 `[data-theme]` 两条路径写好，这里只负责选哪一条。
-   跟随系统是默认档，选它等于不写属性。 */
+/* Tematres档, Clave名y <html> en la data-theme 同uno套写法: web/css/01-base.css 色板
+   ya经按 `prefers-color-scheme`  y  `[data-theme]` 两Ruta写bien, aquíSolo负责选哪uno. 
+   跟随系统esPredeterminado档, 选它etc.于No写属性.  */
 export const THEME_CHOICES: readonly string[] = ['system', 'light', 'dark'];
-/** 关注首次采集往回取多少天；与数据库那一份同一张表。 */
+/** 关注primero次Recolectar往回取másmenos天; yDatosBibliotecaeseuno同uno表.  */
 export const FOLLOW_INITIAL_DAYS: readonly number[] = [0, 7, 30, 90];
-/* 新作那一行收不收合集由服务端按数据库里的设置筛（列表、未读数、补封面同一份），这里只是
-   镜像：开关的真相在 `/api/settings`。默认收起大合集与切片、单人合集照列。 */
+/* Nuevas obraseseuno行收No收合集由服务端按DatosBibliotecaen laConfiguración筛(Lista, no读数, 补Portada同uno), aquíSoloes
+   镜像: 开关真相En `/api/settings`. Predeterminado收起grande合集y切片, 单人合集照列.  */
 export const FEED_COMPILATION_KEYS = ['feedHideGroupCompilations', 'feedHideSoloCompilations', 'feedHideExcerpts'] as const;
 
-/** 归一化之后一定在的那几项。对象上还有别的字段（壳与各岛按需写入），这里不一一列出。 */
+/** 归uno化之posterioruno定Enese几项. 对象arriba还Con别字段(壳y各岛按需写入), aquíNounouno列出.  */
 export interface AppSettings {
   [key: string]: unknown;
   batchSize: number;
@@ -66,19 +66,19 @@ export const DEFAULT_SETTINGS = {
   homeGlow: DEFAULT_HOME_GLOW, accent: DEFAULT_ACCENT,
 } as const;
 
-/** 白名单里的值原样给回，否则给 `fallback`。 */
+/** 白名单en la值Original样给回, 否则给 `fallback`.  */
 export const allowedSetting = <T>(value: unknown, allowed: readonly T[], fallback: T): T =>
   allowed.includes(value as T) ? value as T : fallback;
 
-/** 读回的那份存量归一化成完整的偏好对象。`migrated` 为真表示改写了旧键，要落一次盘。 */
+/** 读回ese存量归uno化成完Completo偏bien对象. `migrated` Como真表示改写antiguoClave, 要落uno次盘.  */
 export function normalizeAppSettings(raw: unknown): { settings: AppSettings; migrated: boolean } {
   const saved = raw && typeof raw === 'object' ? raw as Record<string, unknown> : {};
   const settings = { ...DEFAULT_SETTINGS, ...saved } as Record<string, unknown>;
   settings.followInitialDays = FOLLOW_INITIAL_DAYS.includes(+(settings.followInitialDays as number))
     ? +(settings.followInitialDays as number) : 30;
   delete settings.rotateMinutes;
-  /* 迁移只碰默认值本身：把界面上已经不存在的键换成当前键，用户主动选过的排序不动。
-     不迁移的话白名单会把它静默打回随机。 */
+  /* 迁移Solo碰Predeterminado值本身: 界面arribaya经No存EnClave换成当anteriorClave, 用户主动选过OrdenarNo动. 
+     No迁移话白名单会它静predetermina打回Aleatorio.  */
   let migrated = false;
   const version = +(settings.sortDefaultsVersion as number) || 0;
   if (version < 2 && settings.defaultSort === 'new') { settings.defaultSort = 'seed'; migrated = true }
@@ -111,16 +111,16 @@ export function normalizeAppSettings(raw: unknown): { settings: AppSettings; mig
   return { settings: settings as AppSettings, migrated };
 }
 
-/** 从 `storage` 读回并归一化；存的不是合法 JSON 时当作什么都没存。 */
+/** 从 `storage` 读回y归uno化; 存Noes合法 JSON 时当作什么都没存.  */
 export function readAppSettings(storage: Pick<Storage, 'getItem'>): { settings: AppSettings; migrated: boolean } {
   let raw: unknown = {};
-  try { raw = JSON.parse(storage.getItem(SETTINGS_KEY) || '{}') } catch { /* 坏掉的存量按空的算 */ }
+  try { raw = JSON.parse(storage.getItem(SETTINGS_KEY) || '{}') } catch { /* 坏掉存量按空算 */ }
   return normalizeAppSettings(raw);
 }
 
 let store: SettingsStore<AppSettings> | null = null;
 
-/** 整页那一份偏好 store。第一次调用时读回、归一化；改写过旧键就当场落一次盘。 */
+/** Completopáginaeseuno偏bien store. No.uno次调用时读回, 归uno化; 改写过antiguoClave就当场落uno次盘.  */
 export function appSettingsStore(): SettingsStore<AppSettings> {
   if (store) return store;
   const { settings, migrated } = readAppSettings(localStorage);
@@ -129,10 +129,10 @@ export function appSettingsStore(): SettingsStore<AppSettings> {
   return store;
 }
 
-/** 数据库那一份要求某个壳侧效果跟着做时报的名字（同设置面板的效果名）。 */
+/** DatosBibliotecaeseuno要求某壳侧效果跟着做时报名字(同Configuración面板效果名).  */
 export type SyncedEffect = 'searchHistoryLimit';
 
-/** 搜索记录条数在 `/api/settings` 上的形状：还没定过时是 null。 */
+/** BuscarRegistro数En `/api/settings` en la形状: 还没定过时es null.  */
 export interface SyncedSettings {
   followInitialDays?: unknown;
   feedHideGroupCompilations?: unknown;
@@ -142,9 +142,9 @@ export interface SyncedSettings {
   sidebarOrder?: unknown;
 }
 
-/* 数据库那一份落进本地缓存。启动时壳取一次、设置面板每次打开再取一次，都交到这里；开着的面板与
-   侧栏经 store 通知跟上：侧栏顺序变了，它当场按新顺序重排。搜索记录条数变了要推给搜索岛，那一下
-   由 `changed` 交回壳。 */
+/* DatosBibliotecaeseuno落进本地缓存. 启动时壳取uno次, Configuración面板每次Abrir再取uno次, 都交到aquí; 开着面板y
+   侧栏经 store 通知跟arriba: 侧栏顺序变, 它当场按Nuevo顺序pesado排. BuscarRegistro数变要推给Buscar岛, eseunoabajo
+   由 `changed` 交回壳.  */
 export function applySyncedSettings(
   remote: SyncedSettings | null | undefined, changed: (effect: SyncedEffect) => void,
   target: SettingsStore<AppSettings> = appSettingsStore(),
@@ -156,7 +156,7 @@ export function applySyncedSettings(
     if (typeof remote?.[key] !== 'boolean' || remote[key] === settings[key]) continue;
     settings[key] = remote[key] as boolean; target.save();
   }
-  /* 数据库里还没有条数时，这台设备本地改过的那个数替所有访问端先定下来，只送这一次。 */
+  /* DatosBibliotecadentro还Sin数时, este设备本地改过ese数替所ConAcceder端先定abajo来, Solo送esteuno次.  */
   const limit = remote && remote.searchHistoryLimit;
   if (Number.isInteger(limit) && (limit as number) >= 0 && (limit as number) <= 50) {
     if (limit !== settings.searchHistoryLimit) {
@@ -171,7 +171,7 @@ export function applySyncedSettings(
   target.save();
 }
 
-/** 把本地那个搜索记录条数送上数据库；失败不报，下次对账再送。 */
+/** 本地eseBuscarRegistro数送arribaDatosBiblioteca; FalloNo报, abajo次对账再送.  */
 export function postSearchHistoryLimit(target: SettingsStore<AppSettings> = appSettingsStore()): Promise<unknown> {
   return api('/api/settings', {
     method: 'POST', body: JSON.stringify({ searchHistoryLimit: target.value.searchHistoryLimit }),

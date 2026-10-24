@@ -1,9 +1,9 @@
-/* 「媒体库与入库」分组：媒体目录与自动入库，每个文件夹标着挂载状态。
+/* "媒体Bibliotecay入Biblioteca"Agrupar: 媒体Directorioy自动入Biblioteca, 每Archivocarpeta标着挂载Estado. 
  *
- * 服务端检查管理权限后用 `editable` 控制表单；没有权限时只说明原因。
- * 保存成功后显示持久提示和访问地址，等待服务就绪后跳转。
+ * 服务端VerificarGestionarPermisosposterior用 `editable` 控制表单; SinPermisos时SoloDescripciónOriginal因. 
+ * GuardarÉxitoposterior显示持久Sugerencia y Acceder地址, Esperando服务就绪posteriorSaltar a. 
  *
- * 校验原因由服务端按字段给（400 的 `errors`），页面写回原位，不在前端复制一份路径与端口的判定。 */
+ * 校验Original因由服务端按字段给(400  `errors`), página面写回Original, NoEnanterior端CopiarunoRutayPuerto判定.  */
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 
 import { Button } from '@/components/base/buttons/button';
@@ -56,11 +56,11 @@ const fieldErrorsOf = (cause: unknown): FieldErrors | null => {
   return (cause.body as { errors?: FieldErrors } | null)?.errors ?? null;
 };
 
-/* 能编辑时挂载状态标在每个文件夹行上；只读时没有那张表，单列一块。 */
+/* 能Editar时挂载Estado标En每Archivocarpeta行arriba; Solo读时Sinese表, 单列uno.  */
 export function MediaSettings({ data, receipt, panel }: ConfigurationGroupProps) {
   return (
     <div {...groupRoot(panel)}>
-      {data.editable ? <MediaForm data={data} receipt={receipt} /> : <Note tone="neutral" title="只读">{data.notice}</Note>}
+      {data.editable ? <MediaForm data={data} receipt={receipt} /> : <Note tone="neutral" title="Solo lectura">{data.notice}</Note>}
       {data.editable ? null : <MountStatus data={data} />}
       {data.push_discovery
         ? <PushDiscoveryForm initial={data.push_discovery} receipt={receipt} />
@@ -105,7 +105,7 @@ function MediaForm({ data, receipt }: ConfigurationGroupProps) {
     }, 'POST', signal), (result) => {
       revision.current = result.revision;
       setRowErrors([]);
-      receipt('已保存配置');
+      receipt('Configuración guardada');
       setSaved(result);
     }, (cause) => {
       const fields = fieldErrorsOf(cause);
@@ -116,28 +116,28 @@ function MediaForm({ data, receipt }: ConfigurationGroupProps) {
 
   if (saved) {
     return (
-      <Section title="媒体目录">
+      <Section title="Directorio de medios">
         <Stack>
-          <Note tone="success" title="配置已保存">
-            Peach 正在重新启动。稍后自动跳转，或点击<LinkButton href={saved.url} size="small">进入馆藏</LinkButton>。
+          <Note tone="success" title="Configuración guardada">
+            Peach En cursopesadoNuevo启动. 稍posterior自动Saltar a, 或点击<LinkButton href={saved.url} size="small">Ir a la colección</LinkButton>. 
           </Note>
         </Stack>
       </Section>
     );
   }
 
-  // 挂载状态是已保存的那份配置的读数，只标在路径没改过的行上。
+  // 挂载EstadoesyaGuardareseConfiguración读数, Solo标EnRuta没改过行arriba. 
   const mountOf = (path: string) => (path ? data.media_sources?.find((source) => source.path === path) : undefined);
   const cloud = rows.some((row) => isCloudSource(row.location));
   const missing = cloud ? (data.mount_dependencies ?? []).filter((dependency) => !dependency.available) : [];
   return (
-    <Section title="媒体目录" onSubmit={submit}>
+    <Section title="Directorio de medios" onSubmit={submit}>
       <Stack>
         <div className="flex flex-col gap-3">
-          <FieldLabel>媒体目录</FieldLabel>
-          <div role="group" aria-label="媒体目录" className="flex flex-col gap-3">
+          <FieldLabel>Directorio de medios</FieldLabel>
+          <div role="group" aria-label="Directorio de medios" className="flex flex-col gap-3">
             {rows.map((row, index) => (
-              <FolderRow key={index} label={`媒体目录 ${index + 1}`} path={row.path}
+              <FolderRow key={index} label={`Directorio de medios ${index + 1}`} path={row.path}
                 onPath={(path) => edit(index, { path })} error={rowErrors[index]} inputRef={inputRef(index)}
                 picking={picking === index} onPick={() => void pick(index)}
                 onRemove={rows.length > 1 ? () => remove(index) : undefined}
@@ -145,28 +145,28 @@ function MediaForm({ data, receipt }: ConfigurationGroupProps) {
                 <SourceSelect index={index} value={row.location}
                   onChange={(location) => edit(index, { location, cost: location === 'local' ? 'free' : '' })} />
                 <MediaReadPolicy index={index} cost={row.cost} onChange={(cost) => edit(index, { cost })}
-                  error={requireReadPolicy && !row.cost ? '请选择媒体读取策略' : undefined} />
-                <Input className="min-w-40 flex-1" aria-label={`媒体库名称 ${index + 1}`} maxLength={80}
-                  placeholder="媒体库名称"
+                  error={requireReadPolicy && !row.cost ? 'Por favor selecciona la estrategia de lectura de medios' : undefined} />
+                <Input className="min-w-40 flex-1" aria-label={`Nombre de la biblioteca ${index + 1}`} maxLength={80}
+                  placeholder="Nombre de la biblioteca"
                   value={row.library} onChange={(library) => edit(index, { library })} />
-                <LibraryIconPicker label={`媒体库图标 ${index + 1}`} value={row.library_icon} kind={row.location}
+                <LibraryIconPicker label={`Biblioteca de mediosImagen标 ${index + 1}`} value={row.library_icon} kind={row.location}
                   onChange={(library_icon) => edit(index, { library_icon })} />
               </FolderRow>
             ))}
           </div>
-          <Button variant="secondary" className="self-start" onClick={add}>添加文件夹</Button>
+          <Button variant="secondary" className="self-start" onClick={add}>AñadirCarpeta</Button>
         </div>
         {cloud ? <><MediaReadPolicyHelp /><CloudDriveGuide /></> : null}
         {missing.map((dependency) => (
           <Help key={dependency.name}>
-            未检测到 {dependency.name}。<ExternalLink href={dependency.download_url}>下载 {dependency.name}</ExternalLink>
+            no检测到 {dependency.name}. <ExternalLink href={dependency.download_url}>Descargar {dependency.name}</ExternalLink>
           </Help>
         ))}
-        <Checkbox isSelected={scanNow} onChange={setScanNow}>保存后扫描并补全资料</Checkbox>
-        {failure ? <Note tone="error" title="没有保存">{failure}</Note> : null}
+        <Checkbox isSelected={scanNow} onChange={setScanNow}>GuardarposteriorEscanearyCompletar detalles</Checkbox>
+        {failure ? <Note tone="error" title="Sin guardar">{failure}</Note> : null}
       </Stack>
-      <Footer status="保存后 Peach 会重新启动。">
-        <Button type="submit" {...busyProps(action.busy === 'save')}>保存配置</Button>
+      <Footer status="Guardarposterior Peach 会pesadoNuevoIniciar. ">
+        <Button type="submit" {...busyProps(action.busy === 'save')}>Guardar configuración</Button>
       </Footer>
     </Section>
   );
@@ -176,8 +176,8 @@ function MountBadge({ online }: { online: boolean | undefined }) {
   return <ConnectionStatus online={online} />;
 }
 
-/* 重取回来的是整份配置，换进整页那一个键：屏幕上只有一份真相，页面上别处读到的
-   也是这一次的结果。另存一份的话，挂载点在这里是新的、在「这台电脑」那张表单里还是旧的。 */
+/* pesado取回来esCompletoConfiguración, 换进CompletopáginaeseunoClave: 屏幕arribaSoloConuno真相, página面arriba别处读到
+   也esesteuno次Resultado. 另存uno话, 挂载点EnaquíesNuevo, En"este电脑"ese表单dentro还esantiguo.  */
 function MountStatus({ data }: { data: ConfigurationData }) {
   const sources = data.media_sources;
   const action = useAction();
@@ -185,17 +185,17 @@ function MountStatus({ data }: { data: ConfigurationData }) {
   const refresh = () => void action.run('refresh', (signal) => fetchConfiguration(signal),
     (result) => queryClient.setQueryData(CONFIGURATION_KEY, result));
   return (
-    <Section title="挂载状态">
+    <Section title="MontarEstado">
       <FactList>
         {sources.map((row, index) => (
           <Fact key={index} term={<><SourceMark mark={sourceMark(row.location)} />{sourceName(row.location)}</>}>
-            {row.path || '未配置挂载点'}<MountBadge online={row.online} />
+            {row.path || 'NoConfiguraciónMontar点'}<MountBadge online={row.online} />
           </Fact>
         ))}
       </FactList>
       {action.error ? <Stack divided><ErrorText>{action.error}</ErrorText></Stack> : null}
       <Footer>
-        <Button variant="secondary" onClick={refresh} {...busyProps(action.busy === 'refresh')}>刷新挂载状态</Button>
+        <Button variant="secondary" onClick={refresh} {...busyProps(action.busy === 'refresh')}>ActualizarMontarEstado</Button>
       </Footer>
     </Section>
   );

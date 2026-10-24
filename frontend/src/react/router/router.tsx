@@ -1,24 +1,24 @@
-/* 客户端导航（ADR-0031「React Router 外壳阶段接管」）：React Router 的 Declarative 模式接管 history。
- * 管理区那几页、播放列表页与关注页、索引页与资料页、目录网格与垃圾队列，以及页面里的页面内组件（首页筛选条、
- * 首页新作行、顶栏搜索下拉）与常驻组件（后台任务、底部批量条、侧栏配色卡、管理区页头、沉浸模式、设置面板、
- * 侧栏、详情舞台）（`managed-routes.tsx`）由这棵树画。每一页、沉浸模式与详情覆盖都由路由按匹配打开
- * （`pages/` 下各元素），壳不接派发：它只订阅历史同步标题与侧栏，换页时写地址。
+/* Cliente导航(ADR-0031"React Router exterior壳阶段continuar管"): React Router  Declarative Modocontinuar管 history. 
+ * Gestionar区ese几página, ReproducirListapáginay关注página, 索引páginay资料página, DirectorioCuadrículay垃圾Cola, 以及página面en lapágina面interior组件(primeropáginaFiltrar, 
+ * primeropáginaNuevas obras行, 顶栏Buscarabajo拉)y常驻组件(posteriorTarea, 底部批量, 侧栏配色卡, Gestionar区página头, InmersivoModo, Configuración面板, 
+ * 侧栏, Detalles舞)(`managed-routes.tsx`)由este棵树画. 每unopágina, InmersivoModoyDetalles覆盖都由路由按匹配Abrir
+ * (`pages/` abajo各元素), 壳Nocontinuar派发: 它Solo订阅HistorialSincronizarTítuloy侧栏, 换página时写地址. 
  *
- * 用底层的 `<Router>`，history 是 `@peach/history` 那一份：应用启动时就要写地址，`<BrowserRouter>`
- * 自己建的 history 只听 `popstate`，看不见壳 push 进去的条目。也不用 `unstable_HistoryRouter`：它的更新
- * 默认包在 `startTransition` 里，接连两次变化会并成一次渲染，后退前进就少开一次。
+ * 用底层 `<Router>`, history Sí `@peach/history` eseuno: AplicarIniciar时就要写Dirección, `<BrowserRouter>`
+ * 自己建 history Solo听 `popstate`, verNo见壳 push 进去Entrada. 也No用 `unstable_HistoryRouter`: 它Actualizar
+ * Predeterminado包En `startTransition` dentro, continuar连两次变化会y成uno次渲染, posterior退anterior进就menos开uno次. 
  *
- * 页面宿主是两组 `<Routes>` 的兄弟，从头活到尾：画着的页面跟着登记的那几条走（`@peach/history` 的
- * `openManagedRoute`，每个容器一条），详情舞台压在上面、地址换成 `/assets/:id` 时它留在原处。
+ * página面宿主es两组 `<Routes>` 兄弟, 从头活到尾: 画着página面跟着登记ese几走(`@peach/history` 
+ * `openManagedRoute`, 每容Dispositivouno), Detalles舞压Enarriba面, 地址换成 `/assets/:id` 时它DejaEnOriginal处. 
  *
- * 路由分两组：页面组按条目自己记的背景（`usr.backgroundLocation`，启动那一条不读）匹配，详情压在哪一页上就还
- * 匹配那一页，背景页不重挂；覆盖组按真实地址匹配详情与队列那几条（`OVERLAY_PATHS`，`pages/overlay.tsx`）。页面组
- * 里管理区、关注、索引、资料、目录与沉浸各挂按地址打开那一页的元素（`pages/managed.tsx`、`pages/follow.tsx`、
- * `pages/index-entity.tsx`、`pages/catalog.tsx`、`pages/immerse.tsx`）；没有背景的覆盖地址也在页面组里挂一格：
- * 作品与队列补画目录网格，关注详情只让出 `#stats`。`path="*"` 是认不出的地址，什么都不打开。
+ * 路由分两组: página面组按Entrada自己记Fondo(`usr.backgroundLocation`, 启动eseunoNo读)匹配, Detalles压En哪unopáginaarriba就还
+ * 匹配eseunopágina, FondopáginaNopesado挂; 覆盖组按真实地址匹配DetallesyColaese几(`OVERLAY_PATHS`, `pages/overlay.tsx`). página面组
+ * dentroGestionar区, 关注, 索引, 资料, DirectorioyInmersivo各挂按地址Abrireseunopágina元素(`pages/managed.tsx`, `pages/follow.tsx`, 
+ * `pages/index-entity.tsx`, `pages/catalog.tsx`, `pages/immerse.tsx`); SinFondo覆盖地址也Enpágina面组dentro挂uno格: 
+ * ObrasyCola补画DirectorioCuadrícula, 关注DetallesSolo让出 `#stats`. `path="*"` es认No出地址, 什么都NoAbrir. 
  *
- * 一处渲染错误只带走抛错的那一面：每一面各套一层错误边界（`SurfaceBoundary`），根上不套，两组 `<Routes>` 不随
- * 某一面卸掉。错误经根的 `onCaughtError` 交给 `reportError`，每次一条。 */
+ * uno处渲染ErrorSolo带走抛错eseuno面: 每uno面各套uno层Error边界(`SurfaceBoundary`), 根arribaNo套, 两组 `<Routes>` No随
+ * 某uno面卸掉. Error经根 `onCaughtError` 交给 `reportError`, 每次uno.  */
 import {
   Component, createContext, memo, useContext, useLayoutEffect, useMemo, useRef, useState, type ReactNode,
   type RefObject,
@@ -43,23 +43,23 @@ import {
 import { FollowDetailGround, OverlayMatch, QueueRequests } from './pages/overlay';
 import type { ShellActions } from './shell-actions';
 
-/* 页面打开序号（`@peach/history` 的 `openEpoch`）：没人认领的历史变化各领一个，认领的写地址不领。地址没变的
- * `popstate`（同一条目重放）不会让 Router 的 location 变，代次照样变，按它挂 key 的元素照样重开。 */
+/* página面Abrir序号(`@peach/history`  `openEpoch`): 没人认领Historial变化各领uno, 认领写地址No领. 地址没变
+ * `popstate`(同unoEntradapesado放)No会让 Router  location 变, 代次照样变, 按它挂 key 元素照样pesado开.  */
 const OpenEpoch = createContext(0);
 
-/** 当前这一页是第几次打开：页面元素按它挂 key，重开就重挂，认领的写地址（页内 replace 写参数）不重挂。 */
+/** 当anterioresteunopáginaesNo.几次Abrir: página面元素按它挂 key, pesado开就pesado挂, 认领写地址(páginainterior replace 写Parámetro)Nopesado挂.  */
 export const useOpenEpoch = (): number => useContext(OpenEpoch);
 
-/** 壳交进来的能力，管理区那几页经它回到壳。 */
+/** 壳交进来能力, Gestionar区ese几página经它回到壳.  */
 export const ShellActionsContext = createContext<ShellActions | null>(null);
 
-/** 路由根在历史变化的同一调用里同步提交（`flushSync`）：`shellNavigate` 与后退前进返回时，两组 `<Routes>`
- *  的匹配已经换成新地址，上一页的元素已经卸掉，壳接着往同一个容器里写骨架不会撕掉 React 还管着的节点。
- *  元素的打开不在这一次提交里跑，各自排进提交之后的微任务。 */
+/** 路由根EnHistorial变化同uno调用dentroSincronizar提交(`flushSync`): `shellNavigate` yposterior退anterior进返回时, 两组 `<Routes>`
+ *  匹配ya经换成Nuevo地址, Anteriorpágina元素ya经卸掉, 壳continuar着往同uno容Dispositivodentro写骨架No会撕掉 React 还管着节点. 
+ *  元素AbrirNoEnesteuno次提交dentro跑, 各自排进提交之posterior微Tarea.  */
 export function PeachRouter({ children }: { children: ReactNode }) {
   const [navigation, setNavigation] = useState<Navigation>(() => peachHistory.navigation);
   useLayoutEffect(() => {
-    /* 从读初值到这里订阅之间有过变化的话，补上最新那一次。 */
+    /* 从读初值到aquí订阅之间Con过变化话, 补arriba最Nuevoeseuno次.  */
     setNavigation(peachHistory.navigation);
     return peachHistory.listen((next) => { flushSync(() => setNavigation(next)) });
   }, []);
@@ -72,27 +72,27 @@ export function PeachRouter({ children }: { children: ReactNode }) {
   );
 }
 
-/* 跟着地址重渲染的只有这一格：它把当前的 `navigate` 交给管理区宿主，宿主与页面不随导航重渲染。 */
+/* 跟着地址pesado渲染SoloConesteuno格: 它当anterior `navigate` 交给Gestionar区宿主, 宿主ypágina面No随导航pesado渲染.  */
 function NavigateInto({ target }: { target: RefObject<NavigateFunction | null> }) {
   const navigate = useNavigate();
   useLayoutEffect(() => { target.current = navigate });
   return null;
 }
 
-/** 管理区页面里的跳转：落在管理区那几页上的交给 React Router，别的路径交 `actions.navigate`。两条路都不认领，
- * 各领一个页面打开序号，打开次数与后退前进相同。 */
+/** Gestionar区página面en laSaltar a: 落EnGestionar区ese几páginaen la交给 React Router, 别Ruta交 `actions.navigate`. 两路都No认领, 
+ * 各领unopágina面Abrir序号, Abrir次数yposterior退anterior进相同.  */
 export function managedGo(path: string, actions: ShellActions, navigate: NavigateFunction): void {
   const target = new URL(path, window.location.href);
   if (!isManagedPath(target.pathname)) { actions.navigate(path); return }
   void navigate(`${target.pathname}${target.search}${target.hash}`);
 }
 
-/** 页面宿主：画壳在各个容器里登记的那一页（`#stats`、`#index`、`#grid` 与各页面内组件的容器各一页，互不相收）。
+/** página面宿主: 画壳En各容Dispositivodentro登记eseunopágina(`#stats`, `#index`, `#grid` y各página面interior组件容Dispositivo各unopágina, 互No相收). 
  *
- * 换页与收起都由 `@peach/history` 同步通知，这里用 `flushSync` 当场画完：壳在同一个任务里刚换上宿主
- * （或刚撤掉它），晚一拍画就是一帧空白。每次打开领一个代次，页面按代次重挂，首屏读的是刚取回的缓存。
- * 就地更新（`updateManagedRoute`）只换那一页的 props、代次不变，照常排进下一次渲染：壳的开关可能就是从
- * 页面自己的 effect 里推过来的，那里不能 `flushSync`。 */
+ * 换páginay收起都由 `@peach/history` Sincronizar通知, aquí用 `flushSync` 当场画完: 壳En同unoTareadentro刚换arriba宿主
+ * (或刚撤掉它), 晚uno拍画就esuno帧空白. 每次Abrir领uno代次, página面按代次pesado挂, primero屏读es刚取回缓存. 
+ * 就地Actualizar(`updateManagedRoute`)Solo换eseunopágina props, 代次No变, 照常排进Siguiente次渲染: 壳开关puede能就es从
+ * página面自己 effect dentro推过来, esedentroNo能 `flushSync`.  */
 function ManagedSurface() {
   const actions = useContext(ShellActionsContext);
   const [entries, setEntries] = useState<readonly ManagedEntry[]>(managedEntries);
@@ -118,8 +118,8 @@ function ManagedSurface() {
   );
 }
 
-/** 一面一层的错误边界。接住之后这一面画成空，并撤掉它的登记与宿主（`failManagedRoute`），壳下次打开时重开；
- *  按代次挂 key，重开就是一个新的边界实例。上报不在这里：根的 `onCaughtError` 已经报过一次。 */
+/** uno面uno层Error边界. continuar住之posterioresteuno面画成空, y撤掉它登记y宿主(`failManagedRoute`), 壳abajo次Abrir时pesado开; 
+ *  按代次挂 key, pesado开就esunoNuevo边界实例. arriba报NoEnaquí: 根 `onCaughtError` ya经报过uno次.  */
 class SurfaceBoundary extends Component<{ entry: ManagedEntry; children: ReactNode }, { failed: boolean }> {
   override state = { failed: false };
 
@@ -143,21 +143,21 @@ const ManagedPortal = memo(function ManagedPortal(
   return createPortal(managedPage(entry.path, entry.props, actions, go), entry.host, String(entry.revision));
 });
 
-/* 页面组的 `location` 一直给（没有背景就给当前地址）：给与不给之间 `<Routes>` 会多包一层 `LocationContext`，
- * 来回切换就会把页面元素拆掉重挂。背景读的是当前条目（`navigationBackground`），启动那一条当作没有。
- * 两组按页面分段，段与段之间隔开几行。 */
+/* página面组 `location` uno直给(SinFondo就给当anterior地址): 给yNo给之间 `<Routes>` 会más包uno层 `LocationContext`, 
+ * 来回Cambiar就会página面元素拆掉pesado挂. Fondo读es当anteriorEntrada(`navigationBackground`), 启动eseuno当作Sin. 
+ * 两组按página面分段, 段y段之间隔开几行.  */
 function RouteGroups({ children }: { children?: ReactNode }) {
   const location = useLocation();
-  // 同一条目重放时地址不变、`useLocation` 不触发重渲染，代次照样变：启动那一条重放之后要开始读背景。
+  // 同unoEntradapesado放时地址No变, `useLocation` No触发pesado渲染, 代次照样变: 启动eseunopesado放之posterior要Empezar读Fondo. 
   useOpenEpoch();
   const background = navigationBackground();
   const settingsBackground = isPreferencePath(location.pathname) && !bootEntry() ? settingsBackgroundOf(location.state) : null;
   return (
     <>
       <Routes location={background ?? location}>
-        {/* ── 管理区 ── */}
+        {/* ── Gestionar区 ── */}
         {Object.entries(MANAGED_ROUTES).map(([path, route]) => <Route key={path} path={path} element={route.element} />)}
-        {/* 旧直达地址：元素把它改写成 `/data-cleanup#resource-sync`，由数据管理页的元素打开。 */}
+        {/* antiguo直达地址: 元素它改写成 `/data-cleanup#resource-sync`, 由DatosGestionarpágina元素Abrir.  */}
         {Object.entries(REDIRECT_ROUTES).map(([path, route]) => <Route key={path} path={path} element={route.element} />)}
 
 
@@ -177,17 +177,17 @@ function RouteGroups({ children }: { children?: ReactNode }) {
 
 
 
-        {/* ── 目录 ── 六条路径挂同一个元素（`pages/catalog.tsx`），换路径不重挂，元素按页面自己分 key。 */}
+        {/* ── Directorio ── seisRuta挂同uno元素(`pages/catalog.tsx`), 换RutaNopesado挂, 元素按página面自己分 key.  */}
         {CATALOG_PATHS.map((path) => <Route key={path} path={path} element={CATALOG_ROUTES['/'].element} />)}
 
 
 
-        {/* ── 沉浸 ── */}
+        {/* ── Inmersivo ── */}
         {Object.entries(IMMERSE_ROUTES).map(([path, route]) => <Route key={path} path={path} element={route.element} />)}
 
 
 
-        {/* ── 没有背景的覆盖地址 ── 作品与队列挂目录元素，补画网格；关注详情只让出 `#stats`。 */}
+        {/* ── SinFondo覆盖地址 ── ObrasyCola挂Directorio元素, 补画Cuadrícula; 关注DetallesSolo让出 `#stats`.  */}
         {OVERLAY_PATHS.map((path) => (
           <Route key={path} path={path} element={path === '/works/:code' ? null
             : path === '/posts/:id' ? <FollowDetailGround /> : CATALOG_ROUTES['/'].element} />
@@ -196,7 +196,7 @@ function RouteGroups({ children }: { children?: ReactNode }) {
 
 
 
-        {/* 认不出的地址。`children` 只给测试用。 */}
+        {/* 认No出地址. `children` Solo给Prueba用.  */}
         <Route path="*" element={children} />
       </Routes>
 
@@ -215,7 +215,7 @@ function RouteGroups({ children }: { children?: ReactNode }) {
   );
 }
 
-/** 整棵路由树。`children` 画在页面组 `path="*"` 的元素里面，只给测试用：跟着它挂一次就说明元素没被重挂。 */
+/** Completo棵路由树. `children` 画Enpágina面组 `path="*"` 元素dentro面, Solo给Prueba用: 跟着它挂uno次就Descripción元素没被pesado挂.  */
 export function RouterRoot({ children, actions = null, background, processing = false }:
   { children?: ReactNode; actions?: ShellActions | null; background?: ReactNode; processing?: boolean }) {
   return (
@@ -233,8 +233,8 @@ export function RouterRoot({ children, actions = null, background, processing = 
   );
 }
 
-/** 路由树那棵根的选项。错误边界接住的错误交给全局 `reportError`，和没人接住时 React 的上报同一条路，
- *  控制台与 window 的 `error` 事件各见一次。运行时才取 `reportError`：测试环境里可能没有它。 */
+/** 路由树ese棵根Opciones. Error边界continuar住Error交给Todo局 `reportError`,  y 没人continuar住时 React arriba报同uno路, 
+ *  控制y window  `error` 事件各见uno次. 运行时才取 `reportError`: Prueba环境dentropuede能Sin它.  */
 export const ROUTER_ROOT_OPTIONS: RootOptions = {
   onCaughtError: (error) => { globalThis.reportError?.(error) },
 };

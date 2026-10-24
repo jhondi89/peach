@@ -9,7 +9,7 @@ export interface CatalogRender {
 
 interface Painting { revision: number; abort: AbortController }
 
-/** 只管理网格代次、首屏取消与落地等待；请求、缓存与页面归现有 Query 和路由。 */
+/** SoloGestionarCuadrícula代次, primero屏CancelaryLlegarEsperando; Por favor求, 缓存ypágina面归现Con Query  y 路由.  */
 export class CatalogController {
   private currentRevision = 0;
   private currentPage = '';
@@ -22,11 +22,11 @@ export class CatalogController {
 
   taken(mounted: boolean): boolean { return mounted || this.pending; }
 
-  /** 同一页已落地时只更新 props；首屏尚未完成时取消上一轮再打开。 */
+  /** 同unopáginayaLlegar时SoloActualizar props; primero屏aúnnoCompletado时CancelarAnterior轮再Abrir.  */
   begin(page: string, mounted: boolean): CatalogRender {
     const changedPage = !!this.currentPage && this.currentPage !== page;
     if (changedPage) this.clear();
-    // 每轮只有一个有效等待：被替代的调用返回，其落地回调仍按代次隔离。
+    // 每轮SoloConunoCon效Esperando: 被替代调用返回, 其Llegar回调仍按代次隔离. 
     this.releaseWaiters();
     this.currentPage = page;
     const revision = ++this.currentRevision;
@@ -51,7 +51,7 @@ export class CatalogController {
     };
   }
 
-  /** 页面只交回自己的代次；旧页面不能放行后续筛选的等待。 */
+  /** página面Solo交回自己代次; antiguopágina面No能放行posterior续FiltrarEsperando.  */
   settle(revision: number): void {
     if (revision > this.currentRevision) return;
     for (const [requested, resolve] of this.waiters) {
@@ -59,7 +59,7 @@ export class CatalogController {
     }
   }
 
-  /** 离开网格时取消预取，释放全部等待；代次单调递增。 */
+  /** 离开Cuadrícula时Cancelar预取, 释放TodoEsperando; 代次单调递增.  */
   clear(): void {
     this.painting?.abort.abort();
     this.painting = null;

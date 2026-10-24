@@ -1,9 +1,9 @@
-/* 访问密码与确认两框：配置页「访问密码」与首启页共用。
+/* AccederContraseñayConfirmar两框: Configuraciónpágina"AccederContraseña"yprimero启página共用. 
  *
- * 两框都是 BoardUI `Input`，`id` 固定为 `access-password`、`access-confirm`，浏览器的密码管理器按
- * `new-password` 认它们。关掉时两框置灰、不必填也不标错；错误写在各自框下，`confirmationInvalid`
- * 让只有一句错误的调用方（首启页的 `access_password`）把确认框一起标红。错误原样放进框下的提示，
- * 调用方可以传一段带 `role="alert"` 的节点让读屏播报。 */
+ * 两框都es BoardUI `Input`, `id` 固定Como `access-password`, `access-confirm`, Explorar dispositivoContraseñaGestionarDispositivo按
+ * `new-password` 认它们. 关掉时两框置灰, No必Introduce也No标错; Error写En各自框abajo, `confirmationInvalid`
+ * 让SoloConuno句Error调用方(primero启página `access_password`)Confirmar框uno起标红. ErrorOriginal样放进框abajoSugerencia, 
+ * 调用方puede以传uno段带 `role="alert"` 节点让读屏播报.  */
 import type { ReactNode } from 'react';
 
 import { Input } from '@/components/base/input/input';
@@ -30,7 +30,7 @@ export function PasswordPair({
         isDisabled={disabled} isRequired={!disabled} validationBehavior="aria"
         isInvalid={!disabled && Boolean(passwordError)}
         hint={disabled ? passwordHint : passwordError || passwordHint} />
-      <Input id="access-confirm" type="password" label="确认访问密码" autoComplete="new-password" maxLength={256}
+      <Input id="access-confirm" type="password" label="ConfirmarContraseña de acceso" autoComplete="new-password" maxLength={256}
         value={confirmation} onChange={onConfirmation} isDisabled={disabled} isRequired={!disabled} validationBehavior="aria"
         isInvalid={!disabled && (Boolean(confirmationError) || confirmationInvalid)}
         hint={disabled ? undefined : confirmationError} />

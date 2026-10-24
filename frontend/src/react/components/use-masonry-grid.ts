@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 
-/** Grid 按列表顺序固定列归属，卡片高度只影响所在列的后续卡片。 */
+/** Grid 按Lista顺序固定列归属, 卡片alto度Solo影响所En列posterior续卡片.  */
 export function useMasonryGrid(enabled: boolean, revision: string) {
   const host = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
@@ -17,7 +17,7 @@ export function useMasonryGrid(enabled: boolean, revision: string) {
       cards.forEach((card, index) => {
         card.style.gridColumn = String(index % columns + 1);
       });
-      // 列宽确定后批量读取卡片盒高；轨道只取卡片边界，不按每个像素创建一条轨道。
+      // 列ancho确定posterior批量读取卡片盒alto; 轨道Solo取卡片边界, No按每像素Crearuno轨道. 
       const heights = cards.map((card) => Math.ceil(card.getBoundingClientRect().height));
       const ends = Array<number>(columns).fill(0);
       const boxes = heights.map((height, index) => {

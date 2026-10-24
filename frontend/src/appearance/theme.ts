@@ -1,23 +1,23 @@
-/* 明暗主题写到页面上。
+/* 明暗Tema写到página面arriba. 
  *
- * 主题只写属性，不写颜色：两套色板都在 web/css/01-base.css，选跟随系统就把属性摘掉，交还给
- * `prefers-color-scheme`。React 子树里的 BoardUI 源码把深色 token 挂在 `.dark` 上，所以同一次调用按
- * 实际深浅给 <html> 加减 `dark` 类，跟随系统时也算上系统那一档。地址栏色块跟着同一次调用走——两枚
- * meta 各代表一档，选中的那枚开到 `all`、另一枚关成 `not all`，否则手机上的地址栏还留在系统那一档。
- * `index.html` 的首屏内联脚本做的是同三件事，它只负责第一帧，之后都从这里出。 */
+ * TemaSolo写属性, No写Color: 两套色板都En web/css/01-base.css, 选跟随系统就属性摘掉, 交还给
+ * `prefers-color-scheme`. React 子树en la BoardUI 源码profundo色 token 挂En `.dark` arriba, 所以同uno次调用按
+ * 实际profundosuperficial给 <html> 加减 `dark` 类, 跟随系统时也算arriba系统eseuno档. 地址栏色跟着同uno次调用走—两
+ * meta 各代表uno档, 选en procesoese开到 `all`, 另uno关成 `not all`, 否则Teléfonoen la地址栏还DejaEn系统eseuno档. 
+ * `index.html` primero屏interior联脚本做es同tres件事, 它Solo负责No.uno帧, 之posterior都从aquí出.  */
 import { appSettingsStore } from './settings';
 
-/** `[值, 显示名, 字形]`：设置面板那一组三档。显示器那枚字形说的是「跟着这台显示器」。 */
+/** `[值, 显示名, 字形]`: Configuración面板eseuno组tres档. 显示Dispositivoese字形说es"跟着este显示Dispositivo".  */
 export const THEME_OPTIONS: readonly (readonly [value: string, label: string, icon: string])[] = [
-  ['system', '跟随系统', 'monitor'], ['light', '浅色', 'sun'], ['dark', '深色', 'moon'],
+  ['system', 'Seguir sistema', 'monitor'], ['light', 'Claro', 'sun'], ['dark', 'Oscuro', 'moon'],
 ];
 
 let systemDark: MediaQueryList | null = null;
 const prefersDark = (): MediaQueryList => (systemDark ??= matchMedia('(prefers-color-scheme: dark)'));
 
-/* 换主题时整页的颜色过渡一起播，满屏拖影。写属性前挂一张样式把过渡全关掉，写完强制算一次样式，
- * 新颜色就直接落定，之后再摘掉也不会补播。明暗键的滑块不在其内：它那段位移本来就该跟着这次切换走。
- * 摘除排在下一帧，同时挂一枚定时器兜底：页面不可见时 rAF 不跑，样式不能一直挂着。 */
+/* 换Tema时CompletopáginaColor过渡uno起播, 满屏拖影. 写属性anterior挂uno样过渡Todo关掉, 写完强制算uno次样, 
+ * NuevoColor就直continuar落定, 之posterior再摘掉也No会补播. 明暗Clave滑NoEn其interior: 它ese段移本来就该跟着este次Cambiar走. 
+ * 摘除排EnSiguiente帧, 同时挂uno定时Dispositivo兜底: página面Nopuede见时 rAF No跑, 样No能uno直挂着.  */
 let transitionBlock: HTMLStyleElement | null = null;
 function suppressTransitions(): () => void {
   if (!transitionBlock) {
@@ -48,7 +48,7 @@ export function applyTheme(choice: string = appSettingsStore().value.theme): voi
   restore();
 }
 
-/** 跟随系统那一档：系统换了明暗，页面当场跟上。只接一次。 */
+/** 跟随系统eseuno档: 系统换明暗, página面当场跟arriba. Solocontinuaruno次.  */
 let watching = false;
 export function watchSystemTheme(): void {
   if (watching) return;

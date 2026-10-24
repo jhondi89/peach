@@ -1,20 +1,20 @@
-/* 覆盖组的元素（ADR-0031「详情条目记下压在哪一页上」）：作品详情、四种队列与关注详情各一条路径
- * （`OVERLAY_PATHS`），覆盖组按真实地址匹配，挂上就把那一条送进舞台，卸下去处不是覆盖地址就收起舞台。
+/* 覆盖组元素(ADR-0031"DetallesEntrada记abajo压En哪unopáginaarriba"): ObrasDetalles, cuatroColay关注Detalles各unoRuta
+ * (`OVERLAY_PATHS`), 覆盖组按真实地址匹配, 挂arriba就eseuno送进舞, 卸abajo去处Noes覆盖地址就收起舞. 
  *
- * 什么时候打开：
- * - 启动（刷新、新标签页、深链）：壳开始路由（`@peach/shell` 的 `pageOpens` 从 0 变成 1）那一刻打开；路由根晚于
- *   壳开始路由才装上、地址还停在启动那一条上时，挂上就打开。启动那一条不读背景，关掉回各自的缺省来处。
- * - 没人认领的历史变化（后退前进、React 子树与壳经 `peachHistory` 直接写的地址）：接上条目记的背景
- *   （`adoptOverlayState`），再打开。元素按导航序号挂 key，地址没变的后退（同一条目重放、`history.state` 为空）
- *   也领一个新代次，重挂、再开一次。
- * - 壳认领写的地址：点卡片把一次性打开请求交给覆盖元素，挂上后取走；队列取齐后写地址与转换详情种类只改条目。
- * 打开与收起都交壳（`ShellActions.openOverlay`、`closeStage`）：取数、来处与舞台句柄都还在壳里。
+ * 什么时候Abrir: 
+ * - 启动(Actualizar, NuevoEtiquetapágina, profundo链): 壳Empezar路由(`@peach/shell`  `pageOpens` 从 0 变成 1)eseuno刻Abrir; 路由根晚于
+ *   壳Empezar路由才装arriba, 地址还停En启动eseunoarriba时, 挂arriba就Abrir. 启动eseunoNo读Fondo, 关掉回各自缺省来处. 
+ * - 没人认领Historial变化(posterior退anterior进, React 子树y壳经 `peachHistory` 直continuar写地址): continuararribaEntrada记Fondo
+ *   (`adoptOverlayState`), 再Abrir. 元素按导航序号挂 key, 地址没变posterior退(同unoEntradapesado放, `history.state` Como空)
+ *   也领unoNuevo代次, pesado挂, 再开uno次. 
+ * - 壳认领写地址: 点卡片uno次性AbrirPor favor求交给覆盖元素, 挂arribaposterior取走; Cola取齐posterior写地址y转换Detalles类Solo改Entrada. 
+ * Abriry收起都交壳(`ShellActions.openOverlay`, `closeStage`): 取数, 来处y舞句柄都还En壳dentro. 
  *
- * 页面组那一侧（`router.tsx`）：有背景时按背景匹配，背景页不重挂；没有背景的覆盖地址也挂一格，作品与队列补画
- * 目录网格（目录元素），关注详情只让出 `#stats`（`FollowDetailGround`），不画列表。
+ * página面组eseuno侧(`router.tsx`): ConFondo时按Fondo匹配, FondopáginaNopesado挂; SinFondo覆盖地址也挂uno格, ObrasyCola补画
+ * DirectorioCuadrícula(Directorio元素), 关注DetallesSolo让出 `#stats`(`FollowDetailGround`), No画Lista. 
  *
- * 打开、收起与让位都排进微任务：路由根在历史变化的同一次调用里同步提交，壳打开舞台要同步画，在提交阶段里画会
- * 出 flushSync 告警。历史通知同步更新壳的标题与侧栏，页面取数随后领取当前代次。 */
+ * Abrir, 收起y让都排进微Tarea: 路由根EnHistorial变化同uno次调用dentroSincronizar提交, 壳Abrir舞要Sincronizar画, En提交阶段dentro画会
+ * 出 flushSync 告警. Historial通知SincronizarActualizar壳Títuloy侧栏, página面取数随posterior领取当anterior代次.  */
 import { useContext, useEffect, useLayoutEffect, useRef, useSyncExternalStore, type ReactNode } from 'react';
 
 import {
@@ -28,7 +28,7 @@ import { ShellActionsContext, useOpenEpoch } from '../router';
 const readOpens = () => pageOpens;
 const readQueueOpens = () => queueOpens;
 
-/** 队列尚未定下条目时的打开意图：路由树接手，等待首屏确定实际地址；不在历史里放临时条目。 */
+/** Colaaúnno定abajoEntrada时Abrir意Imagen: 路由树continuar手, Esperandoprimero屏确定实际地址; NoEnHistorialdentro放临时Entrada.  */
 export function QueueRequests(): ReactNode {
   const actions = useContext(ShellActionsContext);
   const requests = useSyncExternalStore(subscribeShell, readQueueOpens);
@@ -42,9 +42,9 @@ export function QueueRequests(): ReactNode {
   return null;
 }
 
-/** 挂上的这一格要不要按地址打开、什么时候打开。`run(boot)` 只跑一次：`boot` 为真是启动那一次（壳开始路由时，
- *  或路由根晚装上时地址还是启动那一条），为假是一次历史变化。`claimedOpens` 允许认领写地址的打开请求。
- *  覆盖元素按导航序号挂 key；沉浸元素按页面打开序号挂 key。 */
+/** 挂en laesteuno格要No要按地址Abrir, 什么时候Abrir. `run(boot)` Solo跑uno次: `boot` Como真es启动eseuno次(壳Empezar路由时, 
+ *  或路由根晚装arriba时地址还es启动eseuno), Como假esuno次Historial变化. `claimedOpens` 允许认领写地址AbrirPor favor求. 
+ *  覆盖元素按导航序号挂 key; Inmersivo元素按página面Abrir序号挂 key.  */
 export function useRouteOpen(run: (boot: boolean) => void, claimedOpens = false): void {
   const opens = useSyncExternalStore(subscribeShell, readOpens);
   const pending = useRef<'boot' | 'history' | null | undefined>(undefined);
@@ -67,7 +67,7 @@ export function useRouteOpen(run: (boot: boolean) => void, claimedOpens = false)
   }, [opens]);
 }
 
-/* 一条覆盖地址的元素：挂上按地址打开那一条，卸下去处不再是覆盖地址就收起舞台（正在放的视频照旧进小窗）。 */
+/* uno覆盖地址元素: 挂arriba按地址Abrireseuno, 卸abajo去处No再es覆盖地址就收起舞(En curso放视频照antiguo进pequeño窗).  */
 function OverlayOpen() {
   const actions = useContext(ShellActionsContext);
   const latestActions = useRef(actions);
@@ -89,7 +89,7 @@ function OverlayOpen() {
   return null;
 }
 
-/** 覆盖组一条路径的元素：每次导航各挂一次，同一条目重放也能再打开。 */
+/** 覆盖组unoRuta元素: 每次导航各挂uno次, 同unoEntradapesado放也能再Abrir.  */
 export function OverlayMatch({ path }: { path: OverlayPath }): ReactNode {
   useOpenEpoch();
   const { location, seq, action } = peachHistory.navigation;
@@ -103,14 +103,14 @@ export function OverlayMatch({ path }: { path: OverlayPath }): ReactNode {
   return <OverlayOpen key={`${path} ${held.current.seq}`} />;
 }
 
-/* 页面组里没有背景的关注详情（深链、刷新与没记背景的条目）：不画列表，只让出 `#stats`；列表等关掉详情才打开。 */
+/* página面组dentroSinFondo关注Detalles(profundo链, Actualizary没记FondoEntrada): No画Lista, Solo让出 `#stats`; Listaetc.关掉Detalles才Abrir.  */
 function FollowGroundOpen() {
   const actions = useContext(ShellActionsContext);
   useRouteOpen(() => { actions?.follow?.ground() });
   return null;
 }
 
-/** 页面组 `/posts/:id` 的元素，按页面打开序号挂 key。 */
+/** página面组 `/posts/:id` 元素, 按página面Abrir序号挂 key.  */
 export function FollowDetailGround(): ReactNode {
   return <FollowGroundOpen key={useOpenEpoch()} />;
 }

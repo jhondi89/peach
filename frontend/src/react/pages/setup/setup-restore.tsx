@@ -26,10 +26,10 @@ export function SetupRestore({ onDone }: { onDone: (done: SetupDone) => void }) 
   };
   return (
     <form className="flex flex-col gap-4" onSubmit={submit} noValidate>
-      <Input label="已有数据目录" value={path} onChange={setPath} isRequired autoComplete="off" spellCheck="false"
+      <Input label="YaConDatosDirectorio" value={path} onChange={setPath} isRequired autoComplete="off" spellCheck="false"
         validationBehavior="aria" isInvalid={Boolean(error)}
-        hint={error ? <span role="alert">{error}</span> : '选择包含 config.toml 和 database 文件夹的数据目录。'} />
-      <Button type="submit" className="self-start" {...busyProps(busy)}>{busy ? '正在连接数据目录…' : '使用此目录'}</Button>
+        hint={error ? <span role="alert">{error}</span> : 'SeleccionarContiene config.toml  y  database CarpetaDatosDirectorio. '} />
+      <Button type="submit" className="self-start" {...busyProps(busy)}>{busy ? 'ConectandoDatosDirectorio...' : '使用此Directorio'}</Button>
     </form>
   );
 }

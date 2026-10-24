@@ -1,16 +1,16 @@
-/* 垃圾文件队列（`/junk-files`，由路由树画进 `#grid`）：计数行加一屏逐项处置的卡片。
+/* 垃圾ArchivoCola(`/junk-files`, 由路由树画进 `#grid`): 计数行加uno屏逐项处置卡片. 
  *
- * 页面画在壳的 `#grid` 里，计数行经 portal 画进 `#count` 里自己建的一个 `.peach-react` 容器：
- * 那一行本身归壳（目录页也用它，换页时由壳清空），里面的摘要与分类条归这里。
+ * página面画En壳 `#grid` dentro, 计数行经 portal 画进 `#count` dentro自己建uno `.peach-react` 容Dispositivo: 
+ * eseuno行本身归壳(Directoriopágina也用它, 换página时由壳清空), dentro面摘要yCategoría归aquí. 
  *
- * 首屏不在 `prefetch` 里等。分类条由地址决定、此刻就画得出最终样子，等的只有读数，所以一打开
- * 就画：计数行是等待态（`#count[aria-busy]`、摘要里一条占位），网格是壳那份骨架，数据到了
- * 骨架淡出、卡片从模糊里清晰起来（同目录网格）。在 `prefetch` 里等的话，请求挂着的这段时间
- * 屏上只有壳的静态骨架，分类点不动。
+ * primero屏NoEn `prefetch` dentroetc.. Categoría由地址决定, 此刻就画得出最终样子, etc.SoloCon读数, 所以unoAbrir
+ * 就画: 计数行esEsperando态(`#count[aria-busy]`, 摘要dentrouno占), Cuadrículaes壳ese骨架, Datos到
+ * 骨架淡出, 卡片从Difusodentro清晰起来(同DirectorioCuadrícula). En `prefetch` dentroetc.话, Por favor求挂着este段Tiempo
+ * 屏arribaSoloCon壳静态骨架, Categoría点No动. 
  *
- * 换分类、换视图是换查询键，网格按新键重挂、重铺骨架。壳处置完推进 `revision` 时查询也换键，
- * 但旧的一份留在屏上直到新的一份到货（`placeholderData`），被处置的那张卡原地消失，
- * 已经往下露出来的那几段也不收回去。 */
+ * 换Categoría, 换视Imagenes换ConsultaClave, Cuadrícula按NuevoClavepesado挂, pesado铺骨架. 壳处置完推进 `revision` 时Consulta也换Clave, 
+ * peroantiguounoDejaEn屏arriba直到Nuevouno到货(`placeholderData`), 被处置ese卡Original地消失, 
+ * ya经往abajo露出来ese几段也No收回去.  */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -37,7 +37,7 @@ export function JunkQueuePage(props: JunkQueueProps) {
       (previousQuery && sameRoute(previousQuery.queryKey, route) ? previous : undefined),
   });
 
-  /* 一次取数落定就告诉壳一次，成功、为空、失败都算：壳里 `await` 这次重读的调用方据此放行。 */
+  /* uno次取数落定就告诉壳uno次, Éxito, Como空, Fallo都算: 壳dentro `await` este次pesado读调用方据此放行.  */
   useEffect(() => {
     if (!query.isFetching) props.settled?.(props.revision);
   }, [query.isFetching, props.revision]);
@@ -50,7 +50,7 @@ export function JunkQueuePage(props: JunkQueueProps) {
     if (waiting) row.setAttribute('aria-busy', 'true');
     else row.removeAttribute('aria-busy');
   }, [props.countRow, waiting]);
-  /* 判过一批之后各类的计数变了，弹的是变了的那几枚，没动的原地不动（遗留层 `popBadges`）。 */
+  /* 判过uno批之posterior各类计数变, 弹es变ese几, 没动Original地No动(遗Deja层 `popBadges`).  */
   useLayoutEffect(() => {
     if (host && query.data) popBadges(host, 'junk');
   }, [host, query.data]);
@@ -69,7 +69,7 @@ export function JunkQueuePage(props: JunkQueueProps) {
   );
 }
 
-/** 计数行里归这一页的那一格。挂上时换掉壳铺的骨架，卸载时撤掉，行本身还给壳。 */
+/** 计数行dentro归esteunopáginaeseuno格. 挂arriba时换掉壳铺骨架, Desinstalar时撤掉, 行本身还给壳.  */
 function useCountHost(row: HTMLElement | null): HTMLElement | null {
   const [host, setHost] = useState<HTMLElement | null>(null);
   useLayoutEffect(() => {
@@ -83,7 +83,7 @@ function useCountHost(row: HTMLElement | null): HTMLElement | null {
   return host;
 }
 
-/** 一个分类、一个视图的网格：骨架、卡片、往下露的下一段与空态。 */
+/** unoCategoría, uno视ImagenCuadrícula: 骨架, 卡片, 往abajo露Siguiente段y空态.  */
 function JunkBody({ props, data, pending, error, retry }: {
   props: JunkQueueProps; data: JunkPage | undefined; pending: boolean; error: Error | null; retry(): void;
 }) {
@@ -104,8 +104,8 @@ function JunkBody({ props, data, pending, error, retry }: {
     if (!items.length) {
       const dismissed = props.view === 'dismissed';
       return (
-        <EmptyState icon={CheckGlyph} title={dismissed ? '没有已排除的文件' : '没有待判断的垃圾文件'}>
-          {dismissed ? '点“不是垃圾”的资源会保留在这里，可随时重新判断。' : '当前分类没有待检查文件。'}
+        <EmptyState icon={CheckGlyph} title={dismissed ? 'SinYa excluidoArchivo' : 'SinPendiente判断Archivos basura'}>
+          {dismissed ? '点“No es basura”Recurso会ConservarEnaquí, puede随时Reclasificar. ' : 'ActualCategoríaSinPendienteVerificar archivos. '}
         </EmptyState>
       );
     }
@@ -118,10 +118,10 @@ function JunkBody({ props, data, pending, error, retry }: {
           ))}
         </div>
         {shown.length < items.length ? <RevealMore key={segments} onMore={more} /> : null}
-        {/* 队列一次只取前 200 条：露到底了还有没取的，说清楚是截断而不是全部。 */}
+        {/* Colauno次Solo取anterior 200 : 露到底还Con没取, 说清楚es截断而NoesTodo.  */}
         {shown.length >= items.length && Number(data.total || 0) > items.length
           ? <p data-junk-truncated="" className="py-6 text-center text-caption-1-regular text-text-secondary">
-              {`显示前 ${items.length.toLocaleString()} 条，共 ${Number(data.total).toLocaleString()} 条；处理掉这些后，其余的会补上来。`}
+              {`Mostraranterior ${items.length.toLocaleString()} Resultado, 共 ${Number(data.total).toLocaleString()} Resultado; Procesar掉este些posterior, 其余会补arriba来. `}
             </p>
           : null}
       </>
@@ -135,8 +135,8 @@ function JunkBody({ props, data, pending, error, retry }: {
   );
 }
 
-/** 往下露下一段。数据已经整批在手上，不发请求：哨兵进入视口 320px 内就露，点它也露，
- *  判据同目录网格的续页。每露一段按新键重挂，还在视口里就接着露。 */
+/** 往abajo露Siguiente段. Datosya经Completo批En手arriba, No发Por favor求: 哨兵进入视口 320px interior就露, 点它也露, 
+ *  判据同DirectorioCuadrícula续página. 每露uno段按NuevoClavepesado挂, 还En视口dentro就continuar着露.  */
 function RevealMore({ onMore }: { onMore(): void }) {
   const node = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
@@ -148,5 +148,5 @@ function RevealMore({ onMore }: { onMore(): void }) {
     observer.observe(el);
     return () => observer.disconnect();
   }, [onMore]);
-  return <div ref={node} data-load-more="" onClick={onMore} dangerouslySetInnerHTML={{ __html: loadingDotsHtml('继续载入中…') }} />;
+  return <div ref={node} data-load-more="" onClick={onMore} dangerouslySetInnerHTML={{ __html: loadingDotsHtml('Cargando más...') }} />;
 }

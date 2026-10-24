@@ -1,7 +1,7 @@
-/* 挂在 Video.js 控制条上的 Peach 控件：设置菜单（氛围模式、播放速度、清晰度）、影院模式键、
- * 控制条排版与形变图标、拖动预览、Media Session、转圈与外挂字幕，外加舞台的氛围光采样。
+/* 挂En Video.js 控制en la Peach Controles: Configuración菜单(氛围Modo, ReproducirVelocidad度, Nitidez), CineModoClave, 
+ * 控制排版y形变Imagen标, 拖动Vista previa, Media Session, 转圈yexterior挂Subtítulos, exterior加舞氛围光采样. 
  *
- * 控件样式取自 YouTube delhi-modern（player 9470c977），每一块的出处写在它自己的函数上。 */
+ * Controles样取自 YouTube delhi-modern(player 9470c977), 每uno出处写En它自己函数arriba.  */
 import { api, esc, fmtClock, icon, realDuration } from '@peach/legacy/core';
 
 import { playerHost } from './host';
@@ -12,8 +12,8 @@ import { SubtitleControls, subtitleIcon } from './subtitles';
 
 type TooltipSync = (label?: string, aria?: string) => void;
 
-/** 控制条上每个按钮的悬停提示都从这里出：文案 + 快捷键徽标，样式取自 YouTube delhi-modern。
- *  原生 title 与状态提示共用同一个同步入口。 */
+/** 控制arriba每按钮Pasar el ratónSugerencia都从aquí出: 文案 + rápido捷Clave徽标, 样取自 YouTube delhi-modern. 
+ *  Original生 title yEstadoSugerencia共用同unoSincronizar入口.  */
 export function playerControlTooltip(button: Element | null | undefined, label: string, shortcut = ''): TooltipSync {
   if (!button) return () => {};
   let tip = button.querySelector<HTMLElement>(':scope>.vjs-peach-tooltip');
@@ -31,8 +31,8 @@ export function playerControlTooltip(button: Element | null | undefined, label: 
   sync(); return sync;
 }
 
-/** 快捷键复用按钮自己的点击路径：全屏、画中画、静音各有兜底逻辑挂在按钮上，在键盘分支里
- *  再实现一遍就会和按钮走岔。小窗里的播放器不在媒体框里，按 Video.js 自己的壳找控件条。 */
+/** rápido捷Clave复用按钮自己点击Ruta: Pantalla completa, 画en proceso画, Silenciar各Con兜底逻辑挂En按钮arriba, EnClave盘分支dentro
+ *  再实现uno遍就会 y 按钮走岔. pequeño窗en laReproducirDispositivoNoEn媒体框dentro, 按 Video.js 自己壳找Controles.  */
 export function clickPlayerControl(video: Element | null, selector: string): void {
   video?.closest('.video-js')?.querySelector<HTMLElement>(`.vjs-control-bar ${selector}`)?.click();
 }
@@ -51,7 +51,7 @@ function syncPlayerTheaterButton(button: Element | null | undefined): void {
   const theater = playerHost().settings().theaterMode;
   button.setAttribute('aria-pressed', String(theater));
   button.querySelector('use')?.setAttribute('href', theater ? '#i-theater-exit' : '#i-theater-enter');
-  theaterSyncs.get(button)?.(theater ? '默认视图' : '影院模式');
+  theaterSyncs.get(button)?.(theater ? 'Vista predeterminada' : 'Modo cine');
 }
 
 export function applyTheaterMode(enabled: boolean, save = true): void {
@@ -62,12 +62,12 @@ export function applyTheaterMode(enabled: boolean, save = true): void {
   resizeSoon(detailPlayer());
 }
 
-/** 氛围光：按画面平均色给舞台写 `--video-glow`。
+/** 氛围光: 按Imagen平均色给舞写 `--video-glow`. 
  *
- *  取样有两条入口：播放中跟着帧回调走，`start` 则立刻取一帧。暂停的画面同样是一帧可画的图，
- *  只跟着帧回调走的话，暂停时关掉氛围模式就再也开不回来——关掉抹掉了光，而帧回调只在有新
- *  画面时才来。每条采样链带一个 run 号：暂停或页面隐藏时排队的那个回调可能永远不来，用一个
- *  「已排队」布尔判重会被它永久锁死；换成 run 号后旧回调醒来直接退出，链上永远只有一条在跑。 */
+ *  取样Con两入口: Reproduciren proceso跟着帧回调走, `start` 则立刻取uno帧. PausarImagen同样esuno帧puede画Imagen, 
+ *  Solo跟着帧回调走话, Pausar时关掉氛围Modo就再也开No回来—关掉抹掉光, 而帧回调SoloEnConNuevo
+ *  Imagen时才来. 每采样链带uno run 号: Pausar或página面隐藏时排队ese回调puede能永远No来, 用uno
+ *  "ya排队"布尔判pesado会被它永久锁死; 换成 run 号posteriorantiguo回调醒来直continuarCerrar sesión, 链arriba永远SoloConunoEn跑.  */
 export function mountPlayerAmbient(video: HTMLVideoElement): () => void {
   const stage = playerHost().stage(), canvas = stage?.querySelector<HTMLCanvasElement>('[data-ambient-canvas]');
   if (!stage || !canvas) return () => {};
@@ -84,12 +84,12 @@ export function mountPlayerAmbient(video: HTMLVideoElement): () => void {
       for (let i = 0; i < px.length; i += 16) { r += px[i]!; g += px[i + 1]!; b += px[i + 2]!; n++ }
       if (n) {
         const next = [Math.round(r / n), Math.round(g / n), Math.round(b / n)];
-        // 平均色的微小抖动保持稳定，继承色只在可见变化时刷新整座详情。
+        // 平均色微pequeño抖动保持Estable, 继承色SoloEnpuede见变化时ActualizarCompleto座Detalles. 
         if (!glow || next.some((value, index) => Math.abs(value - glow![index]!) >= 6)) {
           glow = next; stage.style.setProperty('--video-glow', `rgb(${next.join(' ')})`);
         }
       }
-    } catch { /* 跨源画面取不到像素 */ }
+    } catch { /* 跨源Imagen取No到像素 */ }
   };
   const queue = (id: number) => {
     if (video.requestVideoFrameCallback) video.requestVideoFrameCallback((now) => paint(id, now));
@@ -116,11 +116,11 @@ export function mountPlayerAmbient(video: HTMLVideoElement): () => void {
   };
 }
 
-/** 设置菜单：氛围模式、播放速度、清晰度。返回的函数换掉来源清晰度表。
+/** Configuración菜单: 氛围Modo, ReproducirVelocidad度, Nitidez. 返回函数换掉来源Nitidez表. 
  *
- *  `sourceQualities` 是来源自己给的清晰度表（[{height,label}]，从高到低）。rule34video 把每档
- *  写成独立字段，videojs 的 qualityLevels 看不到它们——那套只认 HLS/DASH 的自适应轨道，而这里
- *  是四个各自独立的 mp4。所以由调用方查好再传进来。 */
+ *  `sourceQualities` es来源自己给Nitidez表([{height,label}], 从alto到bajo). rule34video 每档
+ *  写成Independiente字段, videojs  qualityLevels verNo到它们—ese套Solo认 HLS/DASH 自适应轨道, 而aquí
+ *  escuatro各自Independiente mp4. 所以由调用方查bien再传进来.  */
 export function mountPlayerQualityControl(
   player: VjsPlayer, video: HTMLVideoElement, fallbackHeight: unknown = 0, initialSourceQualities: SourceQuality[] | null = null,
 ): ((next: SourceQuality[] | null) => void) | undefined {
@@ -128,13 +128,13 @@ export function mountPlayerQualityControl(
   if (!controlBar || controlBar.querySelector('[data-player-quality]')) return undefined;
   const root = document.createElement('div');
   root.className = 'vjs-peach-settings vjs-control'; root.dataset.playerQuality = '';
-  root.innerHTML = `<button type="button" class="vjs-peach-settings-toggle" aria-label="播放器设置" aria-expanded="false">
+  root.innerHTML = `<button type="button" class="vjs-peach-settings-toggle" aria-label="Configuración del reproductor" aria-expanded="false">
     ${icon('settings')}<span data-player-quality-badge hidden></span></button>
-    <div class="vjs-peach-settings-menu" role="menu" aria-label="播放器设置" aria-hidden="true"></div>`;
+    <div class="vjs-peach-settings-menu" role="menu" aria-label="Configuración del reproductor" aria-hidden="true"></div>`;
   const fullscreen = controlBar.querySelector('.vjs-fullscreen-control');
   controlBar.insertBefore(root, fullscreen || null);
   const toggle = root.querySelector('button')!, badge = root.querySelector<HTMLElement>('[data-player-quality-badge]')!;
-  playerControlTooltip(toggle, '设置');
+  playerControlTooltip(toggle, 'Configuración');
   const menu = root.querySelector<HTMLElement>('.vjs-peach-settings-menu')!;
   let subtitleControls: SubtitleControls | undefined;
   const levels = typeof player.qualityLevels === 'function' ? player.qualityLevels() : null;
@@ -148,12 +148,12 @@ export function mountPlayerQualityControl(
   const rows = (): Row[] => {
     const result: Row[] = [];
     if (levels?.length) {
-      if (levels.length > 1) result.push({ key: 'auto', label: '自动', pixels: 0 });
+      if (levels.length > 1) result.push({ key: 'auto', label: 'Automático', pixels: 0 });
       for (let index = 0; index < levels.length; index++) {
         const level = levels[index]!;
         const pixels = resolution(level.width, level.height)
           || (levels.length === 1 ? resolution(video.videoWidth, video.videoHeight) : 0);
-        result.push({ key: String(index), label: pixels ? `${pixels}p` : (levels.length === 1 ? '当前画质' : `线路 ${index + 1}`), pixels });
+        result.push({ key: String(index), label: pixels ? `${pixels}p` : (levels.length === 1 ? 'ActualCalidad de imagen' : `线路 ${index + 1}`), pixels });
       }
       return result;
     }
@@ -161,7 +161,7 @@ export function mountPlayerQualityControl(
       return sourceQualities.map((quality) => ({ key: `h${quality.height}`, label: quality.label || `${quality.height}p`, pixels: quality.height }));
     }
     const pixels = resolution(video.videoWidth, video.videoHeight) || Number(fallbackHeight) || 0;
-    return [{ key: 'original', label: pixels ? `${pixels}p` : '原画', pixels }];
+    return [{ key: 'original', label: pixels ? `${pixels}p` : 'Arte original', pixels }];
   };
   const qualityRows = () => {
     const options = rows();
@@ -182,10 +182,10 @@ export function mountPlayerQualityControl(
   const close = () => setOpen(false);
   const closeSettingsForOtherPanel = (event: Event) => { if ((event as CustomEvent<string>).detail !== 'settings') close() };
   document.addEventListener(PLAYER_PANEL_EVENT, closeSettingsForOtherPanel);
-  /* 面板之间的切换照 YouTube 播放器 9470c977 的 www-player.css：popup 自己 .25s
-     cubic-bezier(.4,0,.2,1) 改高度，旧面板往来的方向滑出、新面板从去的方向滑入。
-     旧面板必须先脱离布局再滑，否则两块内容会在动画期间把菜单撑成两倍高；高度也得
-     先钉在旧值、下一帧再写新值，同一帧写两次只会直接跳到新值，看不到过渡。 */
+  /* 面板之间Cambiar照 YouTube ReproducirDispositivo 9470c977  www-player.css: popup 自己 .25s
+     cubic-bezier(.4,0,.2,1) 改alto度, antiguo面板往来方向滑出, Nuevo面板从去方向滑入. 
+     antiguo面板必须先脱离Diseño再滑, 否则两contenido会En动画期间菜单撑成两倍alto; alto度也得
+     先钉Enantiguo值, Siguiente帧再写Nuevo值, 同uno帧写两次Solo会直continuar跳到Nuevo值, verNo到过渡.  */
   const PANEL_MS = 250;
   let panelTimer: ReturnType<typeof setTimeout> | null = null;
   let panelRun = 0;
@@ -218,42 +218,42 @@ export function mountPlayerQualityControl(
     return next;
   };
   const button = (panel: HTMLElement, selector: string) => panel.querySelector<HTMLElement>(selector)!;
-  /** 菜单此刻摆的是哪一面；轨道与尺寸变化只就地改这一面（`refreshPanel`）。 */
+  /** 菜单此刻摆es哪uno面; 轨道y尺寸变化Solo就地改esteuno面(`refreshPanel`).  */
   let view: 'main' | 'speed' | 'quality' | 'subtitles' = 'main';
   const showMain = (direction = 0) => {
     view = 'main';
     const { active } = qualityRows(), speed = Number(player.playbackRate()) || 1;
     const panel = renderPanel(`<div class="vjs-peach-panel-menu"><button type="button" class="vjs-peach-menu-row" role="menuitemcheckbox" data-player-ambient aria-checked="${playerHost().settings().ambientMode}">
-      ${icon('player-ambient')}<span>氛围模式</span><i class="vjs-peach-switch" aria-hidden="true"></i></button>
-      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-speed>${icon('player-speed')}<span>播放速度</span><b>${speed === 1 ? '正常' : `${speed}×`}</b>${icon('player-menu-next')}</button>
-      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-subtitles><span class="vjs-peach-menu-cc" aria-hidden="true">${subtitleIcon()}</span><span>字幕</span><b>${esc(subtitleControls?.label() || '关闭')}</b>${icon('player-menu-next')}</button>
-      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-quality-view>${icon('player-quality')}<span>清晰度</span><b>${esc(active.label)}</b>${icon('player-menu-next')}</button></div>`, direction);
+      ${icon('player-ambient')}<span>Modo ambiente</span><i class="vjs-peach-switch" aria-hidden="true"></i></button>
+      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-speed>${icon('player-speed')}<span>Velocidad de reproducción</span><b>${speed === 1 ? 'Normal' : `${speed}×`}</b>${icon('player-menu-next')}</button>
+      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-subtitles><span class="vjs-peach-menu-cc" aria-hidden="true">${subtitleIcon()}</span><span>Subtítulos</span><b>${esc(subtitleControls?.label() || 'Desactivar')}</b>${icon('player-menu-next')}</button>
+      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-quality-view>${icon('player-quality')}<span>Nitidez</span><b>${esc(active.label)}</b>${icon('player-menu-next')}</button></div>`, direction);
     button(panel, '[data-player-ambient]').onclick = () => { applyAmbientMode(!playerHost().settings().ambientMode); showMain() };
     button(panel, '[data-player-speed]').onclick = () => showSpeed();
     button(panel, '[data-player-subtitles]').onclick = () => subtitleControls?.show();
     button(panel, '[data-player-quality-view]').onclick = () => showQuality();
   };
-  /* 播放速度面板照 YouTube delhi-modern（player 9470c977 的 base.js）：滑条两端取播放器
-     支持的最低与最高倍速，步进 0.05，加减键各动 0.05 并按两位小数收敛，读数写成 1.00x。
-     预设胶囊点了就地生效，面板不退回上一级。第五格 3.0 在上游是 Premium 专属，本机装的
-     Peach 没有会员分级这回事，那一格照上游留着，只是不画角标；滑条上限跟着抬到 3，
-     不然点 3.0 会被收敛回 2。 */
+  /* ReproducirVelocidad度面板照 YouTube delhi-modern(player 9470c977  base.js): 滑两端取ReproducirDispositivo
+     支持最bajoy最alto倍Velocidad, 步进 0.05, 加减Clave各动 0.05 y按两pequeño数收敛, 读数写成 1.00x. 
+     预设胶囊点就地生效, 面板No退回Anterior级. No.cinco格 3.0 Enarriba游es Premium 专属, 本机装
+     Peach Sin会员分级este回事, eseuno格照arriba游Deja着, SoloesNo画角标; 滑arriba限跟着抬到 3, 
+     No然点 3.0 会被收敛回 2.  */
   const SPEED_MIN = .25, SPEED_MAX = 3, SPEED_STEP = .05, SPEED_PRESETS = [1, 1.25, 1.5, 2, 3];
   const speedLabel = (speed: number) => Number.isInteger(speed) ? speed.toFixed(1) : String(speed);
   const showSpeed = (direction = 1) => {
     view = 'speed';
     const min = SPEED_MIN, max = SPEED_MAX;
     const clampSpeed = (value: number) => Math.min(max, Math.max(min, Number(value.toFixed(2))));
-    const panel = renderPanel(`<div class="vjs-peach-panel-header"><button type="button" class="vjs-peach-menu-back" data-player-menu-back aria-label="返回上一个菜单">${icon('player-menu-back')}</button><strong>播放速度</strong></div>
+    const panel = renderPanel(`<div class="vjs-peach-panel-header"><button type="button" class="vjs-peach-menu-back" data-player-menu-back aria-label="Volver al menú anterior">${icon('player-menu-back')}</button><strong>Velocidad de reproducción</strong></div>
       <div class="vjs-peach-speed-panel"><div class="vjs-peach-speed-display"><output data-player-speed-display></output></div>
-      <div class="vjs-peach-speed-slider"><button type="button" class="vjs-peach-speed-button" data-player-speed-step="-1" aria-label="播放速度减 0.05">${icon('minus')}</button>
-      <input type="range" class="vjs-peach-speed-range" data-player-speed-range min="${min}" max="${max}" step="${SPEED_STEP}" aria-label="播放速度">
-      <button type="button" class="vjs-peach-speed-button" data-player-speed-step="1" aria-label="播放速度加 0.05">${icon('plus')}</button></div>
+      <div class="vjs-peach-speed-slider"><button type="button" class="vjs-peach-speed-button" data-player-speed-step="-1" aria-label="Velocidad de reproducción减 0.05">${icon('minus')}</button>
+      <input type="range" class="vjs-peach-speed-range" data-player-speed-range min="${min}" max="${max}" step="${SPEED_STEP}" aria-label="Velocidad de reproducción">
+      <button type="button" class="vjs-peach-speed-button" data-player-speed-step="1" aria-label="Velocidad de reproducción加 0.05">${icon('plus')}</button></div>
       <div class="vjs-peach-speed-chips">${SPEED_PRESETS.map((speed) =>
-        `<span class="vjs-peach-speed-preset"><button type="button" class="vjs-peach-speed-button" data-player-speed-option="${speed}" aria-pressed="false">${speedLabel(speed)}</button>${speed === 1 ? '<span class="vjs-peach-speed-preset-label">正常</span>' : ''}</span>`).join('')}</div></div>`, direction);
+        `<span class="vjs-peach-speed-preset"><button type="button" class="vjs-peach-speed-button" data-player-speed-option="${speed}" aria-pressed="false">${speedLabel(speed)}</button>${speed === 1 ? '<span class="vjs-peach-speed-preset-label">Normal</span>' : ''}</span>`).join('')}</div></div>`, direction);
     const display = panel.querySelector<HTMLOutputElement>('[data-player-speed-display]')!;
     const range = panel.querySelector<HTMLInputElement>('[data-player-speed-range]')!;
-    // player.playbackRate() 读的是 ratechange 之后才写的缓存，面板自己记住这一次的倍速。
+    // player.playbackRate() 读es ratechange 之posterior才写缓存, 面板自己记住esteuno次倍Velocidad. 
     let rate = clampSpeed(Number(player.playbackRate()) || 1);
     const syncSpeed = () => {
       display.textContent = `${rate.toFixed(2)}x`; range.value = String(rate);
@@ -272,7 +272,7 @@ export function mountPlayerQualityControl(
     });
     syncSpeed();
   };
-  /** 清晰度那一列：打开面板时画一次，轨道增减或自动档换轨时原地重画，焦点留在同一档上。 */
+  /** Nitidezeseuno列: Abrir面板时画uno次, 轨道增减或自动档换轨时Original地pesado画, 焦点DejaEn同uno档arriba.  */
   const fillQualityOptions = (list: HTMLElement) => {
     const { options, active } = qualityRows();
     const focused = list.contains(document.activeElement) ? (document.activeElement as HTMLElement).dataset.playerQualityOption : undefined;
@@ -286,8 +286,8 @@ export function mountPlayerQualityControl(
         if (levels?.length) {
           for (let index = 0; index < levels.length; index++) levels[index]!.enabled = selectedQuality === 'auto' || selectedQuality === String(index);
         }
-        /* 来源档位是四个各自独立的 mp4，不是同一条流的多个轨道，所以只能换 src。
-           记住当前进度和播放状态再换：换源会重新加载，不接回去就等于从头开始。 */
+        /* 来源档escuatro各自Independiente mp4, Noes同uno流más轨道, 所以Solo能换 src. 
+           记住当anteriorProgreso y ReproducirEstado再换: 换源会pesadoNuevoCargar, Nocontinuar回去就etc.于从头Empezar.  */
         if (sourceQualities?.length && selectedQuality.startsWith('h')) {
           const height = selectedQuality.slice(1);
           const at = player.currentTime() || 0, wasPlaying = !player.paused();
@@ -305,12 +305,12 @@ export function mountPlayerQualityControl(
   };
   const showQuality = (direction = 1) => {
     view = 'quality';
-    const panel = renderPanel(`<div class="vjs-peach-panel-header"><button type="button" class="vjs-peach-menu-back" data-player-menu-back aria-label="返回上一个菜单">${icon('player-menu-back')}</button><strong>清晰度</strong></div><div class="vjs-peach-panel-menu"></div>`, direction);
+    const panel = renderPanel(`<div class="vjs-peach-panel-header"><button type="button" class="vjs-peach-menu-back" data-player-menu-back aria-label="Volver al menú anterior">${icon('player-menu-back')}</button><strong>Nitidez</strong></div><div class="vjs-peach-panel-menu"></div>`, direction);
     button(panel, '[data-player-menu-back]').onclick = () => showMain(-1);
     fillQualityOptions(button(panel, '.vjs-peach-panel-menu'));
   };
-  /* HLS 自动码率起播时轨道陆续登记、码率随网速换档，视频尺寸也跟着变：这些事件只更新角标和
-     正在看的那一面。退回主菜单的话，正在清晰度面板里挑档的人会被一次换轨踢出去。 */
+  /* HLS 自动码率起播时轨道陆续登记, 码率随网Velocidad换档, 视频尺寸也跟着变: este些事件SoloActualizar角标 y 
+     En cursovereseuno面. 退回主菜单话, En cursoNitidez面板dentro挑档人会被uno次换轨踢出去.  */
   const refreshPanel = () => {
     if (!isOpen()) { qualityRows(); return }
     const panel = menu.lastElementChild as HTMLElement | null;
@@ -358,7 +358,7 @@ function mountPlayerTheaterControl(player: VjsPlayer, settingsRoot: Element): vo
   root.innerHTML = `<button type="button" data-player-theater aria-pressed="${theater}">${icon(theater ? 'theater-exit' : 'theater-enter')}</button>`;
   controlBar.insertBefore(root, settingsRoot.nextSibling);
   const theaterButton = root.querySelector('button')!;
-  theaterSyncs.set(theaterButton, playerControlTooltip(theaterButton, '影院模式', 'T'));
+  theaterSyncs.set(theaterButton, playerControlTooltip(theaterButton, 'Modo cine', 'T'));
   syncPlayerTheaterButton(theaterButton);
   theaterButton.onclick = (event) => { event.stopPropagation(); applyTheaterMode(!playerHost().settings().theaterMode) };
 }
@@ -374,12 +374,12 @@ function mountPlayerChromeLayout(player: VjsPlayer): void {
     button.insertAdjacentHTML('beforeend', icon(name, 'vjs-peach-control-icon'));
     return button.querySelector(':scope>.vjs-peach-control-icon use');
   };
-  /* 播放键和静音键的图标要自己形变，不能整块换掉：`<use>` 克隆出来的是影子树，里面的
-     `d` 改不动，也挂不上过渡。所以这两个键把 sprite 里的 <path> 搬进自己的 svg，图标怎么变
-     由 CSS 说。照 YouTube delhi-modern（player 9470c977 的 base.js）：播放↔暂停是同一条
-     路径逐个数字插值 200ms（上游 `eST` 把 `d` 拆成数字与分隔符再逐位插值），音量的两道弧
-     各自缩放 250ms（上游 `jjc`：内弧绕 (18,12)、外弧绕 (22,12)），两处曲线都是 `qn3`
-     也就是 cubic-bezier(.4,0,.2,1)。 */
+  /* ReproducirClave y SilenciarClaveImagen标要自己形变, No能Completo换掉: `<use>` 克隆出来es影子树, dentro面
+     `d` 改No动, 也挂Noarriba过渡. 所以este两Clave sprite en la <path> 搬进自己 svg, Imagen标怎么变
+     由 CSS 说. 照 YouTube delhi-modern(player 9470c977  base.js): Reproducir↔Pausares同uno
+     Ruta逐数字插值 200ms(arriba游 `eST`  `d` 拆成数字y分隔符再逐插值), Volumen两道弧
+     各自Zoom 250ms(arriba游 `jjc`: interior弧绕 (18,12), exterior弧绕 (22,12)), 两处曲线都es `qn3`
+     也就es cubic-bezier(.4,0,.2,1).  */
   const morphIcon = (button: HTMLElement | null | undefined, name: string) => {
     if (!button) return null;
     const symbol = document.getElementById(`i-${name}`); if (!symbol) return null;
@@ -393,37 +393,37 @@ function mountPlayerChromeLayout(player: VjsPlayer): void {
   const spritePaths = (name: string) => [...(document.getElementById(`i-${name}`)?.querySelectorAll('path') || [])];
   const playIcon = morphIcon(play, 'player-play'), playPath = playIcon?.querySelector('path');
   const playD = spritePaths('player-play')[0]?.getAttribute('d') || '', pauseD = spritePaths('player-pause')[0]?.getAttribute('d') || '';
-  const syncPlayTooltip = playerControlTooltip(play, '播放', 'K');
-  /* WebKit（Safari 与 iOS 上的所有浏览器）不认 CSS 的 `d` 属性，写进 style 等于没写，图标
-     停在播放那一枚。那边直接改路径属性：没有插值，瞬间切换。 */
+  const syncPlayTooltip = playerControlTooltip(play, 'Reproducir', 'K');
+  /* WebKit(Safari y iOS en la所ConExplorar dispositivo)No认 CSS  `d` 属性, 写进 style etc.于没写, Imagen标
+     停EnReproducireseuno. ese边直continuar改Ruta属性: Sin插值, 瞬间Cambiar.  */
   const cssPathD = CSS.supports('d', 'path("M0 0")');
   const syncPlayIcon = () => {
     const paused = player.paused() || player.ended(), d = paused ? playD : pauseD;
     if (playPath) { if (cssPathD) playPath.style.setProperty('d', `path("${d}")`); else playPath.setAttribute('d', d) }
-    syncPlayTooltip(paused ? '播放' : '暂停');
+    syncPlayTooltip(paused ? 'Reproducir' : 'Pausar');
   };
   player.on(['play', 'pause', 'ended'], syncPlayIcon); syncPlayIcon();
   const volume = controlBar.querySelector<HTMLElement>(':scope>.vjs-volume-panel');
   const mute = volume?.querySelector<HTMLElement>(':scope>.vjs-mute-control'), muteIcon = morphIcon(mute, 'player-volume');
-  /* 静音那张图标搬进同一个 svg：挖空的喇叭和叉号跟实心喇叭、两道弧共处一处，弧缩完了
-     它们才一起顶上，靠 opacity 换而不是换整块 svg。 */
+  /* SilenciareseImagen标搬进同uno svg: 挖空喇叭 y 叉号跟实心喇叭, 两道弧共处uno处, 弧缩完
+     它们才uno起顶arriba, 靠 opacity 换而Noes换Completo svg.  */
   if (muteIcon) spritePaths('player-volume-muted').forEach((path) => muteIcon.append(path.cloneNode(true)));
-  const syncMuteTooltip = playerControlTooltip(mute, '静音', 'M');
-  /* 外弧跟音量走：上游 `setVolume` 里超过 50 才给 1，否则 0，静音时两道弧一起收掉。 */
+  const syncMuteTooltip = playerControlTooltip(mute, 'Silenciar', 'M');
+  /* exterior弧跟Volumen走: arriba游 `setVolume` dentro超过 50 才给 1, 否则 0, Silenciar时两道弧uno起收掉.  */
   const syncVolumeIcon = () => {
     const silent = player.muted() || player.volume() === 0;
     if (muteIcon) { muteIcon.dataset.silent = String(silent); muteIcon.dataset.loud = String(!silent && player.volume() > .5) }
-    syncMuteTooltip(silent ? '取消静音' : '静音');
+    syncMuteTooltip(silent ? 'Activar sonido' : 'Silenciar');
   };
   player.on('volumechange', syncVolumeIcon); syncVolumeIcon();
-  /* 中心提示照 YouTube delhi-modern（player 9470c977 的 www-player.css 与 base.js）：一块
-     78px 的毛玻璃圆闪一下当前动作的图标，1s 走完 0→1.33→1 的缩放淡出。捕获阶段读的是
-     切换之前的状态，闪出来的正好是这一次做的事：暂停中点播放键闪播放。键盘快捷键走的
-     也是同一个按钮的点击路径，所以键盘不用另挂一处。
-     画面中心只允许有这一块提示圆：整个播放器里凡是能切换播放的入口——控制条的播放键、
-     静音键、点画面本身——都汇到这个 flashBezel 上。同一块画面上再挂第二个 78px 圆，
-     两边各按自己的时机取状态，点一下就会一个闪播放一个闪暂停，叠在一起看不清哪个才是
-     刚做的事。 */
+  /* en proceso心Sugerencia照 YouTube delhi-modern(player 9470c977  www-player.css y base.js): uno
+     78px 毛玻璃圆闪unoabajo当anterior动作Imagen标, 1s 走完 0→1.33→1 Zoom淡出. 捕obtener阶段读es
+     Cambiar之anteriorEstado, 闪出来正bienesesteuno次做事: Pausaren proceso点ReproducirClave闪Reproducir. Clave盘rápido捷Clave走
+     也es同uno按钮点击Ruta, 所以Clave盘No用另挂uno处. 
+     Imagenen proceso心Solo允许ConesteunoSugerencia圆: CompletoReproducirDispositivodentro凡es能CambiarReproducir入口—控制ReproducirClave, 
+     SilenciarClave, 点Imagen本身—都汇到este flashBezel arriba. 同unoImagenarriba再挂No.dos 78px 圆, 
+     两边各按自己时机取Estado, 点unoabajo就会uno闪Reproduciruno闪Pausar, 叠Enuno起verNo清哪才es
+     刚做事.  */
   const bezel = document.createElement('div');
   bezel.className = 'vjs-peach-bezel'; bezel.setAttribute('role', 'status'); bezel.hidden = true;
   bezel.innerHTML = `<span class="vjs-peach-bezel-icon">${icon('player-play')}</span>`;
@@ -440,10 +440,10 @@ function mountPlayerChromeLayout(player: VjsPlayer): void {
     const target = event.target as Element;
     if (target.closest('.vjs-mute-control')) {
       const silent = player.muted() || player.volume() === 0;
-      flashBezel(silent ? 'player-volume' : 'player-volume-muted', silent ? '取消静音' : '静音');
+      flashBezel(silent ? 'player-volume' : 'player-volume-muted', silent ? 'Activar sonido' : 'Silenciar');
     } else if (target.closest('.vjs-play-control,.vjs-tech,.vjs-poster')) {
       const paused = player.paused() || player.ended();
-      flashBezel(paused ? 'player-play' : 'player-pause', paused ? '播放' : '暂停');
+      flashBezel(paused ? 'player-play' : 'player-pause', paused ? 'Reproducir' : 'Pausar');
     }
   }, true);
   player.on('dispose', () => { if (bezelTimer) clearTimeout(bezelTimer) });
@@ -451,36 +451,36 @@ function mountPlayerChromeLayout(player: VjsPlayer): void {
   time.type = 'button'; time.className = 'vjs-peach-time vjs-control'; time.dataset.playerTime = '';
   time.innerHTML = '<span class="vjs-peach-time-text"></span>';
   const timeText = time.querySelector('.vjs-peach-time-text')!;
-  const syncTimeTooltip = playerControlTooltip(time, '显示剩余时间');
+  const syncTimeTooltip = playerControlTooltip(time, 'MostrarDisponibleHora');
   const syncTime = () => {
     const current = Math.max(0, Number(player.currentTime()) || 0), duration = Math.max(0, Number(player.duration()) || 0);
     const left = fmtClock(Math.max(0, duration - current));
     timeText.textContent = `${remaining ? `-${left}` : fmtClock(current)} / ${fmtClock(duration)}`;
     time.dataset.remaining = String(remaining);
-    syncTimeTooltip(remaining ? '显示已播放时间' : '显示剩余时间', remaining
-      ? `剩余 ${left}，总时长 ${fmtClock(duration)}；点击显示已播放时间`
-      : `已播放 ${fmtClock(current)}，总时长 ${fmtClock(duration)}；点击显示剩余时间`);
+    syncTimeTooltip(remaining ? 'MostrarYaTiempo de reproducción' : 'MostrarDisponibleHora', remaining
+      ? `Disponible ${left}, TotalDuración ${fmtClock(duration)}; 点击MostrarYaTiempo de reproducción`
+      : `Reproducido ${fmtClock(current)}, TotalDuración ${fmtClock(duration)}; 点击MostrarDisponibleHora`);
   };
   time.onclick = (event) => { event.stopPropagation(); remaining = !remaining; syncTime() };
   player.on(['timeupdate', 'durationchange', 'loadedmetadata'], syncTime); syncTime();
   if (volume) volume.insertAdjacentElement('afterend', time); else controlBar.append(time);
   const pip = controlBar.querySelector<HTMLElement>(':scope>.vjs-picture-in-picture-control');
-  playerControlTooltip(controlBar.querySelector('.vjs-subtitles-control>button'), '字幕');
+  playerControlTooltip(controlBar.querySelector('.vjs-subtitles-control>button'), 'Subtítulos');
   explicitIcon(pip, 'player-pip');
-  // i 键归迷你播放器（YouTube 的 aria-keyshortcuts="i"），画中画只留按钮。
-  const syncPipTooltip = playerControlTooltip(pip, '画中画');
-  player.on(['enterpictureinpicture', 'leavepictureinpicture'], () => syncPipTooltip(document.pictureInPictureElement ? '退出画中画' : '画中画'));
+  // i Clave归迷你ReproducirDispositivo(YouTube  aria-keyshortcuts="i"), 画en proceso画SoloDeja按钮. 
+  const syncPipTooltip = playerControlTooltip(pip, 'Imagen en imagen');
+  player.on(['enterpictureinpicture', 'leavepictureinpicture'], () => syncPipTooltip(document.pictureInPictureElement ? 'SalirImagen en imagen' : 'Imagen en imagen'));
   const fullscreen = controlBar.querySelector<HTMLElement>(':scope>.vjs-fullscreen-control');
   const fullscreenUse = explicitIcon(fullscreen, 'player-fullscreen-enter');
-  const syncFullscreenTooltip = playerControlTooltip(fullscreen, '全屏', 'F');
-  /* CSS 的 `.vjs-fullscreen` 只能覆盖 Video.js 已经同步状态类的路径。实际浏览器还可能
-     走 full-window 回退，或者先触发 fullscreenchange、下一帧才完成 class 更新。把播放器
-     自己的 `isFullscreen()` 结果登记到 DOM，画面填充不再依赖某一个实现细节类名。 */
+  const syncFullscreenTooltip = playerControlTooltip(fullscreen, 'Pantalla completa', 'F');
+  /* CSS  `.vjs-fullscreen` Solo能覆盖 Video.js ya经SincronizarEstado类Ruta. 实际Explorar dispositivo还puede能
+     走 full-window 回退, 或者先触发 fullscreenchange, Siguiente帧才Completado class Actualizar. ReproducirDispositivo
+     自己 `isFullscreen()` Resultado登记到 DOM, ImagenIntroduce充No再依赖某uno实现细节类名.  */
   const syncFullscreenState = () => {
     const active = !!player.isFullscreen();
     player.el().toggleAttribute('data-peach-fullscreen', active);
     fullscreenUse?.setAttribute('href', active ? '#i-player-fullscreen-exit' : '#i-player-fullscreen-enter');
-    syncFullscreenTooltip(active ? '退出全屏' : '全屏');
+    syncFullscreenTooltip(active ? 'Salir de pantalla completa' : 'Pantalla completa');
     resizeSoon(player);
   };
   player.on(['fullscreenchange', 'enterFullWindow', 'exitFullWindow'], syncFullscreenState);
@@ -493,33 +493,33 @@ function mountPlayerChromeLayout(player: VjsPlayer): void {
     fullscreen,
   ].filter((control): control is HTMLElement => !!control);
   if (!controls.length) return;
-  const group = document.createElement('div'); group.className = 'vjs-peach-right-controls'; group.setAttribute('aria-label', '播放器视图控制');
+  const group = document.createElement('div'); group.className = 'vjs-peach-right-controls'; group.setAttribute('aria-label', 'ReproductorVista控制');
   controlBar.insertBefore(group, controls[0]!);
   controls.forEach((control) => {
     control.insertAdjacentHTML('beforeend', '<span class="vjs-peach-hover" aria-hidden="true"></span>');
     group.append(control);
   });
-  /* 窄屏折叠照 YouTube 的判据来：base.js 9470c977 里播放器宽度 `v.width<528` 打开
-     ytp-xsmall-width-mode，右侧收成「设置 + 展开」，点开才铺开其余按钮。判据必须是播放器
-     自己的宽度，不是视口——同一个视口下影院模式和普通视图的播放器宽度差一大截。 */
+  /* estrecho屏折叠照 YouTube 判据来: base.js 9470c977 dentroReproducirDispositivoancho度 `v.width<528` Abrir
+     ytp-xsmall-width-mode, derecha侧收成"Configuración + 展开", 点开才铺开其余按钮. 判据必须esReproducirDispositivo
+     自己ancho度, Noes视口—同uno视口abajoCineModo y 普通视ImagenReproducirDispositivoancho度差unogrande截.  */
   const expand = document.createElement('div'); expand.className = 'vjs-peach-expand vjs-control';
-  /* 高亮层要挂在 `.vjs-control` 这一层：亮起来的规则是 `>.vjs-peach-hover`，塞进
-     button 里就差一层，展开键成了这排唯一没有 hover 的按钮。位置在这排左端——
-     这排整体右对齐，展开时新按钮从它右边长出来，箭头指左才对得上要发生的事。箭头用
-     `i-player-expand`：菜单行那个 `>` 是 24 视框、一个单位粗的细线，铺到 32px 只有 1.3px 粗；
-     上游展开键自带一个 32 视框、两个单位粗的箭头，同样 32px 渲染就是 2px。 */
+  /* alto亮层要挂En `.vjs-control` esteuno层: 亮起来Reglaes `>.vjs-peach-hover`, 塞进
+     button dentro就差uno层, 展开Clave成este排唯unoSin hover 按钮. UbicaciónEneste排izquierda端—
+     este排Completo体derecha对齐, 展开时Nuevo按钮从它derecha边largo出来, 箭头指izquierda才对得arriba要发生事. 箭头用
+     `i-player-expand`: 菜单行ese `>` es 24 视框, uno单粗细线, 铺到 32px SoloCon 1.3px 粗; 
+     arriba游展开Clave自带uno 32 视框, 两单粗箭头, 同样 32px 渲染就es 2px.  */
   expand.innerHTML = `<button type="button" data-player-expand aria-expanded="false">${icon('player-expand')}</button><span class="vjs-peach-hover" aria-hidden="true"></span>`;
   group.prepend(expand);
   const expandButton = expand.querySelector('button')!;
-  const syncExpandTooltip = playerControlTooltip(expandButton, '展开控件');
+  const syncExpandTooltip = playerControlTooltip(expandButton, 'Expandir controles');
   const setExpanded = (open: boolean) => {
     player.el().classList.toggle('vjs-peach-right-expanded', open);
-    expandButton.setAttribute('aria-expanded', String(open)); syncExpandTooltip(open ? '收起控件' : '展开控件');
+    expandButton.setAttribute('aria-expanded', String(open)); syncExpandTooltip(open ? 'ColapsarControles' : 'Expandir controles');
   };
   expandButton.onclick = (event) => { event.stopPropagation(); setExpanded(!player.el().classList.contains('vjs-peach-right-expanded')) };
   const syncWidthMode = () => {
     const box = player.el(), narrow = box.clientWidth < 528;
-    /* 设置面板要按播放器高度收顶，而它的定位祖先只有 36px 高，百分比取不到播放器。 */
+    /* Configuración面板要按ReproducirDispositivoalto度收顶, 而它定祖先SoloCon 36px alto, cien分比取No到ReproducirDispositivo.  */
     box.style.setProperty('--peach-player-h', `${box.clientHeight}px`);
     box.classList.toggle('vjs-peach-xsmall', narrow);
     if (!narrow) setExpanded(false);
@@ -531,11 +531,11 @@ function mountPlayerChromeLayout(player: VjsPlayer): void {
 
 interface TimelineSheets { frames: number; interval: number; columns?: number; rows?: number }
 
-/** 进度条上的拖动预览：时间与那一秒的画面。
+/** Progresoen la拖动Vista previa: Tiempoyeseuno秒Imagen. 
  *
- *  采集任务铺好了时间轴接触印相就按它走：每 10 或 30 秒一帧，指到哪一秒看到的就是那一秒。
- *  取不到退回九宫格那九格——那是全片九等分，两小时的片子格与格之间隔着十几分钟，指的位置和
- *  看到的画面对不上，但比没有画面强。关注条目没有本地图，只报时间。 */
+ *  RecolectarTarea铺bienTiempo轴continuar触印相就按它走: 每 10 或 30 秒uno帧, 指到哪uno秒ver到就eseseuno秒. 
+ *  取No到退回nueve宫格esenueve格—eseesTodo片nueveetc.分, 两pequeño时片子格y格之间隔着diez几分钟, 指Ubicación y 
+ *  ver到Imagen对Noarriba, pero比SinImagen强. 关注EntradaSin本地Imagen, Solo报Tiempo.  */
 export function mountPlayerSeekPreview(player: VjsPlayer, item: PlayerItem | null, options: { thumbnail?: boolean } = {}): void {
   const progress = player.el().querySelector<HTMLElement>('.vjs-control-bar .vjs-progress-control');
   if (!progress || progress.querySelector('[data-player-seek-preview]')) return;
@@ -556,12 +556,12 @@ export function mountPlayerSeekPreview(player: VjsPlayer, item: PlayerItem | nul
     const columns = sheet.columns || 10, per = columns * (sheet.rows || 10);
     const index = Math.min(sheet.frames - 1, Math.max(0, Math.floor(seconds / sheet.interval)));
     const page = Math.floor(index / per), slot = index % per;
-    // 末张通常不满 10 行，行数按它自己那几帧反算：按满行去铺，格子会落到图外面的空白上。
+    // último通常No满 10 行, 行数按它自己ese几帧反算: 按满行去铺, 格子会落到Imagenexterior面空白arriba. 
     const rows = Math.ceil(Math.min(per, sheet.frames - page * per) / columns);
     const source = `/timeline?id=${encodeURIComponent(item.id)}&s=${page}`;
     if (source !== shown) { shown = source; img.src = source }
     box.hidden = false;
-    // 取景框按片源比例，图按格子铺满：两边比例一致，`fill` 才既不裁也不拉。
+    // 取景框按片源Relación, Imagen按格子铺满: 两边Relaciónuno致, `fill` 才既No裁也No拉. 
     if (item.width && item.height) box.style.aspectRatio = `${item.width} / ${item.height}`;
     img.style.objectFit = 'fill';
     img.style.width = `${columns * 100}%`; img.style.height = `${rows * 100}%`;
@@ -590,10 +590,10 @@ export function mountPlayerSeekPreview(player: VjsPlayer, item: PlayerItem | nul
   player.on('dispose', () => { progress.removeEventListener('pointermove', move); progress.removeEventListener('pointerleave', hide) });
 }
 
-/** 画中画那个窗口由浏览器画，站内控制条一颗键都递不进去。Media Session 的动作处理器是唯一的
- *  入口：登记 `seekbackward` 和 `seekforward` 之后，Chrome 才在那个窗口里画出快退和快进两颗，
- *  步长用设置里那个秒数；`setPositionState` 让它自己那条进度条知道现在放到哪，`seekto` 让拖它
- *  真的生效。不登记时那里只有播放、暂停和关闭三颗。站内的小窗是另一件事，那三颗键在小窗自己身上。 */
+/** 画en proceso画ese窗口由Explorar dispositivo画, 站interior控制unoClave都递No进去. Media Session 动作ProcesarDispositivoes唯uno
+ *  入口: 登记 `seekbackward`  y  `seekforward` 之posterior, Chrome 才Enese窗口dentro画出rápido退 y rápido进两, 
+ *  步largo用Configuracióndentroese秒数; `setPositionState` 让它自己eseProgreso知道现En放到哪, `seekto` 让拖它
+ *  真生效. No登记时esedentroSoloConReproducir, Pausar y Cerrartres. 站interiorpequeño窗es另uno件事, esetresClaveEnpequeño窗自己身arriba.  */
 export function mountPlayerMediaSession(player: VjsPlayer, item: PlayerItem): void {
   const session = navigator.mediaSession;
   if (!session || typeof session.setActionHandler !== 'function') return;
@@ -612,38 +612,38 @@ export function mountPlayerMediaSession(player: VjsPlayer, item: PlayerItem): vo
   ];
   const registered: MediaSessionAction[] = [];
   for (const [action, handler] of handlers) {
-    /* 浏览器不认的动作会抛，认得的照常登记：整块 try 会让一个不认识的动作带走后面
-       全部处理器，小窗于是又回到只有播放暂停。 */
-    try { session.setActionHandler(action, handler); registered.push(action) } catch { /* 不认的动作 */ }
+    /* Explorar dispositivoNo认动作会抛, 认得照常登记: Completo try 会让unoNo认识动作带走posterior面
+       TodoProcesarDispositivo, pequeño窗于es又回到SoloConReproducirPausar.  */
+    try { session.setActionHandler(action, handler); registered.push(action) } catch { /* No认动作 */ }
   }
   const syncPosition = () => {
     const duration = total(), position = Math.max(0, Number(player.currentTime()) || 0);
     if (typeof session.setPositionState !== 'function') return;
-    /* 时长不可用或者进度跑在时长前面时不报：`setPositionState` 对这两种入参直接抛，
-       而 `timeupdate` 每秒都来，抛一次就是每秒一条错误。 */
+    /* DuraciónNopuede用或者Progreso跑EnDuraciónanterior面时No报: `setPositionState` 对este两入参直continuar抛, 
+       而 `timeupdate` 每秒都来, 抛uno次就es每秒unoError.  */
     if (!duration || position > duration) return;
     try {
       session.setPositionState({ duration, position, playbackRate: Math.max(.001, Number(player.playbackRate()) || 1) });
-    } catch { /* 浏览器拒收 */ }
+    } catch { /* Explorar dispositivo拒收 */ }
   };
   player.on(['timeupdate', 'durationchange', 'ratechange', 'seeked', 'loadedmetadata'], syncPosition);
   syncPosition();
   player.on('dispose', () => {
-    registered.forEach((action) => { try { session.setActionHandler(action, null) } catch { /* 已撤 */ } });
-    try { session.setPositionState?.() } catch { /* 已撤 */ }
+    registered.forEach((action) => { try { session.setActionHandler(action, null) } catch { /* ya撤 */ } });
+    try { session.setPositionState?.() } catch { /* ya撤 */ }
   });
 }
 
-/** 加载提示复用 YouTube e937390a 的 `FsY`：四段嵌套元素与四段动画。 */
+/** CargarSugerencia复用 YouTube e937390a  `FsY`: cuatro段嵌套元素ycuatro段动画.  */
 export function mountPlayerSpinner(player: VjsPlayer): void {
   const spinner = player.el().querySelector('.vjs-loading-spinner');
   if (!spinner || spinner.querySelector('.vjs-peach-spinner-container')) return;
   spinner.innerHTML = '<span class="vjs-peach-spinner-container"><span class="vjs-peach-spinner-rotator"><span class="vjs-peach-spinner-left"><span class="vjs-peach-spinner-circle"></span></span><span class="vjs-peach-spinner-right"><span class="vjs-peach-spinner-circle"></span></span></span></span>';
 }
 
-/** 本机资产的外挂字幕。服务端已经把 srt/ass/ssa 换成 WebVTT，这里只把它挂成 text track。
- *  一律不设 default：自动打开某一条等于替用户选了语言，而同一部片常有简体、繁体、日语三条。
- *  Peach 字幕菜单只在有轨的时候出现；轨道挂在原生 video 上，随同一枚元素保留。 */
+/** 本机资产exterior挂Subtítulos. 服务端ya经 srt/ass/ssa 换成 WebVTT, aquíSolo它挂成 text track. 
+ *  uno律No设 default: 自动Abrir某unoetc.于替用户选语言, 而同uno部片常Con简体, 繁体, 日语tres. 
+ *  Peach Subtítulos菜单SoloEnCon轨时候出现; 轨道挂EnOriginal生 video arriba, 随同uno元素保Deja.  */
 export function mountPlayerSubtitles(player: VjsPlayer, assetId: number): void {
   (api(`/api/assets/${assetId}/subtitles`) as Promise<{ subtitles?: { playable?: boolean; src: string; language?: string; label: string }[] } | null>)
     .then((payload) => {

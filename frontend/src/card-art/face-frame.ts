@@ -1,107 +1,107 @@
-/* 圆头像的人脸取景：按源图里那张脸有多少像素，算出能放大多少倍。
+/* 圆Avatar人脸取景: 按源Imagendentroese脸Conmásmenos像素, 算出能放grandemásmenos倍. 
 
-   只挪不放大的时候，「脸太小」这件事是没法解决的：`object-fit:cover` 的缩放由框和
-   图的比例定死，脸在图里占多少，在框里就占多少。实测 539 张实体图，脸框宽占框宽的
-   中位数是 44%——四分之三的头像本来就是特写，放大只会把头顶和下巴切出去；真正偏小的
-   只有 29 张，它们几乎都是全身站姿照，脸落在画面上半截的一小块里。
+   Solo挪No放grande时候, "脸太pequeño"este件事es没法解决: `object-fit:cover` Zoom由框 y 
+   ImagenRelación定死, 脸EnImagendentro占másmenos, En框dentro就占másmenos. 实测 539 实体Imagen, 脸框ancho占框ancho
+   en proceso数es 44%—cuatro分之tresAvatar本来就es特写, 放grandeSolo会头顶 y abajo巴切出去; 真正偏pequeño
+   SoloCon 29 , 它们几乎都esTodo身站姿照, 脸落EnImagenarribamedio截unopequeñodentro. 
 
-   所以放大倍数不能写死，也不能只由服务端算一份：约束是「源图里那张脸有多少像素」比
-   「这个框要显示多少像素」，而后者取决于框的实际尺寸和设备像素比。同一张 640×960、
-   脸只有 67 px 宽的图（`performer-8711`），在资料页 160 px 圆框上放大 2 倍就到了
-   源图 1:1，再放大就是上采样；在顶栏 64 px 圆框上放到 3 倍仍有余量。判据一样，
-   结论差一倍多，只有在页面这一侧、拿到框的真实尺寸时才算得出来。
+   所以放grande倍数No能写死, 也No能Solo由服务端算uno: 约束es"源Imagendentroese脸Conmásmenos像素"比
+   "este框要显示másmenos像素", 而posterior者取决于框实际尺寸 y 设备像素比. 同uno 640×960, 
+   脸SoloCon 67 px anchoImagen(`performer-8711`), En资料página 160 px 圆框arriba放grande 2 倍就到
+   源Imagen 1:1, 再放grande就esarriba采样; En顶栏 64 px 圆框arriba放到 3 倍仍Con余量. 判据uno样, 
+   结论差uno倍más, SoloConEnpágina面esteuno侧, 拿到框真实尺寸时才算得出来. 
 
-   夹持顺序固定：先算「要多大才看得清、才摆得正」，用构图上限刹住，最后由「放到多大
-   就开始虚」压死。`zoom` 为 1 时只挪不放大，已经够大的那 395 张走的就是这条路。
+   carpeta持顺序固定: 先算"要másgrande才ver得清, 才摆得正", 用构Imagenarriba限刹住, 最posterior由"放到másgrande
+   就Empezar虚"压死. `zoom` Como 1 时Solo挪No放grande, ya经够grandeese 395 走就eseste路. 
 
-   没有一条上限是倍数：倍数答不了任何一个问题。同样 3 倍，特写被放成五官大头，远景
-   全身图的脸却还只有 6 px。问的是脸放完有多大（`FACE_CEILING`）和源图还剩多少像素
-   （无损上限），两条都用得着框的真实尺寸和设备像素比，所以只能在页面这一侧算。 */
+   Sinunoarriba限es倍数: 倍数答No任何uno问题. 同样 3 倍, 特写被放成cinco官grande头, 远景
+   Todo身Imagen脸却还SoloCon 6 px. 问es脸放完Conmásgrande(`FACE_CEILING`) y 源Imagen还剩másmenos像素
+   (Sin损arriba限), 两都用得着框真实尺寸 y 设备像素比, 所以Solo能Enpágina面esteuno侧算.  */
 
-/** 脸框宽占框短边这个比例就算看得清是谁，不再往上放。
+/** 脸框ancho占框corto边esteRelación就算ver得清es谁, No再往arriba放. 
  *
- *  检出给的框只覆盖眼鼻嘴，不含头发和下巴外沿；32% 时整颗头大约占七成，构图还松。
- *  往上调会让本来就偏紧的特写被这一档"救"进放大，那些图不需要。 */
+ *  检出给框Solo覆盖眼鼻嘴, No含头发 y abajo巴exterior沿; 32% 时Completo头grande约占siete成, 构Imagen还松. 
+ *  往arriba调会让本来就偏紧特写被esteuno档"救"进放grande, ese些ImagenNo需要.  */
 export const FACE_TARGET = 0.32;
 
-/** 脸框在框里至少要有这么多 CSS 像素宽。
+/** 脸框En框dentro至menos要Coneste么más CSS 像素ancho. 
  *
- *  比例这一档回答不了小圆标的问题：32% 在 120 px 的资料页框里是 38 px 的脸，在
- *  28 px 的题材圆标里只有 9 px，而 9 px 宽的眼鼻嘴认不出是谁——这排圆标存在的理由
- *  正是让人一眼认出题材。像素下限只在框小到这个比例不够用时才接管（28 px 框要 46%、
- *  48 px 框算出来低于 32% 就仍走比例那一档），大框上一个数都不动。 */
+ *  Relaciónesteuno档回答Nopequeño圆标问题: 32% En 120 px 资料página框dentroes 38 px 脸, En
+ *  28 px 题材圆标dentroSoloCon 9 px, 而 9 px ancho眼鼻嘴认No出es谁—este排圆标存En理由
+ *  正es让人uno眼认出题材. 像素abajo限SoloEn框pequeño到esteRelaciónNo够用时才continuar管(28 px 框要 46%, 
+ *  48 px 框算出来bajo于 32% 就仍走Relacióneseuno档), grande框Anterior数都No动.  */
 export const MIN_FACE_PX = 13;
 
-/** 构图上限：脸框最多占框短边这么多。
+/** 构Imagenarriba限: 脸框最más占框corto边este么más. 
  *
- *  脸框只覆盖眼鼻嘴：60% 时整颗头刚好填满框，再往上就开始切头顶和下巴。
+ *  脸框Solo覆盖眼鼻嘴: 60% 时Completo头刚bienIntroduce满框, 再往arriba就Empezar切头顶 y abajo巴. 
  *
- *  这条问的是「放完之后脸有多大」，不问放大了几倍：倍数答不了构图的问题——同样
- *  3 倍，特写被放成五官大头，远景全身图的脸却还只有 6 px。
- *  实测那张 16:9 的 `Clair Obscur` 封面，脸占画面宽的 4.5%，cover 进 28 px 的圆里
- *  只剩 2.2 px——它要 5.8 倍才够看，而无损上限本来就还有 5.1 倍的余量。 */
+ *  este问es"放完之posterior脸Conmásgrande", No问放grande几倍: 倍数答No构Imagen问题—同样
+ *  3 倍, 特写被放成cinco官grande头, 远景Todo身Imagen脸却还SoloCon 6 px. 
+ *  实测ese 16:9  `Clair Obscur` Portada, 脸占Imagenancho 4.5%, cover 进 28 px 圆dentro
+ *  Solo剩 2.2 px—它要 5.8 倍才够ver, 而Sin损arriba限本来就还Con 5.1 倍余量.  */
 export const FACE_CEILING = 0.6;
 
-/** 人脸数据齐不齐。缺一样就没法算，调用方只挪不放大。
+/** 人脸Datos齐No齐. 缺uno样就没法算, 调用方Solo挪No放grande. 
  *
- *  `faceW` 是脸框宽的**源图像素**，不是归一化值：无损上限问的就是「有多少像素可用」，
- *  归一化值除得出比例却除不出像素，换算要在拿得到原图尺寸的那一侧做。 */
+ *  `faceW` es脸框ancho**源Imagen像素**, Noes归uno化值: Sin损arriba限问就es"Conmásmenos像素puede用", 
+ *  归uno化值除得出Relación却除No出像素, 换算要En拿得到OriginalImagen尺寸eseuno侧做.  */
 export interface FaceBox { cx: number; cy: number; faceW: number; imgW: number; imgH: number }
 
-/** 框的 CSS 像素尺寸。 */
+/** 框 CSS 像素尺寸.  */
 export interface FrameSize { w: number; h: number }
 
 export function hasFaceBox(face: Partial<FaceBox> | null | undefined): face is FaceBox {
   if (!face) return false;
-  // 脸心可以是 0：脸贴着左边缘或顶边的图确实存在，那不是缺数据。
+  // 脸心puede以es 0: 脸贴着izquierda边缘或顶边Imagen确实存En, eseNoes缺Datos. 
   return Number.isFinite(face.cx) && Number.isFinite(face.cy)
     && Number(face.faceW) > 0 && Number(face.imgW) > 0 && Number(face.imgH) > 0;
 }
 
-/** 放大多少倍。`frame` 是框的 CSS 像素尺寸，`dpr` 是设备像素比。
+/** 放grandemásmenos倍. `frame` es框 CSS 像素尺寸, `dpr` es设备像素比. 
  *
- *  推着它往上的有两样：脸要够大（`wanted`），脸还要摆得正（`centred`）；
- *  压着它的有两样：脸放完不许超过构图上限，源图剩下的像素不许被上采样。 */
+ *  推着它往en laCon两样: 脸要够grande(`wanted`), 脸还要摆得正(`centred`); 
+ *  压着它Con两样: 脸放完No许超过构Imagenarriba限, 源Imagen剩abajo像素No许被arriba采样.  */
 export function faceZoom(face: Partial<FaceBox> | null | undefined, frame: FrameSize | null | undefined, dpr = 1,
                          target = FACE_TARGET, ceiling = FACE_CEILING): number {
   if (!hasFaceBox(face) || !(frame && frame.w > 0 && frame.h > 0)) return 1;
   const ratio = dpr > 0 ? dpr : 1;
-  // cover 的基础缩放：图缩到刚好盖住框，紧的那一边说话。
+  // cover 基础Zoom: Imagen缩到刚bien盖住框, 紧eseuno边说话. 
   const base = Math.max(frame.w / face.imgW, frame.h / face.imgH);
   const shown = face.faceW * base;
   if (!(shown > 0)) return 1;
   const side = Math.min(frame.w, frame.h);
-  // 两档取宽的那一档：比例管大框，像素下限管小到比例不够用的框。
+  // 两档取anchoeseuno档: Relación管grande框, 像素abajo限管pequeño到RelaciónNo够用框. 
   const wanted = Math.max(target, MIN_FACE_PX / side) * side / shown;
-  /* 摆正也要放大。脸心拉到框心的前提是图比框大得够多——不许露白，图不够大时脸只能
-     被顶在框的边上，量出来是够大的，看着却是「小而偏」。脸离画面边缘越近，把它拉到
-     框心要的放大越多，所以判据是「更近的那一边到中线的距离」，两根轴各算一次取紧的。 */
+  /* 摆正也要放grande. 脸心拉到框心anterior提esImagen比框grande得够más—No许露白, ImagenNo够grande时脸Solo能
+     被顶En框边arriba, 量出来es够grande, ver着却es"pequeño而偏". 脸离Imagen边缘越近, 它拉到
+     框心要放grande越más, 所以判据es"更近eseuno边到en proceso线距离", 两根轴各算uno次取紧.  */
   const centred = Math.max(
     frame.w / (2 * Math.min(face.cx, 1 - face.cx) * face.imgW * base),
     frame.h / (2 * Math.min(face.cy, 1 - face.cy) * face.imgH * base));
-  // 脸的源像素 ÷ 现在这个框要的设备像素。等于 1 就是已经 1:1，再放大就是上采样。
+  // 脸源像素 ÷ 现Eneste框要设备像素. etc.于 1 就esya经 1:1, 再放grande就esarriba采样. 
   const lossless = face.faceW / (shown * ratio);
   return Math.max(1, Math.min(
     Math.max(wanted, Math.min(centred, ceiling * side / shown)),
     lossless));
 }
 
-/** 取景结果，四个值都是相对框的百分比。
+/** 取景Resultado, cuatro值都es相对框cien分比. 
  *
- *  给百分比而不是像素：索引页大图版式的框宽跟着列宽走，视口一变就得跟着变，
- *  百分比让 CSS 自己跟随。`zoom` 按加载时的框尺寸算一次就够——框变大只会让
- *  放大倍数偏保守，不会突然越过无损上限。 */
+ *  给cien分比而Noes像素: 索引páginagrandeImagen版框ancho跟着列ancho走, 视口uno变就得跟着变, 
+ *  cien分比让 CSS 自己跟随. `zoom` 按Cargar时框尺寸算uno次就够—框变grandeSolo会让
+ *  放grande倍数偏保守, No会突然越过Sin损arriba限.  */
 export function faceFrame(face: Partial<FaceBox> | null | undefined, frame: FrameSize | null | undefined, dpr = 1,
                           target = FACE_TARGET, ceiling = FACE_CEILING):
   { zoom: number; width: number; height: number; left: number; top: number } | null {
   const zoom = faceZoom(face, frame, dpr, target, ceiling);
-  // 倍数大于 1 就说明框量得到尺寸；这里再判一次只是给类型收窄。
+  // 倍数grande于 1 就Descripción框量得到尺寸; aquí再判uno次Soloes给Tipo收estrecho. 
   if (zoom <= 1 || !hasFaceBox(face) || !frame) return null;
   const scale = Math.max(frame.w / face.imgW, frame.h / face.imgH) * zoom;
   const width = face.imgW * scale;
   const height = face.imgH * scale;
-  // 脸心对准框心，再夹回来不许露白。`zoom >= 1` 且底子是 cover，所以图一定比框大，
-  // 这个区间不会是空的。
+  // 脸心对准框心, 再carpeta回来No许露白. `zoom >= 1` 且底子es cover, 所以Imagenuno定比框grande, 
+  // este区间No会es空. 
   const left = Math.min(0, Math.max(frame.w - width, frame.w / 2 - face.cx * width));
   const top = Math.min(0, Math.max(frame.h - height, frame.h / 2 - face.cy * height));
   const pct = (value: number, span: number) => Math.round(value / span * 1e4) / 100;

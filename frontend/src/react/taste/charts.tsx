@@ -1,10 +1,10 @@
-/* 口味页的三张图：口味维度的雷达与排行条、创作者线索的流向图。浏览活跃的两张热力图与
- * 统计页共用 `../charts/heat-card.tsx`。
+/* 口味páginatresImagen: 口味维度雷达y排行, 创作者Pistas流向Imagen. Explorar活跃两热力Imageny
+ * Estadísticaspágina共用 `../charts/heat-card.tsx`. 
  *
- * 雷达与排行条由 EvilCharts 画，悬停浮层是 `../charts/chart-tip.tsx`，差异登记在
- * `../evilcharts/ORIGIN.md`。雷达的半径是平方根刻度，浮层仍读原始次数。流向图保留 `d3-sankey` 自绘（ADR-0076）：几何全写成属性，流的粗细
- * 是 `stroke-width`，颜色只取 BoardUI 的 `chart-*` 档；指向一条流或一个节点时读数换成它的，
- * 换的是 React 状态，指针离开或焦点移走就回到总数。差异登记在 `../boardui/ORIGIN.md`。 */
+ * 雷达y排行由 EvilCharts 画, Pasar el ratón浮层es `../charts/chart-tip.tsx`, 差异登记En
+ * `../evilcharts/ORIGIN.md`. 雷达medio径es平方根刻度, 浮层仍读Original次数. 流向Imagen保Deja `d3-sankey` 自绘(ADR-0076): 几何Todo写成属性, 流粗细
+ * es `stroke-width`, ColorSolo取 BoardUI  `chart-*` 档; 指向uno流或uno节点时读数换成它, 
+ * 换es React Estado, 指针离开或焦点移走就回到Total数. 差异登记En `../boardui/ORIGIN.md`.  */
 import { useState } from 'react';
 import { Text } from 'recharts';
 
@@ -21,8 +21,8 @@ import {
   type CreatorFlow, type RankRow,
 } from './taste';
 
-/** 雷达顶点外侧的维度名。左右两侧的名字往外排，能用的宽度是顶点到图框边；上下两个居中排，
- *  能用的是顶点到较近那条边的两倍。放不下就截断，全名在 `<title>`、浮层与读屏名称里。 */
+/** 雷达顶点exterior侧维度名. izquierdaderecha两侧名字往exterior排, 能用ancho度es顶点到Imagen框边; arribaabajo两居en proceso排, 
+ *  能用es顶点到较近ese边两倍. 放Noabajo就截断, Todo名En `<title>`, 浮层y读屏名称dentro.  */
 function RadarTick(
   props: { x?: number; cx?: number; textAnchor?: string; payload?: { value?: unknown } } & Record<string, unknown>,
 ) {
@@ -42,7 +42,7 @@ function RadarTick(
   );
 }
 
-/** 六档图表色循环。类名写成整串，Tailwind 扫得到。 */
+/** seis档Imagen表色循环. 类名写成Completo串, Tailwind 扫得到.  */
 const FLOW_STROKE = [
   'stroke-chart-1', 'stroke-chart-2', 'stroke-chart-3',
   'stroke-chart-4', 'stroke-chart-5', 'stroke-chart-6',
@@ -52,40 +52,40 @@ const FLOW_FILL = [
   'fill-chart-4', 'fill-chart-5', 'fill-chart-6',
 ];
 
-/** 口味维度两张图的系列：一个维度下命中的标签次数。颜色跟着口味页读数卡的 `chart-4`。 */
-const DIMENSION_CONFIG = { value: { label: '标签命中', colors: tone(CHART_COLORS[3]) } };
+/** 口味维度两ImagenSerie: uno维度abajo命en procesoEtiqueta次数. Color跟着口味página读数卡 `chart-4`.  */
+const DIMENSION_CONFIG = { value: { label: 'Etiqueta命En proceso', colors: tone(CHART_COLORS[3]) } };
 
-/** 排行条的最低高度按条数给，一条一格 32：窄屏里排行条独占一行、或维度不足三个画不出雷达时，
- *  它就是这么高。旁边有雷达时整块跟着雷达那一栏拉到等高，多出来的高度拉开条与条的间距。
- *  类名写成整串，Tailwind 扫得到。 */
+/** 排行最bajoalto度按数给, unouno格 32: estrecho屏dentro排行独占uno行, 或维度No足tres画No出雷达时, 
+ *  它就eseste么alto. 旁边Con雷达时Completo跟着雷达eseuno栏拉到etc.alto, más出来alto度拉开yEspaciado. 
+ *  类名写成Completo串, Tailwind 扫得到.  */
 const RANK_HEIGHT = ['min-h-24', 'min-h-24', 'min-h-24', 'min-h-32', 'min-h-40', 'min-h-48', 'min-h-52', 'min-h-60', 'min-h-64'];
 
-/** 一条柱的粗细上限，与一格 32 里默认留出的粗细相同：图拉高时条不跟着变粗。 */
+/** uno柱粗细arriba限, yuno格 32 dentroPredeterminadoDeja出粗细相同: Imagen拉alto时No跟着变粗.  */
 const RANK_BAR_SIZE = 26;
 
-/** 雷达图画的是 `radius` 列，名字与颜色跟口味维度的另外两张图一致。 */
+/** 雷达Imagen画es `radius` 列, 名字yColor跟口味维度另exterior两Imagenuno致.  */
 const RADAR_CONFIG = { radius: DIMENSION_CONFIG.value };
 
-/** 雷达图的半径刻度，也是这张图唯一一处换算：`√(次数 / 最大次数)`，最大的维度落在外圈（1）。
- * 头一个维度常是其余的十倍以上，线性半径会把面压成一根尖刺，读不出次要维度的形状；开方后
- * 它们才撑得开。原始次数留在 `value` 列，浮层读它，数值本身由旁边的排行条给。 */
+/** 雷达Imagenmedio径刻度, 也esesteImagen唯unouno处换算: `√(次数 / 最grande次数)`, 最grande维度落Enexterior圈(1). 
+ * 头uno维度常es其余diez倍以arriba, 线性medio径会面压成uno根尖刺, 读No出次要维度形状; 开方posterior
+ * 它们才撑得开. Original次数DejaEn `value` 列, 浮层读它, 数值本身由旁边排行给.  */
 const radarRadius = (value: number, top: number) => Math.sqrt(value / top);
 
-/** 主要口味维度的雷达图，画的是 EvilCharts 的 `EvilRadarChart`。三个维度以下画不成面，那时整块不出现。 */
+/** 主要口味维度雷达Imagen, 画es EvilCharts  `EvilRadarChart`. tres维度以abajo画No成面, ese时CompletoNo出现.  */
 export function TasteRadar({ rows, label }: { rows: RankRow[]; label: string }) {
   const points = radarRows(rows);
   if (!points.length) return null;
   const top = points[0]!.value;
   const data = points.map((row) => ({ ...row, radius: radarRadius(row.value, top) }));
   return (
-    <div role="img" aria-label={`${label}：${data.map((row) => row.name).join('，')}`}>
-      {/* 半径压到六成：维度名排在顶点外侧，七八个字的名字在窄栏里要放得下，不被图框切掉。 */}
+    <div role="img" aria-label={`${label}: ${data.map((row) => row.name).join(', ')}`}>
+      {/* medio径压到seis成: 维度名排En顶点exterior侧, sieteocho字名字Enestrecho栏dentro要放得abajo, No被Imagen框切掉.  */}
       <EvilRadarChart data={data} config={RADAR_CONFIG} chartProps={{ outerRadius: '58%' }}
         className="aspect-auto h-70 text-text-secondary">
         <EvilRadarChart.PolarGrid />
         <EvilRadarChart.PolarAngleAxis dataKey="name" tick={<RadarTick />} />
-        {/* 半径轴定死在 0 到 1：外圈就是最大的维度，不让 Recharts 往上取整留出空圈。网格圈跟着
-            这根轴的刻度走，Recharts 默认只取整数刻度，要放开小数才有四等分的圈。 */}
+        {/* medio径轴定死En 0 到 1: exterior圈就es最grande维度, No让 Recharts 往arriba取CompletoDeja出空圈. Cuadrícula圈跟着
+            este根轴刻度走, Recharts PredeterminadoSolo取Completo数刻度, 要放开pequeño数才Concuatroetc.分圈.  */}
         <EvilRadarChart.PolarRadiusAxis domain={[0, 1]} allowDecimals tick={false} />
         <EvilRadarChart.Radar dataKey="radius" />
         <ChartTip valueKey="value" />
@@ -94,9 +94,9 @@ export function TasteRadar({ rows, label }: { rows: RankRow[]; label: string }) 
   );
 }
 
-/** 口味维度排行：一个维度一条横向的柱，画的是 EvilCharts 的 `EvilBarChart`，数标在柱尾。
- *  整块在纵向 flex 里撑满父级给的高度，图表容器本身是 `flex-1`。维度名那一栏有宽度上限，
- *  名字再长也只截断，不把柱子挤没。 */
+/** 口味维度排行: uno维度uno横向柱, 画es EvilCharts  `EvilBarChart`, 数标En柱尾. 
+ *  CompletoEn纵向 flex dentro撑满父级给alto度, Imagen表容Dispositivo本身es `flex-1`. 维度名eseuno栏Conancho度arriba限, 
+ *  名字再largo也Solo截断, No柱子挤没.  */
 export function RankedBars({ rows, label }: { rows: RankRow[]; label: string }) {
   const data = topScores(rows, RANK_MAX);
   if (!data.length) return null;
@@ -116,23 +116,23 @@ export function RankedBars({ rows, label }: { rows: RankRow[]; label: string }) 
   );
 }
 
-/** 创作者线索的来源流向。指一条流或一个节点，读数换成它。 */
+/** 创作者Pistas来源流向. 指uno流或uno节点, 读数换成它.  */
 export function CreatorSankey({ flows }: { flows: CreatorFlow[] | undefined }) {
   const [shown, setShown] = useState<{ value: number; label: string; node: number | null } | null>(null);
   const graph = flowGraph(flows);
   if (!graph) return null;
   const node = shown?.node ?? null;
-  /** 这条流此刻要不要淡下去。指的是节点时留下它两端的流，指的是流时只留它自己。 */
+  /** este流此刻要No要淡abajo去. 指es节点时Dejaabajo它两端流, 指es流时SoloDeja它自己.  */
   const linkLit = (link: typeof graph.links[number], key: string) =>
     (!shown ? true
       : node !== null ? link.source === node || link.target === node
       : shown.label === key);
   return (
     <section className={CHART_CARD}>
-      <ChartHead title="创作者线索来源" figure={(shown ? shown.value : graph.total).toLocaleString()}
-        note={shown ? shown.label : '条线索'} />
-      {/* 两侧各留一截给节点名，画布窄于 640 时字缩到读不清：手机上换成按线索数排的一列流向。 */}
-      <ol aria-label="来源网站与创作者线索" className="flex flex-col sm:hidden">
+      <ChartHead title="Fuentes de pistas de creador" figure={(shown ? shown.value : graph.total).toLocaleString()}
+        note={shown ? shown.label : 'ResultadoPistas'} />
+      {/* 两侧各Dejauno截给节点名, 画布estrecho于 640 时字缩到读No清: Teléfonoarriba换成按Pistas数排uno列流向.  */}
+      <ol aria-label="Sitio web de fuente y pistas de creador" className="flex flex-col sm:hidden">
         {[...graph.links].sort((a, b) => b.value - a.value).map((link) => (
           <li key={link.key}
             className="flex items-baseline justify-between gap-3 border-b border-separator-border py-2 text-body-2-regular text-text-primary last:border-b-0">
@@ -143,12 +143,12 @@ export function CreatorSankey({ flows }: { flows: CreatorFlow[] | undefined }) {
       </ol>
       <div className="min-w-0 max-sm:hidden">
         <svg viewBox={`0 0 ${FLOW_VIEWBOX.width} ${graph.height}`} fill="none"
-          role="img" aria-label="来源网站与创作者线索"
+          role="img" aria-label="Sitio web de fuente y pistas de creador"
           className="block h-auto w-full" onPointerLeave={() => setShown(null)}>
           <g>
             {graph.links.map((link) => (
               <path key={link.key} d={link.d} strokeWidth={link.width} tabIndex={0} role="img"
-                aria-label={`${link.label}：${link.value} 条线索`}
+                aria-label={`${link.label}: ${link.value} ResultadoPistas`}
                 fillOpacity={0} strokeOpacity={linkLit(link, link.label) ? 0.55 : 0.08}
                 className={`outline-none transition-opacity ${FLOW_STROKE[link.color]}`}
                 onPointerEnter={() => setShown({ value: link.value, label: link.label, node: null })}
@@ -159,7 +159,7 @@ export function CreatorSankey({ flows }: { flows: CreatorFlow[] | undefined }) {
           <g>
             {graph.nodes.map((item) => (
               <g key={item.id} tabIndex={0} role="img"
-                aria-label={`${item.name}：${item.value} 条线索`}
+                aria-label={`${item.name}: ${item.value} ResultadoPistas`}
                 className="outline-none focus-visible:opacity-100"
                 onPointerEnter={() => setShown(
                   { value: item.value, label: item.name, node: item.index })}
@@ -183,7 +183,7 @@ export function CreatorSankey({ flows }: { flows: CreatorFlow[] | undefined }) {
         </svg>
       </div>
       <footer className="flex justify-between gap-3 text-caption-1-regular text-text-secondary max-sm:hidden">
-        <span>来源网站</span><span>创作者 · 线索占比</span>
+        <span>Sitio web de fuente</span><span>Creador · Pistas占比</span>
       </footer>
     </section>
   );

@@ -38,7 +38,7 @@ function DockSurface({ children, count, label }: Omit<SelectionDockProps, 'visib
   );
 }
 
-/** 持续挂载这个外壳，数量变化只更新内容，清空选择由内部完成退出。 */
+/** 持续挂载esteexterior壳, Cantidad变化SoloActualizarcontenido, 清空Seleccionar由interior部CompletadoCerrar sesión.  */
 export function SelectionDock({ visible, ...props }: SelectionDockProps) {
   return <AnimatePresence>{visible ? <DockSurface key="selection" {...props} /> : null}</AnimatePresence>;
 }

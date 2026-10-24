@@ -1,8 +1,8 @@
-/* 关注详情 `/posts/:id` 的数据与判定（ADR-0031）。
+/* 关注Detalles `/posts/:id` Datosy判定(ADR-0031). 
  *
- * 这一块是舞台岛（`../stage/`）树里的子组件；舞台本身、进出场、小窗与 Video.js 归舞台岛
- * （JAV 详情也在用）。条目归这里：先扫关注页岛已缓存的那几页（`findFollowItem`）与已取过的详情，
- * 扫不到才单条取 `GET /api/follow?item=<id>`，响应形状同列表那一页，只含这一条所在的组。 */
+ * esteunoes舞岛(`../stage/`)树en la子组件; 舞本身, 进出场, pequeño窗y Video.js 归舞岛
+ * (JAV Detalles也En用). Entrada归aquí: 先扫关注página岛ya缓存ese几página(`findFollowItem`)yya取过Detalles, 
+ * 扫No到才单取 `GET /api/follow?item=<id>`, Respuesta形状同Listaeseunopágina, Solo含esteuno所En组.  */
 import type { QueryKey } from '@tanstack/react-query';
 import { apiGet } from '../../api';
 import {
@@ -13,9 +13,9 @@ import {
 import type { LightboxSlide } from '../photo-lightbox/photo-lightbox';
 import { queryClient } from '../query';
 
-/* ── 接口形状（`src/peach/web_follow.py`） ── */
+/* ── Interfaz形状(`src/peach/web_follow.py`) ── */
 
-/** 条目里嵌着的一份媒体：详情比卡片多读名字、字节数、类型与网盘分组。 */
+/** Entradadentro嵌着uno媒体: Detalles比卡片más读名字, 字节数, Tipoy网盘Agrupar.  */
 export interface FollowDetailMedia extends FollowMediaItem {
   name?: string;
   size?: number;
@@ -25,7 +25,7 @@ export interface FollowDetailMedia extends FollowMediaItem {
   resource_group_label?: string;
 }
 
-/** 详情读到的条目字段；其余原样留在 `FollowItem` 的索引签名里。 */
+/** Detalles读到Entrada字段; 其余Original样DejaEn `FollowItem` 索引Firmadentro.  */
 export interface FollowDetailItem extends FollowItem {
   url?: string;
   summary?: string;
@@ -43,7 +43,7 @@ export interface FollowDetailItem extends FollowItem {
   media_items?: FollowDetailMedia[];
 }
 
-/** 一条详情要的全部：条目、它所在的组，以及署名要读的来源与别名。 */
+/** unoDetalles要Todo: Entrada, 它所En组, 以及署名要读来源y别名.  */
 export interface FollowDetailData {
   item: FollowDetailItem;
   group: FollowGroup | null;
@@ -59,12 +59,12 @@ export const FOLLOW_ITEM_URL = (id: number) => `/api/follow?item=${encodeURIComp
 export const FOLLOW_SAVE_URL = '/api/follow/save';
 export const FOLLOW_MEDIA_HIDE_URL = '/api/follow/media/hide';
 
-/** 条目已不存在：重试也取不回来，详情给的是「回到关注」而不是重试。 */
+/** EntradayaNo存En: Reintentar也取No回来, Detalles给es"回到关注"而NoesReintentar.  */
 export class FollowItemGone extends Error {
-  constructor() { super('这条关注内容已不存在') }
+  constructor() { super('esteResultadoSeguircontenidoYaNo存En') }
 }
 
-/** 单条取：响应只含这一条所在的组。条目已不存在时服务端回空组，这里报成 `FollowItemGone`。 */
+/** 单取: RespuestaSolo含esteuno所En组. EntradayaNo存En时服务端回空组, aquí报成 `FollowItemGone`.  */
 export async function fetchFollowItem(id: number, signal?: AbortSignal): Promise<FollowDetailData> {
   const page = await apiGet<FollowPage>(FOLLOW_ITEM_URL(id), signal);
   for (const group of page.groups || []) {
@@ -74,8 +74,8 @@ export async function fetchFollowItem(id: number, signal?: AbortSignal): Promise
   throw new FollowItemGone();
 }
 
-/** 已经取过的详情里，组里有这一条的那一份：合集换版本、多媒体换到组里另一条，组就是舞台上
- *  正摆着的那一份，单条取回来的也只是同一组。 */
+/** ya经取过Detallesdentro, 组dentroConesteunoeseuno: 合集换Versión, más媒体换到组dentro另uno, 组就es舞arriba
+ *  正摆着eseuno, 单取回来也Soloes同uno组.  */
 function findDetailGroupItem(id: number): FollowDetailData | null {
   for (const [, data] of queryClient.getQueriesData<FollowDetailData>({ queryKey: ['follow-item'] })) {
     if (!data?.group) continue;
@@ -85,8 +85,8 @@ function findDetailGroupItem(id: number): FollowDetailData | null {
   return null;
 }
 
-/** 首屏：列表缓存里有就直接用（关掉详情回列表也不重取）；这一条取过、或者就在舞台上那一组里，
- *  也不再问服务端——点下去到换过去之间没有等待。都没有才单条取；凭据没取过才取。 */
+/** primero屏: Lista缓存dentroCon就直continuar用(关掉Detalles回Lista也Nopesado取); esteuno取过, 或者就En舞arribaeseuno组dentro, 
+ *  也No再问服务端—点abajo去到换过去之间SinEsperando. 都Sin才单取; Credenciales没取过才取.  */
 export async function prefetchFollowDetail(props: { id: number }, signal: AbortSignal): Promise<void> {
   const key = followItemKey(props.id);
   const hit = findFollowItem(props.id);
@@ -100,32 +100,32 @@ export async function prefetchFollowDetail(props: { id: number }, signal: AbortS
   await credentials;
 }
 
-/* ── 壳递进来的那几样 ── */
+/* ── 壳递进来ese几样 ── */
 
 export interface FollowDetailActions {
-  /** 关闭详情回到来处（壳的 `closeDetail`：退场动画、拆舞台、推回列表地址）。 */
+  /** CerrarDetalles回到来处(壳 `closeDetail`: 退场动画, 拆舞, 推回Lista地址).  */
   close(): void;
-  /** 换到组里的另一条：经壳换地址（`preserveReturn` 语义），舞台原地换内容。 */
+  /** 换到组en la另uno: 经壳换地址(`preserveReturn` 语义), 舞Original地换contenido.  */
   openItem(id: number, mediaIndex?: number | null): void;
   openAuthor(name: string): void;
-  /** 点详情里的一枚标签：壳切换那一枚筛选，回到带上它的列表。 */
+  /** 点Detallesen launoEtiqueta: 壳CambiareseunoFiltrar, 回到带arriba它Lista.  */
   openTag(tag: string): void;
-  /** 这一条、这一份媒体画出来了：壳据此更新小窗元数据、侧栏标签抽屉与舞台的氛围光、剧场模式。 */
+  /** esteuno, esteuno媒体画出来: 壳据此Actualizarpequeño窗Metadatos, 侧栏Etiqueta抽屉y舞氛围光, 剧场Modo.  */
   present(item: FollowDetailItem, kind: string): void;
-  /** 把媒体框交给舞台挂播放器（同作品详情：`<video>` 由舞台建在框里）。`onError` 是片源报错，
-   *  详情据此说明这一份没放出来。返回的清理在这块媒体区卸下时调。 */
+  /** 媒体框交给舞挂ReproducirDispositivo(同ObrasDetalles: `<video>` 由舞建En框dentro). `onError` es片源报错, 
+   *  Detalles据此Descripciónesteuno没放出来. 返回LimpiarEneste媒体区卸abajo时调.  */
   mountPlayer(frame: HTMLElement, item: FollowDetailItem, media: FollowDetailMedia | null,
     options: { onError(): void }): () => void;
-  /** 操作回执；给了 `undo` 就带一颗撤销键。失败走 `failure`。 */
+  /** 操作回执; 给 `undo` 就带unoDeshacerClave. Fallo走 `failure`.  */
   toast(message: string, options?: { undo?: () => Promise<void> }): void;
   failure(action: string, error: unknown): void;
 }
 
 export interface FollowDetailProps {
   id: number;
-  /** 进来时要看的那份媒体（`media_items[].index`）；空就按当前视图挑第一份。 */
+  /** 进来时要verese媒体(`media_items[].index`); 空就按当anterior视Imagen挑No.uno.  */
   mediaIndex: number | null;
-  /** 列表停在视频还是图片：多媒体帖先挑这种媒体。 */
+  /** Lista停En视频还esImagen片: más媒体帖先挑este媒体.  */
   mediaView: FollowMedia;
   relatedLimit: number;
   helpers: FollowFeedHelpers;
@@ -139,17 +139,17 @@ export interface DetailMedia {
   selected: FollowDetailMedia | null;
   kind: string;
   images: FollowDetailMedia[];
-  /** 当前这张在图片里的位置；不是图片时是 -1。 */
+  /** 当anterioresteEnImagen片en laUbicación; NoesImagen片时es -1.  */
   position: number;
   carousel: boolean;
-  /** 多份媒体又不是纯图轮播：右边摆多媒体队列。 */
+  /** más媒体又Noes纯Imagen轮播: derecha边摆más媒体Cola.  */
   embeddedQueue: boolean;
-  /** 条目自己没有嵌入媒体、组里却有几条可播视频：右边摆合集队列。 */
+  /** Entrada自己Sin嵌入媒体, 组dentro却Con几puede播视频: derecha边摆合集Cola.  */
   collection: FollowGroup | null;
-  /** 画框比例跟整组图走、不跟当前这张：换图时详情不忽高忽低，图没加载完也先占住位置。
-   *  有尺寸的图里取最高的那张（宽高比最小）；一张都没有时轮播用方框，单图由图片自己撑开。 */
+  /** 画框Relación跟Completo组Imagen走, No跟当anterioreste: 换Imagen时DetallesNo忽alto忽bajo, Imagen没Cargar完也先占住Ubicación. 
+   *  Con尺寸Imagendentro取最altoese(anchoalto比最pequeño); uno都Sin时轮播用方框, 单Imagen由Imagen片自己撑开.  */
   frameRatio: number;
-  /** 正片地址（`/follow-stream`）；条目不可播时是空串。 */
+  /** 正片地址(`/follow-stream`); EntradaNopuede播时es空串.  */
   src: string;
 }
 
@@ -174,7 +174,7 @@ export function detailMedia(item: FollowDetailItem, group: FollowGroup | null, m
   return { embedded, selected, kind, images, position, carousel, embeddedQueue, collection, frameRatio, src };
 }
 
-/** 组里挂着网盘分组媒体的那一条：合集队列改列它的媒体，不列回复。 */
+/** 组dentro挂着网盘Agrupar媒体eseuno: 合集Cola改列它媒体, No列回复.  */
 export const groupedMediaOwner = (group: FollowGroup): FollowDetailItem | undefined =>
   collectionItems(group).find((item) => ((item as FollowDetailItem).media_items || [])
     .some((media) => media.resource_group)) as FollowDetailItem | undefined;
@@ -189,48 +189,48 @@ const RESOURCE_PROVIDERS: Record<string, string> = {
   gofile: 'Gofile', pixeldrain: 'Pixeldrain', mega: 'MEGA', mediafire: 'MediaFire', google_drive: 'Google Drive',
 };
 
-/** 外部文件页那一排的站名：认得的网盘写品牌名，其余写主机名。 */
+/** exterior部Archivopáginaeseuno排站名: 认得网盘写marca名, 其余写Anfitrión名.  */
 export function resourceLabel(url: string): string {
   try {
     const host = new URL(url).hostname.replace(/^www\./, '');
     return RESOURCE_HOSTS[host] || host;
   } catch {
-    return '外部文件页';
+    return 'exterior título(s)Archivopágina';
   }
 }
 
-/** 灯箱角上那一行出处：网盘分组的媒体写网盘，其余写来源站。 */
+/** 灯箱角arribaeseuno行出处: 网盘Agrupar媒体写网盘, 其余写来源站.  */
 export function mediaSourceLabel(media: FollowDetailMedia | null | undefined, item: FollowDetailItem): string {
-  return RESOURCE_PROVIDERS[media?.resource_provider || ''] || item.provider_label || item.provider || '在线图片';
+  return RESOURCE_PROVIDERS[media?.resource_provider || ''] || item.provider_label || item.provider || 'Imagen en línea';
 }
 
-/** 合集队列一行的行首标记与正文。线程标题不能冒充每条回复的正文，行首说明它与主条目的关系；
- *  发布时间单独显示，不能再伪装成版本或类型标签。 */
+/** 合集Colauno行行primeroEtiquetay正文. 线程TítuloNo能冒充每回复正文, 行primeroDescripción它y主Entrada关系; 
+ *  PublicarTiempo单独显示, No能再伪装成Versión或TipoEtiqueta.  */
 export function collectionCopy(group: FollowGroup, item: FollowDetailItem, mark = ''): { label: string; title: string } {
   let label = mark;
   if (!label && group.is_release) label = item.variant_label || item.variant_kind || '';
-  if (!label) label = item.variant_kind === 'wip' ? 'WIP' : (item.variant_label || item.variant_kind || '视频');
-  const body = group.is_release ? (item.summary || (item.has_media ? '（仅附件）' : '（无正文）')) : item.title;
-  return { label, title: group.is_release && item.author ? `${item.author}：${body}` : body };
+  if (!label) label = item.variant_kind === 'wip' ? 'WIP' : (item.variant_label || item.variant_kind || 'Videos');
+  const body = group.is_release ? (item.summary || (item.has_media ? '(solo adjunto)' : '(Ninguno正文)')) : item.title;
+  return { label, title: group.is_release && item.author ? `${item.author}: ${body}` : body };
 }
 
-/** 多媒体队列一行的名字：关注媒体不是 JAV，只去掉首尾空白（同遗留层 `javDisplayName` 的非 JAV 分支）。 */
+/** más媒体Colauno行名字: 关注媒体Noes JAV, Solo去掉primero尾空白(同遗Deja层 `javDisplayName` 非 JAV 分支).  */
 export const mediaName = (media: FollowDetailMedia) => String(media.name || '').trim();
 
-/** 来源记下的标签类型；没记的是 `unknown`，保持中性色——不按词形猜类型是关注标签的既有门槛。 */
+/** 来源记abajoEtiquetaTipo; 没记es `unknown`, 保持en proceso性色—No按词形猜Tipoes关注Etiqueta既Con门槛.  */
 export const tagType = (item: FollowDetailItem, tag: string) => item.tag_types?.[tag] || 'unknown';
 
-/** 标签着色那一档（`data-tag-cat`，色板在 `../styles.css`）：来源认得的五类各有颜色，没记类型的
- *  是中性色，其余类型（booru 各站自己多出来的）按 general 着色。 */
+/** Etiqueta着色eseuno档(`data-tag-cat`, 色板En `../styles.css`): 来源认得cinco类各ConColor, 没记Tipo
+ *  esen proceso性色, 其余Tipo(booru 各站自己más出来)按 general 着色.  */
 const COLORED_TYPES = new Set(['artist', 'character', 'copyright', 'metadata', 'unknown']);
 export function tagCategory(item: FollowDetailItem, tag: string): string {
   const type = tagType(item, tag);
   return `r34-${COLORED_TYPES.has(type) ? type : 'general'}`;
 }
 
-/* 详情标签按 rule34.xxx 帖子页 `#tag-sidebar` 的类型顺序分组，组内按名升序——证据见
-   docs/reference-snapshots/rule34-follow-tags-and-collections.md，缺的类型直接跳过不占位。
-   卡片只消费 general 内容投影；详情保留来源记录的全部类型。 */
+/* DetallesEtiqueta按 rule34.xxx 帖子página `#tag-sidebar` Tipo顺序Agrupar, 组interior按名升序—证据见
+   docs/reference-snapshots/rule34-follow-tags-and-collections.md, 缺Tipo直continuarOmitirNo占. 
+   卡片Solo消费 general contenido投影; Detalles保Deja来源RegistroTodoTipo.  */
 const TAG_ORDER = ['copyright', 'character', 'artist', 'general', 'metadata'];
 export function detailTags(item: FollowDetailItem, label: (tag: string) => string): string[] {
   const tags = item.detail_tags || item.tags || [];
@@ -241,7 +241,7 @@ export function detailTags(item: FollowDetailItem, label: (tag: string) => strin
   return [...tags].sort((a, b) => rank(a) - rank(b) || label(a).localeCompare(label(b)));
 }
 
-/** 署名那一组来源：同一创作者的全部来源，认不出创作者时只有这一条自己的来源。 */
+/** 署名eseuno组来源: 同uno创作者Todo来源, 认No出创作者时SoloConesteuno自己来源.  */
 export function authorSources(item: Pick<FollowItem, 'source_id'>, sources: readonly FollowSource[]): FollowSource[] {
   const source = sources.find((row) => row.id === item.source_id);
   const group = sources.filter((row) => source?.author_key && row.author_key === source.author_key);
@@ -254,8 +254,8 @@ export const detailContext = (data: FollowDetailData, credentials: ReadonlySet<s
 });
 
 /* ── 灯箱 ──
-   详情里点图开大图，跟女优页同一个灯箱。多图时把整组交进去，左右翻页就能看完一条帖子的所有图；
-   取不到正片就退而用缩略图——看小图总比点了没反应强。 */
+   Detallesdentro点Imagen开grandeImagen, 跟Actrizpágina同uno灯箱. másImagen时Completo组交进去, izquierdaderecha翻página就能ver完uno帖子所ConImagen; 
+   取No到正片就退而用缩略Imagen—verpequeñoImagenTotal比点没反应强.  */
 const sized = (media: FollowDetailMedia | null) => (media?.size ? { size: media.size } : {});
 
 export function detailSlides(item: FollowDetailItem, media: DetailMedia): LightboxSlide[] {
@@ -272,10 +272,10 @@ export function detailSlides(item: FollowDetailItem, media: DetailMedia): Lightb
       ...sized(selected) }];
   }
   return item.thumb_url ? [{ src: item.thumb_url, thumb: item.thumb_url, name: item.title,
-    source: item.provider_label || item.provider || '在线图片' }] : [];
+    source: item.provider_label || item.provider || 'Imagen en línea' }] : [];
 }
 
-/* ── 写完之后 ── */
+/* ── 写完之posterior ── */
 
-/** 状态回执的说法与撤销：保存进数据库的不给撤销，那是另一件事。 */
-export const statusReceipt = (to: string) => (to === 'seen' ? '已标记看过' : '已更新关注状态');
+/** Estado回执说法yDeshacer: Guardar进DatosBibliotecaNo给Deshacer, esees另uno件事.  */
+export const statusReceipt = (to: string) => (to === 'seen' ? 'Marcado como visto' : 'Estado de seguimiento actualizado');

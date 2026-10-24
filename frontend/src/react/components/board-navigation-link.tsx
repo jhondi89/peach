@@ -1,6 +1,6 @@
 import type { ComponentProps } from 'react';
 
-/** BoardUI 的链接槽使用 Peach 的原生地址；页内导航由调用方接管。 */
+/** BoardUI 链continuar槽使用 Peach Original生地址; páginainterior导航由调用方continuar管.  */
 export default function BoardNavigationLink(props: ComponentProps<'a'>) {
   return <a {...props} />;
 }

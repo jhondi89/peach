@@ -1,7 +1,7 @@
-/* 错误页：浏览器直接打开的地址撞上 HTTP 错误时给人看的那一页。
+/* ErrorPágina: Explorar dispositivo直continuarAbrir地址撞arriba HTTP Error时给人vereseunopágina. 
  *
- * 服务端只给状态码（`data-status`）与已换成中文的说明（`data-detail`）；标题按状态码取，404 不显示
- * 说明，按钮回首页。标签页标题跟着标题走。 */
+ * 服务端Solo给Estado码(`data-status`)yya换成en proceso文Descripción(`data-detail`); Título按Estado码取, 404 No显示
+ * Descripción, 按钮回primeropágina. EtiquetapáginaTítulo跟着Título走.  */
 import { useEffect } from 'react';
 
 import { ButtonLink } from '@/components/base/buttons/button';
@@ -10,13 +10,13 @@ import { AuthCard } from '../auth-card';
 import type { PageData } from '../page-data';
 
 const TITLES: Readonly<Record<string, string>> = {
-  403: '这里不能打开',
-  404: '四〇四',
-  409: '现在不能这样做',
+  403: 'No se puede abrir aquí',
+  404: '404',
+  409: 'No se puede hacer esto ahora',
 };
 
 export function errorTitle(status: string | undefined): string {
-  return TITLES[status ?? ''] ?? '出了点问题';
+  return TITLES[status ?? ''] ?? 'Algo salió mal';
 }
 
 export function ErrorPage({ data }: { data: PageData }) {
@@ -26,7 +26,7 @@ export function ErrorPage({ data }: { data: PageData }) {
   }, [title]);
   return (
     <AuthCard title={title} lede={data.status === '404' ? undefined : data.detail}>
-      <ButtonLink href="/" className="self-start">返回首页</ButtonLink>
+      <ButtonLink href="/" className="self-start">VolverInicio</ButtonLink>
     </AuthCard>
   );
 }

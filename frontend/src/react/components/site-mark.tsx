@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { RiBuildingLine, RiGlobalLine } from '@remixicon/react';
 import { siteMarkUrl } from '@peach/legacy/core';
 
-/** 采集来源的站标由本站缓存或随应用提供的静态资源承载。 */
+/** Recolectar来源站标由本站缓存或随应用提供静态资源承载.  */
 export function SiteMark({ source }: { source: string }) {
   const [failed, setFailed] = useState(false);
   if (source === 'makers') return <RiBuildingLine aria-hidden className="size-4 shrink-0" />;

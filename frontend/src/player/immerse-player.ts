@@ -1,9 +1,9 @@
-/* 沉浸模式每一格的播放器：只留媒体本身。进度条、加载提示与动作键都由沉浸岛自己画，所以 Video.js
- * 挂成裸的一层，没有控件条、海报、转圈与错误层。
+/* InmersivoModo每uno格ReproducirDispositivo: SoloDeja媒体本身. Progreso, CargarSugerenciay动作Clave都由Inmersivo岛自己画, 所以 Video.js
+ * 挂成裸uno层, SinControles, 海报, 转圈yError层. 
  *
- * 片源与详情同一个判据（`playableStreamSource`），要转码分片的片子只有 Video.js 播得了；分片出错
- * 退回直读，和详情播放器同一个兜底。每格一个流会话，由调用方建好传进来：拆这一格时按会话取消，
- * 离开页面时调用方也按它取消。 */
+ * 片源yDetalles同uno判据(`playableStreamSource`), 要转码分片片子SoloCon Video.js 播得; 分片出错
+ * 退回直读,  y DetallesReproducirDispositivo同uno兜底. 每格uno流会话, 由调用方建bien传进来: 拆esteuno格时按会话Cancelar, 
+ * 离开página面时调用方也按它Cancelar.  */
 import { disposePlayer } from './dispose';
 import { cancelStreamSession, directStreamSource, playableStreamSource } from './stream';
 import { stopTelemetry, wireTelemetry } from './telemetry';
@@ -13,11 +13,11 @@ import { ensureVideojs } from './videojs';
 export interface ImmersePlayerOptions {
   kind: 'immerse';
   item: PlayerItem;
-  /** 这一格的流会话（`newStreamSession()`）。 */
+  /** esteuno格流会话(`newStreamSession()`).  */
   session: string;
-  /** 放完之后（沉浸模式接着放下一条）。 */
+  /** 放完之posterior(InmersivoModocontinuar着放Siguiente).  */
   onEnded?: () => void;
-  /** 片源已经交给 video：调用方从这一刻起等它可以出画。拆得比片源解析快时不回调。 */
+  /** 片源ya经交给 video: 调用方从esteuno刻起etc.它puede以出画. 拆得比片源解析rápido时No回调.  */
   onLoaded?: () => void;
 }
 
@@ -33,7 +33,7 @@ export function mountImmersePlayer(video: HTMLVideoElement, options: ImmersePlay
     if (released) return;
     const direct = directStreamSource(item, session);
     const segmented = String(source.type || '').includes('mpegurl');
-    // 播放器脚本拉不到时退回原生 video；原生元素播不了分片，只能直读。
+    // ReproducirDispositivo脚本拉No到时退回Original生 video; Original生元素播No分片, Solo能直读. 
     if (!vjs) video.src = (segmented ? direct : source).src;
     else {
       const mounted = vjs(video, BARE);

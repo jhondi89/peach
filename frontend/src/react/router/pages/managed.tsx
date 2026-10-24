@@ -1,16 +1,16 @@
-/* 管理区十一页与 `/resource-sync` 的页面元素：页面组按匹配挂上它们，挂上就打开那一页（ADR-0031「管理区页面由
- * 路由树按匹配打开」）。
+/* Gestionar区diezunopáginay `/resource-sync` página面元素: página面组按匹配挂arriba它们, 挂arriba就Abrireseunopágina(ADR-0031"Gestionar区página面由
+ * 路由树按匹配Abrir"). 
  *
- * 一次打开：等壳开始路由（`@peach/shell` 的 `pageOpens` 大于 0），经 `surfaceChanged` 让壳收起别的面、铺开管理区，铺这一页的
- * 骨架（与壳冷启动铺的是同一张，键相同就不重画），按需问一次 `/healthz`，再走 `openManagedRoute` 取齐首屏、
- * 在同一个任务里换成整页。首帧 props 由元素自己从地址、偏好与壳的状态算。
+ * uno次Abrir: etc.壳Empezar路由(`@peach/shell`  `pageOpens` grande于 0), 经 `surfaceChanged` 让壳收起别面, 铺开Gestionar区, 铺esteunopágina
+ * 骨架(y壳冷启动铺es同uno, Clave相同就Nopesado画), 按需问uno次 `/healthz`, 再走 `openManagedRoute` 取齐primero屏, 
+ * En同unoTareadentro换成Completopágina. primero帧 props 由元素自己从地址, 偏bieny壳Estado算. 
  *
- * 按页面打开序号挂 key：没人认领的历史变化一次就是打开一次，同一路径再打开就重挂重取；认领的写地址（复核页换分类、
- * 关注管理换页签）代次不变，不重开。详情压在上面时页面组还匹配这一页：key 停在压上来之前那一次，页面不拆；经背景
- * 匹配挂上的（后退落到压在这一页上的详情）先不打开，详情撤下时按那一刻的代次挂 key 打开。
+ * 按página面Abrir序号挂 key: 没人认领Historial变化uno次就esAbriruno次, 同unoRuta再Abrir就pesado挂pesado取; 认领写地址(复核página换Categoría, 
+ * 关注Gestionar换página签)代次No变, Nopesado开. Detalles压Enarriba面时página面组还匹配esteunoPágina: key 停En压arriba来之anterioreseuno次, página面No拆; 经Fondo
+ * 匹配挂en la(posterior退落到压Enesteunopáginaen laDetalles)先NoAbrir, Detalles撤abajo时按eseuno刻代次挂 key Abrir. 
  *
- * 卸载时这一页还画在 `#stats` 里、壳也没藏起它，才收起；资料页、首页压过来时壳只藏起 `#stats`，页面照旧活着，
- * 等下一次认领表面才收。收起排进微任务：卸载发生在路由根同步提交的那一次里。 */
+ * Desinstalar时esteunopágina还画En `#stats` dentro, 壳也没藏起它, 才收起; 资料página, primeropágina压过来时壳Solo藏起 `#stats`, página面照antiguo活着, 
+ * etc.Siguiente次认领表面才收. 收起排进微Tarea: Desinstalar发生En路由根Sincronizar提交eseuno次dentro.  */
 import { useContext, useEffect, useRef, useSyncExternalStore } from 'react';
 import { useLocation } from 'react-router';
 
@@ -30,16 +30,16 @@ import { javLibraryPath, javTab } from '../../jav/jav';
 import { ShellActionsContext, useOpenEpoch } from '../router';
 import type { ManagedOpenProps, ManagedPath, ShellActions } from '../shell-actions';
 
-/** 一次打开的存活状态：元素卸掉就不再画、不再滚动、不再写地址。 */
+/** uno次Abrir存活Estado: 元素卸掉就No再画, No再滚动, No再写地址.  */
 interface Run {
   live: boolean;
-  /** 画上之后那一页的代次；还在取首屏时是 0。 */
+  /** 画arriba之posterioreseunopágina代次; 还En取primero屏时es 0.  */
   revision: number;
-  /** 这一次的读请求（`/healthz`），卸掉时中止。 */
+  /** esteuno次读Por favor求(`/healthz`), 卸掉时en proceso止.  */
   controller: AbortController;
 }
 
-/** 本机的写入状态（`/healthz`）。 */
+/** 本机写入Estado(`/healthz`).  */
 interface Runtime {
   ledger_read_only?: boolean;
   ledger_read_only_message?: string;
@@ -49,16 +49,16 @@ interface Runtime {
 const FOLLOW_MANAGE_TABS = ['list', 'add', 'feeds'];
 
 const readStarted = () => pageOpens > 0;
-/** 壳开始路由没有（`pageOpens` 大于 0）。 */
+/** 壳Empezar路由Sin(`pageOpens` grande于 0).  */
 const useRoutingStarted = (): boolean => useSyncExternalStore(subscribeShell, readStarted);
 
-/* `/resource-sync` 改写过来的那一次数据管理页，打开后滚到资源同步那一块；取一次就清。 */
+/* `/resource-sync` 改写过来eseuno次DatosGestionarpágina, Abrirposterior滚到资源Sincronizareseuno; 取uno次就清.  */
 let resourceSyncPending = false;
 
 const followLayout = (): string => (appSettingsStore().value.followLayout === 'table' ? 'table' : 'default');
 const search = (): URLSearchParams => new URLSearchParams(window.location.search);
 
-/** 这一页的骨架：关注管理照偏好里的视图与地址上的排序画。 */
+/** esteunopágina骨架: 关注Gestionar照偏bienen la视Imageny地址en laOrdenar画.  */
 function placeholder(path: ManagedPath): string {
   const params = search();
   return managementSkeletonHtml(path, {
@@ -66,7 +66,7 @@ function placeholder(path: ManagedPath): string {
   });
 }
 
-/** 只读态：中止了回 null，照只能浏览以外的缺省处理。 */
+/** Solo读态: en proceso止回 null, 照Solo能Explorar以exterior缺省Procesar.  */
 function readRuntime(run: Run): Promise<Runtime | null> {
   return (api('/healthz', { signal: run.controller.signal }) as Promise<Runtime>)
     .catch((error: unknown) => { if (isAbort(error)) return null; throw error });
@@ -75,12 +75,12 @@ function readRuntime(run: Run): Promise<Runtime | null> {
 function writerProps(runtime: Runtime | null, path: string) {
   return {
     readOnly: !!runtime?.ledger_read_only,
-    readOnlyMessage: runtime?.ledger_read_only_message || '本机当前只能浏览',
+    readOnlyMessage: runtime?.ledger_read_only_message || 'Esta máquinaActualSolo能Explorar',
     writerUrl: runtime?.ledger_writer_origin ? new URL(path, runtime.ledger_writer_origin).href : '',
   };
 }
 
-/** 这一次打开交给页面的值，从地址、偏好与壳的状态算。等 `/healthz` 期间走开了回 null。 */
+/** esteuno次Abrir交给página面值, 从地址, 偏bieny壳Estado算. etc. `/healthz` 期间走开回 null.  */
 async function openProps(path: ManagedPath, run: Run): Promise<object | null> {
   if (path === '/jav') {
     const runtime = await readRuntime(run);
@@ -94,7 +94,7 @@ async function openProps(path: ManagedPath, run: Run): Promise<object | null> {
     return { onboarding } satisfies ManagedOpenProps['/taste'];
   }
   if (path.startsWith('/settings/')) {
-    if (window.location.hash === '#peachProxy') writeShell({ configurationRequestedSection: '网络与访问' });
+    if (window.location.hash === '#peachProxy') writeShell({ configurationRequestedSection: 'Red y acceso' });
     const section = search().get('section') || configurationRequestedSection || configurationSection(path);
     return (section ? { section } : {}) satisfies ManagedOpenProps['/settings/library'];
   }
@@ -124,7 +124,7 @@ async function openProps(path: ManagedPath, run: Run): Promise<object | null> {
 const scrollTop = (): void => { window.scrollTo({ top: 0, behavior: 'smooth' }) };
 const scrollToBlock = (id: string): void => { document.getElementById(id)?.scrollIntoView({ block: 'start' }) };
 
-/* 统计页与口味页取完就回顶，不论这一页还在不在；其余几页只在还停在这一页时滚。 */
+/* Estadísticaspáginay口味página取完就回顶, No论esteunopágina还EnNoEn; 其余几páginaSoloEn还停Enesteunopágina时滚.  */
 const SCROLL_ALWAYS = new Set<ManagedPath>(['/stats', '/taste']);
 const SCROLL_WHEN_CURRENT = new Set<ManagedPath>(['/review', '/quality-goals', '/tasks', '/subscriptions']);
 
@@ -158,14 +158,14 @@ async function openPage(path: ManagedPath, actions: ShellActions, run: Run): Pro
   if (!props) return;
   const opened = await openManagedRoute(path, props, { container: stats, isCurrent: () => run.live });
   if (opened) run.revision = managedEntry(stats)?.revision ?? 0;
-  /* 配置页选中的页签只交给画上的那一次：没画上（取数途中走开了）就留给下一次打开。 */
+  /* Configuraciónpágina选en procesopágina签Solo交给画en laeseuno次: 没画arriba(取数途en proceso走开)就Deja给Siguiente次Abrir.  */
   if (path.startsWith('/settings/') && opened) writeShell({ configurationRequestedSection: '' });
   if (SCROLL_ALWAYS.has(path)) scrollTop();
   if (run.live) {
     const { hash } = window.location;
     if (SCROLL_WHEN_CURRENT.has(path)) scrollTop();
     if (path === '/settings/library') {
-      /* 处理进度那一块搬到了数据管理页：改写地址（不加条目、不改标题），由数据管理页的元素接着打开。 */
+      /* ProcesarProgresoeseuno搬到DatosGestionarPágina: 改写地址(No加Entrada, No改Título), 由DatosGestionarpágina元素continuar着Abrir.  */
       if (hash === '#libraryProcessing') {
         queueMicrotask(() => { if (run.live) shellNavigate('/data-cleanup#libraryProcessing', { replace: true, state: null }) });
       } else if (hash === '#peachProxy') scrollToBlock('peachProxy');
@@ -176,18 +176,18 @@ async function openPage(path: ManagedPath, actions: ShellActions, run: Run): Pro
   if (syncAnchor) scrollToBlock('resource-sync');
 }
 
-/** 管理区一页的元素。 */
+/** Gestionar区unopágina元素.  */
 export function ManagedMatch({ path }: { path: ManagedPath }) {
   const epoch = useOpenEpoch();
-  // 每次导航都重渲染一次：详情撤下的那一次认领写地址不领代次，也要看得见。
+  // 每次导航都pesado渲染uno次: Detalles撤abajoeseuno次认领写地址No领代次, 也要ver得见. 
   useLocation();
   const covered = isOverlayPath(peachHistory.navigation.location.pathname);
   const opening = useRef<number | null>(covered ? null : epoch);
   const wasCovered = useRef(covered);
-  // 已打开的背景页在详情撤下时保留代次；深链下的背景等待首次打开。
+  // yaAbrirFondopáginaEnDetalles撤abajo时保Deja代次; profundo链abajoFondoEsperandoprimero次Abrir. 
   if (!covered && (!wasCovered.current || opening.current === null)) opening.current = epoch;
   wasCovered.current = covered;
-  // 路径也进 key：认领的写地址从一页换到另一页（配置页改写到数据管理页）时代次不变，页面组在同一个位置换了路由。
+  // Ruta也进 key: 认领写地址从unopágina换到另unopágina(Configuraciónpágina改写到DatosGestionarpágina)时代次No变, página面组En同unoUbicación换路由. 
   const group = path.startsWith('/settings/') ? '/settings/configuration' : path;
   return <ManagedPage key={`${group} ${opening.current ?? 'covered'}`} path={path} covered={opening.current === null} />;
 }
@@ -206,7 +206,7 @@ function ManagedPage({ path, covered }: { path: ManagedPath; covered: boolean })
     const current: Run = { live: true, revision: 0, controller: new AbortController() };
     run.current = current;
     queueMicrotask(() => { if (current.live) void openPage(path, actions, current) });
-    // 每次挂上只打开一次：壳开始路由那一刻，或挂上时已经开始了。
+    // 每次挂arribaSoloAbriruno次: 壳Empezar路由eseuno刻, 或挂arriba时ya经Empezar. 
   }, [started]);
   useEffect(() => () => {
     const current = run.current;
@@ -221,7 +221,7 @@ function ManagedPage({ path, covered }: { path: ManagedPath; covered: boolean })
   return null;
 }
 
-/** 旧直达地址 `/resource-sync`：改写成数据管理页的资源同步锚点，不加历史条目，再由数据管理页的元素打开。 */
+/** antiguo直达地址 `/resource-sync`: 改写成DatosGestionarpágina资源Sincronizar锚点, No加HistorialEntrada, 再由DatosGestionarpágina元素Abrir.  */
 export function ResourceSyncRedirect() {
   const started = useRoutingStarted();
   const done = useRef(false);

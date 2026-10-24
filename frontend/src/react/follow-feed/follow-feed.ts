@@ -1,17 +1,17 @@
-/* 关注页 `/follow`（ADR-0031 第 10g 步）：数据形状、取数键与这一页自己的判定。
+/* 关注página `/follow`(ADR-0031 No. 10g 步): Datos形状, 取数Claveyesteunopágina自己判定. 
  *
- * 整页一个岛，自己拥有取数：`/api/follow` 与 `/api/follow/credentials` 两趟都在 TanStack Query
- * 里。地址栏是筛选的唯一真相源，归壳写：壳从 URL 读出 `view`（状态、媒体、创作者、来源、题材、
- * 标签、排序、种子）当 props 递进来，岛改筛选只调 `actions.route(view)`，壳写好地址再经
- * `updateManagedRoute` 推回新的 `view`，岛按新键取数。
+ * Completopáginauno岛, 自己拥Con取数: `/api/follow` y `/api/follow/credentials` 两趟都En TanStack Query
+ * dentro. 地址栏esFiltrar唯uno真相源, 归壳写: 壳从 URL 读出 `view`(Estado, 媒体, 创作者, 来源, 题材, 
+ * Etiqueta, Ordenar, Semilla)当 props 递进来, 岛改FiltrarSolo调 `actions.route(view)`, 壳写bien地址再经
+ * `updateManagedRoute` 推回Nuevo `view`, 岛按NuevoClave取数. 
  *
- * 两粒种子分开：`view.seed` 是服务端随机排序那一粒，写在地址里；`seed` 是这一次进入的取样种子，
- * 上面创作者、题材、标签三排露出哪些由它定。重新进入（壳的 `enterFollow`）与「换一批」
- * 才换它，从别的页面回来沿用离开时那一粒，岛重画从不重新洗牌。
+ * 两粒Semilla分开: `view.seed` es服务端AleatorioOrdenareseuno粒, 写En地址dentro; `seed` esesteuno次进入取样Semilla, 
+ * arriba面创作者, 题材, Etiquetatres排露出哪些由它定. pesadoNuevo进入(壳 `enterFollow`)y"换uno批"
+ * 才换它, 从别página面回来沿用离开时eseuno粒, 岛pesado画从NopesadoNuevo洗牌. 
  *
- * 详情（`/posts/:id`）是另一座岛（`../follow-detail/`），先扫这里缓存的几页找条目
- * （`findFollowItem`），扫不到才单独取。侧栏仍归壳画：岛每取到一版列表就经 `actions.loaded`
- * 交回这一视图可见条目的标签计数、全库口径的来源与时长有无。 */
+ * Detalles(`/posts/:id`)es另uno座岛(`../follow-detail/`), 先扫aquí缓存几página找Entrada
+ * (`findFollowItem`), 扫No到才单独取. 侧栏仍归壳画: 岛每取到uno版Lista就经 `actions.loaded`
+ * 交回esteuno视Imagenpuede见EntradaEtiqueta计数, TodoBiblioteca口径来源yDuraciónConSin.  */
 import { keepPreviousData, type InfiniteData, type QueryKey } from '@tanstack/react-query';
 import { seededRank } from '@peach/legacy/core';
 
@@ -19,22 +19,22 @@ import { apiGet } from '../../api';
 import { FOLLOW_CREDENTIALS_URL, type CheckResult } from '../follow-manage/follow-manage';
 import { queryClient } from '../query';
 
-/* ── 地址栏那一组 ── */
+/* ── 地址栏eseuno组 ── */
 
-/** 状态那一排。已看那一档不摆：看过就归档，要再翻出来是「全部」的事。 */
-export const FOLLOW_FILTERS = [['', '全部'], ['new', '未看'], ['saved', '已保存'], ['ignored', '已忽略']] as const;
+/** Estadoeseuno排. yavereseuno档No摆: ver过就归档, 要再翻出来es"Todo"事.  */
+export const FOLLOW_FILTERS = [['', 'Todo'], ['new', 'Nover'], ['saved', 'Guardado'], ['ignored', 'Ignorado']] as const;
 export type FollowStatus = (typeof FOLLOW_FILTERS)[number][0];
 
-/** 排序键与各自方向的说法；「换一批」按下去是 `rand`，没有自己的键。 */
-export const FOLLOW_FEED_SORTS = [['new', '更新时间'], ['hot', '热度'], ['dur', '时长']] as const;
+/** OrdenarClavey各自方向说法; "换uno批"按abajo去es `rand`, Sin自己Clave.  */
+export const FOLLOW_FEED_SORTS = [['new', 'Fecha de actualización'], ['hot', 'Popularidad'], ['dur', 'Duración']] as const;
 export const FOLLOW_FEED_DIR_WORDS: Record<string, readonly [string, string]> = {
-  new: ['从新到旧', '从旧到新'], hot: ['从高到低', '从低到高'], dur: ['从长到短', '从短到长'],
+  new: ['Más nuevos primero', 'Más antiguos primero'], hot: ['De mayor a menor', 'De menor a mayor'], dur: ['De más largo a más corto', 'De más corto a más largo'],
 };
 export const FOLLOW_RANDOM_SORT = 'rand';
 export type FollowSort = (typeof FOLLOW_FEED_SORTS)[number][0] | typeof FOLLOW_RANDOM_SORT;
 export type FollowMedia = 'videos' | 'images';
 
-/** 地址栏上的关注页筛选。创作者、来源、题材各按着一个（空串是不筛），标签是交集。 */
+/** 地址栏en la关注páginaFiltrar. 创作者, 来源, 题材各按着uno(空串esNo筛), Etiquetaes交集.  */
 export interface FollowView {
   status: FollowStatus;
   media: FollowMedia;
@@ -42,23 +42,23 @@ export interface FollowView {
   provider: string;
   work: string;
   tags: readonly string[];
-  /** 时长两端（秒），同首页的 `dur_min`／`dur_max`；0 是这一端不限。 */
+  /** Duración两端(秒), 同primeropágina `dur_min`/`dur_max`; 0 esesteuno端No限.  */
   durMin: number;
   durMax: number;
   sort: FollowSort;
   dir: 'asc' | 'desc';
-  /** 服务端随机排序的种子，只在 `sort` 为 `rand` 时进请求。 */
+  /** 服务端AleatorioOrdenarSemilla, SoloEn `sort` Como `rand` 时进Por favor求.  */
   seed: number;
 }
 
-/** 关注页一次取一屏。`counts` 是全库口径，`groups` 只是这一页，所以列表底部要能继续加载。
- *  一页 100 组：一张卡三四十个节点，一次挂几百张就是首屏一秒多的长任务。 */
+/** 关注páginauno次取uno屏. `counts` esTodoBiblioteca口径, `groups` Soloesesteunopágina, 所以Lista底部要能ContinuarCargar. 
+ *  unopágina 100 组: uno卡trescuatrodiez节点, uno次挂几cien就esprimero屏uno秒máslargoTarea.  */
 export const FOLLOW_PAGE = 100;
-/** 已经摆出这么多组以后，滚到底不再自己接下一页，要点「加载更多」：一直滚下去页面就一直变重，
- *  滚过头的那一下不该悄悄再挂几百张卡。 */
+/** ya经摆出este么más组以posterior, 滚到底No再自己continuarSiguientepágina, 要点"Cargar更más": uno直滚abajo去página面就uno直变pesado, 
+ *  滚过头eseunoabajoNo该悄悄再挂几cien卡.  */
 export const FOLLOW_AUTO_LOAD_LIMIT = 500;
 
-/** 这一页第 `offset` 组起的请求地址，参数拼法同壳里 `followPageUrl`：默认那一档不写进去。 */
+/** esteunopáginaNo. `offset` 组起Por favor求地址, Parámetro拼法同壳dentro `followPageUrl`: Predeterminadoeseuno档No写进去.  */
 export function followPageUrl(view: FollowView, offset: number): string {
   const csv = (values: readonly string[]) => encodeURIComponent(values.join(','));
   return `/api/follow?limit=${FOLLOW_PAGE}&offset=${offset}`
@@ -74,9 +74,9 @@ export function followPageUrl(view: FollowView, offset: number): string {
     + (view.dir !== 'desc' ? `&dir=${view.dir}` : '');
 }
 
-/* ── 接口形状（`src/peach/web_follow.py` 的 `q_follow`） ── */
+/* ── Interfaz形状(`src/peach/web_follow.py`  `q_follow`) ── */
 
-/** 条目里嵌着的一份媒体：多附件帖的每张图、每段视频。 */
+/** Entradadentro嵌着uno媒体: más附件帖每Imagen, 每段视频.  */
 export interface FollowMediaItem {
   index: number;
   media_kind?: string;
@@ -87,7 +87,7 @@ export interface FollowMediaItem {
   resource_group?: unknown;
 }
 
-/** 一条抓回来的更新。只列这一页读到的字段，其余原样留给详情。 */
+/** uno抓回来Actualizar. Solo列esteunopágina读到字段, 其余Original样Deja给Detalles.  */
 export interface FollowItem {
   id: number;
   title: string;
@@ -110,7 +110,7 @@ export interface FollowItem {
   [field: string]: unknown;
 }
 
-/** 服务端对一组的叠卡判定（`peach.follow_faces`）：去重后的媒体数、合并了几份与翻卡画面。 */
+/** 服务端对uno组叠卡判定(`peach.follow_faces`): 去pesadoposterior媒体数, 合y几y翻卡Imagen.  */
 export interface FollowStackInfo {
   media?: number;
   copies?: number;
@@ -118,18 +118,18 @@ export interface FollowStackInfo {
   faces?: { thumb_url?: string; face?: unknown; media_kind?: string }[];
 }
 
-/** 一张卡：同一作品的主条目、本站的 alt 与 WIP、跨站的另见。 */
+/** uno卡: 同unoObras主Entrada, 本站 alt y WIP, 跨站另见.  */
 export interface FollowGroup {
   primary: FollowItem;
   variants: FollowItem[];
   duplicates: FollowItem[];
   has_wip?: boolean;
-  /** 论坛发布帖：组里每条是一条回复，正文是回复内容而不是线程标题。 */
+  /** 论坛Publicar帖: 组dentro每esuno回复, 正文es回复contenido而Noes线程Título.  */
   is_release?: boolean;
   stack?: FollowStackInfo | null;
 }
 
-/** 一个关注来源。 */
+/** uno关注来源.  */
 export interface FollowSource {
   id: number;
   provider: string;
@@ -141,7 +141,7 @@ export interface FollowSource {
   [field: string]: unknown;
 }
 
-/** 题材那一排的一行：键、给人看的写法、组数、挑不挑得出代表图、那张图的取景。 */
+/** 题材eseuno排uno行: Clave, 给人ver写法, 组数, 挑No挑得出代表Imagen, eseImagen取景.  */
 export type FollowWorkRow = readonly [key: string, label: string, n: number, icon?: number, focus?: unknown];
 
 export interface FollowFacets {
@@ -149,11 +149,11 @@ export interface FollowFacets {
   providers?: string[];
   tags?: [string, number][];
   works?: FollowWorkRow[];
-  /** 库里有没有时长读数：侧栏据它出不出时长拉条。 */
+  /** BibliotecadentroConSinDuración读数: 侧栏据它出No出Duración拉.  */
   duration?: boolean;
 }
 
-/** 交给壳画侧栏的那一份：可见条目的标签计数、全库口径的来源（键、显示名、站标地址）与时长有无。 */
+/** 交给壳画侧栏eseuno: puede见EntradaEtiqueta计数, TodoBiblioteca口径来源(Clave, 显示名, 站标地址)yDuraciónConSin.  */
 export interface FollowDrawer {
   tags: readonly (readonly [string, number])[];
   providers: readonly (readonly [key: string, label: string, icon: string])[];
@@ -166,7 +166,7 @@ export interface FollowPage {
   sources: FollowSource[];
   author_aliases?: unknown[];
   facets: FollowFacets;
-  /** 正好按一位作者筛时，只数这一位名下的那一份筛选项（资料页在线视图读它）；否则是空的。 */
+  /** 正bien按uno作者筛时, Solo数esteuno名abajoeseuno筛Opciones(资料páginaEn线视Imagen读它); 否则es空.  */
   author_facets?: FollowFacets;
   offset: number;
   limit?: number;
@@ -176,13 +176,13 @@ export interface FollowPage {
 
 export interface FollowCredentials { providers?: { provider: string; present?: boolean }[] }
 
-/* ── 取数键 ── */
+/* ── 取数Clave ── */
 
-/** 离开关注页以后，列表在缓存里留多久。回到关注页时照这一份原样画，已经加载的几页和滚动位置
- *  才接得上；默认的 5 分钟太短，点开别处看一部片子回来就没了。 */
+/** 离开关注página以posterior, ListaEn缓存dentroDejamás久. 回到关注página时照esteunoOriginal样画, ya经Cargar几página y 滚动Ubicación
+ *  才continuar得arriba; Predeterminado 5 分钟太corto, 点开别处veruno部片子回来就没.  */
 export const FOLLOW_FEED_GC_MS = 30 * 60_000;
 
-/** 列表的键。媒体切换是纯前端分组，不进键：换视图不重取。`revision` 是壳要求重读的代次。 */
+/** ListaClave. 媒体Cambiares纯anterior端Agrupar, No进Clave: 换视ImagenNopesado取. `revision` es壳要求pesado读代次.  */
 export function followFeedQuery(view: FollowView, revision: number) {
   const url = followPageUrl(view, 0);
   return {
@@ -190,7 +190,7 @@ export function followFeedQuery(view: FollowView, revision: number) {
     queryFn: ({ pageParam, signal }: { pageParam: number; signal?: AbortSignal }) =>
       apiGet<FollowPage>(followPageUrl(view, pageParam), signal),
     initialPageParam: 0,
-    /* 服务端先整批分组再按组分页，同一作品不会跨页，下一页的组直接接在后面。 */
+    /* 服务端先Completo批Agrupar再按组分página, 同unoObrasNo会跨página, Siguientepágina组直continuarcontinuarEnposterior面.  */
     getNextPageParam: (last: FollowPage) => (last.has_more ? (last.offset || 0) + FOLLOW_PAGE : undefined),
     placeholderData: keepPreviousData,
     gcTime: FOLLOW_FEED_GC_MS,
@@ -199,13 +199,13 @@ export function followFeedQuery(view: FollowView, revision: number) {
 
 export const FOLLOW_CREDENTIALS_KEY: QueryKey = ['follow-feed', 'credentials'];
 
-/** 凭据取不到时当作一个都没有：它只决定「需要登录会话」那句提示出不出，不该拦住整页。 */
+/** Credenciales取No到时当作uno都Sin: 它Solo决定"需要Iniciar sesión会话"ese句Sugerencia出No出, No该拦住Completopágina.  */
 export const fetchFollowCredentials = (signal?: AbortSignal) =>
   apiGet<FollowCredentials>(FOLLOW_CREDENTIALS_URL, signal).catch((): FollowCredentials => ({ providers: [] }));
 
-/** 首屏：两趟并行，挂上就是最终样子。同一个键（同一份筛选、同一个代次）缓存里还有，就是离开前
- *  看着的那一份，原样拿来接着看，连同已经加载的几页；要重读由壳推一个新代次换键。凭据每次都重取：
- *  它在管理页上改，回到这里就该是新的。 */
+/** primero屏: 两趟y行, 挂arriba就es最终样子. 同unoClave(同unoFiltrar, 同uno代次)缓存dentro还Con, 就es离开anterior
+ *  ver着eseuno, Original样拿来Continuar viendo, 连同ya经Cargar几página; 要pesado读由壳推unoNuevo代次换Clave. Credenciales每次都pesado取: 
+ *  它EnGestionarpáginaarriba改, 回到aquí就该esNuevo.  */
 export async function prefetchFollowFeed(props: { view: FollowView; revision: number }, signal: AbortSignal) {
   const query = followFeedQuery(props.view, props.revision);
   queryClient.removeQueries({ queryKey: FOLLOW_CREDENTIALS_KEY, exact: true });
@@ -222,7 +222,7 @@ export async function prefetchFollowFeed(props: { view: FollowView; revision: nu
   ]);
 }
 
-/** 几页合成一份，形状同壳里 `followData`：组接在后面，其余取最后一页（来源随每页刷新）。 */
+/** 几página合成uno, 形状同壳dentro `followData`: 组continuarEnposterior面, 其余取最posteriorunopágina(来源随Por páginaActualizar).  */
 export function mergedPage(data: InfiniteData<FollowPage> | undefined): FollowPage | null {
   if (!data?.pages.length) return null;
   const pages = data.pages;
@@ -232,20 +232,20 @@ export function mergedPage(data: InfiniteData<FollowPage> | undefined): FollowPa
 
 /* ── 取样 ── */
 
-/** 按种子打散，同秩再按键名排，结果只随种子变。秩取壳那一份 `seededRank`，同一粒种子两边取到同一批。 */
+/** 按Semilla打散, 同秩再按Clave名排, ResultadoSolo随Semilla变. 秩取壳eseuno `seededRank`, 同uno粒Semilla两边取到同uno批.  */
 export function randomOrder<T>(rows: readonly T[], key: (row: T) => string, seed: number): T[] {
   return [...rows].sort((a, b) =>
     seededRank(seed, key(a)) - seededRank(seed, key(b)) || String(key(a)).localeCompare(String(key(b))));
 }
 
-/** 题材那一排露出几个，同首页那排厂牌（壳的 `ROW_FIRST`）。 */
+/** 题材eseuno排露出几, 同primeropáginaese排Sello(壳 `ROW_FIRST`).  */
 export const FOLLOW_WORKS_FIRST = 24;
-/** 标签露出几个。 */
+/** Etiqueta露出几.  */
 export const FOLLOW_TAGS_FIRST = 20;
 
 /* ── 媒体判定 ── */
 
-/** 一组里的全部条目，主条目在前、按 id 去重。 */
+/** uno组en laTodoEntrada, 主EntradaEnanterior, 按 id 去pesado.  */
 export function collectionItems(group: FollowGroup): FollowItem[] {
   const seen = new Set<number>();
   return [group.primary, ...group.variants, ...group.duplicates].filter((item) => {
@@ -255,7 +255,7 @@ export function collectionItems(group: FollowGroup): FollowItem[] {
   });
 }
 
-/** 列表缓存里的一条：条目本身、所在的组与那一版的来源和别名。 */
+/** Lista缓存en launo: Entrada本身, 所En组yeseuno版来源 y 别名.  */
 export interface FollowItemHit {
   item: FollowItem;
   group: FollowGroup;
@@ -263,8 +263,8 @@ export interface FollowItemHit {
   aliases: unknown[];
 }
 
-/** 在这座岛已缓存的每一版列表里找一条（详情先扫这里）。来源与别名取那一版最后一页的，同 `mergedPage`。
- *  新取的那一版先找：上一代次的列表还留在缓存里，同一条在那里是标记、保存之前的样子。 */
+/** Eneste座岛ya缓存每uno版Listadentro找uno(Detalles先扫aquí). 来源y别名取eseuno版最posteriorunopágina, 同 `mergedPage`. 
+ *  Nuevo取eseuno版先找: Anterior代次Lista还DejaEn缓存dentro, 同unoEnesedentroesEtiqueta, Guardar之anterior样子.  */
 export function findFollowItem(id: number): FollowItemHit | null {
   const versions = queryClient.getQueryCache().findAll({ queryKey: ['follow-feed'] })
     .sort((a, b) => b.state.dataUpdatedAt - a.state.dataUpdatedAt);
@@ -282,7 +282,7 @@ export function findFollowItem(id: number): FollowItemHit | null {
   return null;
 }
 
-/** 每一版列表缓存里的同一条换成 `next`（详情隐藏或恢复一张图之后，服务端投影给出新的媒体清单）。 */
+/** 每uno版Lista缓存en la同uno换成 `next`(Detalles隐藏或RestaurarunoImagen之posterior, 服务端投影给出Nuevo媒体清单).  */
 export function replaceFollowItem(next: FollowItem): void {
   queryClient.setQueriesData<InfiniteData<FollowPage>>({
     queryKey: ['follow-feed'], predicate: (query) => Array.isArray((query.state.data as InfiniteData<FollowPage>)?.pages),
@@ -299,14 +299,14 @@ export function replaceFollowItem(next: FollowItem): void {
   });
 }
 
-/** 每一版列表缓存里的同一条换状态、挪计数（详情里的保存与标记）。不移出整组：详情不知道每一版筛着哪一档。 */
+/** 每uno版Lista缓存en la同uno换Estado, 挪计数(Detallesen laGuardaryEtiqueta). No移出Completo组: DetallesNo知道每uno版筛着哪uno档.  */
 export function setFollowItemStatus(id: number, to: string): void {
   queryClient.setQueriesData<InfiniteData<FollowPage>>({
     queryKey: ['follow-feed'], predicate: (query) => Array.isArray((query.state.data as InfiniteData<FollowPage>)?.pages),
   }, (data) => data && withStatus(data, null, id, to));
 }
 
-/** 同上，按发布时间从新到旧。 */
+/** 同arriba, 按PublicarTiempo从Nuevo到antiguo.  */
 export function collectionItemsNewest(group: FollowGroup): FollowItem[] {
   return collectionItems(group).sort((a, b) => {
     const byTime = (Date.parse(b.published_at || '') || 0) - (Date.parse(a.published_at || '') || 0);
@@ -314,8 +314,8 @@ export function collectionItemsNewest(group: FollowGroup): FollowItem[] {
   });
 }
 
-/* 关注条目和资料页的作品不是同一种 DTO，但媒体切换的语义相同：一张卡只要含对应媒体就进入对应
-   视图。external 只说明有外部文件页，不能冒充视频；没有可验证媒体类型的旧行不进任一视图。 */
+/* 关注Entrada y 资料páginaObrasNoes同uno DTO, pero媒体Cambiar语义相同: uno卡Solo要含对应媒体就进入对应
+   视Imagen. external SoloDescripciónConexterior部Archivopágina, No能冒充视频; SinpuedeVerificar媒体Tipoantiguo行No进任uno视Imagen.  */
 export function itemMediaKinds(item: FollowItem): Set<string> {
   const kinds = new Set<string>();
   const embedded = item.media_items || [];
@@ -333,34 +333,34 @@ export function groupMediaKinds(group: FollowGroup): Set<string> {
   return kinds;
 }
 
-/** 卡面摆哪一条：组里最新的、含当前视图那种媒体的那条，都没有就是主条目。 */
+/** 卡面摆哪uno: 组dentro最Nuevo, 含当anterior视Imagenese媒体ese, 都Sin就es主Entrada.  */
 export function itemForMedia(group: FollowGroup, view: FollowMedia): FollowItem {
   const wanted = view === 'images' ? 'image' : 'video';
   return collectionItemsNewest(group).find((item) => itemMediaKinds(item).has(wanted)) || group.primary;
 }
 
-/** 资料页在线视图取数用的那一份：只按创作者筛，状态全部、按更新时间从新到旧。 */
+/** 资料páginaEn线视Imagen取数用eseuno: Solo按创作者筛, EstadoTodo, 按ActualizarTiempo从Nuevo到antiguo.  */
 export function entityFollowView(author: string): FollowView {
   return { status: '', media: 'videos', author, provider: '', work: '', tags: [], durMin: 0, durMax: 0,
     sort: 'new', dir: 'desc', seed: 0 };
 }
 
-/* F95 的「8 条动态」可能只有一个网盘页，也可能一条实际视频都没有。Mix 是播放语义，只能由已解析、
-   可在 Peach 内播放的视频触发，不能拿回复数或外链数冒充。 */
+/* F95 "8 动态"puede能SoloConuno网盘página, 也puede能uno实际视频都Sin. Mix esReproducir语义, Solo能由ya解析, 
+   puedeEn Peach interiorReproducir视频触发, No能拿回复数或exterior链数冒充.  */
 export function videoItems(group: FollowGroup): FollowItem[] {
   return collectionItemsNewest(group).filter((item) => item.playable && item.media_kind === 'video');
 }
 
 /* ── 叠卡 ──
-   哪几张是同一个画面由服务端判（`peach.follow_faces`，文件内容哈希，缩略图 dHash、8×8 色块加时长）：
-   每个成员和媒体带 `face`，编号相同就是同一个画面；组上的 `stack` 给出去重后的媒体数 `media`、合并了
-   几份 `copies`、媒体类型 `kind` 和彼此不同的翻卡画面 `faces`。这里只决定怎么说、翻哪几张。
+   哪几es同unoImagen由服务端判(`peach.follow_faces`, Archivocontenido哈希, 缩略Imagen dHash, 8×8 色加Duración): 
+   每成员 y 媒体带 `face`, 编号相同就es同unoImagen; 组en la `stack` 给出去pesadoposterior媒体数 `media`, 合y
+   几 `copies`, 媒体Tipo `kind`  y 彼此No同翻卡Imagen `faces`. aquíSolo决定怎么说, 翻哪几. 
 
-   角标只报一个数：这张卡合并了几个不同的媒体。同一个视频在两个站各传一份是一个媒体、两个来源；
-   去重后只剩一个媒体时，报的就是来源数。量词随媒体类型走：视频论「个」，图片论「张」，与详情里
-   「第 1 张，共 11 张」同一套；图和视频混在一起时说「个媒体」，不说「项」——「项」在关注页数的是
-   更新条目，读起来像又在数帖子。 */
-const UNITS: Record<string, string> = { video: '个视频', image: '张图片', mixed: '个媒体' };
+   角标Solo报uno数: este卡合y几No同媒体. 同uno视频En两站各传unoesuno媒体, 两来源; 
+   去pesadoposteriorSolo剩uno媒体时, 报就es来源数. 量词随媒体Tipo走: 视频论"", Imagen片论"", yDetallesdentro
+   "No. 1 , 共 11 "同uno套; Imagen y 视频混Enuno起时说"媒体", No说"项"—"项"En关注página数es
+   ActualizarEntrada, 读起来像又En数帖子.  */
+const UNITS: Record<string, string> = { video: ' video(s)', image: ' imagen(es)', mixed: ' medio(s)' };
 
 export interface FollowStack {
   isMix: boolean;
@@ -376,12 +376,12 @@ export function followStack({ cover = '', coverFace = null, stack = null, imageV
   const copies = stack?.copies || 0;
   const kind = stack?.kind || '';
   const label = media > 1 ? `${media} ${UNITS[kind] || UNITS.mixed}`
-    : copies > 1 ? `${copies} 个来源` : '';
-  /* 字形说的是点开以后看什么：视频起播是 play，图片是 pics。图和视频混在一起时，点开落在哪一种由
-     视图决定，字形跟着视图走。 */
+    : copies > 1 ? `${copies}  fuente(s)` : '';
+  /* 字形说es点开以posteriorver什么: 视频起播es play, Imagen片es pics. Imagen y 视频混Enuno起时, 点开落En哪uno由
+     视Imagen决定, 字形跟着视Imagen走.  */
   const glyph = kind === 'image' || (kind !== 'video' && imageView) ? 'pics' : 'play';
-  /* 图片视图里只翻图片：这一叠说的就是这几张图。第一张是静止封面本身，否则一翻就露出取景差别；
-     和封面同一个画面的不再翻。画面彼此相同的服务端已经并成一张。 */
+  /* Imagen片视ImagendentroSolo翻Imagen片: esteuno叠说就eseste几Imagen. No.unoes静止Portada本身, 否则uno翻就露出取景差别; 
+      y Portada同unoImagenNo再翻. Imagen彼此相同服务端ya经y成uno.  */
   const seen = new Set<unknown>([coverFace ?? cover]);
   const faces = cover ? [cover] : [];
   for (const face of stack?.faces || []) {
@@ -394,60 +394,60 @@ export function followStack({ cover = '', coverFace = null, stack = null, imageV
 }
 
 /* ── 往回抓 ──
-   往回抓到哪儿了。不说的话，用户点一次只看到列表变长一点，不知道自己走到第几页，也不知道还要点
-   几次。页码是 0 起的游标（0 = 只抓过第一页），显示成人读的第几页。 */
+   往回抓到哪儿. No说话, 用户点uno次Solover到Lista变largouno点, No知道自己走到No.几página, 也No知道还要点
+   几次. página码es 0 起游标(0 = Solo抓过No.unopágina), 显示成人读No.几página.  */
 export function backfillState(sources: readonly FollowSource[]): string {
   const pages = sources.filter((source) => source.can_backfill).map((source) => (source.backfill_page || 0) + 1);
   if (!pages.length) return '';
   const deepest = Math.max(...pages);
   const shallowest = Math.min(...pages);
-  if (deepest <= 1) return '每个来源都只抓了第 1 页';
-  return shallowest === deepest ? `每个来源都抓到第 ${deepest} 页` : `已抓到第 ${shallowest}–${deepest} 页`;
+  if (deepest <= 1) return '每 fuente(s)都Solo抓No. 1 página';
+  return shallowest === deepest ? `每 fuente(s)都抓到No. ${deepest} página` : `Ya抓到No. ${shallowest}–${deepest} página`;
 }
 
-/* ── 排序键 ── */
+/* ── OrdenarClave ── */
 
-/** 点未选中项换列并用该列的默认方向，点选中项翻方向；同壳里 `nextSortState` 配上这一页的词表。 */
+/** 点no选en proceso项换列y用该列Predeterminado方向, 点选en proceso项翻方向; 同壳dentro `nextSortState` 配arribaesteunopágina词表.  */
 export function nextSort(key: string, current: string, dir: 'asc' | 'desc') {
   if (key !== current) return { sort: key as FollowSort, dir: 'desc' as const };
   if (!FOLLOW_FEED_DIR_WORDS[key]) return null;
   return { sort: key as FollowSort, dir: dir === 'asc' ? 'desc' as const : 'asc' as const };
 }
 
-/** 无障碍名称播报点下去会得到什么，不是当前状态。 */
+/** Sin障碍名称播报点abajo去会得到什么, Noes当anteriorEstado.  */
 export function sortAriaLabel(key: string, label: string, current: string, dir: 'asc' | 'desc'): string {
   const next = nextSort(key, current, dir);
   if (!next) return '';
   const words = FOLLOW_FEED_DIR_WORDS[next.sort];
-  return `按${label}${words ? words[next.dir === 'asc' ? 1 : 0] : ''}排序`;
+  return `按${label}${words ? words[next.dir === 'asc' ? 1 : 0] : ''}Ordenar`;
 }
 
-/* ── 壳递进来的那几样 ── */
+/* ── 壳递进来ese几样 ── */
 
-/** 署名：名字、圆框里那段头像 HTML、「署名含」那一行。 */
+/** 署名: 名字, 圆框dentroese段Avatar HTML, "署名含"eseuno行.  */
 export interface FollowIdentity { author: string; avatar: string; credited: string; entityName: string }
 
-/** 这一页上下文：卡片与两排的身份、头像读的都是这一版的来源、别名与凭据，不读壳的全局。 */
+/** esteunopáginaarribaabajo文: 卡片y两排身, Avatar读都esesteuno版来源, 别名yCredenciales, No读壳Todo局.  */
 export interface FollowContext {
   sources: readonly FollowSource[];
   aliases: readonly unknown[];
   credentials: ReadonlySet<string>;
 }
 
-/** 仍由遗留层给的 HTML 与接线：详情用的是同一份，只有一处实现。署名、头像、来源图标与标题前后
- *  那几处字样在岛里（`follow-marks.ts`）。 */
+/** 仍由遗Deja层给 HTML ycontinuar线: Detalles用es同uno, SoloConuno处实现. 署名, Avatar, 来源Imagen标yTítuloanteriorposterior
+ *  ese几处字样En岛dentro(`follow-marks.ts`).  */
 export interface FollowFeedHelpers {
-  /** 题材圆标里那段（有代表图出 `<img>`，没有写两个字母）；取景与放大走资料页那两个函数。 */
+  /** 题材圆标dentroese段(Con代表Imagen出 `<img>`, Sin写两字母); 取景y放grande走资料páginaese两函数.  */
   workMark(row: FollowWorkRow): string;
-  /** 标签的界面名称，关注详情（舞台）读它；列表页与卡片从 `@peach/legacy/tags` 直接 import 同一个函数。 */
+  /** Etiqueta界面名称, 关注Detalles(舞)读它; Listapáginay卡片从 `@peach/legacy/tags` 直continuar import 同uno函数.  */
   tagLabel(tag: string): string;
-  /** 横滚行接上拖动与滚轮（`wireDrag`）；只接滚轮与两端渐隐（`wireHorizontalScroller`）。 */
+  /** 横滚行continuararriba拖动y滚轮(`wireDrag`); Solocontinuar滚轮y两端渐隐(`wireHorizontalScroller`).  */
   wireDrag(row: Element | null): void;
   wireScroller(row: Element | null): void;
-  /** 进页整块骨架（`followSkeletonHtml`）之外，换筛选时列表区那一块骨架。 */
+  /** 进páginaCompleto骨架(`followSkeletonHtml`)之exterior, 换Filtrar时Lista区eseuno骨架.  */
   listSkeletonHtml(media: FollowMedia): string;
-  /** 检查更新与往回抓那一趟后台任务的进度条（`peach-ui` 的 `followJobProgress`），作业 id 记在
-   *  `sessionStorage` 的 `peach-follow-job`，刷新或换页回来还接得上。 */
+  /** VerificarActualizary往回抓eseuno趟posteriorTareaProgreso(`peach-ui`  `followJobProgress`), 作业 id 记En
+   *  `sessionStorage`  `peach-follow-job`, Actualizar或换página回来还continuar得arriba.  */
   jobProgress(options: FollowJobProgressOptions): void;
 }
 
@@ -462,34 +462,34 @@ export interface FollowJobProgressOptions {
 }
 
 export interface FollowFeedActions {
-  /** 换筛选或排序：壳把它写进地址栏，再推回新的 `view`。 */
+  /** 换Filtrar或Ordenar: 壳它写进地址栏, 再推回Nuevo `view`.  */
   route(view: FollowView): void;
-  /** 换一批：壳掷一粒新种子，两排取样与列表次序都换。 */
+  /** 换uno批: 壳掷uno粒NuevoSemilla, 两排取样yLista次序都换.  */
   shuffle(): void;
-  /** 岛取到一版列表（首屏、续页、写操作之后）：侧栏要的标签计数、来源与时长有无，壳拿去画侧栏。 */
+  /** 岛取到uno版Lista(primero屏, 续página, 写操作之posterior): 侧栏要Etiqueta计数, 来源yDuraciónConSin, 壳拿去画侧栏.  */
   loaded(drawer: FollowDrawer): void;
   openDetail(id: number): void;
   openAuthor(name: string): void;
   openManage(): void;
-  /** 多选里的一张：`range` 是 Shift 连选。 */
+  /** más选en launo: `range` es Shift 连选.  */
   toggleSelection(id: number, range: boolean): void;
-  /** 照片墙「仅显示图片」与图片布局两样偏好，壳存起来再推回。 */
+  /** 照片Muro"仅显示Imagen片"yImagen片Diseño两样偏bien, 壳存起来再推回.  */
   setImagesOnly(on: boolean): void;
   setPhotoLayout(layout: FollowPhotoLayout): void;
-  /** 此刻能不能悬停翻卡（多选、遮挡、减少动效、滚动中都回 false）。 */
+  /** 此刻能No能Pasar el ratón翻卡(más选, 遮挡, 减menos动效, 滚动en proceso都回 false).  */
   canFlip(): boolean;
-  /** 操作回执；给了 `undo` 就带一颗撤销键。失败走 `failure`。 */
+  /** 操作回执; 给 `undo` 就带unoDeshacerClave. Fallo走 `failure`.  */
   toast(message: string, options?: { undo?: () => Promise<void> }): void;
   failure(action: string, error: unknown): void;
-  /** 检查更新的结果（`followCheckToast`）：新增、没有更新与失败各说清。 */
+  /** VerificarActualizarResultado(`followCheckToast`): Agregar, SinActualizaryFallo各说清.  */
   checkReport(report: unknown): void;
 }
 
-/** 状态写接口回的那一份：换的是哪一条、换成了什么。 */
+/** Estado写Interfaz回eseuno: 换es哪uno, 换成什么.  */
 export interface FollowStatusWrite { item: number; to: string }
 
-/** 写完之后在缓存里换局部：条目状态、状态计数，筛着某一档而新状态不在这一档时整组移出。
- *  `view` 为空时只换状态与计数、不移出（详情里的写操作）。 */
+/** 写完之posteriorEn缓存dentro换局部: EntradaEstado, Estado计数, 筛着某uno档而NuevoEstadoNoEnesteuno档时Completo组移出. 
+ *  `view` Como空时Solo换Estadoy计数, No移出(Detallesen la写操作).  */
 export function withStatus(data: InfiniteData<FollowPage>, view: FollowView | null, id: number, to: string):
 InfiniteData<FollowPage> {
   let before = '';
@@ -525,9 +525,9 @@ export type FollowPhotoLayout = 'fixed' | 'masonry';
 
 export interface FollowFeedProps {
   view: FollowView;
-  /** 这一次进入的取样种子。 */
+  /** esteuno次进入取样Semilla.  */
   seed: number;
-  /** 壳要求重读的代次（批量标记之后、从别处写完回来），加一就重取、不重挂。 */
+  /** 壳要求pesado读代次(批量Etiqueta之posterior, 从别处写完回来), 加uno就pesado取, Nopesado挂.  */
   revision: number;
   selectMode: boolean;
   selected: ReadonlySet<number>;
@@ -538,29 +538,29 @@ export interface FollowFeedProps {
   actions: FollowFeedActions;
 }
 
-/** 当前按下的筛选条件，四个维度收成一张清单，顺序照筛选条从粗到细：创作者、来源、题材、标签。 */
-export interface FollowCondition { kind: '创作者' | '来源' | '题材' | '标签'; key: string; label: string }
+/** 当anterior按abajoFiltrarCondición, cuatro维度收成uno清单, 顺序照Filtrar从粗到细: 创作者, 来源, 题材, Etiqueta.  */
+export interface FollowCondition { kind: 'Creador' | 'Fuente' | 'Género/Temática' | 'Etiqueta'; key: string; label: string }
 
 export function followConditions(view: FollowView, names: {
   authors: ReadonlyMap<string, string>; providers: ReadonlyMap<string, string>; works: ReadonlyMap<string, string>;
 }): FollowCondition[] {
   const rows: FollowCondition[] = [];
-  if (view.author) rows.push({ kind: '创作者', key: view.author, label: names.authors.get(view.author) || view.author });
-  if (view.provider) rows.push({ kind: '来源', key: view.provider, label: names.providers.get(view.provider) || view.provider });
-  if (view.work) rows.push({ kind: '题材', key: view.work, label: names.works.get(view.work) || view.work });
-  view.tags.forEach((tag) => rows.push({ kind: '标签', key: tag, label: tag }));
+  if (view.author) rows.push({ kind: 'Creador', key: view.author, label: names.authors.get(view.author) || view.author });
+  if (view.provider) rows.push({ kind: 'Fuente', key: view.provider, label: names.providers.get(view.provider) || view.provider });
+  if (view.work) rows.push({ kind: 'Género/Temática', key: view.work, label: names.works.get(view.work) || view.work });
+  view.tags.forEach((tag) => rows.push({ kind: 'Etiqueta', key: tag, label: tag }));
   return rows;
 }
 
-/** 撤掉一条：按维度撤，同一个字符串在两个维度里都可能出现。 */
+/** 撤掉uno: 按维度撤, 同uno字符串En两维度dentro都puede能出现.  */
 export function dropCondition(view: FollowView, row: FollowCondition): FollowView {
-  if (row.kind === '创作者') return { ...view, author: '' };
-  if (row.kind === '来源') return { ...view, provider: '' };
-  if (row.kind === '题材') return { ...view, work: '' };
+  if (row.kind === 'Creador') return { ...view, author: '' };
+  if (row.kind === 'Fuente') return { ...view, provider: '' };
+  if (row.kind === 'Género/Temática') return { ...view, work: '' };
   return { ...view, tags: view.tags.filter((tag) => tag !== row.key) };
 }
 
-/** 标签在这一页的类型：取第一个记了类型的组，没有就按 general 着色。 */
+/** EtiquetaEnesteunopáginaTipo: 取No.uno记Tipo组, Sin就按 general 着色.  */
 export function groupTagType(groups: readonly FollowGroup[], tag: string): string {
   for (const group of groups) {
     const type = group.primary?.tag_types?.[tag];

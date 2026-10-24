@@ -1,8 +1,8 @@
-/* 首启页的三条请求：取题目、提交、让这台电脑弹文件夹对话框。
+/* primero启páginatresPor favor求: 取题目, 提交, 让este电脑弹Archivocarpeta对话框. 
  *
- * 页面包不带主界面的请求封装与 Query 缓存，这里直接用 `fetch`。形态见 `docs/OPERATIONS.md`
- * 「首次设置的内部流程」：错误正文是 `{error, errors?}`，`errors` 按题目 key 给，媒体目录那一项是
- * 与行对应的列表，整表不成立时是只有一句话的列表。 */
+ * página面包No带主界面Por favor求封装y Query 缓存, aquí直continuar用 `fetch`. 形态见 `docs/OPERATIONS.md`
+ * "primero次Configuracióninterior部流程": Error正文es `{error, errors?}`, `errors` 按题目 key 给, 媒体Directorioeseuno项es
+ * y行对应Lista, Completo表No成立时esSoloConuno句话Lista.  */
 import { PICK_FOLDER_URL } from '../../../configuration-endpoints';
 
 export const SETUP_QUESTIONS_URL = '/api/setup/questions';
@@ -81,7 +81,7 @@ async function request<T>(url: string, init: RequestInit, fallback: string): Pro
     });
   } catch (cause) {
     if (init.signal?.aborted) throw cause;
-    throw new SetupRequestError(0, '连接不到 Peach，请确认它仍在运行后重试');
+    throw new SetupRequestError(0, 'ConectarNo到 Peach, Por favorConfirmar它仍En运行posteriorReintentar');
   }
   const body = await response.json().catch(() => null) as { error?: string; errors?: SetupErrors } | null;
   if (!response.ok) throw new SetupRequestError(response.status, body?.error || fallback, body?.errors);
@@ -89,16 +89,16 @@ async function request<T>(url: string, init: RequestInit, fallback: string): Pro
 }
 
 export const fetchQuestions = (signal?: AbortSignal) =>
-  request<SetupQuestions>(SETUP_QUESTIONS_URL, { signal }, '没能读取设置题目');
+  request<SetupQuestions>(SETUP_QUESTIONS_URL, { signal }, '没能读取Configuración题目');
 
 export const submitSetup = (submission: SetupSubmission) =>
-  request<SetupDone>(SETUP_URL, { method: 'POST', body: JSON.stringify(submission) }, '没能完成设置');
+  request<SetupDone>(SETUP_URL, { method: 'POST', body: JSON.stringify(submission) }, '没能FinalizarConfiguración');
 
 export const restoreSetup = (dataRoot: string) =>
-  request<SetupDone>(`${SETUP_URL}/restore`, { method: 'POST', body: JSON.stringify({ data_root: dataRoot }) }, '没能使用此数据目录');
+  request<SetupDone>(`${SETUP_URL}/restore`, { method: 'POST', body: JSON.stringify({ data_root: dataRoot }) }, '没能使用此DatosDirectorio');
 
 export const pickFolder = async (initial: string) =>
   (await request<{ path: string | null }>(PICK_FOLDER_URL,
-    { method: 'POST', body: JSON.stringify({ initial }) }, '没能打开文件夹对话框')).path;
+    { method: 'POST', body: JSON.stringify({ initial }) }, '没能AbrirCarpeta对话框')).path;
 
-export const describeFailure = (cause: unknown) => (cause instanceof Error && cause.message) || '请求失败，请重试';
+export const describeFailure = (cause: unknown) => (cause instanceof Error && cause.message) || 'Por favor求Fallido, Por favorReintentar';

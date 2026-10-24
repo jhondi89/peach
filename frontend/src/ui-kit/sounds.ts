@@ -1,32 +1,32 @@
-/* 界面音效：按钮、开关、菜单、弹层和操作回执各配一声轻响。
+/* 界面音效: 按钮, 开关, 菜单, 弹层 y 操作回执各配uno声ligero响. 
 
-   声音全部由 Web Audio 当场合成，不带音频文件，也不多一个网络请求。配方取自
-   dannyjpwilliams/ui-sound-design-skill 的 `references/sound-recipes.md`（MIT）：
-   点击是带通滤过的噪声、开关是一段正弦扫频、成功是升一个大三度、出错是压暗的下行
-   锯齿波、警告是中频的两下短脉冲、菜单是滤波噪声扫过、弹层是一记音高骤降的正弦。
-   音量按这个库的口径调到
-   配方给的下限附近：它们一天里要响几百次，只能是陪衬。
+   声音Todo由 Web Audio 当场合成, No带音频Archivo, 也Nomásuno网络Por favor求. 配方取自
+   dannyjpwilliams/ui-sound-design-skill  `references/sound-recipes.md`(MIT): 
+   点击es带通滤过噪声, 开关esuno段正弦扫频, Éxitoes升unograndetres度, 出错es压暗abajo行
+   锯齿波, Advertenciaesen proceso频两abajocorto脉冲, 菜单es滤波噪声扫过, 弹层esuno记音alto骤降正弦. 
+   Volumen按esteBiblioteca口径调到
+   配方给abajo限附近: 它们uno天dentro要响几cien次, Solo能es陪衬. 
 
-   全站只开一个 AudioContext，而且要等到第一声真要响时才建：浏览器在用户手势之前
-   不让出声，页面一进来就建会被挂起，还多占一路系统音频。开关状态由 Application 的
-   `appSettings.uiSounds` 决定，通过 `setUiSoundsEnabled` 灌进来；关着时这里连
-   AudioContext 都不碰。
+   Todo站Solo开uno AudioContext, 而且要etc.到No.uno声真要响时才建: Explorar dispositivoEn用户手势之anterior
+   No让出声, página面uno进来就建会被挂起, 还más占uno路系统音频. 开关Estado由 Application 
+   `appSettings.uiSounds` 决定, 通过 `setUiSoundsEnabled` 灌进来; 关着时aquí连
+   AudioContext 都No碰. 
 
-   随主包发出，由共享源码直接引用：开关状态只能有一份，设置面板打开的
-   和菜单开合时响的是同一个。 */
+   随主包发出, 由共享源码直continuar引用: 开关EstadoSolo能Conuno, Configuración面板Abrir
+    y 菜单开合时响es同uno.  */
 
 type Recipe = (ctx: AudioContext, now: number) => void;
 
 let audioContext:AudioContext|null=null;
 let enabled=false;
 
-/* 单例：`exponentialRampToValueAtTime` 不能落到 0，收尾一律 0.001，听不见但合法。
-   每个配方开头读一次 `currentTime`，之后全从它推——中途再读，节点就排到了过去。 */
+/* 单例: `exponentialRampToValueAtTime` No能落到 0, 收尾uno律 0.001, 听No见pero合法. 
+   每配方开头读uno次 `currentTime`, 之posteriorTodo从它推—en proceso途再读, 节点就排到过去.  */
 function context(){
   const Context=globalThis.AudioContext||(globalThis as typeof globalThis & {webkitAudioContext?: typeof AudioContext}).webkitAudioContext;
   if(!Context)return null;
   if(!audioContext)audioContext=new Context();
-  /* 没有用户手势时 resume 会被拒：那一声本来就不该响，吞掉即可，别在控制台留一条未处理的拒绝。 */
+  /* Sin用户手势时 resume 会被拒: eseuno声本来就No该响, 吞掉即puede, 别En控制DejaunonoProcesar拒绝.  */
   if(audioContext.state==='suspended')audioContext.resume()?.catch?.(()=>{});
   return audioContext;
 }
@@ -64,8 +64,8 @@ function tone(ctx:AudioContext,now:number,{type='sine',from,to=from,duration,vol
 interface NoiseOptions {
   duration: number; volume: number; filter: {frequency: number; Q: number}; sweepTo?: number | null; attack?: number;
 }
-/* 噪声源是一次性的：每响一声造一段新缓冲，放完把整条链拆掉。振荡器 stop 之后会
-   自己断开，BufferSource 不会，滤波器和增益节点就一直挂在图上。 */
+/* 噪声源esuno次性: 每响uno声造uno段Nuevo缓冲, 放完Completo链拆掉. 振荡Dispositivo stop 之posterior会
+   自己Desconectar, BufferSource No会, 滤波Dispositivo y 增益节点就uno直挂EnImagenarriba.  */
 function noise(ctx:AudioContext,now:number,{duration,volume,filter,sweepTo=null,attack=0}:NoiseOptions){
   const length=Math.max(1,Math.round(ctx.sampleRate*duration));
   const buffer=ctx.createBuffer(1,length,ctx.sampleRate);
@@ -91,30 +91,30 @@ function noise(ctx:AudioContext,now:number,{duration,volume,filter,sweepTo=null,
   source.start(now);
 }
 
-/** 名字对应界面上的一类动作，不对应某个控件；同一类动作在哪一页都是同一声。 */
+/** 名字对应界面en launo类动作, No对应某Controles; 同uno类动作En哪unopágina都es同uno声.  */
 const RECIPES:Record<string,Recipe>={
-  /* 软点击：配方的 Soft click 变体，再往低压一档音量。 */
+  /* 软点击: 配方 Soft click 变体, 再往bajo压uno档Volumen.  */
   click:(ctx,now)=>noise(ctx,now,{duration:0.06,volume:0.12,filter:{frequency:1200,Q:1}}),
-  /* 开关：升是开、降是关，配方的 Minimal toggle 变体，两头音量一致。 */
+  /* 开关: 升es开, 降es关, 配方 Minimal toggle 变体, 两头Volumenuno致.  */
   'toggle-on':(ctx,now)=>tone(ctx,now,{from:550,to:650,duration:0.08,volume:0.15}),
   'toggle-off':(ctx,now)=>tone(ctx,now,{from:650,to:550,duration:0.08,volume:0.15}),
-  /* 成功：C5 起升一个大三度，两个音之间留 80ms。 */
+  /* Éxito: C5 起升unograndetres度, 两音之间Deja 80ms.  */
   success:(ctx,now)=>{
     tone(ctx,now,{from:523,duration:0.12,volume:0.18});
     tone(ctx,now,{from:523*1.25,duration:0.12,volume:0.18,start:0.2});
   },
-  /* 警告：中频三角波两下短脉冲，说的是「留意一下」，不带出错那种负面。 */
+  /* Advertencia: en proceso频tres角波两abajocorto脉冲, 说es"Deja意unoabajo", No带出错ese负面.  */
   warning:(ctx,now)=>{
     tone(ctx,now,{type:'triangle',from:600,duration:0.08,volume:0.15});
     tone(ctx,now,{type:'triangle',from:600,duration:0.08,volume:0.15,start:0.16});
   },
-  /* 出错：锯齿波经低通压暗后下行，配方默认参数按音量下限取。 */
+  /* 出错: 锯齿波经bajo通压暗posteriorabajo行, 配方PredeterminadoParámetro按Volumenabajo限取.  */
   error:(ctx,now)=>tone(ctx,now,{type:'sawtooth',from:400,to:200,duration:0.25,volume:0.15,
     filter:{type:'lowpass',frequency:1500,Q:1}}),
-  /* 菜单与面板进场：配方的 Quick swipe 变体。 */
+  /* 菜单y面板进场: 配方 Quick swipe 变体.  */
   whoosh:(ctx,now)=>noise(ctx,now,{duration:0.12,volume:0.08,attack:0.036,
     filter:{frequency:1000,Q:1},sweepTo:6000}),
-  /* 弹层进场：配方的 Light tap 变体。 */
+  /* 弹层进场: 配方 Light tap 变体.  */
   pop:(ctx,now)=>tone(ctx,now,{from:1500,to:500,duration:0.04,volume:0.15}),
 };
 
@@ -123,10 +123,10 @@ export const UI_SOUNDS=Object.freeze(Object.keys(RECIPES));
 export function setUiSoundsEnabled(on:unknown):void{enabled=on===true}
 export function uiSoundsEnabled():boolean{return enabled}
 
-/** 响一声；关着、浏览器没有 Web Audio 时什么都不做并返回 false。没有这种音效就抛错。 */
+/** 响uno声; 关着, Explorar dispositivoSin Web Audio 时什么都No做y返回 false. Sineste音效就抛错.  */
 export function playUiSound(name:string):boolean{
   const recipe=RECIPES[name];
-  if(!recipe)throw new Error(`没有「${name}」这种界面音效`);
+  if(!recipe)throw new Error(`Sin"${name}"esteSonidos de interfaz`);
   if(!enabled)return false;
   const ctx=context();
   if(!ctx)return false;
@@ -134,9 +134,9 @@ export function playUiSound(name:string):boolean{
   return true;
 }
 
-/* 会响的控件按角色认，不按类名：React 子树的按钮和旧壳的按钮长得不一样，但都是
-   `button`。开关走 change 而不是 click：一次点击只该响一声，而且响的是开还是关要看
-   点完的状态。禁用中的（`disabled`、`aria-disabled`）不响——它没有发生任何事。 */
+/* 会响Controles按角色认, No按类名: React 子树按钮 y antiguo壳按钮largo得Nouno样, pero都es
+   `button`. 开关走 change 而Noes click: uno次点击Solo该响uno声, 而且响es开还es关要ver
+   点完Estado. 禁用en proceso(`disabled`, `aria-disabled`)No响—它Sin发生任何事.  */
 const CLICKABLE='button,[role="button"],[role="tab"],[role="menuitem"],[role="menuitemradio"],'
   +'[role="menuitemcheckbox"],[role="option"],summary,a[href]';
 const SWITCH='input[type="checkbox"][role="switch"]';
@@ -145,7 +145,7 @@ function inert(control:Element){
   return (control as HTMLButtonElement).disabled===true||control.getAttribute('aria-disabled')==='true';
 }
 
-/** 挂到 document 上：用捕获阶段，哪个页面在自己那层 stopPropagation 都拦不住这一声。 */
+/** 挂到 document arriba: 用捕obtener阶段, 哪página面En自己ese层 stopPropagation 都拦No住esteuno声.  */
 const soundRoots=new WeakSet<Document|Element>();
 export function wireUiSounds(root:Document|Element=document):void{
   if(soundRoots.has(root))return;

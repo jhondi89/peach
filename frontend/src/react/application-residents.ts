@@ -1,4 +1,4 @@
-/** 常驻媒体、面板与原生宿主适配层；内容由同一棵路由树画。 */
+/** 常驻媒体, 面板yOriginal生宿主适配层; contenido由同uno棵路由树画.  */
 import { configureBatchDock, configureGlowPicker, configureImmerse, configureManageHeader,
   configureSettingsPanel, configureSidebar, configureStage } from '../react/entry';
 import { prefetchManagedRoute } from '../react/router/managed-routes';
@@ -25,7 +25,7 @@ export function loadRouter(actions: ShellActions): Promise<void> {
   return Promise.resolve();
 }
 
-/** 常驻首屏与当前应用代次绑定；卸载后的响应不能再挂宿主或发布句柄。 */
+/** 常驻primero屏y当anterior应用代次绑定; DesinstalarposteriorRespuestaNo能再挂宿主或Publicar句柄.  */
 async function openApplicationResident(name: string, container: HTMLElement,
   place: (node: HTMLElement) => HTMLElement = node => node): Promise<void> {
   const epoch = residentEpoch;
@@ -34,7 +34,7 @@ async function openApplicationResident(name: string, container: HTMLElement,
     container, resident: true, isCurrent: () => !!publish && epoch === residentEpoch,
     place: () => place(container),
   });
-  if (!opened || epoch !== residentEpoch || !publish) throw new DOMException('应用已卸载', 'AbortError');
+  if (!opened || epoch !== residentEpoch || !publish) throw new DOMException('AplicarYaDesmontar', 'AbortError');
 }
 
 export function disposeApplicationResidents(): void {

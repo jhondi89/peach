@@ -1,8 +1,8 @@
-/* 实体资料页的正文（`entity-body` island）：名册、作品网格与照片墙三个视图里的一个。
+/* 实体资料página正文(`entity-body` island): 名册, ObrasCuadrículay照片Murotres视Imagenen launo. 
  *
- * 数据全由壳取好推进来，这里只挑出当前视图画。作品网格按 `revision` 换键：壳每发起一次新的
- * 作品请求，这一格先铺骨架（`items` 为 `null`），列表回来后骨架淡出、卡片从模糊里清晰起来，
- * 同目录那一格。骨架还没到显示门槛就回来的，直接落内容。 */
+ * DatosTodo由壳取bien推进来, aquíSolo挑出当anterior视Imagen画. ObrasCuadrícula按 `revision` 换Clave: 壳每发起uno次Nuevo
+ * ObrasPor favor求, esteuno格先铺骨架(`items` Como `null`), Lista回来posterior骨架淡出, 卡片从Difusodentro清晰起来, 
+ * 同Directorioeseuno格. 骨架还没到显示门槛就回来, 直continuar落contenido.  */
 import { Fragment, useCallback, useMemo, useState } from 'react';
 
 import { CatalogGridPage, LoadMore } from '../catalog-grid/catalog-grid-page';
@@ -24,13 +24,13 @@ export function EntityBodyPage(props: EntityBodyProps) {
   return null;
 }
 
-/** 名册一页摆几格，同索引页名册一页的格数。 */
+/** 名册unopágina摆几格, 同索引página名册unopágina格数.  */
 const ROSTER_PAGE = PAGE_SIZE.people;
 
-/** 名册一格点开进这个人（或这个厂牌）的资料页，取图同索引页那条回落链。
+/** 名册uno格点开进este人(或esteSello)资料página, 取Imagen同索引páginaese回落链. 
  *
- *  名单随资料一次下来，大事务所有上千人；一次全画出来就是上千个头像格和上千次取图。先摆一页，
- *  余下的走作品区同一枚「载入更多」，滚到附近自己接下一页。 */
+ *  名单随资料uno次abajo来, grandeAgenciaConarribamil人; uno次Todo画出来就esarribamilAvatar格 y arribamil次取Imagen. 先摆unopágina, 
+ *  余abajo走Obras区同uno"载入更más", 滚到附近自己continuarSiguientepágina.  */
 function Roster({ roster, props }: { roster: EntityRoster; props: EntityBodyProps }) {
   const { helpers, actions } = props;
   const cell = useMemo(() => ({ personAvatar: helpers.personAvatar, openEntity: actions.openEntity }),
@@ -48,8 +48,8 @@ function Roster({ roster, props }: { roster: EntityRoster; props: EntityBodyProp
   );
 }
 
-/** 作品区：外面这一层只管「壳还在取」时的骨架，列表到了就是卡片网格的 entity 模式，
- *  第一页由壳给、续页经 `fetchPage` 取。`[data-entity-grid]` 是壳按 Shift 连选排卡片时认的那一格。 */
+/** Obras区: exterior面esteuno层Solo管"壳还En取"时骨架, Lista到就es卡片Cuadrícula entity Modo, 
+ *  No.unopágina由壳给, 续página经 `fetchPage` 取. `[data-entity-grid]` es壳按 Shift 连选排卡片时认eseuno格.  */
 function VideoSection(props: EntityBodyProps) {
   const reveal = useSkeletonReveal(!props.items, props.skeletonHtml);
   return (
@@ -66,40 +66,40 @@ function VideoSection(props: EntityBodyProps) {
   );
 }
 
-/** 一部作品的样张铺成几格。张数、站名和标题已随 `/api/photos` 下来，不再请求一次。 */
+/** uno部Obras样铺成几格. 数, 站名 y Títuloya随 `/api/photos` abajo来, No再Por favor求uno次.  */
 const sampleItems = (set: EntityCodeSet): EntitySamplePhoto[] => Array.from({ length: set.n }, (_, i) => ({
-  sample: true, code: set.code, position: i + 1, total: set.n, name: `${set.code} 样张 ${i + 1}`,
-  source: set.site_label || '官方样张',
+  sample: true, code: set.code, position: i + 1, total: set.n, name: `${set.code} Muestra ${i + 1}`,
+  source: set.site_label || 'Muestra oficial',
 }));
 
 const isSample = (item: EntityWallPhoto): item is EntitySamplePhoto => (item as EntitySamplePhoto).sample === true;
 
-/** 样张的地址按番号与序号由服务端查，缩略图与灯箱里的大图共用。 */
+/** 样地址按Código JAVy序号由服务端查, 缩略Imageny灯箱en lagrandeImagen共用.  */
 const sampleQuery = (item: EntitySamplePhoto) => `code=${encodeURIComponent(item.code)}&n=${item.position}`;
 
-/* 缩略图一律走 `/photo-thumb`（服务端缓存），只有灯箱里的大图读原图：PikPak 是计费来源，一屏
- * 直接铺原图等于付几十兆流量。样张走 `/sample-thumb`。 */
+/* 缩略Imagenuno律走 `/photo-thumb`(服务端缓存), SoloCon灯箱en lagrandeImagen读OriginalImagen: PikPak es计费来源, uno屏
+ * 直continuar铺OriginalImagenetc.于付几diez兆流量. 样走 `/sample-thumb`.  */
 const thumbSrc = (item: EntityWallPhoto) => isSample(item)
   ? `/sample-thumb?${sampleQuery(item)}`
   : `/photo-thumb?id=${item.id}`;
 
-/** 墙上一格换成灯箱里的一张。本地图片整条当 asset 递进去，详情面板读来源与大小、定位读 id。 */
+/** MuroAnterior格换成灯箱en launo. 本地Imagen片Completo当 asset 递进去, Detalles面板读来源yTamaño, 定读 id.  */
 const wallSlide = (item: EntityWallPhoto): LightboxSlide => isSample(item)
   ? { src: `/sample-image?${sampleQuery(item)}`, thumb: thumbSrc(item), name: item.name, asset: null,
     source: item.source }
   : { src: `/photo?id=${item.id}`, thumb: thumbSrc(item), name: item.name || '', asset: item };
 
-/** 照片视图：名下每部作品的官方样张按发行日从新到旧一段一段铺在前面，每段一行段头；本地图片
- *  那一面墙在后面，只有本地图片时不出段头（ADR-0068）。
+/** 照片视Imagen: 名abajo每部ObrasOficial样按Lanzamiento日从Nuevo到antiguouno段uno段铺Enanterior面, 每段uno行段头; 本地Imagen片
+ *  eseuno面MuroEnposterior面, SoloCon本地Imagen片时No出段头(ADR-0068). 
  *
- *  一面通铺的瀑布流按列往下填，一部的图会从上一列底部接到下一列顶部，逐张标番号又太吵；分段后
- *  一部只标一次。`data-photo-index` 是一格在整面墙里的序号，跨段连续，点下去把整列交给灯箱，
- *  灯箱照旧跨段连续翻。翻页只数本地图片：样张一次铺完，不走分页。 */
+ *  uno面通铺瀑布流按列往abajoIntroduce, uno部Imagen会从Anterior列底部continuar到Siguiente列顶部, 逐标Código JAV又太吵; 分段posterior
+ *  uno部Solo标uno次. `data-photo-index` esuno格EnCompleto面Muroen la序号, 跨段连续, 点abajo去Completo列交给灯箱, 
+ *  灯箱照antiguo跨段连续翻. 翻páginaSolo数本地Imagen片: 样uno次铺完, No走分página.  */
 function PhotoSection({ photos, props }: { photos: EntityPhotos; props: EntityBodyProps }) {
   const { photoSize: size, photoLayout: layout, actions, canLoadMore } = props;
   const wall = useMemo(() => [...photos.codeSets.flatMap(sampleItems), ...photos.items], [photos]);
-  /* 取不到图的格子。本地图片取不到说明文件没了，整格该走；样张取不到多半是来源这会儿不通，
-   * 格子留着空底，序号不断，灯箱里照样翻得到。两种都不改别的格子的序号。 */
+  /* 取No到Imagen格子. 本地Imagen片取No到DescripciónArchivo没, Completo格该走; 样取No到másmedioes来源este会儿No通, 
+   * 格子Deja着空底, 序号No断, 灯箱dentro照样翻得到. 两都No改别格子序号.  */
   const [lost, setLost] = useState<ReadonlySet<number>>(() => new Set());
   const lose = useCallback((index: number) => setLost((prev) => {
     if (prev.has(index)) return prev;
@@ -126,11 +126,11 @@ function PhotoSection({ photos, props }: { photos: EntityPhotos; props: EntityBo
       {groups.map(({ set, from }) => (
         <Fragment key={set.code}>
           <GroupHead label={set.code} title={set.name}
-            meta={[`${set.site_label || '官方'} 样张`, set.release_date, `${set.n.toLocaleString()} 张`].filter(Boolean).join(' · ')} />
+            meta={[`${set.site_label || 'Oficial'} Muestra`, set.release_date, `${set.n.toLocaleString()}  imagen(es)`].filter(Boolean).join(' · ')} />
           <div {...wallAttrs}>{wall.slice(from, from + set.n).map((item, i) => cell(item, from + i))}</div>
         </Fragment>
       ))}
-      {groups.length && photos.total ? <GroupHead label="本地图片" meta={`${photos.total.toLocaleString()} 张`} /> : null}
+      {groups.length && photos.total ? <GroupHead label="Imagen local" meta={`${photos.total.toLocaleString()}  imagen(es)`} /> : null}
       <div {...wallAttrs} data-local-wall="">
         {photos.items.map((item, i) => (lost.has(localStart + i) ? null : cell(item, localStart + i)))}
       </div>
@@ -142,7 +142,7 @@ function PhotoSection({ photos, props }: { photos: EntityPhotos; props: EntityBo
   );
 }
 
-/** 段头一行：番号、标题和右端「来源 样张 · 发行日 · 张数」。标题过长尾部省略，全名在 title 里。 */
+/** 段头uno行: Código JAV, Título y derecha端"来源 样 · Lanzamiento日 · 数". Título过largo尾部省略, Todo名En title dentro.  */
 function GroupHead({ label, title, meta }: { label: string; title?: string; meta: string }) {
   return (
     <div data-photo-group="">
@@ -153,7 +153,7 @@ function GroupHead({ label, title, meta }: { label: string; title?: string; meta
   );
 }
 
-/** 一格。图还没到时是一块 `--sunk` 空底，不是一行文件名：`alt` 留给读屏，字色在样式里调成透明。 */
+/** uno格. Imagen还没到时esuno `--sunk` 空底, Noesuno行Archivo名: `alt` Deja给读屏, 字色En样dentro调成透明.  */
 function PhotoCell({ item, index, lost, onLose, onOpen }: {
   item: EntityWallPhoto; index: number; lost: boolean; onLose(index: number): void; onOpen(index: number): void;
 }) {

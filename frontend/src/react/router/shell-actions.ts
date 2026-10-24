@@ -1,9 +1,9 @@
-/* Application 交给路由树的能力，经 Context 下发给路由树画的那几页。
+/* Application 交给路由树能力, 经 Context abajo发给路由树画ese几página. 
  *
- * 这里只放两类东西：换到还归壳的那一屏（目录、资料页、详情、关注、垃圾文件），和只有壳才有的
- * 状态或回执（Toast、偏好存储、一次性上下文）。纯查表的助手（`tagLabel`、`javTitleHtml`）由页面
- * 从 `@peach/legacy/*` 直接 import；每次打开才算得出的值（只读状态、地址上的分类与页签、引导标记）
- * 跟着那一次打开走，不在这里。 */
+ * aquíSolo放两类东西: 换到还归壳eseuno屏(Directorio, 资料página, Detalles, 关注, 垃圾Archivo),  y SoloCon壳才Con
+ * Estado或回执(Toast, 偏bien存储, uno次性arribaabajo文). 纯查表助手(`tagLabel`, `javTitleHtml`)由página面
+ * 从 `@peach/legacy/*` 直continuar import; 每次Abrir才算得出值(Solo读Estado, 地址en laCategoríaypágina签, 引导Etiqueta)
+ * 跟着eseuno次Abrir走, NoEnaquí.  */
 
 import type { OverlayTarget } from '@peach/history';
 import type { ConfigurationPath } from '@peach/history';
@@ -22,148 +22,148 @@ import type { SearchProps } from '../search/search';
 export interface ShellActions {
   openSettings?(section: string): Promise<unknown>;
   closeSettings?(): void;
-  /** 打开作品详情（舞台）。 */
+  /** AbrirObrasDetalles(舞).  */
   openItem(id: number): void;
-  /** 打开实体资料页。`kind` 是 `creator`／`performer` 等。 */
+  /** Abrir实体资料página. `kind` es `creator`/`performer` etc..  */
   openEntity(kind: string, name: string): void;
-  /** 回目录并按这个标签筛选。 */
+  /** 回Directorioy按esteEtiquetaFiltrar.  */
   openTag(key: string): void;
-  /** 口味页点一条名次：标签回目录筛选，人名进资料页。 */
+  /** 口味página点uno名次: Etiqueta回DirectorioFiltrar, 人名进资料página.  */
   openTasteSignal(kind: string, name: string): void;
-  /** 换到一个路径：push 一条不认领的地址，像后退前进一样领一个页面打开序号，由页面组按匹配打开那一页。 */
+  /** 换到unoRuta: push unoNo认领地址, 像posterior退anterior进uno样领unopágina面Abrir序号, 由página面组按匹配Abrireseunopágina.  */
   navigate(path: string): void;
-  /** 按管理区身份进一屏（路由表里 `section` 等于它的第一条；认不出的落到垃圾文件）。 */
+  /** 按Gestionar区身进uno屏(路由表dentro `section` etc.于它No.uno; 认No出落到垃圾Archivo).  */
   openManage(section: string): void;
-  /** 管理区身份对应的路径；路由表里没有这个身份时是空串。 */
+  /** Gestionar区身对应Ruta; 路由表dentroSineste身时es空串.  */
   managePath(section: string): string;
-  /** 去「看更新」那一页（`/follow`）。 */
+  /** 去"verActualizar"eseunopágina(`/follow`).  */
   openFollow(): void;
-  /** 过去时回执（`actionReceipt`）；给了 `undo` 就带一颗撤销键。 */
+  /** 过去时回执(`actionReceipt`); 给 `undo` 就带unoDeshacerClave.  */
   receipt(message: string, options?: { undo?: () => Promise<void> }): void;
-  /** 全站 Toast 原样（`toast`）：`sound` 选提示音。 */
+  /** Todo站 Toast Original样(`toast`): `sound` 选Sugerencia音.  */
   toast(message: string | { text: string }, options?: { sound?: string }): void;
-  /** 失败回执（`actionFailure`）：`action` 是没做成的那件事。 */
+  /** Fallo回执(`actionFailure`): `action` es没做成ese件事.  */
   failure(action: string, error: unknown): void;
-  /** 在资源管理器里显示这个文件，失败回一句原因。 */
+  /** En资源GestionarDispositivodentro显示esteArchivo, Fallo回uno句Original因.  */
   revealSource(id: number): Promise<string>;
-  /** 让安装教程重新出现。 */
+  /** 让InstalarTutorialpesadoNuevo出现.  */
   reopenTutorial(): Promise<void>;
-  /** 下一次打开配置页时选中的页签，只交给那一次。 */
+  /** Siguiente次AbrirConfiguraciónpágina时选en procesopágina签, Solo交给eseuno次.  */
   requestConfigurationSection(section: string): void;
-  /** 复核页把分类写回地址栏，不重开。 */
+  /** 复核páginaCategoría写回地址栏, Nopesado开.  */
   routeReview(params: { category: string }): void;
-  /** 关注管理页把页签、页码与排序写回地址栏，不重开。 */
+  /** 关注Gestionarpáginapágina签, página码yOrdenar写回地址栏, Nopesado开.  */
   routeFollowManage(params: { tab: string; page: number; sort: string; dir: string }): void;
-  /** 关注管理页的偏好改了，存储归壳。 */
+  /** 关注Gestionarpágina偏bien改, 存储归壳.  */
   saveFollowPreference(patch: { pageSize?: number; layout?: string }): void;
-  /** 来源徽标（含计费标记）的 HTML。 */
+  /** 来源徽标(含计费Etiqueta) HTML.  */
   srcBadge(location: string, cost: string): string;
-  /** 索引页把过滤词、范围、视图与类型写回地址栏，不重开。`replace` 用在打字过滤那种一路改写的场合。 */
+  /** 索引páginaFiltrar词, Rango, 视ImagenyTipo写回地址栏, Nopesado开. `replace` 用En打字Filtrareseuno路改写场合.  */
   routeIndex(params: IndexRoute, options?: { replace?: boolean }): void;
-  /** 索引页的版式偏好改了，存储归壳（资料页的名册读的也是它）。 */
+  /** 索引página版偏bien改, 存储归壳(资料página名册读也es它).  */
   savePeopleLayout(patch: { layout: PeopleLayout }): void;
-  /** 退出顶栏的选择模式：键归壳。 */
+  /** Cerrar sesión顶栏SeleccionarModo: Clave归壳.  */
   exitSelectMode(): void;
-  /** 本地名册一格的头像（圆框里那段 HTML 与人脸取景），回落链在壳里只有一份。 */
+  /** 本地名册uno格Avatar(圆框dentroese段 HTML y人脸取景), 回落链En壳dentroSoloConuno.  */
   personAvatar(item: IndexPerson, entityKind: string, big: boolean): PersonAvatar;
-  /** 在线创作者一格的头像 HTML：主页头像优先、归档兜底，都取不到落回首字母。 */
+  /** En线创作者uno格Avatar HTML: 主páginaAvatar优先, 归档兜底, 都取No到落回primero字母.  */
   authorAvatar(author: OnlineAuthor): string;
-  /** 回目录，按这一枚或这几枚本地标签筛选。 */
+  /** 回Directorio, 按esteuno或este几本地EtiquetaFiltrar.  */
   showIndexTags(tags: string[], match: 'any' | 'all'): void;
-  /** 去关注页，只看这一位创作者或这一枚在线标签的更新。 */
+  /** 去关注página, Soloveresteuno创作者或esteunoEn线EtiquetaActualizar.  */
   openFollowAuthor(key: string): void;
   openFollowTag(tag: string): void;
-  /** 打开一份播放列表的播放队列（舞台），从 `resumeAssetId` 那一个接着播。 */
+  /** AbrirunoReproducirListaReproducirCola(舞), 从 `resumeAssetId` eseunocontinuar着播.  */
   openPlaylist(id: number, resumeAssetId: number): void;
-  /** 此刻能不能悬停翻页：壳的多选、遮挡、减少动效与滚动中都回 false。 */
+  /** 此刻能No能Pasar el ratón翻Página: 壳más选, 遮挡, 减menos动效y滚动en proceso都回 false.  */
   canFlip(): boolean;
-  /** 页面组换了一页：路由树里的页面元素挂上、开始取数之前报一次。壳收起上一页留下的面（悬停预览、在途读请求、
-   *  首页新作行、别的容器里那一页），再按种类铺开：管理区、关注页与播放列表页铺 `#stats`，索引页、
-   *  资料页与目录铺首页那一侧。 */
+  /** página面组换unoPágina: 路由树en lapágina面元素挂arriba, Empezar取数之anterior报uno次. 壳收起AnteriorpáginaDejaabajo面(Pasar el ratónVista previa, En途读Por favor求, 
+   *  primeropáginaNuevas obras行, 别容Dispositivodentroeseunopágina), 再按类铺开: Gestionar区, 关注páginayReproducirListapágina铺 `#stats`, 索引página, 
+   *  资料páginayDirectorio铺primeropáginaeseuno侧.  */
   surfaceChanged(kind: SurfaceKind, path: string): void;
-  /** 清空顶栏搜索框（带散开的残影）。 */
+  /** 清空顶栏Buscar框(带散开残影).  */
   clearSearch(): void;
-  /** 打开沉浸模式，从 `id` 那一条开始；不给就从头。地址由调用方负责。 */
+  /** AbrirInmersivoModo, 从 `id` eseunoEmpezar; No给就从头. 地址由调用方负责.  */
   openImmerse(id?: number): void;
-  /** 打开覆盖地址上的那一条（作品详情、队列里的一条或关注详情），地址已经在那里，不再写。 */
+  /** Abrir覆盖地址en laeseuno(ObrasDetalles, Colaen launo或关注Detalles), 地址ya经Enesedentro, No再写.  */
   openOverlay(target: OverlayTarget): void;
-  /** 取走一次队列打开意图：等待队列定下实际条目，首屏确定后才写详情地址。 */
+  /** 取走uno次ColaAbrir意Imagen: EsperandoCola定abajo实际Entrada, primero屏确定posterior才写Detalles地址.  */
   openQueueRequest?(): void;
-  /** 详情舞台开着就收起（正在放的视频照旧进小窗），不写地址。 */
+  /** Detalles舞开着就收起(En curso放视频照antiguo进pequeño窗), No写地址.  */
   closeStage(): void;
-  /** 目录网格卡片的助手与动作：壳里各一份、身份不变（卡片按引用比较），资料页作品区与目录共用。 */
+  /** DirectorioCuadrícula卡片助手y动作: 壳dentro各uno, 身No变(卡片按引用比较), 资料páginaObras区yDirectorio共用.  */
   readonly grid: { helpers: MediaCardHelpers; actions: MediaCardActions };
 
-  // ── 索引页与资料页的元素用（`pages/index-entity.tsx`）：取的都是只有壳才有的状态 ──
-  /** 本机能不能改配置：壳启动时探过一次的那个值，索引页交给页面。 */
+  // ── 索引páginay资料página元素用(`pages/index-entity.tsx`): 取都esSoloCon壳才ConEstado ──
+  /** 本机能No能改Configuración: 壳启动时探过uno次ese值, 索引página交给página面.  */
   configurable?(): boolean;
-  /** 元素打开的那一页首屏画上之后报一次：索引页让壳同步侧栏与顶栏、排吸顶；资料页让壳按这一页的语境重画顶部
-   *  三层。 */
+  /** 元素Abrireseunopáginaprimero屏画arriba之posterior报uno次: 索引página让壳Sincronizar侧栏y顶栏, 排吸顶; 资料página让壳按esteunopágina语境pesado画顶部
+   *  tres层.  */
   surfaceShown?(kind: 'index' | 'entity', path: string): void;
-  /** 资料页那几样仍在壳里的东西。 */
+  /** 资料páginaese几样仍En壳en la东西.  */
   readonly entity?: EntityPageShell;
 
-  // ── 关注与播放列表用（`pages/follow.tsx`）──
-  /** 关注页那几样仍在壳里的东西。 */
+  // ── 关注yReproducirLista用(`pages/follow.tsx`)──
+  /** 关注páginaese几样仍En壳en la东西.  */
   readonly follow?: FollowFeedShell;
 
-  // ── 目录用（`pages/catalog.tsx`）：来源在线表、搜索框、顶部三层与取数都还在壳里 ──
-  /** 首页、三个筛选态、回收站与垃圾文件打开与重取时回到壳的那几步。 */
+  // ── Directorio用(`pages/catalog.tsx`): 来源En线表, Buscar框, 顶部tres层y取数都还En壳dentro ──
+  /** primeropágina, tresFiltrar态, 回收站y垃圾ArchivoAbrirypesado取时回到壳ese几步.  */
   readonly catalog?: CatalogShell;
 }
 
-/** 关注页元素打开时回到壳的那几步。筛选的那一份由壳从地址读进自己的变量（回到关注页时按它写地址，侧栏、标签
- *  抽屉与关注详情也读它），选择集、照片墙偏好与页面借用的助手和动作也都在壳里；进页骨架与冷启动铺的是同一张。 */
+/** 关注página元素Abrir时回到壳ese几步. Filtrareseuno由壳从地址读进自己变量(回到关注página时按它写地址, 侧栏, Etiqueta
+ *  抽屉y关注Detalles也读它), Seleccionar集, 照片Muro偏bienypágina面借用助手 y 动作也都En壳dentro; 进página骨架y冷启动铺es同uno.  */
 export interface FollowFeedShell {
-  /** 按地址读一遍筛选。关注页还画在 `#stats` 里（资料页压过来时只藏起来）就铺开它，把筛选、取样种子与一个新的
-   *  刷新代次推过去，照片墙跟上、回到顶上，回 true；没画着回 false，由元素整页打开。 */
+  /** 按地址读uno遍Filtrar. 关注página还画En `#stats` dentro(资料página压过来时Solo藏起来)就铺开它, Filtrar, 取样SemillayunoNuevo
+   *  Actualizar代次推过去, 照片Muro跟arriba, 回到顶arriba, 回 true; 没画着回 false, 由元素CompletopáginaAbrir.  */
   refresh(): boolean;
-  /** 进页骨架。 */
+  /** 进página骨架.  */
   skeleton(): string;
-  /** 整页打开交给页面的 props：筛选、取样种子与刷新代次、选择集、照片墙偏好，以及壳里那一份助手与动作。 */
+  /** CompletopáginaAbrir交给página面 props: Filtrar, 取样SemillayActualizar代次, Seleccionar集, 照片Muro偏bien, 以及壳dentroeseuno助手y动作.  */
   props(): FollowFeedProps;
-  /** 关注详情下面那一层（深链、或后退前进落到关注详情上时列表没画着）：舞台上开着的不是关注详情就先收起，再铺开
-   *  管理区那一侧；列表还画在 `#stats` 里就原样留着，没画着就清空 `#stats`，列表等关掉详情才打开。 */
+  /** 关注Detallesabajo面eseuno层(profundo链, 或posterior退anterior进落到关注Detallesarriba时Lista没画着): 舞arriba开着Noes关注Detalles就先收起, 再铺开
+   *  Gestionar区eseuno侧; Lista还画En `#stats` dentro就Original样Deja着, 没画着就清空 `#stats`, Listaetc.关掉Detalles才Abrir.  */
   ground(): void;
 }
 
-/** 目录元素回到壳的那几步。筛选由元素按地址写进 `@peach/shell` 的 `state`，之后的事归壳。 */
+/** Directorio元素回到壳ese几步. Filtrar由元素按地址写进 `@peach/shell`  `state`, 之posterior事归壳.  */
 export interface CatalogShell {
-  /** 地址没写 `loc` 时的来源：缺省那几个里摘掉此刻脱盘的（壳在启动与重新检测时记下的那一份）。 */
+  /** 地址没写 `loc` 时来源: 缺省ese几dentro摘掉此刻脱盘(壳En启动ypesadoNuevo检测时记abajoeseuno).  */
   defaultLoc(): string;
-  /** 按刚写好的 `state` 打开这一页：从别处回到首页（`entering`）先作废顶部三层的缓存；回收站清空搜索框并铺开首页
-   *  那一侧，其余页把搜索框对齐 `state.q`；再同步侧栏与顶栏、重画顶部三层、取目录。`retitle`：地址刚由元素改写，
-   *  标题与教程状态跟着重读。 */
+  /** 按刚写bien `state` AbriresteunoPágina: 从别处回到primeropágina(`entering`)先作废顶部tres层缓存; 回收站清空Buscar框y铺开primeropágina
+   *  eseuno侧, 其余páginaBuscar框对齐 `state.q`; 再Sincronizar侧栏y顶栏, pesado画顶部tres层, 取Directorio. `retitle`: 地址刚由元素改写, 
+   *  TítuloyTutorialEstado跟着pesado读.  */
   open(path: string, options?: { entering?: boolean; retitle?: boolean }): void;
-  /** 筛选与地址已经由壳写好：按它们重取目录。 */
+  /** Filtrary地址ya经由壳写bien: 按它们pesado取Directorio.  */
   load(): void;
-  /** 没有背景的作品详情与队列地址（深链、刷新）下面补画目录网格：网格没被占着、又是启动那一条或还铺着目录骨架时，
-   *  按当前地址取一次（不是首页口径，不写筛选）。 */
+  /** SinFondoObrasDetallesyCola地址(profundo链, Actualizar)abajo面补画DirectorioCuadrícula: Cuadrícula没被占着, 又es启动eseuno或还铺着Directorio骨架时, 
+   *  按当anterior地址取uno次(Noesprimeropágina口径, No写Filtrar).  */
   fill(): void;
-  /** 离开目录：收起 `#grid` 那一页与首页新作行。 */
+  /** 离开Directorio: 收起 `#grid` eseunopáginayprimeropáginaNuevas obras行.  */
   release(): void;
 }
 
-/** 资料页元素打开时回到壳的那几步。骨架里可有可无的几块按形状名单画，名单、目录卡片的比例与新作骨架都在壳里；
- *  筛选按地址解出要用壳的排序偏好；就地推要动壳的顶部三层与侧栏。 */
+/** 资料página元素Abrir时回到壳ese几步. 骨架dentropuedeConpuedeSin几按形状名单画, 名单, Directorio卡片RelaciónyNuevas obras骨架都En壳dentro; 
+ *  Filtrar按地址解出要用壳Ordenar偏bien; 就地推要动壳顶部tres层y侧栏.  */
 export interface EntityPageShell {
   missing(kind: string): void;
-  /** 铺进页骨架：形状名单还在路上时先等它一下，`current` 回 false 就不铺了；铺完重取一遍名单，回来时补齐骨架
-   *  里那几块。 */
+  /** 铺进página骨架: 形状名单还En路arriba时先etc.它unoabajo, `current` 回 false 就No铺; 铺完pesado取uno遍名单, 回来时补齐骨架
+   *  dentroese几.  */
   loading(kind: string, name: string, current: () => boolean): Promise<void>;
-  /** 这一次打开交给页面的 props：筛选与视图按地址上的查询串解出（从别处点进来的那一次一律从头），展示设置、
-   *  助手与写操作都是壳的那一份。卡片与宿主由元素补上。 */
+  /** esteuno次Abrir交给página面 props: Filtrary视Imagen按地址en laConsulta串解出(从别处点进来eseuno次uno律从头), 展示Configuración, 
+   *  助手y写操作都es壳eseuno. 卡片y宿主由元素补arriba.  */
   props(kind: string, name: string, search: string): Omit<EntityPageProps, 'card' | 'hosts'>;
-  /** 后退前进落在画着的同一位的另一份地址上：把地址上的筛选与视图推给画着的那一页，顶部三层与侧栏跟着就地改。
-   *  这一页没画着时回 false，由元素整页重开。 */
+  /** posterior退anterior进落En画着同uno另uno地址arriba: 地址en laFiltrary视Imagen推给画着eseunopágina, 顶部tres层y侧栏跟着就地改. 
+   *  esteunopágina没画着时回 false, 由元素Completopáginapesado开.  */
   refresh(kind: string, name: string, search: string): boolean;
 }
 
-/** 页面组里一页的种类，壳按它决定铺哪一侧（`surfaceChanged`）。 */
+/** página面组dentrounopágina类, 壳按它决定铺哪uno侧(`surfaceChanged`).  */
 export type SurfaceKind = 'management' | 'index' | 'entity' | 'catalog' | 'follow' | 'playlists';
 
-/** 管理区那几页每次打开时交给页面的值，由页面元素从地址、偏好与壳的状态算（`pages/managed.tsx`），按页面分。
- *  管理区那几页画进 `#stats`。 */
+/** Gestionar区ese几página每次Abrir时交给página面值, 由página面元素从地址, 偏bieny壳Estado算(`pages/managed.tsx`), 按página面分. 
+ *  Gestionar区ese几página画进 `#stats`.  */
 export interface ManagedOpenProps extends Record<ConfigurationPath, { section?: string }> {
   '/jav': { tab: string; readOnly: boolean };
   '/stats': { configurable: boolean };
@@ -173,7 +173,7 @@ export interface ManagedOpenProps extends Record<ConfigurationPath, { section?: 
   '/duplicates': Record<string, never>;
   '/quality-goals': Record<string, never>;
   '/sources': Record<string, never>;
-  /** `section`：首帧选中的那一组页签名，取走 `requestConfigurationSection` 记下的那一次（地址带 `#peachProxy` 时是「网络与访问」）。 */
+  /** `section`: primero帧选en procesoeseuno组páginaFirma, 取走 `requestConfigurationSection` 记abajoeseuno次(地址带 `#peachProxy` 时es"网络yAcceder").  */
   '/settings/library': { section?: string };
   '/tasks': Record<string, never>;
   '/subscriptions': {
@@ -184,11 +184,11 @@ export interface ManagedOpenProps extends Record<ConfigurationPath, { section?: 
 
 export type ManagedPath = keyof ManagedOpenProps;
 
-/** 播放列表页与关注页同样画进 `#stats`，但不是管理区：由路由树的元素按匹配打开（`pages/follow.tsx`），从壳里
- *  进来由壳认领写地址再要求重开（关注页回到时带上离开时的筛选，重新进入还要重掷取样种子、回到干净的
- *  `/follow`），所以不进 `ManagedPath`。每次打开交进来的值同样按页面分，之后的开关经 `updateManagedRoute`
- *  推进来。关注页的助手与动作是壳里各一份、身份不变的对象（卡片按引用比较），跟着打开走：它们拼的 HTML、
- *  碰的 DOM 与写的地址都还在壳里。 */
+/** ReproducirListapáginay关注página同样画进 `#stats`, peroNoesGestionar区: 由路由树元素按匹配Abrir(`pages/follow.tsx`), 从壳dentro
+ *  进来由壳认领写地址再要求pesado开(关注página回到时带arriba离开时Filtrar, pesadoNuevo进入还要pesado掷取样Semilla, 回到干净
+ *  `/follow`), 所以No进 `ManagedPath`. 每次Abrir交进来值同样按página面分, 之posterior开关经 `updateManagedRoute`
+ *  推进来. 关注página助手y动作es壳dentro各uno, 身No变对象(卡片按引用比较), 跟着Abrir走: 它们拼 HTML, 
+ *  碰 DOM y写地址都还En壳dentro.  */
 export interface BrowseOpenProps {
   '/playlists': { revision: number };
   '/follow': FollowFeedProps;
@@ -196,14 +196,14 @@ export interface BrowseOpenProps {
 
 export type BrowseRoutePath = keyof BrowseOpenProps;
 
-/** 目录网格与垃圾队列画进 `#grid`，同样不算管理区：目录元素（`pages/catalog.tsx`）按地址把筛选写进壳的
- *  `state`，进首页还要重掷种子，回收站把筛选钉成 `trash`；作废顶部三层的缓存、摆搜索框与取数经
- *  `ShellActions.catalog` 回到壳。表按页面分键，不按
- *  地址：目录各路径与回收站画的都是 `/` 这一页，网格在 `/trash` 打开之后去 `/` 是就地推；`/junk-files`
- *  是垃圾队列那一页，`?state=ads` 落在 `/` 上时画的也是它。打开时交进来的是壳那一整份 props（筛选或
- *  分类、版式、选择态与卡片的助手和动作），之后的换筛选、换版式、选择模式与刷新代次经
- *  `updateManagedRoute` 推进来。卡片的助手与动作是壳里各一份、身份不变的对象（卡片按引用比较），
- *  目录网格那一份资料页的作品区与详情的接着看也在用，所以跟着打开走，不进 `ShellActions`。 */
+/** DirectorioCuadrículay垃圾Cola画进 `#grid`, 同样No算Gestionar区: Directorio元素(`pages/catalog.tsx`)按地址Filtrar写进壳
+ *  `state`, 进primeropágina还要pesado掷Semilla, 回收站Filtrar钉成 `trash`; 作废顶部tres层缓存, 摆Buscar框y取数经
+ *  `ShellActions.catalog` 回到壳. 表按página面分Clave, No按
+ *  地址: Directorio各Rutay回收站画都es `/` esteunopágina, CuadrículaEn `/trash` Abrir之posterior去 `/` es就地推; `/junk-files`
+ *  es垃圾Colaeseunopágina, `?state=ads` 落En `/` arriba时画也es它. Abrir时交进来es壳eseunoCompleto props(Filtrar或
+ *  Categoría, 版, Seleccionar态y卡片助手 y 动作), 之posterior换Filtrar, 换版, SeleccionarModoyActualizar代次经
+ *  `updateManagedRoute` 推进来. 卡片助手y动作es壳dentro各uno, 身No变对象(卡片按引用比较), 
+ *  DirectorioCuadrículaeseuno资料páginaObras区yDetallesContinuar viendo也En用, 所以跟着Abrir走, No进 `ShellActions`.  */
 export interface CatalogOpenProps {
   '/': CatalogGridProps;
   '/junk-files': JunkQueueProps;
@@ -211,25 +211,25 @@ export interface CatalogOpenProps {
 
 export type CatalogPagePath = keyof CatalogOpenProps;
 
-/** 索引页每次打开交进来的值：地址栏上的那几项（壳从地址读出）、这台浏览器的版式偏好、顶栏选择键的
- *  现值，和本机能不能改配置。选择键之后的开关经 `updateManagedRoute` 推进来。 */
+/** 索引página每次Abrir交进来值: 地址栏en laese几项(壳从地址读出), esteExplorar dispositivo版偏bien, 顶栏SeleccionarClave
+ *  现值,  y 本机能No能改Configuración. SeleccionarClave之posterior开关经 `updateManagedRoute` 推进来.  */
 export interface IndexOpenProps extends IndexRoute {
   layout: PeopleLayout;
   selectMode: boolean;
   configurable: boolean;
 }
 
-/** 索引五页画进 `#index`，一种名册一条路径。 */
+/** 索引cincopágina画进 `#index`, uno名册unoRuta.  */
 export type IndexRoutePath = `/${IndexKind}`;
 export type IndexOpenPropsTable = { [Path in IndexRoutePath]: IndexOpenProps };
 
-/** 资料页画进 `#index`，每种实体一条模式（名字里可能带斜杠，吃掉剩下全部段）。种类与名字跟着打开走，
- *  名字是壳从地址解码出来的那一份。 */
+/** 资料página画进 `#index`, 每实体unoModo(名字dentropuede能带斜杠, 吃掉剩abajoTodo段). 类y名字跟着Abrir走, 
+ *  名字es壳从地址解码出来eseuno.  */
 export type EntityRoutePath = '/performers/*' | '/studios/*' | '/creators/*' | '/series/*' | '/agencies/*' | '/tags/*';
 
-/** 页面里的页面内组件，按名字登记、各画进壳的一个容器：首页筛选条（`#catalogFilter`）、首页新作行（`#feedNew`）、
- *  顶栏搜索下拉（`#searchMenu`）。props 由壳算好、整份交进来，
- *  之后经 `updateManagedRoute` 推补丁。 */
+/** página面en lapágina面interior组件, 按名字登记, 各画进壳uno容Dispositivo: primeropáginaFiltrar(`#catalogFilter`), primeropáginaNuevas obras行(`#feedNew`), 
+ *  顶栏Buscarabajo拉(`#searchMenu`). props 由壳算bien, Completo交进来, 
+ *  之posterior经 `updateManagedRoute` 推补丁.  */
 export interface SurfaceOpenProps {
   'catalog-filter': CatalogFilterProps;
   'feed-new': FeedNewProps;
@@ -239,11 +239,11 @@ export interface SurfaceOpenProps {
 
 export type SurfaceName = keyof SurfaceOpenProps;
 
-/** 常驻组件，按名字登记、宿主就是那个常驻节点：底部批量条（`[data-batch-dock]`）、侧栏配色卡（`#boardGlowMenu`）、
- *  管理区页头（`[data-manage-header]`）、沉浸模式（body 末尾的 `[data-immerse-host]`）、设置面板
- *  （`[data-settings-host]`，第一次打开时放进 body 末尾）、侧栏（`#drawerScroll`）与舞台（body 末尾的
- *  `[data-stage-host]`，第一次打开详情时放进去）。打开时不带 props（`openResidentSurface`），内容由壳经各自的
- *  命令式句柄推进组件自己的 store。 */
+/** 常驻组件, 按名字登记, 宿主就esese常驻节点: 底部批量(`[data-batch-dock]`), 侧栏配色卡(`#boardGlowMenu`), 
+ *  Gestionar区página头(`[data-manage-header]`), InmersivoModo(body último尾 `[data-immerse-host]`), Configuración面板
+ *  (`[data-settings-host]`, No.uno次Abrir时放进 body último尾), 侧栏(`#drawerScroll`)y舞(body último尾
+ *  `[data-stage-host]`, No.uno次AbrirDetalles时放进去). Abrir时No带 props(`openResidentSurface`), contenido由壳经各自
+ *  命令句柄推进组件自己 store.  */
 export interface ResidentOpenProps {
   'batch-dock': Record<string, never>;
   'glow-picker': Record<string, never>;

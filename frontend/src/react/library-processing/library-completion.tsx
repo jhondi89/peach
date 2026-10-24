@@ -15,7 +15,7 @@ import {
 } from './library-processing';
 import { ProcessingActions } from './processing-actions';
 
-/** 缺图判据与卡面一致；本机影片可抽帧，有番号的挂载影片可补发行封面。 */
+/** 缺Imagen判据y卡面uno致; 本机影片puede抽帧, ConCódigo JAV挂载影片puede补LanzamientoPortada.  */
 type PreviewItem = Pick<MediaItem, 'id' | 'name' | 'medium' | 'disposal' | 'location' | 'code' | 'is_jav'
   | 'has_cover' | 'cover_key' | 'has_thumb' | 'has_local_poster' | 'follow_thumb_url'>;
 
@@ -52,26 +52,26 @@ function Completion({ assetIds, onComplete }: { assetIds: number[]; onComplete?(
       || completed.current === started) return;
     completed.current = started;
     if (state.status === 'complete') {
-      setOutcome(`补全完成：取得 ${state.covers || 0} 张封面，生成 ${state.previews || 0} 部视频预览。`);
+      setOutcome(`CompletarFinalizar: Obtener ${state.covers || 0}  imagen(es)Portada, 生成 ${state.previews || 0}  título(s)Vista previa de video. `);
     }
     void queryClient.invalidateQueries({ queryKey: ['catalog-grid'] });
     onComplete?.();
   }, [state, started, onComplete]);
-  // 运行中的进度与控制由常驻任务卡承接，缺图提示只在可发起补全时呈现。
+  // 运行en procesoProgresoy控制由常驻Tarea卡承continuar, 缺ImagenSugerenciaSoloEnpuede发起Completar时呈现. 
   if (processingActive(state)) return null;
   const busy = start.isPending || processingActive(state);
   const problem = start.error ? errorMessage(start.error) : job.error ? DISCONNECTED_TEXT
-    : started && state?.job_id === started && state.status === 'failed' ? state.error || '补全未完成' : '';
-  const message = problem || (start.isPending ? '正在启动补全…'
-    : outcome || `这批影片中有 ${assetIds.length.toLocaleString()} 部暂无预览，可补全资料与图片。`);
-  return <section aria-label="补全预览" aria-live="polite" data-library-completion="" className="@container mb-4">
+    : started && state?.job_id === started && state.status === 'failed' ? state.error || 'CompletarNoFinalizar' : '';
+  const message = problem || (start.isPending ? 'ProcesandoIniciarCompletar...'
+    : outcome || `este批PelículaEn procesoCon ${assetIds.length.toLocaleString()}  título(s)暂Sin vista previa, puedeCompletar detallesyImágenes. `);
+  return <section aria-label="CompletarVista previa" aria-live="polite" data-library-completion="" className="@container mb-4">
     <Note tone={problem ? 'warning' : 'neutral'} action={<div className="flex flex-wrap items-center gap-2"><ProcessingActions busy={busy} metadataOnly={state?.metadata_only} onRun={command => {
       if (busy) return;
       setOutcome('');
       start.mutate(command);
     }} /></div>}>
       {message}{' '}<LinkButton href="/data-cleanup#libraryProcessing" size="small" trailingIcon={RiArrowRightLine}>
-      {problem ? '查看并处理' : '查看处理详情'}
+      {problem ? 'Ver y procesar' : 'verProcesarDetalles'}
     </LinkButton></Note>
   </section>;
 }

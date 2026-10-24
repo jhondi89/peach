@@ -1,11 +1,11 @@
-/* 光晕预设那一格：设置面板「配色」那一组和侧栏底部配色卡上半张是同一组色块、同一份写入。两处都读
- * 同一份 store（`@peach/appearance` 的 `appSettingsStore`），点哪一边，另一边经 store 通知当场对齐。
+/* 光晕预设eseuno格: Configuración面板"配色"eseuno组 y 侧栏底部配色卡arribamedioes同uno组色, 同uno写入. 两处都读
+ * 同uno store(`@peach/appearance`  `appSettingsStore`), 点哪uno边, 另uno边经 store 通知当场对齐. 
  *
- * 选中一档写什么（光晕、玻璃面色相、强调色一起换）在 `appearance/glow.ts` 的 `chooseGlowPreset`；
- * 这里只画球。「自定义」那一格会出现或消失，按档名做 key，正落着焦点的那一枚是同一个节点，
- * 键盘选完一档焦点不会掉回页面开头。
+ * 选en procesouno档写什么(光晕, 玻璃面色相, 强调色uno起换)En `appearance/glow.ts`  `chooseGlowPreset`; 
+ * aquíSolo画球. "自定义"eseuno格会出现或消失, 按档名做 key, 正落着焦点eseunoes同uno节点, 
+ * Clave盘选完uno档焦点No会掉回página面开头. 
  *
- * 样式在 `./glow-preset-grid.css`。 */
+ * 样En `./glow-preset-grid.css`.  */
 import type { CSSProperties } from 'react';
 
 import { chooseGlowPreset, glowChips, type GlowSettings } from '@peach/appearance';

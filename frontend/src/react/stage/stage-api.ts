@@ -1,4 +1,4 @@
-/* 舞台岛对壳的契约：壳只拿命令式入口，舞台、两座详情、播放器与小窗都在 `peach-app.js` 里。 */
+/* 舞岛对壳契约: 壳Solo拿命令入口, 舞, 两座Detalles, ReproducirDispositivoypequeño窗都En `peach-app.js` dentro.  */
 import type { PlayerItem, PlayerResume } from '../../player';
 import type { FollowDetailActions, FollowDetailProps } from '../follow-detail/follow-detail';
 import type { ItemDetailActions, ItemDetailProps } from '../item-detail/item-detail';
@@ -7,11 +7,11 @@ import type { JavDetailProps } from '../jav-detail/jav-detail';
 
 export type StageHost = StagePlayerHost;
 
-/** 打开作品详情。动作里没有 `mountPlayer`：媒体框交给舞台自己的播放器。 */
+/** AbrirObrasDetalles. 动作dentroSin `mountPlayer`: 媒体框交给舞自己ReproducirDispositivo.  */
 export interface StageItemRequest extends Omit<ItemDetailProps, 'actions'> {
   kind: 'item';
   actions: Omit<ItemDetailActions, 'mountPlayer'>;
-  /** 深链带 `?t=` 进来：第一次挂上这一条时从这一刻接着放。 */
+  /** profundo链带 `?t=` 进来: No.uno次挂arribaesteuno时从esteuno刻continuar着放.  */
   resume?: PlayerResume | null;
 }
 
@@ -24,34 +24,34 @@ export interface StageFollowRequest extends Omit<FollowDetailProps, 'actions'> {
 export interface StageJavRequest extends JavDetailProps { kind: 'jav'; id?: never; resume?: never }
 export type StageRequest = StageItemRequest | StageFollowRequest | StageJavRequest;
 
-/** 开着的详情上会变的那几样：选择态与版式推给「接着看」那一排。 */
+/** 开着Detallesarriba会变ese几样: Seleccionar态y版推给"Continuar viendo"eseuno排.  */
 export type StagePatch = Partial<Pick<ItemDetailProps, 'layout' | 'selectMode' | 'selected' | 'seekSeconds' | 'relatedLimit'>>;
 
 export interface StageApi {
-  /** 播放墙的媒体宿主。收起后可交给小窗，详情可认领同一实例。 */
+  /** ReproducirMuro媒体宿主. 收起posteriorpuede交给pequeño窗, Detallespuede认领同uno实例.  */
   mountWallPlayer(item: PlayerItem, frame: HTMLElement, signal: AbortSignal): Promise<(continuePlaying?: boolean) => void>;
-  /** 打开一条详情：先画骨架、`showModal()`，取完数再换成内容。小窗放着的正是这一条时，内容
-   *  画出来那一刻把同一个播放器搬回来。浮窗开着同一种详情时不重开，取完数原地换内容。 */
+  /** AbrirunoDetalles: 先画骨架, `showModal()`, 取完数再换成contenido. pequeño窗放着正esesteuno时, contenido
+   *  画出来eseuno刻同unoReproducirDispositivo搬回来. 浮窗开着同unoDetalles时Nopesado开, 取完数Original地换contenido.  */
   open(request: StageRequest): Promise<void>;
   update(patch: StagePatch): void;
-  /** 退场动画；拆舞台之前等它演完。 */
+  /** 退场动画; 拆舞之anterioretc.它演完.  */
   exit(): Promise<void>;
-  /** 拆掉舞台。`miniplayer` 为假时正在放的视频不进小窗（显式关闭、换详情、删掉当前条目）。 */
+  /** 拆掉舞. `miniplayer` Como假时En curso放视频No进pequeño窗(显Cerrar, 换Detalles, 删掉当anteriorEntrada).  */
   dispose(options?: { miniplayer?: boolean }): void;
   isOpen(): boolean;
-  /** 浮窗此刻开着、能原地换条的那一种详情；没开、在退场或已要求关闭时为空。壳据此决定换条前拆不拆舞台。 */
+  /** 浮窗此刻开着, 能Original地换eseunoDetalles; 没开, En退场或ya要求Cerrar时Como空. 壳据此决定换anterior拆No拆舞.  */
   showing(): StageRequest['kind'] | null;
-  /** 关闭键、Escape 与点浮窗外面走的那一条：交给当前详情自己的 `close`，退场期间再要一次不重复。 */
+  /** CerrarClave, Escape y点浮窗exterior面走eseuno: 交给当anteriorDetalles自己 `close`, 退场期间再要uno次NoRepetir.  */
   requestClose(): void;
-  /** 该响应播放快捷键的 video：舞台开着取舞台里的，否则取小窗里的。 */
+  /** 该RespuestaReproducirrápido捷Clave video: 舞开着取舞en la, 否则取pequeño窗en la.  */
   activeVideo(): HTMLVideoElement | null;
   toggleTheater(): void;
-  /** i 键：详情里进小窗，小窗里展开回详情。 */
+  /** i Clave: Detallesdentro进pequeño窗, pequeño窗dentro展开回Detalles.  */
   toggleMiniplayer(): void;
   closeMiniplayer(): void;
   miniplayerActive(): boolean;
   miniplayerTakesCard(item: PlayerItem | null | undefined): boolean;
   miniplayerPlay(id: number): void;
-  /** 默认封面换了：开着的作品详情把海报位跟着换。 */
+  /** Portada predeterminada换: 开着ObrasDetalles海报跟着换.  */
   repaintPoster(): void;
 }

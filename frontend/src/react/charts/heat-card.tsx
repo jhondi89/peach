@@ -1,9 +1,9 @@
-/* 热力图：统计页的播放时间与口味页的浏览时间共用。
+/* 热力Imagen: EstadísticaspáginaReproducirTiempoy口味páginaExplorarTiempo共用. 
  *
- * Recharts 没有热力图，EvilCharts 的 Recharts 分支也没有，所以格子仍是自绘的 SVG：一格一个
- * `rect`，浓度是 `fill-opacity`，几何全写成属性。外观对齐同页的 EvilCharts 图：颜色只取
- * `chart-*`，指到一格时其余格子淡下去，浮层与柱状、径向图共用 `./chart-tip.tsx` 那一块面；
- * 页头读数也跟着换，键盘聚焦一格时读的是它。取舍见 ADR-0076。 */
+ * Recharts Sin热力Imagen, EvilCharts  Recharts 分支也Sin, 所以格子仍es自绘 SVG: uno格uno
+ * `rect`, 浓度es `fill-opacity`, 几何Todo写成属性. exterior观对齐同página EvilCharts Imagen: ColorSolo取
+ * `chart-*`, 指到uno格时其余格子淡abajo去, 浮层y柱状, 径向Imagen共用 `./chart-tip.tsx` eseuno面; 
+ * página头读数也跟着换, Clave盘聚焦uno格时读es它. 取舍见 ADR-0076.  */
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 
@@ -14,14 +14,14 @@ import { dayCalendar, hourGrid, WEEKDAYS, type ActivityCounts, type HeatCell } f
 const SIZE = 14;
 const STEP = 17;
 
-/** 格子与浮层色点的颜色。类名写成整串，Tailwind 扫得到。 */
+/** 格子y浮层色点Color. 类名写成Completo串, Tailwind 扫得到.  */
 const TONES = {
   4: { fill: 'fill-chart-4', dot: 'bg-chart-4' },
   5: { fill: 'fill-chart-5', dot: 'bg-chart-5' },
 } as const;
 export type HeatTone = keyof typeof TONES;
 
-/** 浮层靠哪一边对齐指到的那一格：两侧各留一成宽，靠边的格子浮层往里放，不被卡片切掉。 */
+/** 浮层靠哪uno边对齐指到eseuno格: 两侧各Dejauno成ancho, 靠边格子浮层往dentro放, No被卡片切掉.  */
 const ANCHOR = {
   start: 'translate-x-0',
   center: '-translate-x-1/2',
@@ -34,7 +34,7 @@ function HeatTooltip(
 ) {
   return (
     <div aria-hidden
-      // oxlint-disable-next-line shadcn/no-inline-styles -- 浮层跟着指到的那一格走，位置是运行期算出的百分比
+      // oxlint-disable-next-line shadcn/no-inline-styles -- 浮层跟着指到eseuno格走, Ubicaciónes运行期算出cien分比
       style={{ left: `${left}%`, top: `${top}%` }}
       className={`pointer-events-none absolute z-10 -mt-2 -translate-y-full ${TIP_SURFACE} ${ANCHOR[anchor]}`}>
       <div className="font-medium text-foreground">{cell.label}</div>
@@ -43,10 +43,10 @@ function HeatTooltip(
   );
 }
 
-/** 读数的三处文字：页头大数旁的单位、浮层那一行的名字、读屏时每一格计数后面的量词。 */
+/** 读数tres处文字: página头grande数旁单, 浮层eseuno行名字, 读屏时每uno格计数posterior面量词.  */
 export interface HeatWords { unit: string; series: string; cellUnit: string }
 
-/** 一张热力图：一格一个计数，指到哪一格读数就换成哪一格。 */
+/** uno热力Imagen: uno格uno计数, 指到哪uno格读数就换成哪uno格.  */
 export function HeatCard(
   { title, words, cells, total, columns, rows, axis, footer, tone }:
   {
@@ -71,8 +71,8 @@ export function HeatCard(
     <section className={CHART_CARD}>
       <ChartHead title={title} figure={(cell ? cell.count : total).toLocaleString()}
         note={cell ? cell.label : words.unit} />
-      {/* 带坐标轴的星期 × 小时有 24 列，压到 320 以下格子和字都读不清，宁可在卡里横滚；
-          每日那张只有 13 列，跟着卡片缩，最近几天不会藏到右边看不见的地方。 */}
+      {/* 带坐标轴星期 × pequeño时Con 24 列, 压到 320 以abajo格子 y 字都读No清, 宁puedeEn卡dentro横滚; 
+          每日eseSoloCon 13 列, 跟着卡片缩, Reciente几天No会藏到derecha边verNo见地方.  */}
       <div className="relative">
         <div className="min-w-0 overflow-x-auto">
           <svg role="img" aria-label={title} onPointerLeave={() => setShown(-1)}
@@ -81,7 +81,7 @@ export function HeatCard(
             {cells.map((item, index) => {
               const { x, y } = at(index);
               return (
-                <rect key={item.key} tabIndex={0} role="img" aria-label={`${item.label}，${item.count} ${words.cellUnit}`}
+                <rect key={item.key} tabIndex={0} role="img" aria-label={`${item.label}, ${item.count} ${words.cellUnit}`}
                   x={x} y={y} width={SIZE} height={SIZE} rx={3} fillOpacity={item.share || 1}
                   opacity={shown >= 0 && shown !== index ? 0.4 : 1}
                   className={item.share
@@ -105,7 +105,7 @@ export function HeatCard(
   );
 }
 
-/** 星期 × 小时的坐标：左边一列星期，顶上每隔两小时一个钟点。 */
+/** 星期 × pequeño时坐标: izquierda边uno列星期, 顶arriba每隔两pequeño时uno钟点.  */
 const HOUR_AXIS = (
   <>
     {WEEKDAYS.map((name, day) => (
@@ -119,9 +119,9 @@ const HOUR_AXIS = (
   </>
 );
 
-/** 一份活跃计数的两张热力图：星期 × 小时，和最近 91 天。
+/** uno活跃计数两热力Imagen: 星期 × pequeño时,  y Reciente 91 天. 
  *
- * 没有可用记录时留一张只有 `empty` 那句话的卡。 */
+ * Sinpuede用Registro时DejaunoSoloCon `empty` ese句话卡.  */
 export function ActivityHeat(
   { activity, title, dailyTitle, words, tone, empty }:
   {
@@ -132,13 +132,13 @@ export function ActivityHeat(
   const hours = hourGrid(activity);
   const days = dayCalendar(activity);
   if (!days.cells.length) return <ChartEmpty title={title}>{empty}</ChartEmpty>;
-  /* 两张卡按各自内容的高度排：星期 × 小时有 24 列，格子比每日那张小一半，同行拉成等高
-     会在它下面空出半张卡。 */
+  /* 两卡按各自contenidoalto度排: 星期 × pequeño时Con 24 列, 格子比每日esepequeñounomedio, 同行拉成etc.alto
+     会En它abajo面空出medio卡.  */
   return (
     <div className="inline-grid w-full items-start gap-5 lg:grid-cols-2">
       <HeatCard title={title} words={words} tone={tone}
         cells={hours.cells} total={hours.total} columns={24} rows={7} axis={HOUR_AXIS}
-        footer={<><span>星期 × 小时</span><span>{activity?.timezone || 'UTC+08:00'}</span></>} />
+        footer={<><span>Día × Hora</span><span>{activity?.timezone || 'UTC+08:00'}</span></>} />
       <HeatCard title={dailyTitle} words={words} tone={tone}
         cells={days.cells} total={days.total} columns={13} rows={7}
         footer={<><span>{days.start}</span><span>{days.end}</span></>} />

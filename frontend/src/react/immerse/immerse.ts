@@ -1,12 +1,12 @@
-/* 沉浸模式的数据与判据：片单怎么抽、详情按哪个键取、署名怎么念、画面铺满还是完整显示。
- * 不碰 DOM，`immerse-island.tsx` 的控制器与组件都从这里取。 */
+/* InmersivoModoDatosy判据: 片单怎么抽, Detalles按哪Clave取, 署名怎么念, Imagen铺满还es完Completo显示. 
+ * No碰 DOM, `immerse-island.tsx` 控制Dispositivoy组件都从aquí取.  */
 import type { QueryKey } from '@tanstack/react-query';
 
 import { apiGet } from '../../api';
 import { queryClient } from '../query';
 import { fetchItem, itemKey, type DetailEntityRef, type DetailItem } from '../item-detail/item-detail';
 
-/** 片单里的一条（`/api/items` 的卡片那一份）。 */
+/** 片单en launo(`/api/items` 卡片eseuno).  */
 export interface ImmerseItem {
   id: number;
   name?: string;
@@ -20,15 +20,15 @@ export interface ImmerseItem {
   [field: string]: unknown;
 }
 
-/** 片单按「这一次打开」与「第几次续取」分键：每次打开都是一次全新的随机抽样，续取的那一批
- *  也不能读到上一批的缓存。 */
+/** 片单按"esteuno次Abrir"y"No.几次续取"分Clave: 每次Abrir都esuno次TodoNuevoAleatorio抽样, 续取eseuno批
+ *  也No能读到Anterior批缓存.  */
 export const immerseListKey = (filters: string, seed: number, draw: number): QueryKey => ['immerse-list', filters, seed, draw];
 
-/** 抽样用的查询串：首页筛选去掉画幅（横竖都进），随机取 60 条。
+/** 抽样用Consulta串: primeropáginaFiltrar去掉画幅(横竖都进), Aleatorio取 60 . 
  *
- *  没有 offset 可翻：`sort=rand` 在服务端是未加种子的 `RANDOM()`（web_contract.py），每次请求
- *  都是一次全新的随机抽样，翻页偏移在它上面没有意义——带上去只会随机跳过若干行。续取靠的是
- *  调用点按 id 去重，不是偏移量。 */
+ *  Sin offset puede翻: `sort=rand` En服务端esno加Semilla `RANDOM()`(web_contract.py), 每次Por favor求
+ *  都esuno次TodoNuevoAleatorio抽样, 翻página偏移En它arriba面Sin意义—带arriba去Solo会AleatorioOmitir若干行. 续取靠es
+ *  调用点按 id 去pesado, Noes偏移量.  */
 export function immerseQuery(filters: Record<string, string | number | null | undefined>): string {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(filters)) if (value) params.set(key, String(value));
@@ -40,8 +40,8 @@ export function immerseQuery(filters: Record<string, string | number | null | un
   return params.toString();
 }
 
-/** 能直接进片单的：不按流量计费、有时长、来源没脱盘。脱盘来源的片子拉不到流，进了片单就是
- *  一条黑屏加载中；详情页有门挡着，这里只能在入口筛掉。 */
+/** 能直continuar进片单: No按流量计费, ConDuración, 来源没脱盘. 脱盘来源片子拉No到流, 进片单就es
+ *  uno黑屏Cargaren proceso; DetallespáginaCon门挡着, aquíSolo能En入口筛掉.  */
 export const playable = (item: ImmerseItem, offline: (location: string) => boolean): boolean =>
   item.cost !== 'metered' && !!item.duration && !offline(String(item.location ?? ''));
 
@@ -58,19 +58,19 @@ export async function fetchImmerseList(query: string, offline: (location: string
   return shuffle((page.items || []).filter((item) => playable(item, offline)));
 }
 
-/** 这一条的详情：和作品详情同一个键，动作键写回之后详情与目录卡读到的是同一份。缓存里已有就不再
- *  取（切回看过的那一条、起播那一条在打开时已经取过）。 */
+/** esteunoDetalles:  y ObrasDetalles同unoClave, 动作Clave写回之posteriorDetallesyDirectorio卡读到es同uno. 缓存dentroyaCon就No再
+ *  取(切回ver过eseuno, 起播eseunoEnAbrir时ya经取过).  */
 export const ensureDetail = (id: number): Promise<DetailItem> =>
   queryClient.ensureQueryData({ queryKey: itemKey(id), queryFn: ({ signal }) => fetchItem(id, signal) });
 
-/** 已有的那一批之后接上新抽的一批，按 id 去重。 */
+/** yaConeseuno批之posteriorcontinuararribaNuevo抽uno批, 按 id 去pesado.  */
 export function extendList(list: ImmerseItem[], more: ImmerseItem[]): ImmerseItem[] {
   const seen = new Set(list.map((item) => item.id));
   return list.concat(more.filter((item) => !seen.has(item.id)));
 }
 
-/** 作者那一行：共演作品念全出镜者（最多三位，多出来的写人数），点击进第一位的资料页；没有演员
- *  就是创作者，再没有就是「未归属」。 */
+/** 作者eseuno行: 共演Obras念Todo出镜者(最mástres, más出来写人数), 点击进Primero资料página; Sin演员
+ *  就es创作者, 再Sin就es"no归属".  */
 export interface Owner {
   who: string;
   kind: 'performer' | 'creator' | '';
@@ -81,24 +81,24 @@ export interface Owner {
 export function ownerOf(item: Pick<DetailItem, 'performers' | 'creator' | 'entity_refs'>): Owner {
   const cast = item.performers || [];
   const who = cast.length
-    ? cast.slice(0, 3).join('、') + (cast.length > 3 ? ` 等 ${cast.length} 人` : '')
-    : (item.creator || '未归属');
+    ? cast.slice(0, 3).join(', ') + (cast.length > 3 ? ` etc. ${cast.length} 人` : '')
+    : (item.creator || 'Sin asignar');
   const kind = cast.length ? 'performer' : (item.creator ? 'creator' : '');
-  const name = cast.length ? cast[0]! : (item.creator || '未归属');
+  const name = cast.length ? cast[0]! : (item.creator || 'Sin asignar');
   const ref = kind ? (item.entity_refs?.[kind]?.[0] || null) : null;
   return { who, kind, name, ref };
 }
 
-/** 沉浸模式默认 cover 铺满，但那只在片源和视口比例接近时才成立。
+/** InmersivoModoPredeterminado cover 铺满, peroeseSoloEn片源 y 视口Relacióncontinuar近时才成立. 
  *
- *  判据是两者比例差多少，不是「片源是不是竖屏」：那样 16:9 的横屏进竖屏视口照样 cover，按高度
- *  放大到两边各裁掉一大半。容差取得很紧（1.05）是刻意的：对竖屏片源用 contain 是「不裁掉正在看
- *  的画面」的有意选择。放宽到 1.25 会顺手把 9:16 片源在 9:19.5 手机上改成 cover、裁掉约 18%
- *  高度。现在只有比例几乎一致时才 cover（省掉取整产生的 1px 黑边），其余一律完整显示。
- *  视口比例会随旋转和窗口尺寸改变，所以必须跟着重算，不能只在 loadedmetadata 算一次。 */
+ *  判据es两者Relación差másmenos, Noes"片源esNoes竖屏": ese样 16:9 横屏进竖屏视口照样 cover, 按alto度
+ *  放grande到两边各裁掉unograndemedio. 容差取得很紧(1.05)es刻意: 对竖屏片源用 contain es"No裁掉En cursover
+ *  Imagen"Con意Seleccionar. 放ancho到 1.25 会顺手 9:16 片源En 9:19.5 Teléfonoarriba改成 cover, 裁掉约 18%
+ *  alto度. 现EnSoloConRelación几乎uno致时才 cover(省掉取Completo产生 1px 黑边), 其余uno律完Completo显示. 
+ *  视口Relación会随Rotar y 窗口尺寸改变, 所以必须跟着pesado算, No能SoloEn loadedmetadata 算uno次.  */
 export const FIT_TOLERANCE = 1.05;
 
-/** `null` 是还量不出来（元数据没到或框没有尺寸），这时不改现状。 */
+/** `null` es还量No出来(Metadatos没到或框Sin尺寸), este时No改现状.  */
 export function fitMode(sourceWidth: number, sourceHeight: number, box: number): 'cover' | 'contain' | null {
   if (!sourceWidth || !sourceHeight || !box || !Number.isFinite(box)) return null;
   const source = sourceWidth / sourceHeight;
@@ -106,28 +106,28 @@ export function fitMode(sourceWidth: number, sourceHeight: number, box: number):
   return mismatch > FIT_TOLERANCE ? 'contain' : 'cover';
 }
 
-/** 舞台形状（竖 9:16／横 16:9）：元数据到了按画面，没到按条目登记的宽高，都没有算竖。 */
+/** 舞形状(竖 9:16/横 16:9): Metadatos到按Imagen, 没到按Entrada登记anchoalto, 都Sin算竖.  */
 export function isWide(video: { videoWidth: number; videoHeight: number }, item: Pick<ImmerseItem, 'width' | 'height'>): boolean {
   if (video.videoWidth && video.videoHeight) return video.videoWidth >= video.videoHeight;
   return !!(item.width && item.height && item.width > 0 && item.height > 0 && item.width >= item.height);
 }
 
-/* ── 手势的几个数 ── */
-/** 同一半区两下之间不超过这么久算双击。 */
+/* ── 手势几数 ── */
+/** 同unomedio区两abajo之间No超过este么久算双击.  */
 export const DOUBLE_TAP_MS = 280;
-/** 触屏抬手之后浏览器合成的那一下 click 不再切播放：那一下已经由单击／双击判定接管。 */
+/** 触屏抬手之posteriorExplorar dispositivo合成eseunoabajo click No再切Reproducir: eseunoabajoya经由单击/双击判定continuar管.  */
 export const SYNTHETIC_CLICK_MS = 700;
-/** 位移超过这么多才定方向；方向一旦定下就不再改，否则斜着划会又切片又跳进度。 */
+/** 移超过este么más才定方向; 方向uno旦定abajo就No再改, 否则斜着划会又切片又跳Progreso.  */
 export const AXIS_LOCK_PX = 12;
-/** 竖划超过这么多换条。 */
+/** 竖划超过este么más换.  */
 export const SWIPE_PX = 60;
-/** 两个方向都不超过这么多算一次点击。 */
+/** 两方向都No超过este么más算uno次点击.  */
 export const TAP_SLOP_PX = 14;
-/** 滚轮换条的节流。 */
+/** 滚轮换节流.  */
 export const WHEEL_GAP_MS = 260;
-/** 不喜欢之后停这么久再换下一条：回执先落地。 */
+/** No喜欢之posterior停este么久再换Siguiente: 回执先Llegar.  */
 export const DISLIKE_ADVANCE_MS = 260;
-/** 切片动画的时长加一帧余量；动画帧没跑到（页面在后台）也按这个时刻落位。 */
+/** 切片动画Duración加uno帧余量; 动画帧没跑到(página面Enposterior)也按este时刻落.  */
 export const SLIDE_MS = 210;
-/** 等一格可以出画的上限。 */
+/** etc.uno格puede以出画arriba限.  */
 export const READY_TIMEOUT_MS = 15_000;

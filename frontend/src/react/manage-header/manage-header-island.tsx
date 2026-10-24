@@ -1,15 +1,15 @@
-/* 管理区页头（ADR-0031 第 11g 步）：管理条、面包屑、页面标题与回收站说明行。
+/* Gestionar区página头(ADR-0031 No. 11g 步): Gestionar, 面包屑, página面Títuloy回收站Descripción行. 
  *
- * 常驻组件 `manage-header`（`router/managed-routes.tsx` 的常驻表）：路由树把它画进壳常驻的
- * `[data-manage-header]`（`display: contents`，四块直接落在 `main` 的流里），宿主就是那个节点本身。壳启动时
- * 先同步在宿主里写一份同结构的骨架（`manageHeaderSkeletonHtml`）；打开这一面时 `place` 清掉骨架，路由树在
- * 同一个任务里画出首帧。首帧还没有 props，画成空，壳拿到句柄就把手上那份推进来。之后壳只经
- * `configureManageHeader` 给的句柄推 props：句柄写本模块的 store 再 `flushSync` 通知，返回时已经画好——壳紧接着
- * 就读 `[data-manage-title]` 做标题揭示。换页、换读数都落在同一个组件上，导航选中态随地址同步，
- * 回收站读数原地换字。
+ * 常驻组件 `manage-header`(`router/managed-routes.tsx` 常驻表): 路由树它画进壳常驻
+ * `[data-manage-header]`(`display: contents`, cuatro直continuar落En `main` 流dentro), 宿主就esese节点本身. 壳启动时
+ * 先SincronizarEn宿主dentro写uno同结构骨架(`manageHeaderSkeletonHtml`); Abriresteuno面时 `place` 清掉骨架, 路由树En
+ * 同unoTareadentro画出primero帧. primero帧还Sin props, 画成空, 壳拿到句柄就手arribaese推进来. 之posterior壳Solo经
+ * `configureManageHeader` 给句柄推 props: 句柄写本模 store 再 `flushSync` 通知, 返回时ya经画bien—壳紧continuar着
+ * 就读 `[data-manage-title]` 做Título揭示. 换página, 换读数都落En同uno组件arriba, 导航选en proceso态随地址Sincronizar, 
+ * 回收站读数Original地换字. 
  *
- * 宿主不包 `.peach-react`：这一块一直在 Preflight 之外，按钮与字号继承的是遗留层的全局规则，样式全在
- * `manage-header.css`，不用工具类。 */
+ * 宿主No包 `.peach-react`: esteunouno直En Preflight 之exterior, 按钮yTamaño de fuente继承es遗Deja层Todo局Regla, 样TodoEn
+ * `manage-header.css`, No用工具类.  */
 import { useLayoutEffect, useRef, useSyncExternalStore, type MouseEvent } from 'react';
 import { flushSync } from 'react-dom';
 
@@ -33,20 +33,20 @@ function notify(): void {
   for (const listener of [...listeners]) listener();
 }
 
-/* 这一面抛错、被错误边界卸掉之后没人订阅，推进来的只写进 store，不画、不抛。 */
+/* esteuno面抛错, 被Error边界卸掉之posterior没人订阅, 推进来Solo写进 store, No画, No抛.  */
 const api: ManageHeaderApi = {
   render(next) { props = next; flushSync(notify) },
 };
 
-/** 接上壳给的宿主，拿回页头的命令式入口。只调一次；壳的 `loadManageHeader` 接着在路由树里打开这一面，
- *  画上之后才交出句柄，壳随即把手上那份 props 推进来。 */
+/** continuararriba壳给宿主, 拿回página头命令入口. Solo调uno次; 壳 `loadManageHeader` continuar着En路由树dentroAbriresteuno面, 
+ *  画arriba之posterior才交出句柄, 壳随即手arribaese props 推进来.  */
 export function configureManageHeader(next: ManageHeaderHost): ManageHeaderApi {
   host = next;
   props = null;
   return api;
 }
 
-/** 常驻表里的那一面：读本模块的 store，宿主还没接上或壳还没推 props 时不画。 */
+/** 常驻表en laeseuno面: 读本模 store, 宿主还没continuararriba或壳还没推 props 时No画.  */
 export function ManageHeaderSurface() {
   const current = useSyncExternalStore(subscribe, () => props);
   return host && current ? <ManageHeader host={host} props={current} /> : null;
@@ -65,7 +65,7 @@ function ManageHeader({ host: at, props: current }: { host: ManageHeaderHost; pr
   );
 }
 
-/** 管理导航使用中性填充选中态；切换后把当前项滚入可见区域。 */
+/** Gestionar导航使用en proceso性Introduce充选en proceso态; Cambiarposterior当anterior项滚入puede见区域.  */
 function ManageBar({ host: at, pressed: key, menu }: Pick<ManageHeaderProps, 'menu'> & { host: ManageHeaderHost; pressed: string }) {
   const row = useRef<HTMLDivElement>(null);
 
@@ -79,7 +79,7 @@ function ManageBar({ host: at, pressed: key, menu }: Pick<ManageHeaderProps, 'me
   }, [key, menu]);
 
   return (
-    <nav data-manage-bar="" aria-label="管理">
+    <nav data-manage-bar="" aria-label="Gestionar">
       <div ref={row} data-manage-menu="">
         {menu.map(([entry, label, glyph]) => {
           const on = entry === key;
@@ -96,8 +96,8 @@ function ManageBar({ host: at, pressed: key, menu }: Pick<ManageHeaderProps, 'me
 }
 
 /* ── 面包屑 ──
-   Geist Breadcrumbs：上一级是链接、当前页是纯文本并带 `aria-current="true"`。href 留给新标签页与右键
-   菜单；普通左键走路由，整页重载会丢掉返回表面与已读位置。 */
+   Geist Breadcrumbs: Anterior级es链continuar, 当anteriorpáginaes纯文本y带 `aria-current="true"`. href Deja给NuevoEtiquetapáginayderechaClave
+   菜单; 普通izquierdaClave走路由, Completopáginapesado载会丢掉返回表面yya读Ubicación.  */
 function Crumb({ host: at, label }: { host: ManageHeaderHost; label: string }) {
   const follow = (event: MouseEvent<HTMLAnchorElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button) return;
@@ -107,17 +107,17 @@ function Crumb({ host: at, label }: { host: ManageHeaderHost; label: string }) {
   return (
     <nav data-manage-crumb="" aria-label="Breadcrumb">
       <ol>
-        <li><a href="/data-cleanup" onClick={follow}>数据管理</a><Icon name="chevron-right" /></li>
+        <li><a href="/data-cleanup" onClick={follow}>Gestión de datos</a><Icon name="chevron-right" /></li>
         <li aria-current="true"><span>{label}</span></li>
       </ol>
     </nav>
   );
 }
 
-/* ── 回收站说明行 ──
-   读数到之前铺同形占位（左边一格读数、右端一颗键的尺寸），说明行从进页起就占着自己的高度。读数那一格
-   一直是同一个节点：每次重画说的是同一件事的新读数，字由 `swapText` 原地换，有起点可走。
-   「清空回收站」只在回收站里有东西时出现。 */
+/* ── 回收站Descripción行 ──
+   读数到之anterior铺同形占(izquierda边uno格读数, derecha端unoClave尺寸), Descripción行从进página起就占着自己alto度. 读数eseuno格
+   uno直es同uno节点: 每次pesado画说es同uno件事Nuevo读数, 字由 `swapText` Original地换, Con起点puede走. 
+   "清空回收站"SoloEn回收站dentroCon东西时出现.  */
 type Lede = Exclude<ManageHeaderView['lede'], { kind: 'none' }>;
 
 function TrashLede({ host: at, lede }: { host: ManageHeaderHost; lede: Lede }) {
@@ -129,8 +129,8 @@ function TrashLede({ host: at, lede }: { host: ManageHeaderHost; lede: Lede }) {
           <>
             <LedeText text={lede.text} />
             {lede.total ? (
-              <button type="button" data-empty-trash="" data-danger="" title="永久删除回收站内容"
-                onClick={() => at.emptyTrash()}>清空回收站</button>
+              <button type="button" data-empty-trash="" data-danger="" title="Eliminar permanentemente el contenido de la papelera"
+                onClick={() => at.emptyTrash()}>Vaciar papelera</button>
             ) : null}
           </>
         )}

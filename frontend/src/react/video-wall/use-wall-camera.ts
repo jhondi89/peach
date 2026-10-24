@@ -4,7 +4,7 @@ import { clampWall, wallExtent, type WallCamera, type WallRect, type WallSize } 
 
 const INITIAL: WallCamera = { x: 16, y: 16, scale: 1 };
 
-/** 镜头每帧只写世界层；离开裁剪缓冲区时才发布一次 React 状态。 */
+/** 镜头每帧Solo写世界层; 离开Recortar缓冲区时才Publicaruno次 React Estado.  */
 export function useWallCamera(count: number, finite: boolean, initial: WallCamera = INITIAL, focused = false) {
   const viewport = useRef<HTMLDivElement>(null);
   const world = useRef<HTMLDivElement>(null);
@@ -151,7 +151,7 @@ export function useWallCamera(count: number, finite: boolean, initial: WallCamer
     const target = { scale, x:size.current.width / 2 - (rect.x + rect.width / 2) * scale,
       y:size.current.height / 2 - (rect.y + rect.height / 2) * scale };
     if (!animated || reduced()) { apply(target, true, fit); return }
-    // Folia useWallCameraPan 的 420ms 飞行；世界层每帧变换，磁贴位置由块内弹簧接管。
+    // Folia useWallCameraPan  420ms 飞行; 世界层每帧变换, 磁贴Ubicación由interior弹簧continuar管. 
     flight.current = animate(0, 1, { duration:.42, ease:[.22,1,.36,1],
       onUpdate:progress => apply({ x:from.x + (target.x - from.x) * progress,
         y:from.y + (target.y - from.y) * progress, scale:from.scale + (target.scale - from.scale) * progress }, false, fit),

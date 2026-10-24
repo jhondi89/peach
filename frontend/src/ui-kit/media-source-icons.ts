@@ -1,4 +1,4 @@
-/* 官方站点图标，来源与摘要见 docs/reference-snapshots/media-source-icons.md。 */
+/* Oficial站点Imagen标, 来源y摘要见 docs/reference-snapshots/media-source-icons.md.  */
 import { MEDIA_SOURCE_REGISTRY } from '../core/media-sources';
 
 const SOURCE_MARKS: Readonly<Record<string, string>> = {

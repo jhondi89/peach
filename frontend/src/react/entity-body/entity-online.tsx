@@ -1,8 +1,8 @@
-/* 创作者资料页的在线视图（ADR-0096）：关注里绑在这位名下、还没入库的更新，卡片与照片墙就是关注页那一份。
+/* 创作者资料páginaEn线视Imagen(ADR-0096): 关注dentro绑Eneste名abajo, 还没入BibliotecaActualizar, 卡片y照片Muro就es关注páginaeseuno. 
  *
- * 取数与筛选（状态、来源、标签、排序、视频／图片）归资料页（`entity-page-view.tsx`），筛选浮层与这一格
- * 读的是同一份；这里只画当前媒体那一档的组。查询键同关注页一族：详情里换状态、检查更新跑完时按
- * `['follow-feed']` 前缀失效与改写缓存，这一屏跟着变。换筛选时资料页按查询键给这一格换键，骨架从头铺。 */
+ * 取数yFiltrar(Estado, 来源, Etiqueta, Ordenar, 视频/Imagen片)归资料página(`entity-page-view.tsx`), Filtrar浮层yesteuno格
+ * 读es同uno; aquíSolo画当anterior媒体eseuno档组. ConsultaClave同关注páginauno族: Detallesdentro换Estado, VerificarActualizar跑完时按
+ * `['follow-feed']` anterior缀Inválidoy改写缓存, esteuno屏跟着变. 换Filtrar时资料página按ConsultaClave给esteuno格换Clave, 骨架从头铺.  */
 import type { UseInfiniteQueryResult, InfiniteData } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { requestErrorMessage } from '@peach/legacy/core';
@@ -22,7 +22,7 @@ export interface EntityOnlineProps {
   view: FollowView;
   media: FollowMedia;
   result: UseInfiniteQueryResult<InfiniteData<FollowPage>>;
-  /** 合并好的几页，与这一档媒体里可见的组。 */
+  /** 合ybien几página, yesteuno档媒体dentropuede见组.  */
   data: FollowPage | null;
   visible: readonly FollowGroup[];
   context: FollowContext;
@@ -36,7 +36,7 @@ export interface EntityOnlineProps {
 
 export function EntityOnline(props: EntityOnlineProps) {
   const { result, data, media, helpers } = props;
-  /* 换筛选时先借着上一份数据（`keepPreviousData`），那一份不能当这一份画出来。 */
+  /* 换Filtrar时先借着AnteriorDatos(`keepPreviousData`), eseunoNo能当esteuno画出来.  */
   const pending = result.isPending || result.isPlaceholderData;
   const reveal = useSkeletonReveal(pending, () => helpers.listSkeletonHtml(media));
   if (!data && result.isError) {
@@ -84,7 +84,7 @@ function Cards({ view, media, data, visible, context, photoSize, photoLayout, im
 
 function Empty({ searched }: { searched: boolean }) {
   const html = searched
-    ? emptyStateHtml('search-x', '当前筛选下没有更新', '切换媒体类型、状态、来源或标签后再试。')
-    : emptyStateHtml('rss', '还没有抓到更新', '关注页检查更新之后，这位创作者的新内容会出现在这里。');
+    ? emptyStateHtml('search-x', 'No hay actualizaciones con el filtro actual', 'Intenta cambiando el tipo de medio, estado, fuente o etiqueta.')
+    : emptyStateHtml('rss', 'No se han encontrado actualizaciones todavía', 'Después de verificar actualizaciones, el nuevo contenido del creador aparecerá aquí.');
   return <div data-follow-empty="" className="contents" dangerouslySetInnerHTML={{ __html: html }} />;
 }

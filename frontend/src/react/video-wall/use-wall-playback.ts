@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 
-/** 墙内控制条监听共用播放器的 video，不挂第二份统计或流源。 */
+/** Murointerior控制监听共用ReproducirDispositivo video, No挂No.dosEstadísticas或流源.  */
 export function useWallPlayback(id: number | null, frame: RefObject<HTMLDivElement | null>, ended: () => void) {
   const [state, setState] = useState({ paused:true, time:0, duration:0 });
   const video = useRef<HTMLVideoElement | null>(null);

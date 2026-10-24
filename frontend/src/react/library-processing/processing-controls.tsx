@@ -10,13 +10,13 @@ import {
   type LibraryProcessingData, type ProcessingControlCommand,
 } from './library-processing';
 
-/** 控制只作用于快照里的任务号；状态由服务端确认后交给所有入口。 */
+/** 控制Solo作用于rápido照en laTarea号; Estado由服务端Confirmarposterior交给所Con入口.  */
 export function ProcessingControls({ state, disabled = false }: {
   state: LibraryProcessingData; disabled?: boolean;
 }) {
   const action = useAction();
   const active = processingActive(state);
-  const controlLabel = state.status === 'paused' ? '继续' : state.status === 'pausing' ? '正在暂停' : '暂停';
+  const controlLabel = state.status === 'paused' ? 'Continuar' : state.status === 'pausing' ? 'Pausando' : 'Pausar';
   const change = (command: ProcessingControlCommand) => {
     if (disabled || action.busy) return;
     void action.run(command.action, signal =>

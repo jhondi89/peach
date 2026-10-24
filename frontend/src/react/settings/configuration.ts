@@ -1,8 +1,8 @@
-/* 配置页的首屏数据。
+/* Configuraciónpáginaprimero屏Datos. 
  *
- * 整页与各分区读同一个 `queryKey`：挂载状态那一块按下「刷新」重取回来的也是整份配置，
- * 换进这一个键，屏幕上就只有一份真相。端点字符串在 `frontend/src` 里只声明一次，
- * 在 `../../configuration-endpoints`（`tests/test_frontend_build.py` 盯着）。 */
+ * Completopáginay各分区读同uno `queryKey`: 挂载Estadoeseuno按abajo"Actualizar"pesado取回来也esCompletoConfiguración, 
+ * 换进esteunoClave, 屏幕arriba就SoloConuno真相. 端点字符串En `frontend/src` dentroSolo声明uno次, 
+ * En `../../configuration-endpoints`(`tests/test_frontend_build.py` 盯着).  */
 import { apiGet } from '../../api';
 import { CONFIGURATION_URL } from '../../configuration-endpoints';
 import type { ConfigurationData } from '../bundle';
@@ -13,7 +13,7 @@ export const CONFIGURATION_KEY = ['configuration'] as const;
 export const fetchConfiguration = (signal?: AbortSignal) =>
   apiGet<ConfigurationData>(CONFIGURATION_URL, signal);
 
-/** 首屏：取回来才画。中止时 `fetchQuery` 把 `AbortError` 抛回给挂载方，它据此放弃这一次。 */
+/** primero屏: 取回来才画. en proceso止时 `fetchQuery`  `AbortError` 抛回给挂载方, 它据此放弃esteuno次.  */
 export async function prefetchConfiguration(signal: AbortSignal): Promise<void> {
   await queryClient.fetchQuery({
     queryKey: CONFIGURATION_KEY, queryFn: () => fetchConfiguration(signal),

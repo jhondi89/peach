@@ -1,4 +1,4 @@
-/* 播放位置属于当前浏览器的续播状态；观看统计仍由 ledger 的活动接口累计。 */
+/* ReproducirUbicación属于当anteriorExplorar dispositivo续播Estado; 观verEstadísticas仍由 ledger 活动Interfaz累计.  */
 import { realDuration } from '@peach/legacy/core';
 
 import type { PlayerItem } from './types';
@@ -31,7 +31,7 @@ export function playbackPosition(key: string, item: PlayerItem): number {
   return ratio > 0 && ratio < 1 ? ratio * realDuration(item.duration) : 0;
 }
 
-/** 元数据加载且定位完成后才登记，换源与销毁产生的零位置不覆盖续播状态。 */
+/** MetadatosCargar且定Completadoposterior才登记, 换源y销毁产生ceroUbicaciónNo覆盖续播Estado.  */
 export function trackPlaybackPosition(key: string, video: HTMLVideoElement): void {
   stopPlaybackPosition(video);
   let ready = video.readyState >= 1;
@@ -40,7 +40,7 @@ export function trackPlaybackPosition(key: string, video: HTMLVideoElement): voi
     const time = video.ended ? 0 : Math.max(0, video.currentTime);
     try {
       localStorage.setItem(`${KEY}:${key}`, String(time));
-    } catch { /* 存储不可用不阻断播放。 */ }
+    } catch { /* 存储Nopuede用No阻断Reproducir.  */ }
   };
   const loaded = () => { ready = true };
   const empty = () => { ready = false };

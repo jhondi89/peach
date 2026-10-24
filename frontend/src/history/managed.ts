@@ -1,68 +1,68 @@
-/* 由路由画的那几页与页面里的页面内组件（ADR-0031「页面与页面里的页面内组件只由路由树画」）：壳决定什么时候开、
- * 什么时候收，React 路由树画。
+/* 由路由画ese几páginaypágina面en lapágina面interior组件(ADR-0031"página面ypágina面en lapágina面interior组件Solo由路由树画"): 壳决定什么时候开, 
+ * 什么时候收, React 路由树画. 
  *
- * 页面画进壳的三个容器：管理区正文 `#stats`，索引页与资料页共用的 `#index`，目录网格与垃圾队列共用的
- * `#grid`。页面内组件各有自己的容器：首页筛选条 `#catalogFilter`、首页新作行 `#feedNew`、
- * 顶栏搜索下拉 `#searchMenu`。一个容器同时只有一页（或一面），各个容器各记各的：
- * 资料页画进 `#index` 时，管理区那一页只是被壳藏起来、照旧活着（有轮询的页面照着原节律取数），等壳下一次
- * 认领表面（`claimSurface`）才把 `#stats` 与 `#index` 一起收；`#grid` 不在其中，目录内换筛选也认领表面，网格
- * 要一直画着；页面内组件由壳按各自的路由判据收，搜索下拉壳从不收。页面跟着这里登记的那一条走，不跟着
- * 地址匹配走：详情舞台压在页面上时地址是 `/assets/:id`，页面要留着。
+ * página面画进壳tres容Dispositivo: Gestionar区正文 `#stats`, 索引páginay资料página共用 `#index`, DirectorioCuadrículay垃圾Cola共用
+ * `#grid`. página面interior组件各Con自己容Dispositivo: primeropáginaFiltrar `#catalogFilter`, primeropáginaNuevas obras行 `#feedNew`, 
+ * 顶栏Buscarabajo拉 `#searchMenu`. uno容Dispositivo同时SoloConunopágina(或uno面), 各容Dispositivo各记各: 
+ * 资料página画进 `#index` 时, Gestionar区eseunopáginaSoloes被壳藏起来, 照antiguo活着(Con轮询página面照着Original节律取数), etc.壳Siguiente次
+ * 认领表面(`claimSurface`)才 `#stats` y `#index` uno起收; `#grid` NoEn其en proceso, Directoriointerior换Filtrar也认领表面, Cuadrícula
+ * 要uno直画着; página面interior组件由壳按各自路由判据收, Buscarabajo拉壳从No收. página面跟着aquí登记eseuno走, No跟着
+ * 地址匹配走: Detalles舞压Enpágina面arriba时地址es `/assets/:id`, página面要Deja着. 
  *
- * 常驻组件（批量条、配色卡、管理区页头、沉浸模式、设置面板、侧栏、舞台）不跟某一页走，经 `openResidentSurface` 打开：
- * 没有首屏取数、一直算当前页，宿主就是那个常驻节点。它们从不收；只有错误边界会卸掉它的组件，而且只卸组件、
- * 不撤宿主。
+ * 常驻组件(批量, 配色卡, Gestionar区página头, InmersivoModo, Configuración面板, 侧栏, 舞)No跟某unopágina走, 经 `openResidentSurface` Abrir: 
+ * Sinprimero屏取数, uno直算当anteriorpágina, 宿主就esese常驻节点. 它们从No收; SoloConError边界会卸掉它组件, 而且Solo卸组件, 
+ * No撤宿主. 
  *
- * 登记键是「面」：页面用路径（`/stats`、`/performers/*`、`/`），页面内组件与常驻组件用名字（`search`、
- * `batch-dock`），两者不重叠，路由树按键查同一组表（`react/router/managed-routes.tsx`）。
+ * 登记Clavees"面": página面用Ruta(`/stats`, `/performers/*`, `/`), página面interior组件y常驻组件用名字(`search`, 
+ * `batch-dock`), 两者Nopesado叠, 路由树按Clave查同uno组表(`react/router/managed-routes.tsx`). 
  *
- * 一次打开：壳铺好骨架后调 `openManagedRoute`，这里先收起同一容器里的上一页，再取首屏；取齐、壳也还停在
- * 这一页时，在同一个任务里换掉骨架、放进宿主，再让路由树同步画出整页。路由树还没接上时，打开先等它接上
- * 再取数（搜索下拉在壳的模块求值时就打开，早于 `loadRouter`）。每次打开都领一个新代次，页面按代次重挂、
- * 重取。打开之后壳的开关（选择模式、换筛选、换版式）经 `updateManagedRoute` 合进同一页的 props：代次不变，
- * 页面就地重渲染，不重挂也不重取。 */
+ * uno次Abrir: 壳铺bien骨架posterior调 `openManagedRoute`, aquí先收起同uno容Dispositivoen laAnteriorpágina, 再取primero屏; 取齐, 壳也还停En
+ * esteunopágina时, En同unoTareadentro换掉骨架, 放进宿主, 再让路由树Sincronizar画出Completopágina. 路由树还没continuararriba时, Abrir先etc.它continuararriba
+ * 再取数(Buscarabajo拉En壳模求值时就Abrir, 早于 `loadRouter`). 每次Abrir都领unoNuevo代次, página面按代次pesado挂, 
+ * pesado取. Abrir之posterior壳开关(SeleccionarModo, 换Filtrar, 换版)经 `updateManagedRoute` 合进同unopágina props: 代次No变, 
+ * página面就地pesado渲染, Nopesado挂也Nopesado取.  */
 
-/** 画在某个容器里的那一页（或一面）。`host` 是页面 portal 进去的那个 `.peach-react` 宿主。 */
+/** 画En某容Dispositivoen laeseunopágina(或uno面). `host` espágina面 portal 进去ese `.peach-react` 宿主.  */
 export interface ManagedEntry {
-  /** 登记键：页面的路径，或页面内组件的名字。 */
+  /** 登记Clave: página面Ruta, 或página面interior组件名字.  */
   path: string;
   props: object;
   revision: number;
-  /** 壳的容器（`#stats`、`#index`、`#grid` 或某个页面内组件的容器）。 */
+  /** 壳容Dispositivo(`#stats`, `#index`, `#grid` 或某página面interior组件容Dispositivo).  */
   container: Element;
   host: HTMLElement;
-  /** 常驻组件：宿主是壳的节点，收起与抛错时只卸组件、不撤宿主。 */
+  /** 常驻组件: 宿主es壳节点, 收起y抛错时Solo卸组件, No撤宿主.  */
   resident: boolean;
 }
 
-/** 路由树交给这里的首屏取数：按登记键取，中止后抛 `AbortError`。 */
+/** 路由树交给esteen laprimero屏取数: 按登记Clave取, en proceso止posterior抛 `AbortError`.  */
 export type ManagedPrefetch = (path: string, props: object, signal: AbortSignal) => Promise<void>;
 
 export interface ManagedOpenOptions {
-  /** 页面画进的容器。 */
+  /** página面画进容Dispositivo.  */
   container: Element;
-  /** 壳的换页判据：取数期间用户走开了，就不画。 */
+  /** 壳换página判据: 取数期间用户走开, 就No画.  */
   isCurrent: () => boolean;
-  /** 壳自己排好的框架：取齐首屏的那一刻由它把框架换进容器，返回页面画进去的宿主。不给就清空容器、
-   *  放进一个新的 `.peach-react`。资料页要这个：浮层吸顶要它的父盒就是 `#index`，新作那一行是遗留层
-   *  卡片、不进 `.peach-react`，所以框架的四块由壳排，页面只占其中一块，再经 portal 画进另外三块。 */
+  /** 壳自己排bien框架: 取齐primero屏eseuno刻由它框架换进容Dispositivo, 返回página面画进去宿主. No给就清空容Dispositivo, 
+   *  放进unoNuevo `.peach-react`. 资料página要este: 浮层吸顶要它父盒就es `#index`, Nuevas obraseseuno行es遗Deja层
+   *  卡片, No进 `.peach-react`, 所以框架cuatro由壳排, página面Solo占其en procesouno, 再经 portal 画进另exteriortres.  */
   place?: (container: Element) => HTMLElement;
-  /** 常驻组件（`openResidentSurface` 打开的那几座）：宿主归壳，收起与抛错时只卸组件、不撤宿主。 */
+  /** 常驻组件(`openResidentSurface` Abrirese几座): 宿主归壳, 收起y抛错时Solo卸组件, No撤宿主.  */
   resident?: boolean;
 }
 
-/** 订阅者收到的是此刻各个容器里的页面。`sync` 为真时要当场画完：壳在同一个任务里刚换上或撤掉宿主，
- *  晚一拍就是一帧空白。为假是就地更新，照常排进下一次渲染。 */
+/** 订阅者收到es此刻各容Dispositivoen lapágina面. `sync` Como真时要当场画完: 壳En同unoTareadentro刚换arriba或撤掉宿主, 
+ *  晚uno拍就esuno帧空白. Como假es就地Actualizar, 照常排进Siguiente次渲染.  */
 type ManagedListener = (entries: readonly ManagedEntry[], sync: boolean) => void;
 
 interface Pending { revision: number; controller: AbortController }
 
-/* 路由树接上取数之前，打开都等在这里；接上的那一份装载失败时，等着的打开跟着失败。 */
+/* 路由树continuararriba取数之anterior, Abrir都etc.Enaquí; continuaren laeseuno装载Fallo时, etc.着Abrir跟着Fallo.  */
 let connect: (ready: Promise<ManagedPrefetch>) => void = () => {};
 const prefetcher = new Promise<ManagedPrefetch>((resolve) => { connect = resolve });
 prefetcher.catch(() => {});
-/* 首次打开时调用应用登记的就绪入口，让搜索下拉与首屏筛选条等待路由树连接后取数。
- * 页面代码已在主包中，就绪入口只调用一次。 */
+/* primero次Abrir时调用应用登记就绪入口, 让Buscarabajo拉yprimero屏FiltrarEsperando路由树Conectarposterior取数. 
+ * página面代码yaEn主包en proceso, 就绪入口Solo调用uno次.  */
 let preload: (() => void) | null = null;
 export function preloadManagedRoutes(load: () => void): void {
   preload = load;
@@ -72,24 +72,24 @@ const pending = new Map<Element, Pending>();
 let revision = 0;
 const listeners = new Set<ManagedListener>();
 
-/** 路由树装载时接上取数。只认第一次。 */
+/** 路由树装载时continuararriba取数. Solo认No.uno次.  */
 export function connectManagedRoutes(ready: Promise<ManagedPrefetch>): void {
   connect(ready);
 }
 
-/** 此刻画在这个容器里的那一页；还在取首屏或已经收起时是 null。 */
+/** 此刻画Eneste容Dispositivoen laeseunopágina; 还En取primero屏或ya经收起时es null.  */
 export function managedEntry(container: Element): ManagedEntry | null {
   return entries.get(container) ?? null;
 }
-/** 这个容器归路由树：已经画着，或首屏还在取。壳据此判断要不要再开一次：在途时再开会把那一趟中止、
- *  重取一遍，画着时再开会先收起再重画，内容根本没变时那一下只是一次白白的布局塌陷。 */
+/** este容Dispositivo归路由树: ya经画着, 或primero屏还En取. 壳据此判断要No要再开uno次: En途时再开会eseuno趟en proceso止, 
+ *  pesado取uno遍, 画着时再开会先收起再pesado画, contenido根本没变时eseunoabajoSoloesuno次白白Diseño塌陷.  */
 export function managedTaken(container: Element | null): boolean {
   return !!container && (entries.has(container) || pending.has(container));
 }
-/** 此刻画着的全部页面，路由树按它画 portal。 */
+/** 此刻画着Todopágina面, 路由树按它画 portal.  */
 export const managedEntries = (): readonly ManagedEntry[] => [...entries.values()];
 
-/** 路由树订阅：每次换页、收起或就地更新都同步通知。 */
+/** 路由树订阅: 每次换página, 收起或就地Actualizar都Sincronizar通知.  */
 export function listenManagedEntry(listener: ManagedListener): () => void {
   listeners.add(listener);
   return () => { listeners.delete(listener) };
@@ -100,7 +100,7 @@ function notify(sync: boolean): void {
   for (const listener of [...listeners]) listener(shown, sync);
 }
 
-/** 打开一页并等首屏落地。画上了回 true；期间被收起、被重开或壳已换页回 false。 */
+/** Abrirunopáginayetc.primero屏Llegar. 画arriba回 true; 期间被收起, 被pesado开或壳ya换página回 false.  */
 export async function openManagedRoute(path: string, props: object, options: ManagedOpenOptions): Promise<boolean> {
   const { container } = options;
   releaseManagedRoute(container);
@@ -116,7 +116,7 @@ export async function openManagedRoute(path: string, props: object, options: Man
   try {
     await prefetch(path, props, mine.controller.signal);
   } catch {
-    // 中止就是用户已经走开。其余失败照画：原因和重试的节律都在页面自己手里。
+    // en proceso止就es用户ya经走开. 其余Fallo照画: Original因 y Reintentar节律都Enpágina面自己手dentro. 
     if (mine.controller.signal.aborted) return false;
   }
   if (pending.get(container) !== mine) return false;
@@ -128,22 +128,22 @@ export async function openManagedRoute(path: string, props: object, options: Man
   return true;
 }
 
-/** 打开一座常驻组件（常驻表 `RESIDENT_ROUTES` 里的名字）：一直算当前页，宿主就是壳交来的节点本身，组件直接画成
- *  它的子节点，所以 DOM 与这座面自己建根时一样。没有首屏取数，路由树接上就画；画上了回 true。
+/** Abriruno座常驻组件(常驻表 `RESIDENT_ROUTES` en la名字): uno直算当anteriorpágina, 宿主就es壳交来节点本身, 组件直continuar画成
+ *  它子节点, 所以 DOM yeste座面自己建根时uno样. Sinprimero屏取数, 路由树continuararriba就画; 画arriba回 true. 
  *
- *  `place` 在画首帧的同一个任务里把宿主交给路由树，返回的仍须是这个节点本身；不给就原样交出。宿主里先有
- *  壳的启动骨架时（管理区页头、侧栏），由它清掉骨架：骨架一直留到首帧画上的那一刻，中间没有一帧空白。宿主是
- *  新建、还不在文档里的节点时（沉浸模式、设置面板），由它挂进文档，节点与首帧一起出现。
+ *  `place` En画primero帧同unoTareadentro宿主交给路由树, 返回仍须eseste节点本身; No给就Original样交出. 宿主dentro先Con
+ *  壳启动骨架时(Gestionar区página头, 侧栏), 由它清掉骨架: 骨架uno直Deja到primero帧画en laeseuno刻, en proceso间Sinuno帧空白. 宿主es
+ *  Nuevo, 还NoEnDocumentaciónen la节点时(InmersivoModo, Configuración面板), 由它挂进Documentación, 节点yprimero帧uno起出现. 
  *
- *  每座只在壳启动（或第一次用到）时打开一次。之后壳经它的命令式句柄推内容，组件订阅自己的 store；
- *  抛错后错误边界只卸组件，这一面空到刷新为止，句柄照旧可调、不抛。 */
+ *  每座SoloEn壳启动(或No.uno次用到)时Abriruno次. 之posterior壳经它命令句柄推contenido, 组件订阅自己 store; 
+ *  抛错posteriorError边界Solo卸组件, esteuno面空到ActualizarComo止, 句柄照antiguopuede调, No抛.  */
 export function openResidentSurface(
   name: string, container: HTMLElement, place: (container: HTMLElement) => HTMLElement = () => container,
 ): Promise<boolean> {
   return openManagedRoute(name, {}, { container, isCurrent: () => true, place: () => place(container), resident: true });
 }
 
-/* token、Preflight 与焦点规则都作用在 `.peach-react` 上；容器归壳，所以另建一个，收起时连它一起撤掉。 */
+/* token, Preflight y焦点Regla都作用En `.peach-react` arriba; 容Dispositivo归壳, 所以另建uno, 收起时连它uno起撤掉.  */
 function defaultHost(container: Element): HTMLElement {
   const host = container.ownerDocument.createElement('div');
   host.className = 'peach-react';
@@ -152,8 +152,8 @@ function defaultHost(container: Element): HTMLElement {
   return host;
 }
 
-/** 把壳的开关合进此刻画着的那一页：代次不变，页面就地重渲染，不重挂、不重取。那个容器里还没画上
- *  （还在取首屏或已经收起）时是空操作，打开时交进去的那一份照旧。 */
+/** 壳开关合进此刻画着eseunoPágina: 代次No变, página面就地pesado渲染, Nopesado挂, Nopesado取. ese容Dispositivodentro还没画arriba
+ *  (还En取primero屏或ya经收起)时es空操作, Abrir时交进去eseuno照antiguo.  */
 export function updateManagedRoute(container: Element | null, patch: object): void {
   const shown = container ? entries.get(container) : undefined;
   if (!shown) return;
@@ -161,10 +161,10 @@ export function updateManagedRoute(container: Element | null, patch: object): vo
   notify(false);
 }
 
-/** 收起这几个容器里的页面：中止在途的首屏取数，卸掉页面并撤掉宿主，一次通知。没有页面的容器是空操作。
- *  容器逐个点名，没有「全部收起」：壳换页认领表面时收 `#stats` 与 `#index`，`#grid` 在目录各路径与回收站
- *  之间一直画着，只在离开目录时由壳单独收；页面内组件由壳按各自的路由判据收。常驻组件的宿主是壳的节点，
- *  这里只卸组件、不撤宿主。 */
+/** 收起este几容Dispositivoen lapágina面: en proceso止En途primero屏取数, 卸掉página面y撤掉宿主, uno次通知. Sinpágina面容Dispositivoes空操作. 
+ *  容Dispositivo逐点名, Sin"Todo收起": 壳换página认领表面时收 `#stats` y `#index`, `#grid` EnDirectorio各Rutay回收站
+ *  之间uno直画着, SoloEn离开Directorio时由壳单独收; página面interior组件由壳按各自路由判据收. 常驻组件宿主es壳节点, 
+ *  aquíSolo卸组件, No撤宿主.  */
 export function releaseManagedRoute(container: Element, ...more: Element[]): void {
   const removed: ManagedEntry[] = [];
   for (const target of new Set([container, ...more])) {
@@ -184,20 +184,20 @@ export function releaseManagedRoute(container: Element, ...more: Element[]): voi
   for (const shown of removed) if (!shown.resident) shown.host.remove();
 }
 
-/** 应用卸载收起全部登记，并中止尚未成为页面的首屏请求。 */
+/** 应用Desinstalar收起Todo登记, yen proceso止aúnno成Comopágina面primero屏Por favor求.  */
 export function releaseAllManagedRoutes(): void {
   const [first, ...rest] = new Set([...entries.keys(), ...pending.keys()]);
   if (first) releaseManagedRoute(first, ...rest);
 }
 
-/** 某一面渲染抛错、路由树的错误边界接住之后调：只撤这一面的登记与宿主，别的面照画。之后
- *  `managedTaken` 回 false、`updateManagedRoute` 对它是空操作，壳下一次打开就重开。代次对不上（这一格
- *  已经收起或重开过）是空操作：过期的那一面不能撤掉壳刚开的新一面。常驻组件的宿主是壳的节点，只卸组件、
- *  不撤宿主；壳不会再打开它，这一面空到刷新为止。
+/** 某uno面渲染抛错, 路由树Error边界continuar住之posterior调: Solo撤esteuno面登记y宿主, 别面照画. 之posterior
+ *  `managedTaken` 回 false, `updateManagedRoute` 对它es空操作, 壳Siguiente次Abrir就pesado开. 代次对Noarriba(esteuno格
+ *  ya经收起或pesado开过)es空操作: 过期eseuno面No能撤掉壳刚开Nuevouno面. 常驻组件宿主es壳节点, Solo卸组件, 
+ *  No撤宿主; 壳No会再Abrir它, esteuno面空到ActualizarComo止. 
  *
- *  删登记与撤宿主当场做，通知延到微任务：这里在 React 的提交阶段里（错误边界的 `componentDidCatch`），
- *  通知会让路由树重渲染。抛错出在打开那一次的首帧时，打开照样回 true，只是回来的那一刻登记已经撤了，
- *  壳紧接着推的补丁是空操作。 */
+ *  删登记y撤宿主当场做, 通知延到微Tarea: aquíEn React 提交阶段dentro(Error边界 `componentDidCatch`), 
+ *  通知会让路由树pesado渲染. 抛错出EnAbrireseuno次primero帧时, Abrir照样回 true, Soloes回来eseuno刻登记ya经撤, 
+ *  壳紧continuar着推补丁es空操作.  */
 export function failManagedRoute(container: Element, failed: number): void {
   const shown = entries.get(container);
   if (shown?.revision !== failed) return;

@@ -1,4 +1,4 @@
-/* JAV 想要：按状态分组的作品卡，复用资源链接查询与查找资源弹层。 */
+/* JAV 想要: 按EstadoAgruparObras卡, 复用资源链continuarConsultayEncontrar资源弹层.  */
 import { useState } from 'react';
 import { Radio } from 'react-aria-components';
 import type { KeyboardEvent, ReactNode } from 'react';
@@ -29,20 +29,20 @@ import {
   WANTS_KEY, type Want,
 } from './wants';
 
-const ORIGINS: Record<Want['origin'], string> = { code: '手动添加', feed: '订阅新作', follow: '关注' };
-/** 每一段一页摆多少张：一张卡二十来个节点，上千条一次摆开就是十几万像素高的一页。 */
+const ORIGINS: Record<Want['origin'], string> = { code: 'ManualAñadir', feed: 'Suscribirse a nuevas obras', follow: 'Seguir' };
+/** 每uno段unopágina摆másmenos: uno卡dosdiez来节点, arribamiluno次摆开就esdiez几10 mil像素altounopágina.  */
 export const WANT_PAGE_SIZE = 20;
-const MAGNET_FILTERS = [['all', '全部'], ['available', '有磁链'], ['missing', '没磁链']] as const;
+const MAGNET_FILTERS = [['all', 'Todo'], ['available', 'Con enlace magnético'], ['missing', 'Sin enlace magnético']] as const;
 
 
-/** 资料那一行：发行日、厂牌、女优、从哪儿加进来的。 */
+/** 资料eseuno行: Lanzamiento日, Sello, Actriz, 从哪儿加进来.  */
 const facts = (want: Want) => [want.release_date, want.studio, want.performers, ORIGINS[want.origin]]
   .filter(Boolean).join(' · ');
 
 function Cover({ want }: { want: Want }) {
   return (
     <span className="relative inline-grid w-card-cover shrink-0 aspect-card-cover place-items-center overflow-hidden rounded-2lg bg-background-tertiary-default max-sm:w-24">
-      <span className="text-caption-1-regular text-text-secondary">无封面</span>
+      <span className="text-caption-1-regular text-text-secondary">Sin portada</span>
       {want.cover ? (
         <img src={want.cover} alt="" loading="lazy" referrerPolicy={want.remote_cover ? 'no-referrer' : undefined}
           onError={(event) => event.currentTarget.remove()} className="absolute inset-0 size-full object-cover" />
@@ -72,19 +72,19 @@ function WantRow({ want, readOnly, busy, onReset, onRemove, onCloudDownload, dow
         {facts(want) ? <p className="text-body-2-regular text-text-secondary">{facts(want)}</p> : null}
         {!want.code || want.phase === 'unreleased' || want.phase === 'acquired' ?
           <p data-want-note="" className="text-caption-1-regular text-text-secondary">{searchNote(want)}</p> : null}
-        {want.scrape_error ? <ErrorLine text={want.scrape_error} prefix="资料未取得：" tone="muted" /> : null}
+        {want.scrape_error ? <ErrorLine text={want.scrape_error} prefix="DetallesNo disponible: " tone="muted" /> : null}
         <div className="mt-1 flex flex-wrap items-center gap-2">
-          {/* 还在找的两段才给云下载：未发售的没有资源可下，已入库的已经到手。 */}
+          {/* 还En找两段才给云Descargar: no发售Sin资源puedeabajo, ya入Bibliotecaya经到手.  */}
           {want.phase === 'searching' || want.phase === 'given_up' ? (
-            <Button variant="secondary" size="small" onClick={onCloudDownload}>查找资源</Button>
+            <Button variant="secondary" size="small" onClick={onCloudDownload}>Buscar recursos</Button>
           ) : null}
           {want.phase === 'given_up' ? (
             <Button variant="secondary" size="small" disabled={readOnly} {...busyProps(busy === `reset:${want.id}`)}
-              onClick={onReset}>重新查找</Button>
+              onClick={onReset}>pesadoNuevoBuscar</Button>
           ) : null}
           <Button variant="secondary" size="small" leadingIcon={RiDeleteBinLine} disabled={readOnly} {...busyProps(busy === `remove:${want.id}`)}
-            onClick={onRemove}>移除</Button>
-          {source ? <ButtonLink data-button-link="" variant="secondary" size="small" trailingIcon={RiExternalLinkLine} href={source} target="_blank" rel="noopener noreferrer">来源页</ButtonLink> : null}
+            onClick={onRemove}>Quitar</Button>
+          {source ? <ButtonLink data-button-link="" variant="secondary" size="small" trailingIcon={RiExternalLinkLine} href={source} target="_blank" rel="noopener noreferrer">Fuentepágina</ButtonLink> : null}
         </div>
       </div>
       </div>
@@ -94,7 +94,7 @@ function WantRow({ want, readOnly, busy, onReset, onRemove, onCloudDownload, dow
   );
 }
 
-/** 一段（待找、未发售……）：标题带这一段的总数，多于一页时分页，页码各段各记各的。 */
+/** uno段(待找, no发售......): Título带esteuno段Total数, más于unopágina时分página, página码各段各记各.  */
 function WantPhase({ phase, label, rows, row }: {
   phase: string; label: string; rows: Want[]; row(want: Want): ReactNode;
 }) {
@@ -113,7 +113,7 @@ function WantPhase({ phase, label, rows, row }: {
         {label}
         <span className="text-body-2-regular tabular-nums text-text-secondary">{rows.length.toLocaleString()}</span>
       </h3>
-      {phase === 'searching' ? <SegmentedRadioGroup name="want-magnet-filter" aria-label="待找磁链筛选"
+      {phase === 'searching' ? <SegmentedRadioGroup name="want-magnet-filter" aria-label="Pendiente找Enlace magnéticoFiltrar"
         orientation="horizontal" value={magnetFilter} className={SEGMENTED_TRACK} onChange={value => { setMagnetFilter(value); setPage(1) }}>
         {MAGNET_FILTERS.map(([value, text]) => <Radio key={value} value={value} aria-label={text} className={SEGMENT}>
           {text}<span className="text-caption-1-regular tabular-nums text-text-tertiary">{
@@ -122,14 +122,14 @@ function WantPhase({ phase, label, rows, row }: {
         </Radio>)}
       </SegmentedRadioGroup> : null}
       </div>
-      {!filtered.length ? <EmptyState shell="plain" icon={RiStarLine} title="暂无符合条件的作品">{null}</EmptyState> : null}
+      {!filtered.length ? <EmptyState shell="plain" icon={RiStarLine} title="暂Ningunoque cumple los criterios de resultado deObra">{null}</EmptyState> : null}
       <ul className="flex flex-col gap-4">{filtered.slice(win.start, win.end).map(row)}</ul>
       {win.pages > 1 ? (
         <div data-want-pager="" className="flex flex-wrap items-center justify-between gap-3">
           <span className="text-body-2-regular tabular-nums text-text-secondary">
-            {`${(win.start + 1).toLocaleString()}–${win.end.toLocaleString()} / ${win.total.toLocaleString()} 条`}
+            {`${(win.start + 1).toLocaleString()}–${win.end.toLocaleString()} / ${win.total.toLocaleString()} Resultado`}
           </span>
-          <Pagination label={`${label}分页`} page={win.page} pages={win.pages} onPage={setPage} />
+          <Pagination label={`${label}Paginación`} page={win.page} pages={win.pages} onPage={setPage} />
         </div>
       ) : null}
     </section>
@@ -149,7 +149,7 @@ export function WantList({ readOnly, toast, query = '' }: WantListProps) {
   const wants = useQuery({
     queryKey: WANTS_KEY, queryFn: ({ signal }) => fetchWants(signal),
     staleTime: 30_000,
-    // 刚登记的那几条还在取资料：跑着就隔几秒再读一次，取完了就停。
+    // 刚登记ese几还En取资料: 跑着就隔几秒再读uno次, 取完就停. 
     refetchInterval: (query) => (query.state.data?.scraping ? 3000 : false),
   });
 
@@ -157,7 +157,7 @@ export function WantList({ readOnly, toast, query = '' }: WantListProps) {
     const text = code.trim();
     if (!text || readOnly) return;
     void action.run('add', (signal) => addWant({ code: text }, signal), (done) => {
-      toast(done.created ? `已加入想要：${wantName(done.want)}` : `${wantName(done.want)} 已经在想要里`);
+      toast(done.created ? `Añadido a deseados: ${wantName(done.want)}` : `${wantName(done.want)} Ya经EnDeseadodentro`);
       setCode('');
       void invalidateWants();
     });
@@ -167,13 +167,13 @@ export function WantList({ readOnly, toast, query = '' }: WantListProps) {
   };
   const remove = (want: Want) => {
     void action.run(`remove:${want.id}`, (signal) => removeWants([want.id], signal), () => {
-      toast(`已移除：${wantName(want)}`);
+      toast(`YaQuitar: ${wantName(want)}`);
       void invalidateWants();
     });
   };
   const reset = (want: Want) => {
     void action.run(`reset:${want.id}`, (signal) => resetWants([want.id], signal), () => {
-      toast(`${wantName(want)} 回到待找`);
+      toast(`${wantName(want)} 回到Pendiente找`);
       void invalidateWants();
     });
   };
@@ -191,28 +191,28 @@ export function WantList({ readOnly, toast, query = '' }: WantListProps) {
   return (
     <div aria-busy={wants.isPending} className="flex flex-col gap-8">
       <div className={cardClass({ padding: 'none', className: 'flex flex-col gap-4 px-6 py-5 max-sm:px-4' })}>
-        <h3 className="text-title-2-medium text-text-primary">按番号添加</h3>
+        <h3 className="text-title-2-medium text-text-primary">Añadir por código</h3>
         <div className="flex flex-wrap items-end gap-2">
           <div className="min-w-64 grow max-sm:min-w-0">
-            <Input aria-label="番号" placeholder="输入番号，例如 SSIS-950" value={code}
+            <Input aria-label="Código JAV" placeholder="IntroducirCódigo JAV, 例如 SSIS-950" value={code}
               isDisabled={readOnly} onChange={setCode} onKeyDown={onKeyDown} />
           </div>
           <Button variant="primary" disabled={readOnly || !code.trim()} {...busyProps(action.busy === 'add')}
-            onClick={add}>添加</Button>
+            onClick={add}>Añadir</Button>
         </div>
-        {action.error ? <Note tone="error" title="这一次没有完成">{action.error}</Note> : null}
+        {action.error ? <Note tone="error" title="No se completó esta vez">{action.error}</Note> : null}
       </div>
 
-      {wants.error ? <Note tone="error" title="想要清单读取失败">{errorMessage(wants.error)}</Note> : null}
-      {wants.isPending ? <div role="status" aria-label="正在读取想要" dangerouslySetInnerHTML={{ __html: javContentSkeleton('wants') }} /> : null}
-      {data?.scraping ? <Help role="status">正在给刚加入的番号取资料与封面。</Help> : null}
-      {downloads.error ? <Note tone="error" title="下载配置未取得">{errorMessage(downloads.error)}</Note> : null}
-      {downloads.data && !configured.length ? <Note tone="neutral">尚未配置下载渠道。<a href={'/settings/library?section=' + encodeURIComponent('下载渠道')}>下载渠道设置</a></Note> : null}
-      {downloads.data && !downloads.data.available ? <Note tone="neutral">云下载只在允许修改数据库的设备上可用。</Note> : null}
+      {wants.error ? <Note tone="error" title="Deseado清单读取Fallido">{errorMessage(wants.error)}</Note> : null}
+      {wants.isPending ? <div role="status" aria-label="CargandoDeseado" dangerouslySetInnerHTML={{ __html: javContentSkeleton('wants') }} /> : null}
+      {data?.scraping ? <Help role="status">Procesando给刚加入Código JAV取DetallesyPortada. </Help> : null}
+      {downloads.error ? <Note tone="error" title="Configuración de descarga no disponible">{errorMessage(downloads.error)}</Note> : null}
+      {downloads.data && !configured.length ? <Note tone="neutral">Canal de descarga no configurado.<a href={'/settings/library?section=' + encodeURIComponent('Canal de descarga')}>Configuración del canal de descarga</a></Note> : null}
+      {downloads.data && !downloads.data.available ? <Note tone="neutral">Descarga en la nube solo disponible donde se permita escritura en BD.</Note> : null}
 
       {data && !items.length ? (
-        <EmptyState shell="plain" icon={RiStarLine} title={query ? '没有符合条件的作品' : '还没有想要的作品'}>
-          {query ? '试试其他番号、女优或标题。' : '输入番号，添加想看的作品。'}
+        <EmptyState shell="plain" icon={RiStarLine} title={query ? 'Sinque cumple los criterios de resultado deObra' : 'Aún no hayDeseadoObra'}>
+          {query ? '试试OtroCódigo JAV, Actriz或Título. ' : 'IntroducirCódigo JAV, AñadirQuiero verObra. '}
         </EmptyState>
       ) : null}
 

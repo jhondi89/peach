@@ -1,6 +1,6 @@
-/* 播放器模块：命令式 TypeScript，不进入 React 渲染。
- * Video.js 接管 video 宿主与控件 DOM；舞台和沉浸的 effect 调 mountPlayer 并保存清理函数。
- * Application 与 React 页面共享源码图，宿主、播放器槽位、流会话与右键菜单状态各只有一份。 */
+/* ReproducirDispositivo模: 命令 TypeScript, No进入 React 渲染. 
+ * Video.js continuar管 video 宿主yControles DOM; 舞 y Inmersivo effect 调 mountPlayer yGuardarLimpiar函数. 
+ * Application y React página面共享源码Imagen, 宿主, ReproducirDispositivo槽, 流会话yderechaClave菜单Estado各SoloConuno.  */
 export type { PlayerHost, PlayerSettings } from './host';
 export { configurePlayer } from './host';
 export type { PlayerMenuHooks } from './menu';

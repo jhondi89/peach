@@ -1,10 +1,10 @@
-/* 名册网格：艺人、创作者、厂牌、事务所四份本地名册，和艺人页在线那一档的来源创作者。
+/* 名册Cuadrícula: 艺人, 创作者, Sello, Agenciacuatro本地名册,  y 艺人páginaEn线eseuno档来源创作者. 
  *
- * 一格人：圆框或竖幅头像、名字、一个读数。四种实体同一副版式、同一条取图链，区别只在
- * 格宽与读数口径。圆框里那段 HTML 由 `card-art` 的 `avatarInner` 拼（有图走图、没图退首字母、
- * 小图按原尺寸摆再糊一圈底），页面不重画一遍；原尺寸取图与补底规则在
- * `web/css/01-base.css` 的 `[data-person-ring]`，量图的是 `installCardArt` 挂在文档上的 `load` 监听。
- * 格底、头像框、首字与读数的配色在同目录的 `index-people.css`。 */
+ * uno格人: 圆框或竖幅Avatar, 名字, uno读数. cuatro实体同uno副版, 同uno取Imagen链, 区别SoloEn
+ * 格anchoy读数口径. 圆框dentroese段 HTML 由 `card-art`  `avatarInner` 拼(ConImagen走Imagen, 没Imagen退primero字母, 
+ * pequeñoImagen按Original尺寸摆再糊uno圈底), página面Nopesado画uno遍; Original尺寸取Imageny补底ReglaEn
+ * `web/css/01-base.css`  `[data-person-ring]`, 量Imagenes `installCardArt` 挂EnDocumentaciónen la `load` 监听. 
+ * 格底, Avatar框, primero字y读数配色En同Directorio `index-people.css`.  */
 import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import { Chip } from '@/components/base/badges/chip';
 
@@ -13,10 +13,10 @@ import { spriteGlyph } from '../components/sprite-glyph';
 import type { OnlineAuthor } from '../follow/online-vocab';
 import { ENTITY_KINDS, isCompany, personReadout, type IndexKind, type IndexPerson, type IndexProps, type PeopleLayout } from './index-data';
 
-/* 平移挂在圆框上而不是 img 上：竖幅裁到 3:4 时几何居中会切掉脸，而 img 由遗留层拼，
-   只能从容器这一侧改。放大反过来只能挂在 img 上，所以脸框由 `avatarInner` 贴到 img 上。
-   放大是把 img 撑得比框还宽再负偏移，Preflight 给 img 的 `max-width:100%` 会把它压回框宽，
-   脸就被挤到一边，所以这里撤掉那一条；原尺寸摆的小图另由 `[data-native-small]` 收住。 */
+/* 平移挂En圆框arriba而Noes img arriba: 竖幅裁到 3:4 时几何居en proceso会切掉脸, 而 img 由遗Deja层拼, 
+   Solo能从容Dispositivoesteuno侧改. 放grande反过来Solo能挂En img arriba, 所以脸框由 `avatarInner` 贴到 img arriba. 
+   放grandees img 撑得比框还ancho再负偏移, Preflight 给 img  `max-width:100%` 会它压回框ancho, 
+   脸就被挤到uno边, 所以aquí撤掉eseuno; Original尺寸摆pequeñoImagen另由 `[data-native-small]` 收住.  */
 function Ring({ html, face, company, big }: { html: string; face?: string; company: boolean; big: boolean }) {
   const ring = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
@@ -46,7 +46,7 @@ function Cell(
         className: `${CELL} ${big ? 'items-stretch text-left' : 'items-center text-center'}`,
       })}>
       {children}
-      {following ? <span data-index-feed="" role="img" aria-label="已订阅新作" className="absolute top-4 right-4 z-2 inline-flex">
+      {following ? <span data-index-feed="" role="img" aria-label="Suscrito a nuevas obras" className="absolute top-4 right-4 z-2 inline-flex">
         <Chip variant="caption" color="blue"><Rss /></Chip>
       </span> : null}
       <span data-index-name="" className="text-body-medium wrap-anywhere text-text-primary">{name}</span>
@@ -55,7 +55,7 @@ function Cell(
   );
 }
 
-/** 本地名册。资料页的名册（事务所旗下艺人、片商旗下厂牌）摆的也是这一格，只借取图与去处两样。 */
+/** 本地名册. 资料página名册(Agencia旗abajo艺人, 片商旗abajoSello)摆也esesteuno格, Solo借取Imageny去处两样.  */
 export function PeopleGrid(
   { kind, items, layout, props }:
   {
@@ -82,9 +82,9 @@ export function PeopleGrid(
   );
 }
 
-/** 在线那一档：关注来源里的创作者。建过档的点开去他的创作者资料页；还没建档的名下那批东西
- *  全在关注页上，点开等于「关注 · 这个人」；数据库里有同名创作者、等用户认的，读数带「待确认」，
- *  点开去那位的资料页，认人的按钮在那里。`data-follow-author` 挂的是关注页那套创作者键。 */
+/** En线eseuno档: 关注来源en la创作者. 建过档点开去他创作者资料página; 还没建档名abajoese批东西
+ *  TodoEn关注páginaarriba, 点开etc.于"关注 · este人"; DatosBibliotecadentroCon同名创作者, etc.用户认, 读数带"待Confirmar", 
+ *  点开去ese资料página, 认人按钮Enesedentro. `data-follow-author` 挂es关注páginaese套创作者Clave.  */
 export function OnlineAuthors(
   { items, layout, props }: { items: OnlineAuthor[]; layout: PeopleLayout; props: IndexProps },
 ) {
@@ -93,7 +93,7 @@ export function OnlineAuthors(
     <div data-index-grid="" data-layout={layout} data-cells="people" className="index-grid-person gap-3">
       {items.map((author) => (
         <Cell key={author.key} data-follow-author={author.key} data-kind="performer" name={author.k}
-          readout={`${author.n.toLocaleString()} 项更新${author.held_by ? ' · 待确认' : ''}`} big={big}
+          readout={`${author.n.toLocaleString()}  actualización(es)${author.held_by ? ' · PendienteConfirmar' : ''}`} big={big}
           onPress={() => {
             if (author.entity_id) props.openEntity('creator', author.k);
             else if (author.held_by) props.openEntity('creator', author.held_by);
