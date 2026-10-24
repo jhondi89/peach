@@ -35,7 +35,7 @@ function u() {
 			keepalive: !0
 		}).catch(() => {}));
 	};
-	window.addEventListener("error", (e) => r("error", e.error, e.message, e)), window.addEventListener("unhandledrejection", (e) => r("unhandledrejection", e.reason, "Promise 未处理的异常"));
+	window.addEventListener("error", (e) => r("error", e.error, e.message, e)), window.addEventListener("unhandledrejection", (e) => r("unhandledrejection", e.reason, "Excepción no manejada en Promise"));
 }
 //#endregion
 //#region node_modules/scheduler/cjs/scheduler.production.js
@@ -429,7 +429,7 @@ var d = /* @__PURE__ */ o(((e) => {
 			return e;
 		}
 	};
-	e.Activity = f, e.Children = oe, e.Component = y, e.Fragment = r, e.Profiler = a, e.PureComponent = x, e.StrictMode = i, e.Suspense = l, e.ViewTransition = p, e.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = T, e.__COMPILER_RUNTIME = {
+	e.Activity = f, e.Children = oe, e.Component = y, e.Fragment = r, e.Profiler = a, e.PureComponent = x, e.StrictMode = i, e.Suspense = l, e.ViewTransition = p, e.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRActive DirectoryE = T, e.__COMPILER_RUNTIME = {
 		__proto__: null,
 		c: function(e) {
 			return T.H.useMemoCache(e);
@@ -575,12 +575,12 @@ var d = /* @__PURE__ */ o(((e) => {
 			implementation: n
 		};
 	}
-	var l = t.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+	var l = t.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRActive DirectoryE;
 	function u(e, t) {
 		if (e === "font") return "";
 		if (typeof t == "string") return t === "use-credentials" ? t : "";
 	}
-	e.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = i, e.browser = function(e) {
+	e.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRActive DirectoryE = i, e.browser = function(e) {
 		return {
 			$$typeof: o,
 			_reason: e
@@ -879,7 +879,7 @@ var d = /* @__PURE__ */ o(((e) => {
 		}
 		return null;
 	}
-	var ge = Array.isArray, P = n.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, _e = r.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, ve = {
+	var ge = Array.isArray, P = n.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRActive DirectoryE, _e = r.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRActive DirectoryE, ve = {
 		pending: !1,
 		data: null,
 		method: null,
@@ -5208,7 +5208,7 @@ var d = /* @__PURE__ */ o(((e) => {
 					if (a & 1024) {
 						if (r = t.stateNode.containerInfo, n = r.nodeType, n === 9) nm(r);
 						else if (n === 1) switch (r.nodeName) {
-							case "HEAD":
+							case "HEActive Directory":
 							case "HTML":
 							case "BODY":
 								nm(r);
@@ -7183,7 +7183,7 @@ var d = /* @__PURE__ */ o(((e) => {
 			case "xlinkArcrole":
 				qt(e, "http://www.w3.org/1999/xlink", "xlink:arcrole", r);
 				break;
-			case "xlinkRole":
+			case "xlinkrole":
 				qt(e, "http://www.w3.org/1999/xlink", "xlink:role", r);
 				break;
 			case "xlinkShow":
@@ -8057,7 +8057,7 @@ var d = /* @__PURE__ */ o(((e) => {
 			var n = t;
 			switch (t = t.nextSibling, n.nodeName) {
 				case "HTML":
-				case "HEAD":
+				case "HEActive Directory":
 				case "BODY":
 					nm(n), At(n);
 					continue;
@@ -11045,12 +11045,12 @@ function Et({ id: e, children: t }) {
 //#endregion
 //#region src/react/pages/error/error-page.tsx
 var Dt = {
-	403: "这里不能打开",
-	404: "四〇四",
-	409: "现在不能这样做"
+	403: "No se puede abrir aquí",
+	404: "404",
+	409: "No se puede hacer esto ahora"
 };
 function Ot(e) {
-	return Dt[e ?? ""] ?? "出了点问题";
+	return Dt[e ?? ""] ?? "Algo salió mal";
 }
 function kt({ data: e }) {
 	let t = Ot(e.status);
@@ -11062,7 +11062,7 @@ function kt({ data: e }) {
 		children: /* @__PURE__ */ (0, z.jsx)(Ct, {
 			href: "/",
 			className: "self-start",
-			children: "返回首页"
+			children: "VolverInicio"
 		})
 	});
 }
@@ -14395,10 +14395,10 @@ qs = {
 //#region node_modules/react-aria-components/dist/private/intl/ja-JP.mjs
 var Js = {};
 Js = {
-	colorSwatchPicker: "カラースウォッチ",
-	dropzoneLabel: "ドロップゾーン",
-	selectPlaceholder: "項目を選択",
-	tableResizer: "サイズ変更ツール"
+	colorSwatchPicker: "Paleta de colores",
+	dropzoneLabel: "Zona de arrastre",
+	selectPlaceholder: "Seleccionar elemento objetivo",
+	tableResizer: "Herramienta de cambio de tamaño"
 };
 //#endregion
 //#region node_modules/react-aria-components/dist/private/intl/ko-KR.mjs
@@ -14548,19 +14548,19 @@ uc = {
 //#region node_modules/react-aria-components/dist/private/intl/zh-CN.mjs
 var dc = {};
 dc = {
-	colorSwatchPicker: "颜色色板",
-	dropzoneLabel: "放置区域",
-	selectPlaceholder: "选择一个项目",
-	tableResizer: "尺寸调整器"
+	colorSwatchPicker: "paleta de colores",
+	dropzoneLabel: "colocarconfigurarárea",
+	selectPlaceholder: "Seleccionarunelemento(s)objetivo",
+	tableResizer: "Tamañoajuste completo de Dispositivo"
 };
 //#endregion
 //#region node_modules/react-aria-components/dist/private/intl/zh-TW.mjs
 var fc = {};
 fc = {
-	colorSwatchPicker: "色票",
-	dropzoneLabel: "放置區",
-	selectPlaceholder: "選取項目",
-	tableResizer: "大小調整器"
+	colorSwatchPicker: "selector de color",
+	dropzoneLabel: "Zona de arrastre y suelta",
+	selectPlaceholder: "seleccionarelemento objetivo",
+	tableResizer: "Ajustar tamaño al dispositivo completo"
 };
 //#endregion
 //#region node_modules/react-aria-components/dist/private/intlStrings.mjs
@@ -17515,7 +17515,7 @@ Sd = { dismiss: "Ignora" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/overlays/ja-JP.mjs
 var Cd = {};
-Cd = { dismiss: "閉じる" };
+Cd = { dismiss: "Cerrar" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/overlays/ko-KR.mjs
 var wd = {};
@@ -17583,11 +17583,11 @@ zd = { dismiss: "Скасувати" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/overlays/zh-CN.mjs
 var Bd = {};
-Bd = { dismiss: "取消" };
+Bd = { dismiss: "Cancelar" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/overlays/zh-TW.mjs
 var Vd = {};
-Vd = { dismiss: "關閉" };
+Vd = { dismiss: "Cerrar" };
 //#endregion
 //#region node_modules/react-aria/dist/private/overlays/intlStrings.mjs
 var Hd = {};
@@ -17916,7 +17916,7 @@ yf = { longPressMessage: "Premi a lungo o premi Alt + Freccia giù per aprire il
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/menu/ja-JP.mjs
 var bf = {};
-bf = { longPressMessage: "長押しまたは Alt+下矢印キーでメニューを開く" };
+bf = { longPressMessage: "Mantén presionado o Alt+Flecha abajo para abrir el menú" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/menu/ko-KR.mjs
 var xf = {};
@@ -17984,11 +17984,11 @@ If = { longPressMessage: "Довго або звичайно натисніть 
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/menu/zh-CN.mjs
 var Lf = {};
-Lf = { longPressMessage: "长按或按 Alt + 向下方向键以打开菜单" };
+Lf = { longPressMessage: "largosegúnosegún Alt + Abajoteclas de flechaconAbrirmenú" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/menu/zh-TW.mjs
 var Rf = {};
-Rf = { longPressMessage: "長按或按 Alt+向下鍵以開啟功能表" };
+Rf = { longPressMessage: "Mantén pulsado o usa Alt+Abajo para abrir el menú" };
 //#endregion
 //#region node_modules/react-aria/dist/private/menu/intlStrings.mjs
 var zf = {};
@@ -19196,7 +19196,7 @@ function Vp({ label: e, hint: t, tooltip: n, placeholder: r, leadingIcon: i, tra
 }
 Vp.displayName = "Input";
 function Hp({ data: e }) {
-	let [t, n] = (0, y.useState)(e.error || (e.invalid === "true" ? "访问密码不正确" : ""));
+	let [t, n] = (0, y.useState)(e.error || (e.invalid === "true" ? "Contraseña de acceso no confirmada correctamente" : ""));
 	return /* @__PURE__ */ (0, z.jsx)(wt, {
 		title: "Peach",
 		children: /* @__PURE__ */ (0, z.jsxs)("form", {
@@ -19207,7 +19207,7 @@ function Hp({ data: e }) {
 			children: [
 				/* @__PURE__ */ (0, z.jsx)(Vp, {
 					id: "login-token",
-					label: "访问密码",
+					label: "Contraseña de acceso",
 					name: "token",
 					type: "password",
 					maxLength: 256,
@@ -19230,12 +19230,12 @@ function Hp({ data: e }) {
 					name: "days",
 					value: "30",
 					defaultSelected: !0,
-					children: "保持登录"
+					children: "Mantener sesión"
 				}),
 				/* @__PURE__ */ (0, z.jsx)(St, {
 					type: "submit",
 					className: "w-full",
-					children: "登录"
+					children: "Iniciar sesión"
 				})
 			]
 		})
@@ -19311,22 +19311,22 @@ async function Jp(e, t, n) {
 			}
 		});
 	} catch (e) {
-		throw t.signal?.aborted ? e : new qp(0, "连接不到 Peach，请确认它仍在运行后重试");
+		throw t.signal?.aborted ? e : new qp(0, "ConectarNo Peach, Por favor confirmaelloaún enejecutar despuésReintentar");
 	}
 	let i = await r.json().catch(() => null);
 	if (!r.ok) throw new qp(r.status, i?.error || n, i?.errors);
 	return i;
 }
-var Yp = (e) => Jp(Gp, { signal: e }, "没能读取设置题目"), Xp = (e) => Jp(Kp, {
+var Yp = (e) => Jp(Gp, { signal: e }, "No se pudo leer la configuración del objetivo"), Xp = (e) => Jp(Kp, {
 	method: "POST",
 	body: JSON.stringify(e)
-}, "没能完成设置"), Zp = (e) => Jp(`${Kp}/restore`, {
+}, "No se pudo finalizar la configuración"), Zp = (e) => Jp(`${Kp}/restore`, {
 	method: "POST",
 	body: JSON.stringify({ data_root: e })
-}, "没能使用此数据目录"), Qp = async (e) => (await Jp(Wp, {
+}, "No se puede usar este directorio de datos"), Qp = async (e) => (await Jp(Wp, {
 	method: "POST",
 	body: JSON.stringify({ initial: e })
-}, "没能打开文件夹对话框")).path, $p = (e) => e instanceof Error && e.message || "请求失败，请重试", em = 8e3, tm = /* @__PURE__ */ new WeakMap();
+}, "No se pudo abrir la carpeta")).path, $p = (e) => e instanceof Error && e.message || "solicitudFallido, Por favorReintentar", em = 8e3, tm = /* @__PURE__ */ new WeakMap();
 function nm(e, t, n) {
 	t.classList.add("ui-fcollapse");
 	let r = (tm.get(t) || 0) + 1;
@@ -19356,8 +19356,8 @@ function im(e, t, n = () => !0) {
 var am = [
 	{
 		id: "local",
-		name: "本地磁盘",
-		label: "本地磁盘",
+		name: "LocalDisco",
+		label: "LocalDisco",
 		default_cost: "free",
 		cloud: !1,
 		icon: "hard-drive"
@@ -19380,8 +19380,8 @@ var am = [
 	},
 	{
 		id: "guangya",
-		name: "光鸭云盘",
-		label: "光鸭云盘",
+		name: "Disco en la nube GuangYa",
+		label: "Disco en la nube GuangYa",
 		default_cost: "free",
 		cloud: !0,
 		icon: "database"
@@ -19396,8 +19396,8 @@ var am = [
 	},
 	{
 		id: "mounted",
-		name: "其他已挂载网盘",
-		label: "其他已挂载网盘",
+		name: "OtroYaMontarAlmacenamiento en la nube",
+		label: "OtroYaMontarAlmacenamiento en la nube",
 		default_cost: "metered",
 		cloud: !0,
 		icon: "database"
@@ -19409,7 +19409,7 @@ var cm = am.filter((e) => e.cloud).map((e) => e.id), lm = Object.fromEntries(am.
 	guangya: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEWUlEQVR42sWXT2hcVRTGf/fNYCZdNNPGTaHaSUXFVQZSLLowoe3GdpEERHFhYqTQRBATcWlpSly56YQu4ipNZivYxCK46Z9EsBGkHdwItdhXrLixzaASo2bucXHve/feNzOagqQXHnPf/XPOd77z3XPfKLwmkxTZit4lkiEiykQK8wA5+5v0c5i5nNj3ZJ03nwPyKpmvEekFpGNZvV6PE58qdT7BEIoLRKqYOo0g6PtOogQEDkDWeS4DVgQ0MVpNqbGNpRSATDCEcLHJYcAAzWz4QHIqZCcdswwloWr7iBpWJzeWlIxTAq4CJSK7MNmQOhXrSGXeWzj205AGAiiLQAAt0JA6HZ09eRRDCKV0UmGoUsq8SzJoKRS7DgFJxpQxmjhRXsRg5pU4AAKIKvL7xmQeGPVWerJIHBACSX9TQw5EAlB75lLnnm1t18NgHqHsAPjGvCj8KHN27rEuONgPnV3w96/wVx3urZrotefMj0n5DABalfME59CjUXwGPGDlEegbgZ5+mtpmHW5fgusz8NtdF30AwKZCa9AKJeNIYERZ4anM0esuwWvzJurttK8+hLUZY1B5gaUpMIHlW+8Wh0YL7O2BU5dhb4lttxc/sEBmnE3lmba6yrf0re1RE7vj7RbOf1iBWhXqdw1D+3rh8DtQLIUgNuvwzXmaUm3T25yCJA3Kgjg+DS+fcXMPYvjkLYhXw1Ql/YHT0H861MXcs7C5bo+2BCzkpg8x3ZpDZTa8cQE6i274XB/8/K0TVt8oPDcI67FxFq9AYQ/sP2zm8wXIdcDWn7D7AOwuGdZsRWzNQFJMegfh1EU3tjoLy+85oR4agVfnzdydFZg/ZuY6izD1PRSKzXbjFageS2tF1FZEIvD0QDj29aKt41bJHV0Z7YiZ31iH7z5rbfdmFRruTsj/q5K7D4TvP9Ys9fZofXkeuntgz5Nw6X1jNDn363FzjbgyAzeqnhCzKXhmAKauuk2LY7C2YAWJExyJ6CyQ5LL5aMvtvVE1YlWZtBIexTAF9zOonyg7tCn1Ht2JohsCPS+Fe3+quas3eRpi6G9o82hpAWCj7t5fGIVdxRCE9mt5ereb0+C3ezWnCS1eXweAmkW4tuj6nUU4fiZTQPCMmijY1wvPj4a14vaKi1pjhScOsG6VAoArlZCFo5NwIgvCA/JUP5z8NLTxxVnn2Hx8uPUND1TbOnB0El45R1N6Ls8aagEeL5kUZY/qgximD3riU5n7Jbz62xeikQXj4GHa/RhmjxgQqkV5F3sSRKfA2hei6pvw+dntO791DSpH4Jc7nuCyAhT3NWTT0Z6BtBiV4MR0ezZuXTPCvb7Q8jpJo/aveNyF9N8AkrarCPvL7lr+o270kK0dD9mUTHAz/C7cwSbUIoRlHlWLWIwoUEGoPwL3McJSpCrUiRjbcfeKKfUxcQSg5lhCMQzEO5D3OophNcdS8O8YQMYpoRkix+j/LkxFDWGZAhVVcSn/Bw2n+w/oK+fWAAAAAElFTkSuQmCC",
 	115: "data:image/png;base64,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",
 	pikpak: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACY0lEQVR4nNWXy2tTQRSHv7m5RUWttqlNW1OairhKNbrU+lhE/AOkdCOIIO7arty0QhSxCIIQ7VJwIfgfCIJdFB+rgC32AVIflD5CbFUsoohJRiZzb5Ne05p4kxv94HCTc+bO+c0MM3eOoICD/TJswAAQBdoBH5UhA8wDo1mIv7ojpuyAsH9EBuQgkmuASXVJI4lN3BXDawIifXIQwQ28RDA0ERfDwpr2cQ9G7iSdhcOGteZeJ1eYKreB5DS1I2oiCJba2hDQVA9tjdDaCHMfICuhMwDJz5D8BMtftK9E2s2NttrJMOxvzSdT1rIb6goW69KIXsjr5/K+nxlIWWKWrOebJIxNFhXgK7r20QjcPL+59PllGH8LarDvU3oWFHU+CDZpK+TKA3j88vd+zGKd93av/y8lrKxao7Ls6bROrrj6EE6E9WzZppZKrJ0y0Hu8RAGhZuhohqk5nShp2Y/0+nZqxPaoFQsr2my2mNDSkBe01w/7AvAu9QcB/nrYs0vboU4qSsNOwCHAoMYY/5WAsckNt1NJ8WKY5TS+fF8/E7f/Lu5aQDrjLu5agOlzF3ct4NYFd3HXAk51uYv/k9vQLPeFr9/h4gh0dcCBNu17vaiP7nt9sGNblQVs3wo9x+DZNCRm9aUyFICebh0rF9PpWP22+QvqC3f2qLZyKda34XTMLsGLGSrO8xndtxMR6ZfqQ+tz7uczRyDor0zyxY/6LlDkoMqYVsUSKvSqho8SVB/JglqCUWqF4ImharVcueQ96j4bN3KFoiDmeXpJTOXO7QJVoyEZ8mgm0rm6sLA4talFef4LaurBZfZxNPMAAAAASUVORK5CYII=",
-	onedrive: "data:image/png;base64,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"
+	onedrive: "data:image/png;base64,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"
 }, dm = Object.fromEntries(om.map((e) => [e.id, um[e.id] || e.icon]));
 //#endregion
 //#region src/react/boardui/components/application/settings/settings-rows.tsx
@@ -19609,28 +19609,28 @@ function wm({ mark: e }) {
 function Tm({ done: e }) {
 	let t = (0, y.useRef)(null);
 	return (0, y.useEffect)(() => {
-		document.title = "Peach · 设置完成", t.current?.focus();
+		document.title = "Peach · Configuración completada", t.current?.focus();
 	}, []), (0, y.useEffect)(() => {
 		let t = e.redirect;
 		if (!t) return;
 		let n = setTimeout(() => location.assign(t), em);
 		return () => clearTimeout(n);
 	}, [e.redirect]), /* @__PURE__ */ (0, z.jsxs)(wt, {
-		title: "设置完成",
-		lede: "正在启动馆藏。",
+		title: "ConfiguraciónFinalizar",
+		lede: "ProcesandoIniciarColección. ",
 		children: [
 			/* @__PURE__ */ (0, z.jsx)("p", {
 				className: "text-body-regular text-text-primary",
-				children: e.restored ? "已连接已有数据目录。" : e.scan_requested ? "首次扫描已排队，在后台整理媒体库，期间可以照常使用 Peach。" : "稍后在配置页开始扫描媒体库。"
+				children: e.restored ? "YaConectarYacondatos numéricosDirectorio. " : e.scan_requested ? "el escaneo inicial ya está en cola; en el siguiente paso organiza la biblioteca de medios, períodointervalopuedeconsegúnusar normalmente Peach. " : "Más tardeenConfiguraciónpáginaIniciarEscanearBiblioteca de medios. "
 			}),
 			/* @__PURE__ */ (0, z.jsx)(Ct, {
 				ref: t,
 				href: e.url,
 				className: "self-start",
-				children: e.history_guide ? "导入浏览器历史记录" : "进入 Peach"
+				children: e.history_guide ? "ImportarExplorar dispositivoHistorialRegistro" : "Entrar a Peach"
 			}),
 			/* @__PURE__ */ (0, z.jsx)(Sm, {
-				summary: "运行信息",
+				summary: "Información de ejecución",
 				children: /* @__PURE__ */ (0, z.jsx)(bm, { children: e.facts.map((e) => /* @__PURE__ */ (0, z.jsxs)(xm, {
 					term: e.term,
 					children: [e.value, e.download_url ? /* @__PURE__ */ (0, z.jsx)(ym, {
@@ -20747,8 +20747,8 @@ function _g({ index: e, cost: t, error: n, onChange: r }) {
 		"data-media-read-policy": e,
 		className: "flex w-full flex-col gap-1.5 @lg:w-48",
 		children: [/* @__PURE__ */ (0, z.jsxs)(dg, {
-			"aria-label": `媒体读取策略 ${e + 1}`,
-			placeholder: "选择读取策略",
+			"aria-label": `MediosleerPolítica ${e + 1}`,
+			placeholder: "SeleccionarleerPolítica",
 			isRequired: !0,
 			validationBehavior: "aria",
 			isInvalid: !!n,
@@ -20758,16 +20758,16 @@ function _g({ index: e, cost: t, error: n, onChange: r }) {
 			},
 			children: [/* @__PURE__ */ (0, z.jsx)(fg, {
 				id: "free",
-				children: "正常读取"
+				children: "Normalleer"
 			}), /* @__PURE__ */ (0, z.jsx)(fg, {
 				id: "metered",
-				children: "代理流量保护"
+				children: "Proxy de protección de tráfico"
 			})]
 		}), n ? /* @__PURE__ */ (0, z.jsx)(vm, { children: n }) : null]
 	});
 }
 function vg() {
-	return /* @__PURE__ */ (0, z.jsx)(_m, { children: "按挂载工具实际配置选择；代理流量保护会限制自动媒体读取。" });
+	return /* @__PURE__ */ (0, z.jsx)(_m, { children: "Seleccionar según la configuración real de las herramientas de montaje; Proxy de protección de tráficolimitará la lectura automática de medios. " });
 }
 function yg({ initial: e, blank: t, pickFolder: n, describe: r, focusAfterPick: i = !1 }) {
 	let [a, o] = (0, y.useState)(e), [s, c] = (0, y.useState)([]), [l, u] = (0, y.useState)(null), [d, f] = (0, y.useState)(null), p = (0, y.useRef)(!1), m = (0, y.useRef)([]);
@@ -20828,7 +20828,7 @@ function bg({ label: e, path: t, onPath: n, error: r, inputRef: i, picking: a, o
 				/* @__PURE__ */ (0, z.jsx)(Vp, {
 					className: "min-w-0 flex-1",
 					"aria-label": e,
-					placeholder: "媒体目录路径",
+					placeholder: "Directorio de mediosRuta",
 					value: t,
 					onChange: n,
 					ref: (e) => {
@@ -20845,7 +20845,7 @@ function bg({ label: e, path: t, onPath: n, error: r, inputRef: i, picking: a, o
 				}) : null,
 				/* @__PURE__ */ (0, z.jsx)(ng, {
 					icon: pg,
-					"aria-label": "选择文件夹",
+					"aria-label": "SeleccionarCarpeta",
 					onClick: o,
 					...eg(a)
 				}),
@@ -20853,7 +20853,7 @@ function bg({ label: e, path: t, onPath: n, error: r, inputRef: i, picking: a, o
 					variant: "danger",
 					iconOnly: !0,
 					leadingIcon: Mp,
-					"aria-label": "移除这个文件夹",
+					"aria-label": "QuitaresteCarpeta",
 					onClick: s
 				}) : null
 			]
@@ -20866,7 +20866,7 @@ function bg({ label: e, path: t, onPath: n, error: r, inputRef: i, picking: a, o
 function xg({ index: e, value: t, onChange: n, options: r = mg }) {
 	return /* @__PURE__ */ (0, z.jsx)(dg, {
 		className: "w-full @lg:w-60",
-		"aria-label": `媒体来源 ${e + 1}`,
+		"aria-label": `Fuente de medios ${e + 1}`,
 		selectedKey: t,
 		onSelectionChange: (e) => {
 			e !== null && n(String(e));
@@ -20897,7 +20897,7 @@ function Sg({ label: e, password: t, confirmation: n, onPassword: r, onConfirmat
 	}), /* @__PURE__ */ (0, z.jsx)(Vp, {
 		id: "access-confirm",
 		type: "password",
-		label: "确认访问密码",
+		label: "ConfirmarContraseña de acceso",
 		autoComplete: "new-password",
 		maxLength: 256,
 		value: n,
@@ -20913,10 +20913,10 @@ function Sg({ label: e, password: t, confirmation: n, onPassword: r, onConfirmat
 //#region src/react/settings/remote-reporting-settings.tsx
 function Cg({ value: e, onChange: t, busy: n = !1 }) {
 	return /* @__PURE__ */ (0, z.jsxs)(z.Fragment, { children: [/* @__PURE__ */ (0, z.jsx)(hm, { children: /* @__PURE__ */ (0, z.jsx)(fm, {
-		label: "发送版本统计与错误诊断（推荐）",
-		description: "上传版本、系统信息、故障类型、代码位置与发生次数。",
+		label: "Enviar estadísticas de versión y diagnóstico de errores (Recomendado)",
+		description: "Envía versión, info del sistema, tipo de error, ubicación en código y frecuencia.",
 		children: /* @__PURE__ */ (0, z.jsx)(Om, {
-			"aria-label": "发送版本统计与错误诊断（推荐）",
+			"aria-label": "Enviar estadísticas de versión y diagnóstico de errores (Recomendado)",
 			isSelected: e.usage && e.errors,
 			onChange: (n) => t({
 				...e,
@@ -20927,7 +20927,7 @@ function Cg({ value: e, onChange: t, busy: n = !1 }) {
 		})
 	}) }), e.available ? null : /* @__PURE__ */ (0, z.jsx)(gm, {
 		divided: !0,
-		children: /* @__PURE__ */ (0, z.jsx)(_m, { children: "上传服务未配置。" })
+		children: /* @__PURE__ */ (0, z.jsx)(_m, { children: "Servicio de subida no configurado." })
 	})] });
 }
 //#endregion
@@ -20951,7 +20951,7 @@ function Tg(e, t) {
 	};
 }
 function Eg(e) {
-	return e.length ? e.length === 1 ? `完成设置后扫描并补全资料：${e[0]}` : `完成设置后扫描这 ${e.length} 个文件夹并补全资料` : "完成设置后扫描并补全资料";
+	return e.length ? e.length === 1 ? `FinalizarConfiguracióndespuésEscaneary completar detalles: ${e[0]}` : `FinalizarConfiguracióndespuésEscaneareste ${e.length} Carpetay completar detalles` : "FinalizarConfiguracióndespuésEscaneary completar detalles";
 }
 var Dg = (e) => Array.isArray(e) ? e.filter(Boolean).join(" ") : e ?? "";
 function Og({ setup: e, onDone: t }) {
@@ -21106,7 +21106,7 @@ function Og({ setup: e, onDone: t }) {
 							}), /* @__PURE__ */ (0, z.jsx)(_g, {
 								index: t,
 								cost: e.cost ?? "",
-								error: A && !e.cost ? "请选择媒体读取策略" : void 0,
+								error: A && !e.cost ? "Por favor selecciona la estrategia de lectura de medios" : void 0,
 								onChange: (e) => o.edit(t, { cost: e })
 							})]
 						}, t))
@@ -21117,7 +21117,7 @@ function Og({ setup: e, onDone: t }) {
 						leadingIcon: Ap,
 						className: "self-start",
 						onClick: o.add,
-						children: "添加媒体库"
+						children: "AñadirBiblioteca de medios"
 					}),
 					ue ? /* @__PURE__ */ (0, z.jsxs)(z.Fragment, { children: [
 						/* @__PURE__ */ (0, z.jsx)(vg, {}),
@@ -21142,11 +21142,11 @@ function Og({ setup: e, onDone: t }) {
 							className: "flex min-w-0 flex-col gap-0.5",
 							children: [/* @__PURE__ */ (0, z.jsx)(Et, {
 								id: "setup-access-title",
-								children: "访问密码"
+								children: "Contraseña de acceso"
 							}), /* @__PURE__ */ (0, z.jsx)("p", {
 								id: "setup-access-description",
 								className: "text-body-2-regular text-text-secondary",
-								children: "开启后，访问 Peach 需要先登录。"
+								children: "Activardespués, Acceso Peach Necesarioiniciar sesión primero. "
 							})]
 						}), /* @__PURE__ */ (0, z.jsx)(Om, {
 							"aria-labelledby": "setup-access-title",
@@ -21155,21 +21155,21 @@ function Og({ setup: e, onDone: t }) {
 							onChange: u
 						})]
 					}),
-					/* @__PURE__ */ (0, z.jsx)(_m, { children: "未设置密码时，能连接到 Peach 的设备可直接进入。" }),
+					/* @__PURE__ */ (0, z.jsx)(_m, { children: "NoConfiguraciónContraseñacuando, ppuede conectar dispositivos Peach para acceder directamente. " }),
 					l ? /* @__PURE__ */ (0, z.jsx)(Sg, {
-						label: "访问密码",
+						label: "Contraseña de acceso",
 						password: d,
 						confirmation: p,
 						onPassword: f,
 						onConfirmation: m,
 						passwordError: ie(Dg(S.access_password)),
-						passwordHint: "请输入 8–256 个字符。",
+						passwordHint: "Por favor introduce 8-256 caracteres. ",
 						confirmationInvalid: !!S.access_password
 					}) : null
 				]
 			}),
 			/* @__PURE__ */ (0, z.jsx)(Tt, { children: /* @__PURE__ */ (0, z.jsx)(Sm, {
-				summary: "高级设置",
+				summary: "Configuración avanzada",
 				defaultOpen: M > 0,
 				children: /* @__PURE__ */ (0, z.jsx)("div", {
 					className: "flex flex-col gap-4",
@@ -21181,7 +21181,7 @@ function Og({ setup: e, onDone: t }) {
 				children: [
 					/* @__PURE__ */ (0, z.jsx)(Et, {
 						id: "setup-options-title",
-						children: "完成设置后"
+						children: "FinalizarConfiguracióndespués"
 					}),
 					/* @__PURE__ */ (0, z.jsxs)("div", {
 						className: "flex flex-col gap-1.5",
@@ -21189,7 +21189,7 @@ function Og({ setup: e, onDone: t }) {
 							isSelected: h,
 							onChange: g,
 							children: Eg(le)
-						}), /* @__PURE__ */ (0, z.jsx)(_m, { children: "读取已有 NFO 和封面，采集缺失资料。符合自动规则的资料会在处理完成后保存到数据库，其余资料留待确认。" })]
+						}), /* @__PURE__ */ (0, z.jsx)(_m, { children: "leerYacon NFO  y Portada, RecolectarfaltanteDetalles. que cumpleAutomáticoReglaDetallesirá a enProcesamiento completadodespuésGuardar en base de datos, otrosDetallesmantener pendiente de confirmar. " })]
 					}),
 					/* @__PURE__ */ (0, z.jsxs)("section", {
 						"aria-labelledby": "setup-history-title",
@@ -21198,35 +21198,35 @@ function Og({ setup: e, onDone: t }) {
 							/* @__PURE__ */ (0, z.jsxs)("h3", {
 								id: "setup-history-title",
 								className: "flex items-center gap-2 text-body-medium text-text-primary",
-								children: ["浏览器历史记录", /* @__PURE__ */ (0, z.jsx)("span", {
+								children: ["Explorar dispositivoHistorialRegistro", /* @__PURE__ */ (0, z.jsx)("span", {
 									className: "text-body-2-regular text-text-tertiary",
-									children: "可选"
+									children: "Opcional"
 								})]
 							}),
 							/* @__PURE__ */ (0, z.jsx)(kp, {
 								isSelected: _,
 								onChange: v,
-								children: "接下来导入浏览器历史记录"
+								children: "Conectar a continuación para importar el historial del explorador de dispositivos"
 							}),
-							/* @__PURE__ */ (0, z.jsx)(_m, { children: "用于生成口味分析。完成设置后选择读取这台电脑，或导入其他设备的记录；也可稍后从「口味」进入。" })
+							/* @__PURE__ */ (0, z.jsx)(_m, { children: "usado paragenerarPreferenciasAnálisis. FinalizarConfiguracióndespuésSeleccionarleereste ordenador, o importar el registro de otro dispositivo; también puedes hacerlo después desde "Preferencias" entrar en . " })
 						]
 					})
 				]
 			}),
 			E ? /* @__PURE__ */ (0, z.jsx)(vm, { children: E }) : null,
 			b ? /* @__PURE__ */ (0, z.jsxs)(Tt, { children: [
-				/* @__PURE__ */ (0, z.jsx)(Et, { children: "版本统计与错误诊断" }),
+				/* @__PURE__ */ (0, z.jsx)(Et, { children: "VersiónEstadísticasyDiagnóstico de errores" }),
 				/* @__PURE__ */ (0, z.jsx)(Cg, {
 					value: b,
 					onChange: x
 				}),
-				/* @__PURE__ */ (0, z.jsx)(_m, { children: "馆藏与口味明细上传默认关闭，可在「应用与维护」查看并选择。" })
+				/* @__PURE__ */ (0, z.jsx)(_m, { children: "ColecciónyPreferenciasdetallesSubirPredeterminadoDesactivar, puedeen"App y mantenimiento"buscarver y seleccionar. " })
 			] }) : null,
 			/* @__PURE__ */ (0, z.jsx)(St, {
 				type: "submit",
 				className: "self-start",
 				...eg(O),
-				children: "完成设置"
+				children: "FinalizarConfiguración"
 			})
 		]
 	});
@@ -21252,7 +21252,7 @@ function kg({ onDone: e }) {
 		},
 		noValidate: !0,
 		children: [/* @__PURE__ */ (0, z.jsx)(Vp, {
-			label: "已有数据目录",
+			label: "Yacondatos numéricosDirectorio",
 			value: t,
 			onChange: n,
 			isRequired: !0,
@@ -21263,12 +21263,12 @@ function kg({ onDone: e }) {
 			hint: r ? /* @__PURE__ */ (0, z.jsx)("span", {
 				role: "alert",
 				children: r
-			}) : "选择包含 config.toml 和 database 文件夹的数据目录。"
+			}) : "Seleccionar carpeta que contenga config.toml y databaseatos numéricosDirectorio. "
 		}), /* @__PURE__ */ (0, z.jsx)(St, {
 			type: "submit",
 			className: "self-start",
 			...eg(a),
-			children: a ? "正在连接数据目录…" : "使用此目录"
+			children: a ? "Conectando directorio de datos..." : "Usar este directorio"
 		})]
 	});
 }
@@ -21288,13 +21288,13 @@ function Ag() {
 			});
 		}), () => e.abort();
 	}, [n]), e.kind === "done" ? /* @__PURE__ */ (0, z.jsx)(Tm, { done: e.done }) : /* @__PURE__ */ (0, z.jsxs)(wt, {
-		title: "欢迎使用 Peach",
-		lede: "添加媒体库，开始整理馆藏。",
+		title: "Bienvenido a Peach",
+		lede: "AñadirBiblioteca de medios, IniciarOrganizarColección. ",
 		busy: e.kind === "loading",
 		children: [
 			e.kind === "denied" ? /* @__PURE__ */ (0, z.jsx)(Up, {
 				tone: "error",
-				children: "请在运行 Peach 的这台电脑上打开设置。"
+				children: "Por favoren el ordenador donde ejecuta Peach ordenadorsuperiorAbrirConfiguración. "
 			}) : null,
 			e.kind === "failed" ? /* @__PURE__ */ (0, z.jsx)(Up, {
 				tone: "error",
@@ -21303,7 +21303,7 @@ function Ag() {
 					onClick: () => {
 						t({ kind: "loading" }), r((e) => e + 1);
 					},
-					children: "重试"
+					children: "Reintentar"
 				}),
 				children: e.message
 			}) : null,
@@ -21311,7 +21311,7 @@ function Ag() {
 				variant: "secondary",
 				className: "self-start",
 				onClick: () => a((e) => !e),
-				children: i ? "返回首次设置" : "使用已有数据目录"
+				children: i ? "Volver a la configuración inicial" : "Usar directorio con datos ya conectados"
 			}), i ? /* @__PURE__ */ (0, z.jsx)(kg, { onDone: (e) => t({
 				kind: "done",
 				done: e
