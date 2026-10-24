@@ -42,7 +42,7 @@ function d() {
 			keepalive: !0
 		}).catch(() => {}));
 	};
-	window.addEventListener("error", (e) => r("error", e.error, e.message, e)), window.addEventListener("unhandledrejection", (e) => r("unhandledrejection", e.reason, "Excepción no manejada en Promise"));
+	window.addEventListener("error", (e) => r("error", e.error, e.message, e)), window.addEventListener("unhandledrejection", (e) => r("unhandledrejection", e.reason, "Promise 未处理的异常"));
 }
 //#endregion
 //#region node_modules/react/cjs/react.production.js
@@ -5215,7 +5215,7 @@ var f = /* @__PURE__ */ o(((e) => {
 					if (a & 1024) {
 						if (r = t.stateNode.containerInfo, n = r.nodeType, n === 9) Hp(r);
 						else if (n === 1) switch (r.nodeName) {
-							case "HEActive Directory":
+							case "HEAD":
 							case "HTML":
 							case "BODY":
 								Hp(r);
@@ -7190,7 +7190,7 @@ var f = /* @__PURE__ */ o(((e) => {
 			case "xlinkArcrole":
 				Kt(e, "http://www.w3.org/1999/xlink", "xlink:arcrole", r);
 				break;
-			case "xlinkrole":
+			case "xlinkRole":
 				Kt(e, "http://www.w3.org/1999/xlink", "xlink:role", r);
 				break;
 			case "xlinkShow":
@@ -8064,7 +8064,7 @@ var f = /* @__PURE__ */ o(((e) => {
 			var n = t;
 			switch (t = t.nextSibling, n.nodeName) {
 				case "HTML":
-				case "HEActive Directory":
+				case "HEAD":
 				case "BODY":
 					Hp(n), kt(n);
 					continue;
@@ -11052,8 +11052,8 @@ function Et(e, t) {
 var Dt = [
 	{
 		id: "local",
-		name: "LocalDisco",
-		label: "LocalDisco",
+		name: "本地磁盘",
+		label: "本地磁盘",
 		default_cost: "free",
 		cloud: !1,
 		icon: "hard-drive"
@@ -11076,8 +11076,8 @@ var Dt = [
 	},
 	{
 		id: "guangya",
-		name: "Disco en la nube GuangYa",
-		label: "Disco en la nube GuangYa",
+		name: "光鸭云盘",
+		label: "光鸭云盘",
 		default_cost: "free",
 		cloud: !0,
 		icon: "database"
@@ -11092,8 +11092,8 @@ var Dt = [
 	},
 	{
 		id: "mounted",
-		name: "OtroYaMontarAlmacenamiento en la nube",
-		label: "OtroYaMontarAlmacenamiento en la nube",
+		name: "其他已挂载网盘",
+		label: "其他已挂载网盘",
 		default_cost: "metered",
 		cloud: !0,
 		icon: "database"
@@ -11103,20 +11103,20 @@ var Dt = [
 //#region src/core/request-error.ts
 function Pt(e, t = 0) {
 	let n = String(e?.message ?? e ?? ""), r = Number(t || e?.status || n.match(/\b(400|401|403|404|408|409|413|429|500|502|503|504)\b/)?.[1]), i = {
-		400: "Error al enviar el contenido. Por favor verifica la entrada e inténtalo de nuevo. ",
-		401: "Sesión inválida. Por favor actualiza la página e inicia sesión de nuevo. ",
-		403: "El dispositivo actual no tiene permiso para esta acción. Por favor realiza esta acción en el equipo donde se ejecuta Peach. ",
-		404: "El contenido solicitado ya no existe. Por favor actualiza la lista. ",
-		408: "Tiempo de solicitud agotado. Por favor inténtalo más tarde. ",
-		409: "El estado actual no permite esta acción. Por favor actualiza e inténtalo de nuevo. ",
-		413: "Contenido enviado demasiado grande. Por favor reduce la cantidad e inténtalo de nuevo. ",
-		429: "Demasiadas solicitudes. Por favor inténtalo más tarde. ",
-		500: "Error de servicio. Reintenta; si persiste, revisa el log.",
-		502: "Sin respuesta del servicio. Inténtalo más tarde.",
-		503: "Servicio no disponible temporalmente. Inténtalo más tarde.",
-		504: "Tiempo de espera del servicio agotado. Por favor inténtalo más tarde. "
+		400: "提交内容有误，请检查输入后重试。",
+		401: "登录已失效，请刷新页面重新登录。",
+		403: "当前设备没有执行此操作的权限，请在运行 Peach 的电脑上操作。",
+		404: "请求的内容已不存在，请刷新列表。",
+		408: "请求超时，请稍后重试。",
+		409: "当前状态不允许此操作，请刷新后重试。",
+		413: "提交内容过大，请减少数量后重试。",
+		429: "请求过于频繁，请稍后重试。",
+		500: "Peach 服务处理失败，请重试；持续失败时查看托盘日志。",
+		502: "Peach 服务没有取回结果，请稍后重试；持续失败时查看托盘日志。",
+		503: "Peach 服务暂时不可用，请稍后重试。",
+		504: "等待服务响应超时，请稍后重试。"
 	};
-	return /Failed to fetch|fetch failed|NetworkError|Load failed|network request failed|ERR_CONNECTION/i.test(n) ? "No se puede conectar al servicio Peach. Verifica la conexión de red y la bandeja del sistemaservicioYaIniciar. " : e?.name === "TimeoutError" || !r && /timed? ?out|timeout/i.test(n) ? "etc.Pendienteservicio con tiempo de respuesta agotado, Por favorVerificar conexióndespuésReintentar. " : /[㐀-鿿]/.test(n) && !/^solicitudFallido[((]/.test(n) ? n : i[r] ? i[r] : "Operación no completada, Por favorReintentar; mantenercontinuarFallidocuandobuscarverBandeja del sistemaRegistro. ";
+	return /Failed to fetch|fetch failed|NetworkError|Load failed|network request failed|ERR_CONNECTION/i.test(n) ? "无法连接到 Peach 服务，请确认网络连接和托盘服务已启动。" : e?.name === "TimeoutError" || !r && /timed? ?out|timeout/i.test(n) ? "等待服务响应超时，请检查连接后重试。" : /[㐀-鿿]/.test(n) && !/^请求失败[（(]/.test(n) ? n : i[r] ? i[r] : "操作未完成，请重试；持续失败时查看托盘日志。";
 }
 //#endregion
 //#region src/core/icon-geometry.ts
@@ -11185,10 +11185,10 @@ var R = (e) => document.querySelector(e), z = (e, t = "") => {
 	flagged: "/flagged",
 	ads: "/junk-files"
 }, Vt = Object.fromEntries(Object.entries(Bt).map(([e, t]) => [t, e])), Ht = {
-	fresh: "No visto",
-	later: "Ver más tarde",
-	flagged: "Marcado",
-	ads: "Archivos basura"
+	fresh: "没看过",
+	later: "稍后看",
+	flagged: "已标记",
+	ads: "垃圾文件"
 }, Ut = (e) => e === "/" || e === "/wall" || Object.prototype.hasOwnProperty.call(Vt, e), Wt = {
 	performer: "performers",
 	studio: "studios",
@@ -11222,7 +11222,7 @@ var R = (e) => document.querySelector(e), z = (e, t = "") => {
 	["k-mib.com", "K-MIB"],
 	["minnano-av.com", "みんなのAV"],
 	["km-produce.com", "KMP"],
-	["mousouzoku-av.com", "Fantasioso"],
+	["mousouzoku-av.com", "妄想族"],
 	["mines-pro.jp", "マインズ"],
 	["lightpro.jp", "LIGHT"],
 	["eltra.jp", "ELTRA"],
@@ -11275,10 +11275,10 @@ var R = (e) => document.querySelector(e), z = (e, t = "") => {
 	let r = Xt(e.url) || e.label || "";
 	if (t !== "studio" && t !== "agency" || nn(e.url)) return r;
 	let i = [r, e.label].map(en).filter(Boolean);
-	return !i.length || i.includes("Sitio oficial") || i.some((t) => Jt(t) === Yt(e.url) || n.some((e) => {
+	return !i.length || i.includes("官方网站") || i.some((t) => Jt(t) === Yt(e.url) || n.some((e) => {
 		let n = en(e);
 		return !!n && (n.includes(t) || t.includes(n));
-	})) ? "Sitio oficial" : r;
+	})) ? "官方网站" : r;
 }, an = (e) => {
 	let t = Number(e);
 	return Number.isFinite(t) && t > 0 ? t : 0;
@@ -11286,7 +11286,7 @@ var R = (e) => document.querySelector(e), z = (e, t = "") => {
 	if (e = an(e), !e) return "—";
 	if (e = Math.round(e), e >= 172800) {
 		let t = Math.floor(e / 86400), n = Math.floor(e % 86400 / 3600);
-		return n ? `${t} día(s) ${n} hora(s)` : `${t} día(s)`;
+		return n ? `${t} 天 ${n} 小时` : `${t} 天`;
 	}
 	let t = Math.floor(e / 3600), n = Math.floor(e % 3600 / 60), r = e % 60;
 	return t ? `${t}:${String(n).padStart(2, "0")}:${String(r).padStart(2, "0")}` : `${n}:${String(r).padStart(2, "0")}`;
@@ -11295,9 +11295,9 @@ var R = (e) => document.querySelector(e), z = (e, t = "") => {
 	let t = e / 3600 | 0, n = e % 3600 / 60 | 0, r = e % 60;
 	return t ? `${t}:${String(n).padStart(2, "0")}:${String(r).padStart(2, "0")}` : `${n}:${String(r).padStart(2, "0")}`;
 }, cn = (e) => {
-	if (e == null || e === "") return "Tamaño desconocido";
+	if (e == null || e === "") return "大小未知";
 	let t = Number(e);
-	return !Number.isFinite(t) || t < 0 ? "Tamaño desconocido" : t === 0 ? "0 B" : t < 1048576 ? `${Math.max(1, Math.round(t / 1024))} KB` : t >= 0x4000000000000 ? (t / 0x4000000000000).toFixed(2) + " PB" : t >= 1099511627776 ? (t / 1099511627776).toFixed(2) + " TB" : t >= 1073741824 ? (t / 1073741824).toFixed(1) + " GB" : Math.floor(t / 1048576) + " MB";
+	return !Number.isFinite(t) || t < 0 ? "大小未知" : t === 0 ? "0 B" : t < 1048576 ? `${Math.max(1, Math.round(t / 1024))} KB` : t >= 0x4000000000000 ? (t / 0x4000000000000).toFixed(2) + " PB" : t >= 1099511627776 ? (t / 1099511627776).toFixed(2) + " TB" : t >= 1073741824 ? (t / 1073741824).toFixed(1) + " GB" : Math.floor(t / 1048576) + " MB";
 }, ln = typeof Intl < "u" && typeof Intl.Segmenter == "function" ? new Intl.Segmenter(void 0, { granularity: "grapheme" }) : null, iee = (e) => ln ? Array.from(ln.segment(e), (e) => e.segment) : Array.from(e), un = (e, t) => {
 	let n = String(e ?? "").trim(), r = [];
 	if (!n || t <= 0) return "";
@@ -11306,20 +11306,20 @@ var R = (e) => document.querySelector(e), z = (e, t = "") => {
 	return r.join("");
 }, dn = (e, t = "?") => un(e, 1) || t, fn = (e, t) => {
 	let n = iee(String(e ?? ""));
-	return n.length > t ? `${n.slice(0, Math.max(0, t - 1)).join("")}...` : n.join("");
+	return n.length > t ? `${n.slice(0, Math.max(0, t - 1)).join("")}…` : n.join("");
 }, pn = {
 	...Mt,
-	local: "Local",
-	online: "En línea"
+	local: "本地",
+	online: "在线"
 }, mn = (e, t) => {
 	let n = 2166136261;
 	for (let r of `${e}\u0000${t}`) n ^= r.codePointAt(0), n = Math.imul(n, 16777619) >>> 0;
 	return n;
 }, hn = () => String(((Date.now() ^ (Math.random() * 1e9 | 0)) >>> 0) % 99991), gn = /* @__PURE__ */ new Set([
-	"Corto (menos de 2 min)",
-	"Mediano (menos de 10 min)",
-	"Película larga (menos de 30 min)",
-	"Largometraje (más de 30 min)"
+	"短片-2分内",
+	"中片-10分内",
+	"长片-30分内",
+	"超长片-30分上"
 ]), _n = (e) => String(e || "").split(",").filter((e) => e && !gn.has(e)).join(","), vn = class extends Error {
 	status;
 	body;
@@ -11348,7 +11348,7 @@ async function H(e, t) {
 	try {
 		r = await n.json();
 	} catch {}
-	if (!n.ok) throw new vn(yn(r) || `Solicitud fallida (${n.status})`, n.status);
+	if (!n.ok) throw new vn(yn(r) || `请求失败（${n.status}）`, n.status);
 	return Et(e, r), r;
 }
 async function U(e, t, n = "POST", r) {
@@ -11365,19 +11365,19 @@ async function U(e, t, n = "POST", r) {
 	try {
 		a = await i.json();
 	} catch {}
-	if (!i.ok) throw new vn(yn(a) || `Solicitud fallida (${i.status})`, i.status, a);
+	if (!i.ok) throw new vn(yn(a) || `请求失败（${i.status}）`, i.status, a);
 	return a;
 }
 //#endregion
 //#region src/follow-sort.ts
 var bn = [
-	["checked", "VerificarHora"],
-	["added", "Fecha de adición"],
-	["name", "CreadorNombre"],
-	["sources", "FuenteCantidad"],
-	["source", "Nombre de fuente"],
-	["provider", "Sitio"],
-	["status", "Estado"]
+	["checked", "检查时间"],
+	["added", "添加时间"],
+	["name", "创作者名称"],
+	["sources", "来源数量"],
+	["source", "来源名称"],
+	["provider", "站点"],
+	["status", "状态"]
 ], xn = "checked", Sn = {
 	checked: "desc",
 	added: "desc",
@@ -11400,17 +11400,17 @@ function Tn(e, t, n = 1) {
 	let i = Math.max(e - n, 1), a = Math.min(e + n, t), o = i > 2, s = a < t - 2;
 	return !o && s ? [
 		...r(1, 3 + 2 * n),
-		"...",
+		"…",
 		t
 	] : o && !s ? [
 		1,
-		"...",
+		"…",
 		...r(t - (2 + 2 * n), t)
 	] : [
 		1,
-		"...",
+		"…",
 		...r(i, a),
-		"...",
+		"…",
 		t
 	];
 }
@@ -11458,7 +11458,7 @@ var Nn = "/api/follow", Pn = "/api/follow/credentials", Fn = "/api/follow/check"
 	"follow-manage",
 	"suggest",
 	e
-], Jn = [["default", "Vista predeterminada"], ["table", "Vista de tabla"]], uee = [
+], Jn = [["default", "默认视图"], ["table", "表格视图"]], uee = [
 	10,
 	20,
 	50,
@@ -11470,25 +11470,25 @@ var Nn = "/api/follow", Pn = "/api/follow/credentials", Fn = "/api/follow/check"
 	status: "status",
 	checked: "checked"
 }, dee = (e) => Jn.some(([t]) => t === e), Zn = (e) => uee.includes(Number(e)) ? Number(e) : 20, Qn = {
-	checked: ["De más cercano a más lejano", "De más lejano a más cercano"],
-	added: ["De más cercano a más lejano", "De más lejano a más cercano"],
-	name: ["Descendente", "Ascendente"],
-	sources: ["De más a menos", "De menos a más"],
-	source: ["Descendente", "Ascendente"],
-	provider: ["Descendente", "Ascendente"],
-	status: ["Descendente", "Ascendente"]
-}, $n = (e, t) => `según${Yn[e]}${Qn[e][t === "asc" ? 0 : 1]}Ordenar`;
+	checked: ["从近到远", "从远到近"],
+	added: ["从近到远", "从远到近"],
+	name: ["倒序", "正序"],
+	sources: ["从多到少", "从少到多"],
+	source: ["倒序", "正序"],
+	provider: ["倒序", "正序"],
+	status: ["倒序", "正序"]
+}, $n = (e, t) => `按${Yn[e]}${Qn[e][t === "asc" ? 0 : 1]}排序`;
 function er(e) {
 	let t = e.last_status;
 	return t === "error" || t === "unauthorized" ? 0 : e.enabled ? t === "ok" ? 3 : 2 : 1;
 }
 function tr(e) {
-	return e.history_exhausted ? "SinMás" : e.enabled ? e.last_status === "ok" ? "Normal" : e.last_status === "error" || e.last_status === "unauthorized" ? "Error de verificación" : "No verificado" : "Pausado";
+	return e.history_exhausted ? "没有更多" : e.enabled ? e.last_status === "ok" ? "正常" : e.last_status === "error" || e.last_status === "unauthorized" ? "检查失败" : "未检查" : "已暂停";
 }
 var nr = (e) => e.last_status === "error" || e.last_status === "unauthorized";
 function rr(e) {
 	let t = Number(e) || 0;
-	return t >= 2880 ? `cada ${Math.round(t / 1440).toLocaleString()} día(s)` : t >= 60 ? `cada ${Math.round(t / 60)} hora(s)` : `cada ${t} minuto(s)`;
+	return t >= 2880 ? `每 ${Math.round(t / 1440).toLocaleString()} 天` : t >= 60 ? `每 ${Math.round(t / 60)} 小时` : `每 ${t} 分钟`;
 }
 function ir(e) {
 	let t = String(e || "").split(/\r?\n/).map((e) => e.trim()).filter(Boolean);
@@ -11617,7 +11617,7 @@ var yr = (e) => H(`${Nn}?summary=1`, e), br = (e) => H(Pn, e), xr = (e) => H(Fn,
 }), Mr = () => H(`${Nn}?status=new&limit=1000`);
 async function Nr(e) {
 	let t = await H(see, e);
-	if (!Array.isArray(t?.sources)) throw Error("No se pudo leer la fuente suscrita");
+	if (!Array.isArray(t?.sources)) throw Error("没有读到订阅源");
 	return t;
 }
 var Pr = (e, t, n) => U(Vn, {
@@ -11670,15 +11670,15 @@ var Hr = () => W.invalidateQueries({
 });
 function Ur(e) {
 	let t = e.results || [], n = t.reduce((e, t) => e + (t.added || 0), 0), r = t.reduce((e, t) => e + (t.updated || 0), 0), i = t.filter((e) => !e.ok).length, a = [];
-	return n && a.push(`Nuevo ${n} Resultado`), r && a.push(`Actualizar ${r} Resultado`), !a.length && i < t.length && a.push("No hay actualizaciones disponibles"), i && a.push(`${i} Fallido`), a.length || a.push("No hay actualizaciones disponibles"), `Verificado ${t.length}  fuente(s): ${a.join(" · ")}`;
+	return n && a.push(`新增 ${n} 条`), r && a.push(`更新 ${r} 条`), !a.length && i < t.length && a.push("没有更新"), i && a.push(`${i} 个失败`), a.length || a.push("没有更新"), `已检查 ${t.length} 个来源：${a.join(" · ")}`;
 }
 function Wr(e) {
 	let t = e.results || [], n = (e) => t.reduce((t, n) => t + (e(n) || 0), 0), r = n((e) => e.added), i = n((e) => e.updated), a = n((e) => e.skipped_compilations), o = n((e) => e.skipped) - a, s = n((e) => e.history_skipped), c = n((e) => e.probed), l = t.filter((e) => e.ok && !e.added && !e.updated).length, u = t.filter((e) => !e.ok).length, d = [];
-	r && d.push(`Nuevo ${r} Resultado`), i && d.push(`Actualizar ${i} Resultado`), o && d.push(`Omitir ${o} ResultadoNingunoRecurso`), a && d.push(`Excluir ${a} colecciones demasiado grandes`), s && d.push(`Omitir ${s} resultado fuera del rango de primera recopilación de historial interno`), c && d.push(`volver buscar ${c} Resultado`), l && d.push(`${l}  fuente(s)No hay actualizaciones disponibles`), d.length || d.push("SincualquierActualizar");
+	r && d.push(`新增 ${r} 条`), i && d.push(`更新 ${i} 条`), o && d.push(`跳过 ${o} 条无资源`), a && d.push(`排除 ${a} 个超大合集`), s && d.push(`跳过 ${s} 条超出首次采集范围的历史内容`), c && d.push(`回查 ${c} 条`), l && d.push(`${l} 个来源没有更新`), d.length || d.push("没有任何更新");
 	let f = t.filter((e) => e.exhausted).length;
-	return f && d.push(`${f} Sin más contenido`), u && d.push(`${u} Fallido`), `Verificar  ${t.length}  fuente(s): ${d.join(" · ")}`;
+	return f && d.push(`${f} 个没有更多内容`), u && d.push(`${u} 个失败`), `检查了 ${t.length} 个来源：${d.join(" · ")}`;
 }
-var Gr = (e) => (e?.results || []).filter((e) => !e.ok), Kr = (e) => (e?.results || []).find((e) => e.evidence_error)?.evidence_error || "", qr = (e) => e.last_checked_at ? Mn(e.last_checked_at) : "No verificado", Jr = /* @__PURE__ */ new Set([
+var Gr = (e) => (e?.results || []).filter((e) => !e.ok), Kr = (e) => (e?.results || []).find((e) => e.evidence_error)?.evidence_error || "", qr = (e) => e.last_checked_at ? Mn(e.last_checked_at) : "未检查", Jr = /* @__PURE__ */ new Set([
 	"fanbox",
 	"patreon",
 	"subscribestar",
@@ -11692,23 +11692,23 @@ var Gr = (e) => (e?.results || []).filter((e) => !e.ok), Kr = (e) => (e?.results
 	"f95zone",
 	"simpcity"
 ]), Yr = (e) => Jr.has(e) ? `/source-icon?provider=${encodeURIComponent(e)}` : "", Xr = {
-	required: "Necesario",
-	optional: "Opcional",
-	none: "No se necesita",
-	blocked: "No se puede conectar"
+	required: "需要",
+	optional: "可选",
+	none: "不需要",
+	blocked: "接不进来"
 }, Zr = (e) => !!e.present && !e.missing.length, Qr = [
-	["", "Todo"],
-	["new", "No visto"],
-	["saved", "Guardado"],
-	["ignored", "Ignorado"]
+	["", "全部"],
+	["new", "未看"],
+	["saved", "已保存"],
+	["ignored", "已忽略"]
 ], $r = [
-	["new", "Fecha de actualización"],
-	["hot", "Popularidad"],
-	["dur", "Duración"]
+	["new", "更新时间"],
+	["hot", "热度"],
+	["dur", "时长"]
 ], ei = {
-	new: ["Más nuevos primero", "Más antiguos primero"],
-	hot: ["De mayor a menor", "De menor a mayor"],
-	dur: ["De más largo a más corto", "De más corto a más largo"]
+	new: ["从新到旧", "从旧到新"],
+	hot: ["从高到低", "从低到高"],
+	dur: ["从长到短", "从短到长"]
 }, ti = "rand";
 function ni(e, t) {
 	let n = (e) => encodeURIComponent(e.join(","));
@@ -11851,12 +11851,12 @@ function yi(e) {
 	return mi(e).filter((e) => e.playable && e.media_kind === "video");
 }
 var bi = {
-	video: " video(s)",
-	image: " imagen(es)",
-	mixed: " medio(s)"
+	video: "个视频",
+	image: "张图片",
+	mixed: "个媒体"
 };
 function xi({ cover: e = "", coverFace: t = null, stack: n = null, imageView: r = !1, limit: i = 9 } = {}) {
-	let a = n?.media || 0, o = n?.copies || 0, s = n?.kind || "", c = a > 1 ? `${a} ${bi[s] || bi.mixed}` : o > 1 ? `${o}  fuente(s)` : "", l = s === "image" || s !== "video" && r ? "pics" : "play", u = /* @__PURE__ */ new Set([t ?? e]), d = e ? [e] : [];
+	let a = n?.media || 0, o = n?.copies || 0, s = n?.kind || "", c = a > 1 ? `${a} ${bi[s] || bi.mixed}` : o > 1 ? `${o} 个来源` : "", l = s === "image" || s !== "video" && r ? "pics" : "play", u = /* @__PURE__ */ new Set([t ?? e]), d = e ? [e] : [];
 	for (let t of n?.faces || []) r && t.media_kind !== "image" || t.thumb_url && t.thumb_url !== e && !u.has(t.face) && (u.add(t.face), d.push(t.thumb_url));
 	return {
 		isMix: !!c,
@@ -11869,7 +11869,7 @@ function Si(e) {
 	let t = e.filter((e) => e.can_backfill).map((e) => (e.backfill_page || 0) + 1);
 	if (!t.length) return "";
 	let n = Math.max(...t), r = Math.min(...t);
-	return n <= 1 ? "Todas las fuentes solo obtuvieron la página 1" : r === n ? `Todas las fuentes obtuvieron hasta la página ${n}` : `Ya obtenidas páginas ${r}–${n}`;
+	return n <= 1 ? "每个来源都只抓了第 1 页" : r === n ? `每个来源都抓到第 ${n} 页` : `已抓到第 ${r}–${n} 页`;
 }
 function Ci(e, t, n) {
 	return e === t ? ei[e] ? {
@@ -11884,7 +11884,7 @@ function wi(e, t, n, r) {
 	let i = Ci(e, n, r);
 	if (!i) return "";
 	let a = ei[i.sort];
-	return `según${t}${a ? a[+(i.dir === "asc")] : ""}Ordenar`;
+	return `按${t}${a ? a[+(i.dir === "asc")] : ""}排序`;
 }
 function Ti(e, t, n, r) {
 	let i = "", a = e.pages.map((e) => ({
@@ -11919,31 +11919,31 @@ function Ti(e, t, n, r) {
 function Ei(e, t) {
 	let n = [];
 	return e.author && n.push({
-		kind: "Creador",
+		kind: "创作者",
 		key: e.author,
 		label: t.authors.get(e.author) || e.author
 	}), e.provider && n.push({
-		kind: "Fuente",
+		kind: "来源",
 		key: e.provider,
 		label: t.providers.get(e.provider) || e.provider
 	}), e.work && n.push({
-		kind: "Género/Temática",
+		kind: "题材",
 		key: e.work,
 		label: t.works.get(e.work) || e.work
 	}), e.tags.forEach((e) => n.push({
-		kind: "Etiqueta",
+		kind: "标签",
 		key: e,
 		label: e
 	})), n;
 }
 function Di(e, t) {
-	return t.kind === "Creador" ? {
+	return t.kind === "创作者" ? {
 		...e,
 		author: ""
-	} : t.kind === "Fuente" ? {
+	} : t.kind === "来源" ? {
 		...e,
 		provider: ""
-	} : t.kind === "Género/Temática" ? {
+	} : t.kind === "题材" ? {
 		...e,
 		work: ""
 	} : {
@@ -12236,9 +12236,9 @@ function sa(e, t) {
 }
 //#endregion
 //#region src/card-art/markup.ts
-var ca = "Imagen representativa de la obra, no es la persona", la = (e, t) => t ? `${e}&v=${encodeURIComponent(t)}` : e, ua = (e, t = !1) => la(`/cover?code=${encodeURIComponent(e.cover_key || e.code || "")}${t ? "&thumb=1" : ""}`, e.cover_version), da = (e, t, n) => la(`/logo?studio=${encodeURIComponent(e)}&variant=${t}`, n), fa = (e) => e && typeof e == "object" ? e : null;
+var ca = "代表作画面，非本人", la = (e, t) => t ? `${e}&v=${encodeURIComponent(t)}` : e, ua = (e, t = !1) => la(`/cover?code=${encodeURIComponent(e.cover_key || e.code || "")}${t ? "&thumb=1" : ""}`, e.cover_version), da = (e, t, n) => la(`/logo?studio=${encodeURIComponent(e)}&variant=${t}`, n), fa = (e) => e && typeof e == "object" ? e : null;
 function pa(e) {
-	return e && e.is_jav ? "Actriz" : "Actriz";
+	return e && e.is_jav ? "女优" : "艺人";
 }
 function ma({ kind: e = "performer", id: t = null, hasImage: n = !1, version: r = "", rep: i = null, mark: a = null, logo: o = "", logoVersion: s = "", logoVariant: c = "logo", alt: l = "", lazy: u = !0, style: d = "", dropStyle: f = !1, focus: p = null, thumb: m = !1, standIn: h = !1 } = {}) {
 	let g = !!(t && n), _ = g ? la(`/entity-image?kind=${e}&id=${t}${m ? "&thumb=1" : ""}`, r) : "", v = i ? `/avatar?id=${i}` : "", y = !!o, b = y ? da(o, c, s) : _ || v || (a ? `/link-mark?id=${a}` : "");
@@ -12288,7 +12288,7 @@ function ya(e) {
 	].map(Number).join(" ")}"` : "";
 }
 function ba(e, t, n = !1) {
-	let r = ua(e, !0), i = /ブルーレイ|blu[\s-]?ray/i.test(String(e.title || e.display_title || e.name || "")), a = e.cover_frame || {}, o = e.poster_box?.method !== "manual" && (a.layout === "still" || /^(IENEE|IENFE|SDHS)-/i.test(String(e.code || "")) || /(?:[|\[|\(|()\s*(?:[48]K\s*)?VR\s*(?:]|\]|\)|))/i.test(String(e.title || e.display_title || e.name || ""))), s = a.cy == null ? null : o ? Math.min(1, Math.max(0, a.cy)) : Math.min(.6, Math.max(.05, a.cy)), c = [a.cx == null ? "" : ` data-cx="${a.cx}"`, s == null ? "" : ` data-cy="${s}"`].join(""), l = e.poster_box, u = l ? ` data-posterbox="${[
+	let r = ua(e, !0), i = /ブルーレイ|blu[\s-]?ray/i.test(String(e.title || e.display_title || e.name || "")), a = e.cover_frame || {}, o = e.poster_box?.method !== "manual" && (a.layout === "still" || /^(IENEE|IENFE|SDHS)-/i.test(String(e.code || "")) || /(?:【|\[|\(|（)\s*(?:[48]K\s*)?VR\s*(?:】|\]|\)|）)/i.test(String(e.title || e.display_title || e.name || ""))), s = a.cy == null ? null : o ? Math.min(1, Math.max(0, a.cy)) : Math.min(.6, Math.max(.05, a.cy)), c = [a.cx == null ? "" : ` data-cx="${a.cx}"`, s == null ? "" : ` data-cy="${s}"`].join(""), l = e.poster_box, u = l ? ` data-posterbox="${[
 		l.x0,
 		(l.px || [])[0],
 		(l.px || [])[1],
@@ -12328,7 +12328,7 @@ function wa(e, t, n, r) {
 	};
 }
 function Ta(e, t) {
-	return wa(e, "small", !1, t).html || "<span class=\"nopic\">Sin vista previa</span>";
+	return wa(e, "small", !1, t).html || "<span class=\"nopic\">无预览</span>";
 }
 function Ea(e, t) {
 	let n = e.has_thumb || e.has_local_poster ? `/poster?id=${e.id}&c=4` : "";
@@ -12338,7 +12338,7 @@ function Da(e) {
 	let t = e.performers || [], n = e.performer_entities ?? e.entity_refs?.performer ?? [], r = t[0] || "", i = e.is_jav && r ? "" : e.creator || "";
 	return {
 		kind: i ? "creator" : r ? "performer" : "",
-		name: i || r || "Sin asignar",
+		name: i || r || "未归属",
 		coStarred: t.length > 1 && !i,
 		performers: t,
 		refs: n,
@@ -12351,7 +12351,7 @@ function Oa(e) {
 }
 function ka(e, t) {
 	let n = (e.performers || [])[0];
-	return (e.is_jav && n ? n : e.creator) || n || e.studio || e.code || t((e.tags || [])[0] || "") || "Recomendado para ti";
+	return (e.is_jav && n ? n : e.creator) || n || e.studio || e.code || t((e.tags || [])[0] || "") || "为你推荐";
 }
 //#endregion
 //#region src/ui-kit/overlay-scrollbar.ts
@@ -12589,7 +12589,7 @@ function Va(e) {
 }
 function Ha(e) {
 	let t = Ba[e];
-	if (!t) throw Error(`Sin"${e}"estetipoSonidos de interfaz`);
+	if (!t) throw Error(`没有「${e}」这种界面音效`);
 	if (!Ia) return !1;
 	let n = La();
 	return n ? (t(n, n.currentTime), !0) : !1;
@@ -12736,7 +12736,7 @@ var oo = {
 	guangya: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAEWUlEQVR42sWXT2hcVRTGf/fNYCZdNNPGTaHaSUXFVQZSLLowoe3GdpEERHFhYqTQRBATcWlpSly56YQu4ipNZivYxCK46Z9EsBGkHdwItdhXrLixzaASo2bucXHve/feNzOagqQXHnPf/XPOd77z3XPfKLwmkxTZit4lkiEiykQK8wA5+5v0c5i5nNj3ZJ03nwPyKpmvEekFpGNZvV6PE58qdT7BEIoLRKqYOo0g6PtOogQEDkDWeS4DVgQ0MVpNqbGNpRSATDCEcLHJYcAAzWz4QHIqZCcdswwloWr7iBpWJzeWlIxTAq4CJSK7MNmQOhXrSGXeWzj205AGAiiLQAAt0JA6HZ09eRRDCKV0UmGoUsq8SzJoKRS7DgFJxpQxmjhRXsRg5pU4AAKIKvL7xmQeGPVWerJIHBACSX9TQw5EAlB75lLnnm1t18NgHqHsAPjGvCj8KHN27rEuONgPnV3w96/wVx3urZrotefMj0n5DABalfME59CjUXwGPGDlEegbgZ5+mtpmHW5fgusz8NtdF30AwKZCa9AKJeNIYERZ4anM0esuwWvzJurttK8+hLUZY1B5gaUpMIHlW+8Wh0YL7O2BU5dhb4lttxc/sEBmnE3lmba6yrf0re1RE7vj7RbOf1iBWhXqdw1D+3rh8DtQLIUgNuvwzXmaUm3T25yCJA3Kgjg+DS+fcXMPYvjkLYhXw1Ql/YHT0H861MXcs7C5bo+2BCzkpg8x3ZpDZTa8cQE6i274XB/8/K0TVt8oPDcI67FxFq9AYQ/sP2zm8wXIdcDWn7D7AOwuGdZsRWzNQFJMegfh1EU3tjoLy+85oR4agVfnzdydFZg/ZuY6izD1PRSKzXbjFageS2tF1FZEIvD0QDj29aKt41bJHV0Z7YiZ31iH7z5rbfdmFRruTsj/q5K7D4TvP9Ys9fZofXkeuntgz5Nw6X1jNDn363FzjbgyAzeqnhCzKXhmAKauuk2LY7C2YAWJExyJ6CyQ5LL5aMvtvVE1YlWZtBIexTAF9zOonyg7tCn1Ht2JohsCPS+Fe3+quas3eRpi6G9o82hpAWCj7t5fGIVdxRCE9mt5ereb0+C3ezWnCS1eXweAmkW4tuj6nUU4fiZTQPCMmijY1wvPj4a14vaKi1pjhScOsG6VAoArlZCFo5NwIgvCA/JUP5z8NLTxxVnn2Hx8uPUND1TbOnB0El45R1N6Ls8aagEeL5kUZY/qgximD3riU5n7Jbz62xeikQXj4GHa/RhmjxgQqkV5F3sSRKfA2hei6pvw+dntO791DSpH4Jc7nuCyAhT3NWTT0Z6BtBiV4MR0ezZuXTPCvb7Q8jpJo/aveNyF9N8AkrarCPvL7lr+o270kK0dD9mUTHAz/C7cwSbUIoRlHlWLWIwoUEGoPwL3McJSpCrUiRjbcfeKKfUxcQSg5lhCMQzEO5D3OophNcdS8O8YQMYpoRkix+j/LkxFDWGZAhVVcSn/Bw2n+w/oK+fWAAAAAElFTkSuQmCC",
 	115: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAHB0lEQVR4nO2bbUwURxjH/zN38qIcb4JWoIoHFYumWhDbRquNiSlYC4ZGjVYrotHWD1VTLdY00X7zbA22Na21KWqsUMHYSiygJjaRQDW+VK2YioBarVZBQA9QDm6nedajCuxxHrfH7dX+kiXcvszM8+zO7DPP/JfBzcQmfx4O1jpJEmKUgBTHwUYIIAyAwbYRZtoYUCdBVDLwi5yxCgjfo1Uly2vd2T7mjkJj3vgsUVitcwWkqQxstAv1CAFxnoEfZjpdbvXPq05p1gFxqSZDexuWCIhMCMTDHTBcYGA5+n7YdrEwy6xOkS4yJi07uMliWSGEeB9ACPqGBsbYFwE+PpvP7l/Z6BEHCCFYzDRTBgATBMLhCRhofMiqLsrawRgTvSuiFxinbxjK2pErgAnQAAwoE3rMrTmw5s9eXOscxpSNE5iQ9glgEDQEA24LxtNrij8sc+Y67szJscmmTAjpiNaMJ+Q2CemI3Ea1n4CZM/N1p5pqPoXASngDDNmJAcbVBQWzrI5PfRLjzTX7AKTCuyhMNBjTHTmBOypFvvPeZzyRamt775+A2GRTpgTxHbwYDraoqiQrx2kHGFM2TqBBBYAPvBsLGJ9i7+3AenjPn9DiaN/rV6QeSUpxgl4pwotNMeWqbXw/PceYuAiEBvk7dZ2/Xz8MCQvE2JERGB4ZgteXOt8jyRY5cBPi1a4Ro77rybbwVtUIzzDAF7mmOYiPGexSOZt2Hu31tRS12mzbbvctMCYtO1iO7VVmUXqSy8bX323Bjp9OutoUk81GZQc0WSwr1J7YBAb4IiNtnMvlbCs4jpYHba4VIhAu26jkgLhUk8E2pVWVRenj5S7QWyxtVhQcOoecH0+o0h6ykWztNga0t2GJ2vP5oAA/ZKQldtv/1Q+/Yv8vFWg0P3BYhrm5Fa2WdjWbFWKzdVMnB8iZHJVZ/NZ4BPTvfPfzis64NJipgc1W2QG8I4endhor2OCHd1ITOu27/6AN2btK4XEE4mWbYXMAJTD74u5/f+A07jS2QAt02MzlH5Cmqn/3u/d9vV6HyeOM8nFP02Ezo7y9hPu31MwQr86YjHdnv9zjOTXX7+D4uWsoKv0D5WeuwgMIDv/Belq0gFDP+JBAf8zv0veVMEYNlLc508bir1t3sffw78g/eA5/16mS7X4SGNnOacVG7b4/wN+5CWTk4CAsnzcRh79djPlvOnaeWkhCjOK0XKVmoXWNzdhTchalpy7Ld9YZ+vv5YP2yqfK8YfDAALgbASmOxSRvoGmv67GqHcJCBuDFkRHybC5pdBQSno8EY457XPW1O5i9ajca7t13V9Oo359kxuQNlwFEo494JsyAGVNGYeGMcbJzeuLcxZt4e02e63MA+1yh1+C/cXFfQIPc1vxjmJSxFZt3lcJqleye+0LcEKyYP9GdzTH0uQM6oPj+y9xyzM3Kw83ae3bPmzc9ARGDAt3qAI9ysuI6Zn2wG7X1TYrHfX30WDb7FbfVz23iBI9yo/YeFq/bK88VlJicZHRX1WZNOIA4X3ULuw6cVjwWER6I6Ai3rLybOclSoBFy9p2wO/ePHTpQ9foYUMdJkwONUNvQjIuXlSVBOp36w5UEUclJkAQNcdPOXIDTs6oyjMRYshpLQ1gl5big5nq96nVxxio4SdEeps21QVx0uGJesPKK6mo5QbZz0uGRFA0agMLk4ZGh3faX/XaF9HKqQjZXlSyvlUcW0uFBA9BUWKmvUxZZbTps5vIPnS4XHoZecwsU0mgHyypRUU0JK3XpsJnTH1mByXABHoKySFvWzpAXQrtOiT/aXKx+hQwXOlSn/NE+ZldE4E6GDQlGwaZ5eG4YyYcfcbu+CRkf5+Nuk+PFE2d53Fbe8Q/JT0mBiT6CJjlLZ76Eoq8zMTyq88B36WodFqzdgxu37c8SXaDBZqtMpxEnJsW0XgixDm6CNAKUGaLU+OzkMQgN6t/peLtVwjf5x7Alr1xeE3QHjLFPqouz1ivqAwJ8fDabLa3LXF0hHjEsDBMSoqHjHH4+egwM7g9jVCgS46O69XOC0l6Hyiuxs/CU3VBYFRhqycbOu7pgTNmwEAI5aiyMvjbeiEkJRhifDUXkoCB5qbyt3YrmFguu3mxE5dVaHCq7hPIzV2CV+iAWY8isKV6zvUcHiIcSmVKt6IDV1BNXFWd1k8jwbicyJkh4TMIi/EewiaTmKinKudIFpKYi4bEsMfN+LLKI2o6SnNu7inR1HOw9eDlkQ08Kct7TxbLCkiEb3gpDdk8qUcJhmoVU1yQ8hvdRaGs7XHJAQcEsK6muvepJILn8EyjFCafyTDbx9Nca1g9bqM87euwfhzlbw1P9yQxBFZDwmAILaATbR1NJzhpP/P/ZHFzkqf1wsitP7aezSjyVH0/DDlr/fP4fOwTeE5lpP+gAAAAASUVORK5CYII=",
 	pikpak: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACY0lEQVR4nNWXy2tTQRSHv7m5RUWttqlNW1OairhKNbrU+lhE/AOkdCOIIO7arty0QhSxCIIQ7VJwIfgfCIJdFB+rgC32AVIflD5CbFUsoohJRiZzb5Ne05p4kxv94HCTc+bO+c0MM3eOoICD/TJswAAQBdoBH5UhA8wDo1mIv7ojpuyAsH9EBuQgkmuASXVJI4lN3BXDawIifXIQwQ28RDA0ERfDwpr2cQ9G7iSdhcOGteZeJ1eYKreB5DS1I2oiCJba2hDQVA9tjdDaCHMfICuhMwDJz5D8BMtftK9E2s2NttrJMOxvzSdT1rIb6goW69KIXsjr5/K+nxlIWWKWrOebJIxNFhXgK7r20QjcPL+59PllGH8LarDvU3oWFHU+CDZpK+TKA3j88vd+zGKd93av/y8lrKxao7Ls6bROrrj6EE6E9WzZppZKrJ0y0Hu8RAGhZuhohqk5nShp2Y/0+nZqxPaoFQsr2my2mNDSkBe01w/7AvAu9QcB/nrYs0vboU4qSsNOwCHAoMYY/5WAsckNt1NJ8WKY5TS+fF8/E7f/Lu5aQDrjLu5agOlzF3ct4NYFd3HXAk51uYv/k9vQLPeFr9/h4gh0dcCBNu17vaiP7nt9sGNblQVs3wo9x+DZNCRm9aUyFICebh0rF9PpWP22+QvqC3f2qLZyKda34XTMLsGLGSrO8xndtxMR6ZfqQ+tz7uczRyDor0zyxY/6LlDkoMqYVsUSKvSqho8SVB/JglqCUWqF4ImharVcueQ96j4bN3KFoiDmeXpJTOXO7QJVoyEZ8mgm0rm6sLA4talFef4LaurBZfZxNPMAAAAASUVORK5CYII=",
-	onedrive: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAL30lEQVR42u2aa4xd11XHf2ufez2v6/GMY2dix4nHbRw7tI5TmyZgFToKtCKokitoigT9kAopFEFFGqkSAUrDowiJD614SEj5EEG/VUXllQgQLbQVCNqIokoVQmmVKKiNgELcUGfuPXuvtfiw9z73zPUjduxAC3dJW/uc0Zk7Z/3Xf/3XWvsOzG1uc5vb3OY2t7nNbW5z+/9o8r/xR898Kp1txb7fAriABcTFRAKhafwfhkv6x39/YvSv/2cAuO9J3z92e1cc2E+qcDQFRwNYY1gAGkcChMYhgDQOyLPi/tTyYPArnz2x8MVvSwDuf9L3fyPZB2LgvSpOCpCCowLWOCaONo402WkJEIJDAxKcEEDEIfEUxgc+f3r0Z982ANz3CX+oEf/lFnZHcRIQmwyCBScVELxxJDgyyE5Lk0GQUAABwPKLTvyJke7+iU+dka9+ywJw/5O+P415DOfsRCCKE4EY8m6hx4QGpLEc7WaaCtJAECeII5JZIBgAnnheUvPg586s/Om3HActive Directory3P+n7mwl/m+C21iAaRIGJOFGK00BqsgZ4yfnQGDQZhBp5AgxwRAzBwcm7OO42aV5s3vt3b1l97FrfeXAtv7z5I184mybtXTHGtYWF8Eb5z8mpZrSwlAzcQB1UwUSw4JjJFATL6AfAEYJkB90F3AkGLpLLhIBgeOYA4izYUvqtu//iha9/7q3rn/gfZcDr3/P0Vrvd/kxs49tTG9E2kdrI6fvuYOPIPsYKrcHYYKIwcUgCLZDEu+hbcJpmmvcEp6l6UGkvjpDpL57dF3EcA3FwWraHP/rUD+z+g1edAXc99PxmGp9/PLZxS9XwskyV4/dscui12Xl1SJojnAzUIDrZaYGEYOY0jeA4UiIuQTCdpkEXHvfMBBwozgP5R7bLPf4u8IoBCFfy0KmHn3tA4/YzqrplxWlVRdVYWVvk+OmDRKVbybPjavk6ASlBVMETeBIsgUTBk+MRPDqSBItAufeJl+ctP9M6HgWiY9GxCI7uO/Hx/3jiVQPg1MPPfTi1+rgmRZNiKWFJu3X6rcew0GTBU4gJ2lSA0KwBqmAKnkCTgIJEsOhQQCDle0ngE6AtDreOTwogKe/WgrfgEayFZpf+4Os+9uKbrnsKnHr4Xx5NMT2kMdGtpGjK+8Hb97N6w4hxglaL4zZlQSwMUPLPTMg3ASxkGps6TdEECY4nx7w0QFKoXkpiTQME3Ot9ThPS5HeAk9dNBE89/NwDqdXHNSZScT61CY2R1CaaAdz7rruxpmGSyEszEBOF1qdlMBUg3PILh07ocimQxgjBaapDQQl4LgBiU/HbJcRRwIZCGoVcEsWRVmlaVxo5+/T37nnimgG466HnNy1ufyHFtKYxRzw7n0gxK//xrds5dPsG0XLkdzhveSUvouiQ3EvAHHHPJTA4BMtgBCO4IyEr/hQgx3Y3pBuHxJUGD56X5J6A4ITGGTS5irjxtVab33j2+PJHXrEGxPH5R+MkrqU2kmIktTFHvji/sm+FA0c3mCiMe863Wmjfy301SOqIgpgjmlHxZFhrOd/HuW7aWLGxYxPDJoZHJx1aIt6yTFoa4A5mZTkognnuFays0HBwZSl9+NhXXvzy4S+fv++qGfD69zy9Fdv0V1pErsv7mgYx8YYfOs3u/atoiXasANT8L12gaol86eRwz2Wt7GK9Oi+KeE4HdyesNsjRZXShQcVzIyV5UVkQcq/QlOg3hQ1NGaoEJufHwwefObb0+1csgu1LkwdUFU2l3M0AcPCuwyztXWWSprU+zjifDDSBVmcB8RI29253c0yNxi3X+CJ0zXpgeHyFtgkZM8lR93p+UD4GL52kg5nkaJaOEoQQfGG01P7ekX/e9meOLX30ygCI8WwucZYZkCoASjMUDty5Sau9Gm895S+1XxXMHbMaecsCWJx3s5IOmc+mhRFiNHsDiydHpOK8Ghi5glhxFMkfa5BHZ8tOm+QHpbTM7oIHWNqVHtv8p/G/PXvH4p9fFoDNd3x+K43jmqlianRpkBIalcNvvhMLTaZ26fVrxCsYSXPkO+etPFgTWJ1gjpti5ohqBsCMZhcsn9iND0J21ovzLtNr8XyIUhAwkTw8dYhkyriDhPxnRVgYDNJvAscuK4Jtm7ZSG0mT3ir3owPr7DlyICt8EbtYrqvjnfNaXqgIXq7Tlmt8SSdvDW8TNlG8VaxVll63Qlgdds5Xn1JpsWt36SYkLcJXRdEENcE07911WUG4/dCXxj99WQakNm5qUlwN1ZoCiptx8Lu/IzczpbGpL5WqIpd7M3bkuVh+c1PLlI+V9oZnlcTVWLh5yOJrl0hd1NnJAhNUsg6YFRaY9JTcqwDkHsKliORUG4Zi7wd++5IMGO4dnUiTSJxE0qQltRE3Y+P0bTRroxzxWaX3aTpY763FnGB1IMjC4Mnw0k57zJHXmAiNsX5mT3aUndGv9xXoVKNvsiPyeYF6ibpNo1+vHW7d+OLkxCUBWLp5Yzu1mfamuQNbXF/mhpO35T6/p/qxl/dqWfTEneBO8BxlT1URM1peBgSfGD5J3Qct3znClwc7I06vaFBZJ5l5VgGYgtAtFdTzdQUg9XYxfuySACwc2L96wxuOTu/Xljl473eSpEHNy0Q3zXfX3OR4ysIm6rj6VCBUy6BTqJ4SFhVXxZOirSLBGN2x0jmts9TvpUMqDKiptiPy/Yj3Iz+z3LnlkhrgItujY69h9fhrsrKWipqid9N4fUEtNA21wdGS70WVxLw4bx31iRmM2gWaKnvfsh8fNt1nzgKhfiEIoevfSt57J/54KGcl3SCV9+lvyPFLAiDOE2Z2twbp+nb3DIJJPuaqL9edURj5tKbU90x9R1JWTFfFa+ub8rWWfrnZHVg6OppqyGWiX++dUglKqXMvDZI7Ich0rwDQ2ylHzJdshIRPJvVfysdPUp6u0S/1uNdDS2ly8EL/Uu5ELQtipX6sjZV1OWSq7Nu6EdNpb2/9qPvMz8t1NaueBceLw15HbIHQj/7Ohv/SAHzpfcO/ue1D2980kVH2DlQyG6yjXBYOoUMFJ+e+mGUNKEXbk2OqeOdlLn+WjMVDCyzcskKK03ZBZ5y/GBCznjhCCNM2WQoILl1V7FIBwE0+fdlWOLl90k3OulNg7P1V6VXckiL9eu/JwUtnp9MSWFPAUzlLNGPvvQfQeBHq9523HiPs4sOM1zMWkY4BlQVysTSw8JXLAjAc2iOTl+Ssi2SnKnouID4VE+eCwUaKc7W5ccszgJdGyC0/t+e79iGLA1KaOthh5jPOXyL6s9alpshF6d/tA/7yZQ9Ebv3g+T9xs7d1LdTMVukv3i/UiueWLQteYYAnRaOXBkhpRg03veNwd1DSHZjYzuvovRnjCgC46Kxf1V+69/5Meqe8+WXPBIcj+/H2BXvGYXkHfJUMdebwPM/XMLrV4/J8b2ln5N1g/U03llF5GuHZ6z4DZsXvasx3JjA4H7ziM8HDv/hfPxwn6eNS4KuFIXQlM0deyFG30giZaQEgA2Epa4InY/XkGit3rO8QvB1TZe++32m+Qv9n7dO8W7au6puhm3/h3CO2rb/WTwWRWv58WgatnNJqzf06AOWx19XYtW+B9e85uDPnZ6jfP2Pog3Ed7BsM2OTdcu6qvxq7+WfP/byO4696EZjy/WRHsGCemxGtYpjTAM2nPWbOrj1D9p65CRtMO74+3S/GgrpfF+cbtnhQ/vEVfzd468+d+772m/Fjbra3+6V61GW5AfKy14R2Myw5u9Z2sX7PBtY0OxqdPgizAFQmmF8H5wNb/NTFnb+qL0cPf+jfD0xekF/3l9I73XyRrgvMYEzPAUrumzNcHbL3jTfhPeeNndHvpmW/cL9G+yPgAd53Ie2v6dvhw4+eO9Weiw+mcXq7tWmjdoOUbtDdkUZYvnUPK0fWulbBekPNLAAXsMCu2fGP8H7561f9HyQ2H/n6PZOxnrSJv01dgyBhsDxYWdwYHQnLC0ojLyAyrpOjWk6cVHXSp31TaRhJhvvVAVAdfZZF/vDlIj63uc1tbnOb29zmNre5zW1ucwP+G1ME77lSc/kUAAAAAElFTkSuQmCC"
+	onedrive: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAL30lEQVR42u2aa4xd11XHf2ufez2v6/GMY2dix4nHbRw7tI5TmyZgFToKtCKokitoigT9kAopFEFFGqkSAUrDowiJD614SEj5EEG/VUXllQgQLbQVCNqIokoVQmmVKKiNgELcUGfuPXuvtfiw9z73zPUjduxAC3dJW/uc0Zk7Z/3Xf/3XWvsOzG1uc5vb3OY2t7nNbW5z+/9o8r/xR898Kp1txb7fAriABcTFRAKhafwfhkv6x39/YvSv/2cAuO9J3z92e1cc2E+qcDQFRwNYY1gAGkcChMYhgDQOyLPi/tTyYPArnz2x8MVvSwDuf9L3fyPZB2LgvSpOCpCCowLWOCaONo402WkJEIJDAxKcEEDEIfEUxgc+f3r0Z982ANz3CX+oEf/lFnZHcRIQmwyCBScVELxxJDgyyE5Lk0GQUAABwPKLTvyJke7+iU+dka9+ywJw/5O+P415DOfsRCCKE4EY8m6hx4QGpLEc7WaaCtJAECeII5JZIBgAnnheUvPg586s/Om3HAD3P+n7mwl/m+C21iAaRIGJOFGK00BqsgZ4yfnQGDQZhBp5AgxwRAzBwcm7OO42aV5s3vt3b1l97FrfeXAtv7z5I184mybtXTHGtYWF8Eb5z8mpZrSwlAzcQB1UwUSw4JjJFATL6AfAEYJkB90F3AkGLpLLhIBgeOYA4izYUvqtu//iha9/7q3rn/gfZcDr3/P0Vrvd/kxs49tTG9E2kdrI6fvuYOPIPsYKrcHYYKIwcUgCLZDEu+hbcJpmmvcEp6l6UGkvjpDpL57dF3EcA3FwWraHP/rUD+z+g1edAXc99PxmGp9/PLZxS9XwskyV4/dscui12Xl1SJojnAzUIDrZaYGEYOY0jeA4UiIuQTCdpkEXHvfMBBwozgP5R7bLPf4u8IoBCFfy0KmHn3tA4/YzqrplxWlVRdVYWVvk+OmDRKVbybPjavk6ASlBVMETeBIsgUTBk+MRPDqSBItAufeJl+ctP9M6HgWiY9GxCI7uO/Hx/3jiVQPg1MPPfTi1+rgmRZNiKWFJu3X6rcew0GTBU4gJ2lSA0KwBqmAKnkCTgIJEsOhQQCDle0ngE6AtDreOTwogKe/WgrfgEayFZpf+4Os+9uKbrnsKnHr4Xx5NMT2kMdGtpGjK+8Hb97N6w4hxglaL4zZlQSwMUPLPTMg3ASxkGps6TdEECY4nx7w0QFKoXkpiTQME3Ot9ThPS5HeAk9dNBE89/NwDqdXHNSZScT61CY2R1CaaAdz7rruxpmGSyEszEBOF1qdlMBUg3PILh07ocimQxgjBaapDQQl4LgBiU/HbJcRRwIZCGoVcEsWRVmlaVxo5+/T37nnimgG466HnNy1ufyHFtKYxRzw7n0gxK//xrds5dPsG0XLkdzhveSUvouiQ3EvAHHHPJTA4BMtgBCO4IyEr/hQgx3Y3pBuHxJUGD56X5J6A4ITGGTS5irjxtVab33j2+PJHXrEGxPH5R+MkrqU2kmIktTFHvji/sm+FA0c3mCiMe863Wmjfy301SOqIgpgjmlHxZFhrOd/HuW7aWLGxYxPDJoZHJx1aIt6yTFoa4A5mZTkognnuFays0HBwZSl9+NhXXvzy4S+fv++qGfD69zy9Fdv0V1pErsv7mgYx8YYfOs3u/atoiXasANT8L12gaol86eRwz2Wt7GK9Oi+KeE4HdyesNsjRZXShQcVzIyV5UVkQcq/QlOg3hQ1NGaoEJufHwwefObb0+1csgu1LkwdUFU2l3M0AcPCuwyztXWWSprU+zjifDDSBVmcB8RI29253c0yNxi3X+CJ0zXpgeHyFtgkZM8lR93p+UD4GL52kg5nkaJaOEoQQfGG01P7ekX/e9meOLX30ygCI8WwucZYZkCoASjMUDty5Sau9Gm895S+1XxXMHbMaecsCWJx3s5IOmc+mhRFiNHsDiydHpOK8Ghi5glhxFMkfa5BHZ8tOm+QHpbTM7oIHWNqVHtv8p/G/PXvH4p9fFoDNd3x+K43jmqlianRpkBIalcNvvhMLTaZ26fVrxCsYSXPkO+etPFgTWJ1gjpti5ohqBsCMZhcsn9iND0J21ovzLtNr8XyIUhAwkTw8dYhkyriDhPxnRVgYDNJvAscuK4Jtm7ZSG0mT3ir3owPr7DlyICt8EbtYrqvjnfNaXqgIXq7Tlmt8SSdvDW8TNlG8VaxVll63Qlgdds5Xn1JpsWt36SYkLcJXRdEENcE07911WUG4/dCXxj99WQakNm5qUlwN1ZoCiptx8Lu/IzczpbGpL5WqIpd7M3bkuVh+c1PLlI+V9oZnlcTVWLh5yOJrl0hd1NnJAhNUsg6YFRaY9JTcqwDkHsKliORUG4Zi7wd++5IMGO4dnUiTSJxE0qQltRE3Y+P0bTRroxzxWaX3aTpY763FnGB1IMjC4Mnw0k57zJHXmAiNsX5mT3aUndGv9xXoVKNvsiPyeYF6ibpNo1+vHW7d+OLkxCUBWLp5Yzu1mfamuQNbXF/mhpO35T6/p/qxl/dqWfTEneBO8BxlT1URM1peBgSfGD5J3Qct3znClwc7I06vaFBZJ5l5VgGYgtAtFdTzdQUg9XYxfuySACwc2L96wxuOTu/Xljl473eSpEHNy0Q3zXfX3OR4ysIm6rj6VCBUy6BTqJ4SFhVXxZOirSLBGN2x0jmts9TvpUMqDKiptiPy/Yj3Iz+z3LnlkhrgItujY69h9fhrsrKWipqid9N4fUEtNA21wdGS70WVxLw4bx31iRmM2gWaKnvfsh8fNt1nzgKhfiEIoevfSt57J/54KGcl3SCV9+lvyPFLAiDOE2Z2twbp+nb3DIJJPuaqL9edURj5tKbU90x9R1JWTFfFa+ub8rWWfrnZHVg6OppqyGWiX++dUglKqXMvDZI7Ich0rwDQ2ylHzJdshIRPJvVfysdPUp6u0S/1uNdDS2ly8EL/Uu5ELQtipX6sjZV1OWSq7Nu6EdNpb2/9qPvMz8t1NaueBceLw15HbIHQj/7Ohv/SAHzpfcO/ue1D2980kVH2DlQyG6yjXBYOoUMFJ+e+mGUNKEXbk2OqeOdlLn+WjMVDCyzcskKK03ZBZ5y/GBCznjhCCNM2WQoILl1V7FIBwE0+fdlWOLl90k3OulNg7P1V6VXckiL9eu/JwUtnp9MSWFPAUzlLNGPvvQfQeBHq9523HiPs4sOM1zMWkY4BlQVysTSw8JXLAjAc2iOTl+Ssi2SnKnouID4VE+eCwUaKc7W5ccszgJdGyC0/t+e79iGLA1KaOthh5jPOXyL6s9alpshF6d/tA/7yZQ9Ebv3g+T9xs7d1LdTMVukv3i/UiueWLQteYYAnRaOXBkhpRg03veNwd1DSHZjYzuvovRnjCgC46Kxf1V+69/5Meqe8+WXPBIcj+/H2BXvGYXkHfJUMdebwPM/XMLrV4/J8b2ln5N1g/U03llF5GuHZ6z4DZsXvasx3JjA4H7ziM8HDv/hfPxwn6eNS4KuFIXQlM0deyFG30giZaQEgA2Epa4InY/XkGit3rO8QvB1TZe++32m+Qv9n7dO8W7au6puhm3/h3CO2rb/WTwWRWv58WgatnNJqzf06AOWx19XYtW+B9e85uDPnZ6jfP2Pog3Ed7BsM2OTdcu6qvxq7+WfP/byO4696EZjy/WRHsGCemxGtYpjTAM2nPWbOrj1D9p65CRtMO74+3S/GgrpfF+cbtnhQ/vEVfzd468+d+772m/Fjbra3+6V61GW5AfKy14R2Myw5u9Z2sX7PBtY0OxqdPgizAFQmmF8H5wNb/NTFnb+qL0cPf+jfD0xekF/3l9I73XyRrgvMYEzPAUrumzNcHbL3jTfhPeeNndHvpmW/cL9G+yPgAd53Ie2v6dvhw4+eO9Weiw+mcXq7tWmjdoOUbtDdkUZYvnUPK0fWulbBekPNLAAXsMCu2fGP8H7561f9HyQ2H/n6PZOxnrSJv01dgyBhsDxYWdwYHQnLC0ojLyAyrpOjWk6cVHXSp31TaRhJhvvVAVAdfZZF/vDlIj63uc1tbnOb29zmNre5zW1ucwP+G1ME77lSc/kUAAAAAElFTkSuQmCC"
 }, so = Object.fromEntries(Ot.map((e) => [e.id, oo[e.id] || e.icon])), co = "inline-flex items-center justify-center gap-0.5 whitespace-nowrap overflow-hidden font-sans", lo = {
 	medium: "h-9 rounded-2lg p-2 text-body-medium",
 	small: "h-8 rounded-lg px-2 py-1.5 text-body-medium"
@@ -12755,7 +12755,7 @@ var oo = {
 	ghost: "bg-button-ghost-background text-button-ghost-foreground"
 }, ho = (e, t) => `<svg class="${t}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><use href="#i-${e}"/></svg>`;
 function go() {
-	return `<span data-shortcuts-entry class="inline-flex flex-none"><button type="button" data-shortcuts-trigger data-filter-action data-skeleton-action disabled tabindex="-1" aria-label="Mis favoritos" title="Mis favoritos" class="inline-grid size-7.5 flex-none place-items-center rounded-(--control-radius) border border-(--border-10) bg-(--surface) text-(--muted)">${ho("star", "size-4")}</button></span>`;
+	return `<span data-shortcuts-entry class="inline-flex flex-none"><button type="button" data-shortcuts-trigger data-filter-action data-skeleton-action disabled tabindex="-1" aria-label="我的收藏" title="我的收藏" class="inline-grid size-7.5 flex-none place-items-center rounded-(--control-radius) border border-(--border-10) bg-(--surface) text-(--muted)">${ho("star", "size-4")}</button></span>`;
 }
 function _o(e, t = "", n = e) {
 	return `<div data-input-size="medium" class="group flex h-max w-full flex-col items-start gap-1"><div data-rac class="relative flex w-full items-center rounded-2lg bg-background-tertiary-default text-foreground-icon-tertiary ring-2 ring-inset ring-transparent p-2"><div class="flex w-full items-center gap-2 min-w-0"><div class="flex flex-1 items-center gap-0.5 min-w-0">${ho("search", "size-5 shrink-0")}<input type="search" enterkeyhint="search" readonly tabindex="-1" aria-label="${B(n)}" value="${B(t)}" placeholder="${B(e)}" class="min-w-0 flex-1 bg-transparent border-0 outline-none p-0 m-0 font-sans text-body-regular text-text-primary pl-1 placeholder:text-text-tertiary"></div></div></div></div>`;
@@ -12801,16 +12801,16 @@ function ko(e, { variant: t = "secondary", label: n = "", className: r = "", siz
 	return `<div class="geist-note geist-note-${l}${r ? ` ${B(r)}` : ""}${i === "small" ? " geist-note-small" : ""}${a ? " geist-note-filled" : ""}"${d}>
     ${z(u)}<p>${n ? `<b>${B(n)}</b>` : ""}<span>${B(l === "error" ? Pt(e) : e)}</span></p>${f}${c ? Oo(c) : ""}</div>`;
 }
-function Ao(e = "CargarEn proceso") {
+function Ao(e = "加载中") {
 	let t = Array.from({ length: 10 }, (e, t) => `<i aria-hidden="true" style="--spinner-angle:${t * 36}deg;--spinner-delay:${t * 100 - 900}ms"></i>`).join("");
 	return `<span class="ui-geist-spinner" role="status" aria-label="${B(e)}">${t}</span>`;
 }
-function jo(e = "Procesando", { className: t = "" } = {}) {
+function jo(e = "正在处理", { className: t = "" } = {}) {
 	return `<span class="ui-geist-loading${t ? ` ${B(t)}` : ""}" role="status">
     <span class="ui-geist-loading-dots" aria-hidden="true"><i></i><i></i><i></i></span>
     <span>${B(e)}</span></span>`;
 }
-function Mo(e, { active: t = "", attr: n = "data-tab", label: r = "Vista de página", className: i = "", panel: a = "" } = {}) {
+function Mo(e, { active: t = "", attr: n = "data-tab", label: r = "页面视图", className: i = "", panel: a = "" } = {}) {
 	let o = e.map(({ value: e, label: r, count: i, symbol: o }) => {
 		let s = String(e) === String(t), c = i == null ? "" : `<span class="ui-board-tab-count">${B(Number(i).toLocaleString())}</span>`;
 		return `<button type="button" role="tab" ${n}="${B(e)}" aria-selected="${s}"${a ? ` aria-controls="${B(a)}"` : ""}>${o ? z(o) : ""}${B(r)}${c}</button>`;
@@ -12937,15 +12937,15 @@ function Uo(e, t) {
 	}, 1e3);
 }
 function Wo() {
-	return `<div class="ui-configpage" data-skeleton="configuration" role="status" aria-label="CargandoConfiguración">${[
-		["General", 2],
-		["Medios", 2],
-		["Descargas", 2],
-		["Red y acceso", 3],
-		["Mantenimiento", 3]
+	return `<div class="ui-configpage" data-skeleton="configuration" role="status" aria-label="正在读取配置">${[
+		["通用", 2],
+		["媒体", 2],
+		["下载", 2],
+		["网络与访问", 3],
+		["维护", 3]
 	].map(([e, t]) => `<h2 class="ui-configgroup" aria-hidden="true">${e}</h2>${Array.from({ length: t }, () => "<div class=\"configfieldset config-skeleton-card\" aria-hidden=\"true\"><div class=\"geist-fieldset-content\"><span class=\"skeleton\"></span><span class=\"skeleton\"></span><span class=\"skeleton\"></span></div><footer class=\"geist-fieldset-footer\"><span class=\"skeleton\"></span></footer></div>").join("")}`).join("")}</div>`;
 }
-function Go(e = "Cargandocontenido interno", { className: t = "", variant: n = "panel", count: r = 6, fill: i = !0, gridClass: a = "", gridSize: o = "", cardRatio: s = 0 } = {}) {
+function Go(e = "正在读取内容", { className: t = "", variant: n = "panel", count: r = 6, fill: i = !0, gridClass: a = "", gridSize: o = "", cardRatio: s = 0 } = {}) {
 	let c = (/* @__PURE__ */ new Set([
 		"panel",
 		"cards",
@@ -12966,7 +12966,7 @@ function Ko({ kind: e, layout: t = "big", mode: n = "alphabet" } = {}) {
 		76,
 		108,
 		144
-	][t % 5]}px">&nbsp;</span>`).join("")}</div>` : r ? `<div class="${o}">${a.repeat(12)}</div>` : `<section class="ui-alphagroup"><span class="indexletterskeleton skeleton"></span><div class="${o}">${a.repeat(10)}</div></section>`.repeat(3), c = "CargandoIndexar";
+	][t % 5]}px">&nbsp;</span>`).join("")}</div>` : r ? `<div class="${o}">${a.repeat(12)}</div>` : `<section class="ui-alphagroup"><span class="indexletterskeleton skeleton"></span><div class="${o}">${a.repeat(10)}</div></section>`.repeat(3), c = "正在读取索引";
 	return `<div class="skeletonpanel index-skeleton" data-skeleton="index/${B(e)}/${B(t)}/${B(n)}"${r ? " data-fill=\"\"" : ""}
     role="status" aria-label="${c}"><span class="sr-only">${c}</span><section aria-hidden="true">${s}</section></div>`;
 }
@@ -13424,7 +13424,7 @@ function Ps(e, { selector: t, attribute: n, onMove: r } = {}) {
 //#endregion
 //#region src/ui-kit/modal.ts
 var Fs = 0;
-function Is({ title: e, description: t = "", body: n = "", confirmLabel: r, cancelLabel: i = "Cancelar", onConfirm: a = null, confirmDisabled: o = !1 } = {}) {
+function Is({ title: e, description: t = "", body: n = "", confirmLabel: r, cancelLabel: i = "取消", onConfirm: a = null, confirmDisabled: o = !1 } = {}) {
 	let s = document.activeElement, c = document.createElement("dialog");
 	c.className = "ui-geist-modal";
 	let l = `geist-form-title-${++Fs}`;
@@ -13457,7 +13457,7 @@ function Is({ title: e, description: t = "", body: n = "", confirmLabel: r, canc
 						result: await a()
 					}, c.close();
 				} catch (e) {
-					f.innerHTML = ko(e.message || "Operación no completada", { variant: "error" }), Ts(d, !1);
+					f.innerHTML = ko(e.message || "操作未完成", { variant: "error" }), Ts(d, !1);
 				} finally {
 					m = !1;
 				}
@@ -13471,7 +13471,7 @@ function Is({ title: e, description: t = "", body: n = "", confirmLabel: r, canc
 	};
 }
 var Ls = 0;
-function Rs({ title: e, body: t, items: n = [], confirmLabel: r, cancelLabel: i = "Cancelar", onConfirm: a = null, danger: o = !1 } = {}) {
+function Rs({ title: e, body: t, items: n = [], confirmLabel: r, cancelLabel: i = "取消", onConfirm: a = null, danger: o = !1 } = {}) {
 	let s = document.activeElement, c = document.createElement("dialog");
 	c.className = "ui-geist-modal";
 	let l = `geist-modal-title-${++Ls}`;
@@ -13484,7 +13484,7 @@ function Rs({ title: e, body: t, items: n = [], confirmLabel: r, cancelLabel: i 
 	let u = null;
 	if (n.length) {
 		let e = document.createElement("div");
-		e.className = "ui-geist-modal-list", u = document.createElement("ul"), u.setAttribute("aria-label", "seleccionadosRegistro"), u.tabIndex = 0;
+		e.className = "ui-geist-modal-list", u = document.createElement("ul"), u.setAttribute("aria-label", "所选记录"), u.tabIndex = 0;
 		for (let e of n) {
 			let t = document.createElement("li");
 			t.textContent = e, u.append(t);
@@ -13515,7 +13515,7 @@ function Rs({ title: e, body: t, items: n = [], confirmLabel: r, cancelLabel: i 
 							result: await a()
 						}, c.close();
 					} catch (e) {
-						p.innerHTML = ko(e.message || "Operación no completada", { variant: "error" }), Ts(f, !1);
+						p.innerHTML = ko(e.message || "操作未完成", { variant: "error" }), Ts(f, !1);
 					} finally {
 						n = !1;
 					}
@@ -13810,16 +13810,16 @@ function Ec(e, t) {
 var Dc = {
 	"1080P": "1080p",
 	"60fps": "60FPS",
-	Descensurado IA: "Decodificado IA",
-	Gafas: "Chica con gafas",
-	Lencería seductora: "Lencería",
-	Cara con mascarilla: "Mascarilla",
-	Escena de fantasía de no-consenso: "Forzar",
-	Amazona: "Amazona resultado(s)",
-	Por detrás: "Por detrás resultado(s)",
-	"Grupal": "3P",
-	Doble penetración (alternada): "Doble penetración (simultánea)",
-	Doble penetración (posición): "Doble penetración intensa"
+	AI去码: "AI解码",
+	眼镜: "眼镜娘",
+	情趣内衣: "性感内衣",
+	口罩遮脸: "口罩",
+	强制剧情: "强制",
+	骑乘: "骑乘位",
+	后入: "背后位",
+	"3P多人": "3P",
+	双洞齐插: "双洞齐下",
+	毒龙: "毒龙钻"
 }, Oc = (e) => Dc[e] || e;
 //#endregion
 //#region src/react/follow-feed/follow-helpers.ts
@@ -24172,7 +24172,7 @@ Qx = { longPressMessage: "Premi a lungo o premi Alt + Freccia giù per aprire il
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/menu/ja-JP.mjs
 var $x = {};
-$x = { longPressMessage: "Mantén presionado o Alt+Flecha abajo para abrir el menú" };
+$x = { longPressMessage: "長押しまたは Alt+下矢印キーでメニューを開く" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/menu/ko-KR.mjs
 var eS = {};
@@ -24240,11 +24240,11 @@ hS = { longPressMessage: "Довго або звичайно натисніть 
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/menu/zh-CN.mjs
 var gS = {};
-gS = { longPressMessage: "largosegúnosegún Alt + Abajoteclas de flechaconAbrirmenú" };
+gS = { longPressMessage: "长按或按 Alt + 向下方向键以打开菜单" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/menu/zh-TW.mjs
 var _S = {};
-_S = { longPressMessage: "Mantén pulsado o usa Alt+Abajo para abrir el menú" };
+_S = { longPressMessage: "長按或按 Alt+向下鍵以開啟功能表" };
 //#endregion
 //#region node_modules/react-aria/dist/private/menu/intlStrings.mjs
 var vS = {};
@@ -25149,16 +25149,16 @@ eC = {
 //#region node_modules/react-aria/dist/private/intl/grid/el-GR.mjs
 var tC = {};
 tC = {
-	deselectedItem: (e) => `\u{394}\u{3B5}\u{3BD} \u{3B5}\u{3C0}\u{3B9}\u{3BB}\u{3Active Directory}\u{3C7}\u{3B8}\u{3B7}\u{3BA}\u{3B5} \u{3C4}\u{3BF} \u{3C3}\u{3C4}\u{3BF}\u{3B9}\u{3C7}\u{3B5}\u{3AF}\u{3BF} ${e.item}.`,
+	deselectedItem: (e) => `\u{394}\u{3B5}\u{3BD} \u{3B5}\u{3C0}\u{3B9}\u{3BB}\u{3AD}\u{3C7}\u{3B8}\u{3B7}\u{3BA}\u{3B5} \u{3C4}\u{3BF} \u{3C3}\u{3C4}\u{3BF}\u{3B9}\u{3C7}\u{3B5}\u{3AF}\u{3BF} ${e.item}.`,
 	longPressToSelect: "Πατήστε παρατεταμένα για να μπείτε σε λειτουργία επιλογής.",
 	select: "Επιλογή",
 	selectedAll: "Επιλέχθηκαν όλα τα στοιχεία.",
 	selectedCount: (e, t) => `${t.plural(e.count, {
 		"=0": "Δεν επιλέχθηκαν στοιχεία",
-		one: () => `\u{395}\u{3C0}\u{3B9}\u{3BB}\u{3Active Directory}\u{3C7}\u{3B8}\u{3B7}\u{3BA}\u{3B5} ${t.number(e.count)} \u{3C3}\u{3C4}\u{3BF}\u{3B9}\u{3C7}\u{3B5}\u{3AF}\u{3BF}`,
-		other: () => `\u{395}\u{3C0}\u{3B9}\u{3BB}\u{3Active Directory}\u{3C7}\u{3B8}\u{3B7}\u{3BA}\u{3B1}\u{3BD} ${t.number(e.count)} \u{3C3}\u{3C4}\u{3BF}\u{3B9}\u{3C7}\u{3B5}\u{3AF}\u{3B1}`
+		one: () => `\u{395}\u{3C0}\u{3B9}\u{3BB}\u{3AD}\u{3C7}\u{3B8}\u{3B7}\u{3BA}\u{3B5} ${t.number(e.count)} \u{3C3}\u{3C4}\u{3BF}\u{3B9}\u{3C7}\u{3B5}\u{3AF}\u{3BF}`,
+		other: () => `\u{395}\u{3C0}\u{3B9}\u{3BB}\u{3AD}\u{3C7}\u{3B8}\u{3B7}\u{3BA}\u{3B1}\u{3BD} ${t.number(e.count)} \u{3C3}\u{3C4}\u{3BF}\u{3B9}\u{3C7}\u{3B5}\u{3AF}\u{3B1}`
 	})}.`,
-	selectedItem: (e) => `\u{395}\u{3C0}\u{3B9}\u{3BB}\u{3Active Directory}\u{3C7}\u{3B8}\u{3B7}\u{3BA}\u{3B5} \u{3C4}\u{3BF} \u{3C3}\u{3C4}\u{3BF}\u{3B9}\u{3C7}\u{3B5}\u{3AF}\u{3BF} ${e.item}.`
+	selectedItem: (e) => `\u{395}\u{3C0}\u{3B9}\u{3BB}\u{3AD}\u{3C7}\u{3B8}\u{3B7}\u{3BA}\u{3B5} \u{3C4}\u{3BF} \u{3C3}\u{3C4}\u{3BF}\u{3B9}\u{3C7}\u{3B5}\u{3AF}\u{3BF} ${e.item}.`
 };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/grid/en-US.mjs
@@ -25300,11 +25300,11 @@ uC = {
 var dC = {};
 dC = {
 	deselectedItem: (e) => `${e.item} \u{304C}\u{9078}\u{629E}\u{3055}\u{308C}\u{3066}\u{3044}\u{307E}\u{305B}\u{3093}\u{3002}`,
-	longPressToSelect: "Mantén presionado para entrar en modo selección. ",
-	select: "seleccionar",
-	selectedAll: "Se seleccionaron todos los elementos objetivo. ",
+	longPressToSelect: "長押しして選択モードを開きます。",
+	select: "選択",
+	selectedAll: "すべての項目を選択しました。",
 	selectedCount: (e, t) => `${t.plural(e.count, {
-		"=0": "No se ha seleccionado ningún elemento objetivo",
+		"=0": "項目が選択されていません",
 		one: () => `${t.number(e.count)} \u{9805}\u{76EE}\u{3092}\u{9078}\u{629E}\u{3057}\u{307E}\u{3057}\u{305F}`,
 		other: () => `${t.number(e.count)} \u{9805}\u{76EE}\u{3092}\u{9078}\u{629E}\u{3057}\u{307E}\u{3057}\u{305F}`
 	})}\u{3002}`,
@@ -25555,11 +25555,11 @@ DC = {
 var OC = {};
 OC = {
 	deselectedItem: (e) => `\u{672A}\u{9009}\u{62E9} ${e.item}\u{3002}`,
-	longPressToSelect: "largosegúnconentrar en SeleccionarModo. ",
-	select: "Seleccionar",
-	selectedAll: "Ya seleccionados todos los elementos objetivo. ",
+	longPressToSelect: "长按以进入选择模式。",
+	select: "选择",
+	selectedAll: "已选择所有项目。",
 	selectedCount: (e, t) => `${t.plural(e.count, {
-		"=0": "NoSeleccionarelemento(s)objetivo",
+		"=0": "未选择项目",
 		one: () => `\u{5DF2}\u{9009}\u{62E9} ${t.number(e.count)} \u{4E2A}\u{9879}\u{76EE}`,
 		other: () => `\u{5DF2}\u{9009}\u{62E9} ${t.number(e.count)} \u{4E2A}\u{9879}\u{76EE}`
 	})}\u{3002}`,
@@ -25570,11 +25570,11 @@ OC = {
 var kC = {};
 kC = {
 	deselectedItem: (e) => `\u{672A}\u{9078}\u{53D6}\u{300C}${e.item}\u{300D}\u{3002}`,
-	longPressToSelect: "Mantener presionado para entrar en modo selección. ",
-	select: "Seleccionar",
-	selectedAll: "Todos los elementos seleccionados. ",
+	longPressToSelect: "長按以進入選擇模式。",
+	select: "選取",
+	selectedAll: "已選取所有項目。",
 	selectedCount: (e, t) => `${t.plural(e.count, {
-		"=0": "Noseleccionarcualquierelemento objetivo",
+		"=0": "未選取任何項目",
 		one: () => `\u{5DF2}\u{9078}\u{53D6} ${t.number(e.count)} \u{500B}\u{9805}\u{76EE}`,
 		other: () => `\u{5DF2}\u{9078}\u{53D6} ${t.number(e.count)} \u{500B}\u{9805}\u{76EE}`
 	})}\u{3002}`,
@@ -26454,7 +26454,7 @@ aw = { dismiss: "Ignora" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/overlays/ja-JP.mjs
 var ow = {};
-ow = { dismiss: "Cerrar" };
+ow = { dismiss: "閉じる" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/overlays/ko-KR.mjs
 var sw = {};
@@ -26522,11 +26522,11 @@ Sw = { dismiss: "Скасувати" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/overlays/zh-CN.mjs
 var Cw = {};
-Cw = { dismiss: "Cancelar" };
+Cw = { dismiss: "取消" };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/overlays/zh-TW.mjs
 var ww = {};
-ww = { dismiss: "Cerrar" };
+ww = { dismiss: "關閉" };
 //#endregion
 //#region node_modules/react-aria/dist/private/overlays/intlStrings.mjs
 var Tw = {};
@@ -27961,17 +27961,17 @@ CT = {
 //#region node_modules/react-aria/dist/private/intl/table/ja-JP.mjs
 var wT = {};
 wT = {
-	ascending: "Ascendente",
+	ascending: "昇順",
 	ascendingSort: (e) => `\u{5217} ${e.columnName} \u{3092}\u{6607}\u{9806}\u{3067}\u{4E26}\u{3079}\u{66FF}\u{3048}`,
-	collapse: "Contraer",
+	collapse: "折りたたむ",
 	columnSize: (e) => `${e.value} \u{30D4}\u{30AF}\u{30BB}\u{30EB}`,
-	descending: "Descendente",
+	descending: "降順",
 	descendingSort: (e) => `\u{5217} ${e.columnName} \u{3092}\u{964D}\u{9806}\u{3067}\u{4E26}\u{3079}\u{66FF}\u{3048}`,
-	expand: "Expandir",
-	resizerDescription: "Presiona Enter para comenzar a cambiar el tamaño",
-	select: "seleccionar",
-	selectAll: "Seleccionar todo",
-	sortable: "Columna ordenable"
+	expand: "展開",
+	resizerDescription: "Enter キーを押してサイズ変更を開始",
+	select: "選択",
+	selectAll: "すべて選択",
+	sortable: "並べ替え可能な列"
 };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/table/ko-KR.mjs
@@ -28233,33 +28233,33 @@ BT = {
 //#region node_modules/react-aria/dist/private/intl/table/zh-CN.mjs
 var VT = {};
 VT = {
-	ascending: "Ascendente",
+	ascending: "升序",
 	ascendingSort: (e) => `\u{6309}\u{5217} ${e.columnName} \u{5347}\u{5E8F}\u{6392}\u{5E8F}`,
-	collapse: "Colapsar",
+	collapse: "折叠",
 	columnSize: (e) => `${e.value} \u{50CF}\u{7D20}`,
-	descending: "Descendente",
+	descending: "降序",
 	descendingSort: (e) => `\u{6309}\u{5217} ${e.columnName} \u{964D}\u{5E8F}\u{6392}\u{5E8F}`,
-	expand: "expandirexpandir",
-	resizerDescription: "según Enter Iniciarajuste completo de Tamaño. ",
-	select: "Seleccionar",
-	selectAll: "Seleccionar todo",
-	sortable: "Columna ordenable"
+	expand: "扩展",
+	resizerDescription: "按 Enter 开始调整大小。",
+	select: "选择",
+	selectAll: "全选",
+	sortable: "可排序的列"
 };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/table/zh-TW.mjs
 var HT = {};
 HT = {
-	ascending: "Ascendente",
+	ascending: "遞增",
 	ascendingSort: (e) => `\u{5DF2}\u{4F9D}\u{64DA}\u{300C}${e.columnName}\u{300D}\u{6B04}\u{905E}\u{589E}\u{6392}\u{5E8F}`,
-	collapse: "Contraer",
+	collapse: "收合",
 	columnSize: (e) => `${e.value} \u{50CF}\u{7D20}`,
-	descending: "Descendente",
+	descending: "遞減",
 	descendingSort: (e) => `\u{5DF2}\u{4F9D}\u{64DA}\u{300C}${e.columnName}\u{300D}\u{6B04}\u{905E}\u{6E1B}\u{6392}\u{5E8F}`,
-	expand: "Expandir",
-	resizerDescription: "Presiona Enter para cambiar tamaño",
-	select: "Seleccionar",
-	selectAll: "todoseleccionar",
-	sortable: "Columna ordenable"
+	expand: "展開",
+	resizerDescription: "按 Enter 鍵以開始調整大小",
+	select: "選取",
+	selectAll: "全選",
+	sortable: "可排序的欄"
 };
 //#endregion
 //#region node_modules/react-aria/dist/private/table/intlStrings.mjs
@@ -28938,8 +28938,8 @@ Gce = {
 //#region node_modules/react-aria/dist/private/intl/tree/ja-JP.mjs
 var Kce = {};
 Kce = {
-	collapse: "Contraer",
-	expand: "Expandir"
+	collapse: "折りたたむ",
+	expand: "展開"
 };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/tree/ko-KR.mjs
@@ -29057,15 +29057,15 @@ cle = {
 //#region node_modules/react-aria/dist/private/intl/tree/zh-CN.mjs
 var lle = {};
 lle = {
-	collapse: "Colapsar",
-	expand: "expandirexpandir"
+	collapse: "折叠",
+	expand: "扩展"
 };
 //#endregion
 //#region node_modules/react-aria/dist/private/intl/tree/zh-TW.mjs
 var ule = {};
 ule = {
-	collapse: "Contraer",
-	expand: "Expandir"
+	collapse: "收合",
+	expand: "展開"
 };
 //#endregion
 //#region node_modules/react-aria/dist/private/tree/intlStrings.mjs
@@ -29180,7 +29180,7 @@ function eE({ visible: e, ...t }) {
 var tE = {
 	group: "clear",
 	operation: "clear",
-	label: "Cancelar",
+	label: "取消",
 	glyph: "x"
 };
 function vle(e, t = !1) {
@@ -29189,13 +29189,13 @@ function vle(e, t = !1) {
 			{
 				group: "batch",
 				operation: "restore",
-				label: "Restaurar",
+				label: "还原",
 				glyph: "rotate-ccw"
 			},
 			{
 				group: "batch",
 				operation: "delete",
-				label: "Eliminar permanentemente",
+				label: "彻底删除",
 				glyph: "trash",
 				danger: !0
 			},
@@ -29205,18 +29205,18 @@ function vle(e, t = !1) {
 			t ? {
 				group: "junk",
 				operation: "reconsider-junk",
-				label: "Reclasificar",
+				label: "重新判断",
 				glyph: "rotate-ccw"
 			} : {
 				group: "junk",
 				operation: "dismiss-junk",
-				label: "No es basura",
+				label: "不是垃圾",
 				glyph: "check"
 			},
 			{
 				group: "junk",
 				operation: "dispose",
-				label: "Mover a papelera",
+				label: "移入回收站",
 				glyph: "trash",
 				danger: !0
 			},
@@ -29226,19 +29226,19 @@ function vle(e, t = !1) {
 			{
 				group: "follow",
 				operation: "save",
-				label: "Guardar en base de datos",
+				label: "保存到数据库",
 				glyph: "bookmark-plus"
 			},
 			{
 				group: "follow",
 				operation: "seen",
-				label: "Marcar como visto",
+				label: "标记已看",
 				glyph: "eye"
 			},
 			{
 				group: "follow",
 				operation: "ignored",
-				label: "Ignorar",
+				label: "忽略",
 				glyph: "eye-off"
 			},
 			tE
@@ -29247,31 +29247,31 @@ function vle(e, t = !1) {
 			{
 				group: "batch",
 				operation: "like",
-				label: "Me gusta",
+				label: "喜欢",
 				glyph: "thumbs-up"
 			},
 			{
 				group: "batch",
 				operation: "seen",
-				label: "Visto",
+				label: "看过",
 				glyph: "eye"
 			},
 			{
 				group: "batch",
 				operation: "later",
-				label: "Ver más tarde",
+				label: "稍后看",
 				glyph: "bookmark-plus"
 			},
 			{
 				group: "region",
 				operation: "region",
-				label: "determinar origen",
+				label: "判定产地",
 				glyph: "globe"
 			},
 			{
 				group: "batch",
 				operation: "dispose",
-				label: "Mover a papelera",
+				label: "移入回收站",
 				glyph: "trash",
 				danger: !0
 			},
@@ -29313,9 +29313,9 @@ function Tle({ host: e, props: t }) {
 		"data-batch-scope": "",
 		"data-context": t.context,
 		children: /* @__PURE__ */ (0, C.jsx)(eE, {
-			label: "Acción para todas las opciones objetivo",
+			label: "所选项目操作",
 			visible: t.count > 0,
-			count: `Ya seleccionados ${t.count.toLocaleString()} elemento(s)`,
+			count: `已选 ${t.count.toLocaleString()} 项`,
 			children: vle(t.context, t.junkDismissed).map((t) => /* @__PURE__ */ (0, C.jsxs)("button", {
 				type: "button",
 				"data-batch-group": t.group,
@@ -29359,23 +29359,23 @@ function Ele(e, t) {
 //#endregion
 //#region src/sort-preferences.ts
 var Dle = [
-	["seed", "Aleatorio"],
-	["rating", "Puntuación"],
-	["o", "Contador de orgasmos"],
-	["plays", "Reproducciones"],
-	["dur", "Duración"],
-	["size", "Tamaño"],
-	["new", "Fecha de catalogación"],
-	["played", "Tiempo de reproducción"]
-], aE = ["release", "Fecha de lanzamiento"], Ole = [...Dle, aE].map(([e]) => e), oE = {
-	rating: ["De mayor a menor", "De menor a mayor"],
-	o: ["De más a menos", "De menos a más"],
-	plays: ["De más a menos", "De menos a más"],
-	dur: ["De más largo a más corto", "De más corto a más largo"],
-	size: ["De mayor a menor", "De menor a mayor"],
-	new: ["Más nuevos primero", "Más antiguos primero"],
-	played: ["De más cercano a más lejano", "De más lejano a más cercano"],
-	release: ["Más nuevos primero", "Más antiguos primero"]
+	["seed", "随机"],
+	["rating", "评分"],
+	["o", "高潮计数"],
+	["plays", "观看次数"],
+	["dur", "时长"],
+	["size", "体积"],
+	["new", "入库时间"],
+	["played", "观看时间"]
+], aE = ["release", "发行时间"], Ole = [...Dle, aE].map(([e]) => e), oE = {
+	rating: ["从高到低", "从低到高"],
+	o: ["从多到少", "从少到多"],
+	plays: ["从多到少", "从少到多"],
+	dur: ["从长到短", "从短到长"],
+	size: ["从大到小", "从小到大"],
+	new: ["从新到旧", "从旧到新"],
+	played: ["从近到远", "从远到近"],
+	release: ["从新到旧", "从旧到新"]
 }, kle = {
 	big: ["size", "desc"],
 	short: ["dur", "asc"],
@@ -29410,13 +29410,13 @@ var dE = [
 	"spot2",
 	"spot3"
 ], jle = [
-	"Resplandor 1",
-	"Resplandor 2",
-	"Resplandor 3"
+	"光晕一",
+	"光晕二",
+	"光晕三"
 ], Mle = "native", fE = [
 	[
 		"ash",
-		"Gris niebla",
+		"灰雾",
 		{
 			spot1: {
 				color: "#8f98a4",
@@ -29435,7 +29435,7 @@ var dE = [
 	],
 	[
 		"amber",
-		"Sala cálida",
+		"钨丝暖阁",
 		{
 			spot1: {
 				color: "#e08a2f",
@@ -29454,7 +29454,7 @@ var dE = [
 	],
 	[
 		"plum",
-		"Sakura nocturno",
+		"夜樱",
 		{
 			spot1: {
 				color: "#b455a0",
@@ -29473,7 +29473,7 @@ var dE = [
 	],
 	[
 		"pine",
-		"Verde selva",
+		"深林",
 		{
 			spot1: {
 				color: "#3f9e57",
@@ -29492,7 +29492,7 @@ var dE = [
 	],
 	[
 		"iris",
-		"Cristal aurora",
+		"琉璃霞",
 		{
 			spot1: {
 				color: "#1e50a2",
@@ -29511,7 +29511,7 @@ var dE = [
 	],
 	[
 		"opal",
-		"Ópalo",
+		"蛋白石",
 		{
 			spot1: {
 				color: "#9be0e8",
@@ -29530,7 +29530,7 @@ var dE = [
 	],
 	[
 		"lagoon",
-		"Azul laguna",
+		"潟湖",
 		{
 			spot1: {
 				color: "#5ce3e6",
@@ -29549,7 +29549,7 @@ var dE = [
 	],
 	[
 		"jade",
-		"Jade",
+		"翡翠",
 		{
 			spot1: {
 				color: "#8fe3b0",
@@ -29568,7 +29568,7 @@ var dE = [
 	],
 	[
 		"flare",
-		"Destello",
+		"耀斑",
 		{
 			spot1: {
 				color: "#ffc24b",
@@ -29587,7 +29587,7 @@ var dE = [
 	],
 	[
 		"orchid",
-		"Púrpura orquídea",
+		"兰紫",
 		{
 			spot1: {
 				color: "#e794c9",
@@ -29606,7 +29606,7 @@ var dE = [
 	],
 	[
 		"peach",
-		"Rosa melocotón",
+		"桃晕",
 		{
 			spot1: {
 				color: "#ffc9a3",
@@ -29625,7 +29625,7 @@ var dE = [
 	],
 	[
 		"tide",
-		"Azul eléctrico",
+		"电蓝",
 		{
 			spot1: {
 				color: "#6fd8f2",
@@ -29644,7 +29644,7 @@ var dE = [
 	],
 	[
 		"sunset",
-		"Ocaso",
+		"落日",
 		{
 			spot1: {
 				color: "#ffae3f",
@@ -29663,7 +29663,7 @@ var dE = [
 	],
 	[
 		"mint",
-		"Menta hielo",
+		"薄荷冰",
 		{
 			spot1: {
 				color: "#a8f0dc",
@@ -29682,7 +29682,7 @@ var dE = [
 	],
 	[
 		"bloom",
-		"Noche profunda",
+		"夜昙",
 		{
 			spot1: {
 				color: "#4c3894",
@@ -29701,7 +29701,7 @@ var dE = [
 	],
 	[
 		"rosegold",
-		"Oro rosa",
+		"玫瑰金",
 		{
 			spot1: {
 				color: "#fbc9ac",
@@ -29720,7 +29720,7 @@ var dE = [
 	],
 	[
 		Mle,
-		"Vidrio original",
+		"玻璃原色",
 		{
 			spot1: {
 				color: "#6686b8",
@@ -29737,423 +29737,423 @@ var dE = [
 		},
 		"blue"
 	]
-], pE = (e) => e === Mle, mE = [...fE.map(([e, t]) => [e, t]), ["custom", "Personalizado"]], Nle = (e) => (mE.find(([t]) => t === e) || mE[0])[1], hE = (e) => structuredClone((fE.find(([t]) => t === e) || fE[0])[2]), Ple = [
-	["red", "Rojo"],
-	["orange", "Naranja"],
-	["amber", "Ámbar"],
-	["lime", "Verde lima"],
-	["emerald", "Verde esmeralda brillante"],
-	["teal", "Verde cian"],
-	["sky", "Azul cielo"],
-	["blue", "Azul"],
-	["indigo", "Azul índigo"],
-	["violet", "Violeta"],
-	["fuchsia", "Magenta"],
-	["rose", "Rojo rosa"]
+], pE = (e) => e === Mle, mE = [...fE.map(([e, t]) => [e, t]), ["custom", "自定义"]], Nle = (e) => (mE.find(([t]) => t === e) || mE[0])[1], hE = (e) => structuredClone((fE.find(([t]) => t === e) || fE[0])[2]), Ple = [
+	["red", "红"],
+	["orange", "橙"],
+	["amber", "琥珀"],
+	["lime", "柠绿"],
+	["emerald", "翠绿"],
+	["teal", "青绿"],
+	["sky", "天蓝"],
+	["blue", "蓝"],
+	["indigo", "靛蓝"],
+	["violet", "紫罗兰"],
+	["fuchsia", "品红"],
+	["rose", "玫红"]
 ], gE = "blue", Fle = (e) => Ple.some(([t]) => t === e) ? e : gE, Ile = (e) => (fE.find(([t]) => t === e) || [])[3] || "blue", Lle = [
-	["all", "Todo"],
-	["gray", "Gris"],
-	["red", "Rojo"],
-	["yellow", "Amarillo"],
-	["green", "Verde"],
-	["cyan", "Cian"],
-	["blue", "Azul"],
-	["purple", "Púrpura"],
-	["brown", "Marrón"]
+	["all", "全部"],
+	["gray", "灰"],
+	["red", "红"],
+	["yellow", "黄"],
+	["green", "绿"],
+	["cyan", "青"],
+	["blue", "蓝"],
+	["purple", "紫"],
+	["brown", "棕"]
 ], Rle = [
 	[
 		"gray",
-		"Gris nube",
+		"云灰",
 		"#d8dade"
 	],
 	[
 		"gray",
-		"Gris niebla",
+		"雾灰",
 		"#b6bcc4"
 	],
 	[
 		"gray",
-		"Gris cal",
+		"石灰",
 		"#8f98a4"
 	],
 	[
 		"gray",
-		"Gris hierro",
+		"铁灰",
 		"#6f7783"
 	],
 	[
 		"gray",
-		"Gris tinta",
+		"墨灰",
 		"#4a4e56"
 	],
 	[
 		"gray",
-		"Gris oscuro",
+		"深灰",
 		"#2e3138"
 	],
 	[
 		"red",
-		"Rojo sakura",
+		"樱红",
 		"#f08a8a"
 	],
 	[
 		"red",
-		"Coral",
+		"珊瑚",
 		"#e26a62"
 	],
 	[
 		"red",
-		"Rojo ladrillo",
+		"砖红",
 		"#c4544a"
 	],
 	[
 		"red",
-		"Rojo bermellón",
+		"朱红",
 		"#b5322f"
 	],
 	[
 		"red",
-		"Vino tinto",
+		"酒红",
 		"#8e2a2c"
 	],
 	[
 		"red",
-		"Rojo oscuro",
+		"暗红",
 		"#6b2224"
 	],
 	[
 		"yellow",
-		"Amarillo trigo",
+		"麦黄",
 		"#f2d48a"
 	],
 	[
 		"yellow",
-		"Ámbar",
+		"琥珀",
 		"#e8b451"
 	],
 	[
 		"yellow",
-		"Filamento de tungsteno",
+		"钨丝",
 		"#e08a2f"
 	],
 	[
 		"yellow",
-		"Amarillo dorado",
+		"金黄",
 		"#cf8a20"
 	],
 	[
 		"yellow",
-		"Amarillo jengibre",
+		"姜黄",
 		"#a9701c"
 	],
 	[
 		"yellow",
-		"Amarillo castaño",
+		"栗黄",
 		"#7d5216"
 	],
 	[
 		"green",
-		"Verde brote",
+		"嫩芽",
 		"#a9cf7e"
 	],
 	[
 		"green",
-		"Verde hoja",
+		"叶绿",
 		"#7fae4a"
 	],
 	[
 		"green",
-		"Verde hierba",
+		"草绿",
 		"#5da34f"
 	],
 	[
 		"green",
-		"Verde bosque",
+		"森绿",
 		"#3f9e57"
 	],
 	[
 		"green",
-		"Verde musgo",
+		"苔绿",
 		"#4f9463"
 	],
 	[
 		"green",
-		"Verde tinta",
+		"墨绿",
 		"#27563a"
 	],
 	[
 		"blue",
-		"Azul cielo",
+		"天蓝",
 		"#9fc2e8"
 	],
 	[
 		"blue",
-		"Azul lago",
+		"湖蓝",
 		"#6a9fd8"
 	],
 	[
 		"blue",
-		"Azul índigo",
+		"靛蓝",
 		"#4478c0"
 	],
 	[
 		"blue",
-		"Azul zafiro",
+		"宝蓝",
 		"#2f5ba3"
 	],
 	[
 		"blue",
-		"Azul marino",
+		"深蓝",
 		"#27467c"
 	],
 	[
 		"blue",
-		"Azul nocturno",
+		"夜蓝",
 		"#1c3358"
 	],
 	[
 		"purple",
-		"Lila",
+		"丁香",
 		"#c3a7e0"
 	],
 	[
 		"purple",
-		"Magenta",
+		"品红",
 		"#b455a0"
 	],
 	[
 		"purple",
-		"Lavanda",
+		"薰衣草",
 		"#a67fd2"
 	],
 	[
 		"purple",
-		"Uva",
+		"葡萄",
 		"#6a4fd0"
 	],
 	[
 		"purple",
-		"Violeta berenjena",
+		"茄紫",
 		"#7a4f96"
 	],
 	[
 		"purple",
-		"Púrpura oscuro",
+		"深紫",
 		"#432c6d"
 	],
 	[
 		"brown",
-		"Marrón arena",
+		"沙棕",
 		"#d6b492"
 	],
 	[
 		"brown",
-		"Marrón terracota",
+		"陶棕",
 		"#bd8f68"
 	],
 	[
 		"brown",
-		"Siena",
+		"赭棕",
 		"#a86a52"
 	],
 	[
 		"brown",
-		"Marrón castaño",
+		"栗棕",
 		"#8c5340"
 	],
 	[
 		"brown",
-		"Marrón pardo",
+		"褐棕",
 		"#6d3f31"
 	],
 	[
 		"brown",
-		"Marrón oscuro",
+		"深褐",
 		"#4e2d23"
 	],
 	[
 		"red",
-		"Rojo aurora",
+		"霞红",
 		"#f09199"
 	],
 	[
 		"red",
-		"Rosa loto",
+		"藕粉",
 		"#f8b8d9"
 	],
 	[
 		"red",
-		"Rojo fuego",
+		"火红",
 		"#f4664d"
 	],
 	[
 		"red",
-		"Rosa melocotón intenso",
+		"桃红",
 		"#f08a8c"
 	],
 	[
 		"red",
-		"Rojo atardecer",
+		"夕红",
 		"#f0574d"
 	],
 	[
 		"red",
-		"Rosa sakura",
+		"粉樱",
 		"#f6c6e2"
 	],
 	[
 		"red",
-		"Rosa",
+		"玫粉",
 		"#e79ba7"
 	],
 	[
 		"yellow",
-		"Amarillo sol",
+		"阳黄",
 		"#ffc24b"
 	],
 	[
 		"yellow",
-		"Naranja mandarina",
+		"橘黄",
 		"#ffae3f"
 	],
 	[
 		"green",
-		"Verde jade",
+		"玉绿",
 		"#8fe3b0"
 	],
 	[
 		"green",
-		"Verde esmeralda brillante",
+		"翠绿",
 		"#22c79a"
 	],
 	[
 		"green",
-		"Jade oscuro",
+		"深翠",
 		"#0b5f51"
 	],
 	[
 		"green",
-		"Verde pino",
+		"松绿",
 		"#147a5f"
 	],
 	[
 		"cyan",
-		"Cian claro",
+		"浅青",
 		"#9be0e8"
 	],
 	[
 		"cyan",
-		"Aguamarina",
+		"碧波",
 		"#5ce3e6"
 	],
 	[
 		"cyan",
-		"Verde pavo real",
+		"孔雀",
 		"#0f9cc2"
 	],
 	[
 		"cyan",
-		"Azul hielo",
+		"冰青",
 		"#6fd8f2"
 	],
 	[
 		"cyan",
-		"Menta",
+		"薄荷",
 		"#a8f0dc"
 	],
 	[
 		"cyan",
-		"Verde esmeralda",
+		"碧绿",
 		"#52cbb0"
 	],
 	[
 		"blue",
-		"Azul cristal",
+		"琉璃",
 		"#1e50a2"
 	],
 	[
 		"blue",
-		"Azul índigo",
+		"藏蓝",
 		"#274a78"
 	],
 	[
 		"blue",
-		"Azul eléctrico",
+		"电蓝",
 		"#4c5be0"
 	],
 	[
 		"purple",
-		"Púrpura antiguo",
+		"古紫",
 		"#895b8a"
 	],
 	[
 		"purple",
-		"Glicinia",
+		"紫藤",
 		"#c4b5f7"
 	],
 	[
 		"purple",
-		"Púrpura ciruela",
+		"梅紫",
 		"#8a2e5e"
 	],
 	[
 		"purple",
-		"Rosa orquídea",
+		"兰粉",
 		"#e794c9"
 	],
 	[
 		"purple",
-		"Púrpura orquídea",
+		"兰紫",
 		"#9678ce"
 	],
 	[
 		"purple",
-		"Índigo",
+		"靛紫",
 		"#4a3894"
 	],
 	[
 		"purple",
-		"Púrpura baya",
+		"莓紫",
 		"#b65e8c"
 	],
 	[
 		"purple",
-		"Púrpura tinta",
+		"墨紫",
 		"#2a2450"
 	],
 	[
 		"purple",
-		"Púrpura crepúsculo",
+		"暮紫",
 		"#5d2a66"
 	],
 	[
 		"purple",
-		"Violeta nocturno",
+		"夜紫",
 		"#4c3894"
 	],
 	[
 		"purple",
-		"Lila",
+		"淡紫",
 		"#b387e8"
 	],
 	[
 		"purple",
-		"Púrpura rosa",
+		"玫紫",
 		"#8e5a74"
 	],
 	[
 		"brown",
-		"Naranja albaricoque",
+		"杏橙",
 		"#ffc9a3"
 	],
 	[
 		"brown",
-		"Albaricoque claro",
+		"浅杏",
 		"#fbc9ac"
 	],
 	[
 		"blue",
-		"Azul cielo despejado",
+		"霁蓝",
 		"#6686b8"
 	]
 ], zle = (e, t, n, r) => Number.isInteger(e) && e >= t && e <= n ? e : r, Ble = (e, t) => /^#[0-9a-f]{6}$/i.test(String(e)) ? String(e).toLowerCase() : t, Vle = (e, t) => `rgba(${[
@@ -30314,17 +30314,17 @@ function rue(e = yE()) {
 var iue = [
 	[
 		"system",
-		"Seguir sistema",
+		"跟随系统",
 		"monitor"
 	],
 	[
 		"light",
-		"Claro",
+		"浅色",
 		"sun"
 	],
 	[
 		"dark",
-		"Oscuro",
+		"深色",
 		"moon"
 	]
 ], aue = null, oue = () => aue ??= matchMedia("(prefers-color-scheme: dark)"), bE = null;
@@ -30354,27 +30354,27 @@ function lue() {
 //#region src/appearance/layout.ts
 var SE = [[
 	"big",
-	"Imagen grande",
+	"大图",
 	"maximize"
 ], [
 	"small",
-	"Imagen pequeña",
+	"小图",
 	"layout-grid"
 ]], uue = [[
 	"big",
-	"Imagen grande",
+	"大图",
 	"maximize"
 ], [
 	"small",
-	"Imagen pequeña",
+	"小图",
 	"layout-grid"
 ]], due = [[
 	"fixed",
-	"Proporción fija",
+	"固定比例",
 	"layout-grid"
 ], [
 	"masonry",
-	"Cascada",
+	"瀑布流",
 	"columns-2"
 ]], CE = .75, wE = () => yE().value, TE = (e = wE()) => $i(e.javLayout), fue = (e = wE()) => $i(e.homeLayout), pue = (e, t = wE()) => e ? fue(t) : TE(t), mue = uue.map(([e]) => e), hue = due.map(([e]) => e), EE = (e = wE()) => _E(e.photoSize, mue, "small"), DE = (e = wE()) => _E(e.photoLayout, hue, "masonry"), OE = null;
 function kE(e, t = wE()) {
@@ -30412,13 +30412,13 @@ var xue = "density", Sue = {
 }, Cue = () => localStorage.getItem(xue) === "dense" ? "dense" : "big";
 function wue(e, t) {
 	let [n, r] = uue;
-	e.querySelector("[data-icon-swap]") ? Io(e, t === r[0] ? "b" : "a") : e.innerHTML = Fo(n[2], r[2], t === r[0] ? "b" : "a"), e.setAttribute("aria-label", t === "big" ? "CambiarcomoImagen pequeña" : "CambiarcomoImagen grande");
+	e.querySelector("[data-icon-swap]") ? Io(e, t === r[0] ? "b" : "a") : e.innerHTML = Fo(n[2], r[2], t === r[0] ? "b" : "a"), e.setAttribute("aria-label", t === "big" ? "切换为小图" : "切换为大图");
 }
 var Tue = () => document.querySelector("#density");
 function jE(e = Cue()) {
 	document.documentElement.style.setProperty("--tile", Sue[e]), document.body.dataset.density = e;
 	let t = Tue();
-	t && (t.setAttribute("aria-pressed", String(e === "dense")), t.title = "Actual:" + (e === "big" ? "Imagen grande" : "Compacto"), wue(t, e === "big" ? "big" : "small"));
+	t && (t.setAttribute("aria-pressed", String(e === "dense")), t.title = "当前：" + (e === "big" ? "大图" : "密集"), wue(t, e === "big" ? "big" : "small"));
 }
 function Eue() {
 	let e = Cue() === "big" ? "dense" : "big";
@@ -30426,7 +30426,7 @@ function Eue() {
 }
 function Due(e) {
 	let t = Tue();
-	t && (t.setAttribute("aria-pressed", String(e === "small")), t.title = "Actual:" + (e === "big" ? "Imagen grande" : "Imagen pequeña"), wue(t, e));
+	t && (t.setAttribute("aria-pressed", String(e === "small")), t.title = "当前：" + (e === "big" ? "大图" : "小图"), wue(t, e));
 }
 //#endregion
 //#region src/appearance/glow.ts
@@ -30453,7 +30453,7 @@ var Aue = (e, t, n) => ({
 });
 function jue(e) {
 	let t = fE.map(([e, t, n]) => Aue(e, t, dE.map((e) => n[e].color)));
-	return e.preset === "custom" && t.push(Aue("custom", "Personalizado", dE.map((t) => e[t].color))), t;
+	return e.preset === "custom" && t.push(Aue("custom", "自定义", dE.map((t) => e[t].color))), t;
 }
 var Mue = Ple;
 function Nue(e, t = yE()) {
@@ -30518,27 +30518,27 @@ function Vue({ host: e }) {
 			"data-glow-head": "",
 			"data-glow-presets": "",
 			hidden: !n.on,
-			children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "Resplandor" }), /* @__PURE__ */ (0, C.jsx)("button", {
+			children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "光晕" }), /* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
 				"data-glow-preset-reset": "",
 				onClick: () => Fue(t),
-				children: "Restablecer"
+				children: "重置"
 			})]
 		}),
 		/* @__PURE__ */ (0, C.jsx)(Rue, {
 			store: t,
-			label: "Resplandor",
+			label: "光晕",
 			hidden: !n.on
 		}),
 		/* @__PURE__ */ (0, C.jsx)("p", {
 			"data-glow-head": "",
 			"data-glow-sub": "",
-			children: /* @__PURE__ */ (0, C.jsx)("span", { children: "Color de énfasis" })
+			children: /* @__PURE__ */ (0, C.jsx)("span", { children: "强调色" })
 		}),
 		/* @__PURE__ */ (0, C.jsx)("div", {
 			"data-accent-grid": "",
 			role: "group",
-			"aria-label": "Color de énfasis",
+			"aria-label": "强调色",
 			children: Mue.map(([e, n]) => /* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
 				"data-glow-chip": "",
@@ -30559,7 +30559,7 @@ function Vue({ host: e }) {
 			className: "geist-button primary",
 			"data-glow-detail": "",
 			onClick: () => e.openDetails(),
-			children: "DetalladoConfiguración"
+			children: "详细设置"
 		}) })
 	] });
 }
@@ -30570,7 +30570,7 @@ function Hue(e) {
 	IE = e;
 }
 function LE() {
-	if (!IE) throw Error("ReproductorAún no hayconectarsuperiorhost principal (configurePlayer)");
+	if (!IE) throw Error("播放器还没有接上宿主（configurePlayer）");
 	return IE;
 }
 //#endregion
@@ -30581,7 +30581,7 @@ function Uue(e) {
 }
 function Wue() {
 	let e = document.getElementById("playerMenu");
-	return e || (e = document.createElement("div"), e.className = "popmenu", e.setAttribute("data-player-context-menu", ""), e.id = "playerMenu", e.setAttribute("role", "menu"), e.setAttribute("aria-label", "Reproductormenú"), e.hidden = !0, document.body.append(e)), e;
+	return e || (e = document.createElement("div"), e.className = "popmenu", e.setAttribute("data-player-context-menu", ""), e.id = "playerMenu", e.setAttribute("role", "menu"), e.setAttribute("aria-label", "播放器菜单"), e.hidden = !0, document.body.append(e)), e;
 }
 var zE = null, Gue = (e, t) => t ? e.replace("<svg", `<svg ${t}=""`) : e;
 function BE() {
@@ -30620,42 +30620,42 @@ function que(e) {
 		}
 		return t && i.searchParams.set("t", String(Math.floor(e.currentTime() || 0))), i.href;
 	}, a = (e, t) => {
-		Kue(i(e)).then((e) => LE().toast(e ? t : "Copia fallida. Por favor copia manualmente la barra de dirección", {
+		Kue(i(e)).then((e) => LE().toast(e ? t : "复制失败，请手动复制地址栏", {
 			timeout: 4e3,
 			warn: !e
 		}));
 	}, o = [{
 		icon: "repeat",
-		label: "Reproducción en bucle",
+		label: "循环播放",
 		checked: !!e.loop(),
 		run: () => e.loop(!e.loop())
 	}, t ? {
 		icon: "maximize-2",
-		label: "Expandir",
+		label: "展开",
 		run: () => RE?.expand()
 	} : {
 		icon: "picture-in-picture-2",
-		label: "Reproductor mini",
+		label: "迷你播放器",
 		run: () => RE?.toMiniplayer()
 	}];
 	document.pictureInPictureEnabled && o.push({
 		icon: "player-pip",
 		fill: !0,
-		label: "Imagen en imagen",
+		label: "画中画",
 		run: () => e.el().querySelector(".vjs-picture-in-picture-control")?.click()
 	}), o.push({
 		icon: "link",
-		label: "CopiarVideosURL",
-		run: () => a(!1, "CopiadoVideosURL")
+		label: "复制视频网址",
+		run: () => a(!1, "已复制视频网址")
 	}), o.push({
 		icon: "link",
-		label: "CopiarActualHoraVideosURL",
-		run: () => a(!0, "CopiadoActualHoraVideosURL")
+		label: "复制当前时间的视频网址",
+		run: () => a(!0, "已复制当前时间的视频网址")
 	});
 	let s = document.getElementById("playerStatsBtn");
 	return !t && s && !s.hidden && o.push({
 		icon: "chart",
-		label: "Estadísticas de reproducción",
+		label: "播放统计",
 		run: () => s.click()
 	}), o;
 }
@@ -30780,7 +30780,7 @@ function qE(e, t, n, r) {
 	return `<span data-player-stats-plot="${t}" role="img" aria-label="${B(r)}">${o}</span>`;
 }
 function nde() {
-	return `<button data-player-stats-button="" id="playerStatsBtn" aria-label="Estadísticas de reproducción" title="Estadísticas de reproducción" aria-pressed="false" hidden>${z("chart")}</button>
+	return `<button data-player-stats-button="" id="playerStatsBtn" aria-label="播放统计" title="播放统计" aria-pressed="false" hidden>${z("chart")}</button>
        <div data-player-net="" id="playerNet" role="status" aria-live="polite" hidden></div>
        <div data-player-stats="" id="playerStats" role="status" hidden></div>`;
 }
@@ -30800,30 +30800,30 @@ function ade(e, t, n = "", r = null) {
 	return i > 0 ? i : r ? Number(r.bits) || 0 : ide(t, n);
 }
 function JE(e) {
-	if (!Number.isFinite(e) || e <= 0) return "Cargando...";
+	if (!Number.isFinite(e) || e <= 0) return "加载中…";
 	let t = e / 8;
 	return t >= 1048576 ? `${(t / 1048576).toFixed(1)} MB/s` : `${Math.max(1, Math.round(t / 1024))} KB/s`;
 }
 function ode(e, t) {
-	return e > 0 ? JE(e) : t > 0 ? `Cargado ${Math.round(t)} segundo(s)` : JE(0);
+	return e > 0 ? JE(e) : t > 0 ? `已缓冲 ${Math.round(t)} 秒` : JE(0);
 }
 //#endregion
 //#region src/player/subtitle-style.ts
 var YE = {
 	font: {
-		label: "Fuente",
+		label: "字体",
 		values: [
-			["sans", "NingunoSerifa"],
-			["mono", "monoespaciada sin serif"],
-			["serif", "Serifa"],
-			["mono-serif", "Monoespaciado con serifa"],
-			["casual", "Casual"],
-			["cursive", "Manuscrito"],
-			["small-caps", "Versalitas"]
+			["sans", "无衬线"],
+			["mono", "等宽无衬线"],
+			["serif", "衬线"],
+			["mono-serif", "等宽衬线"],
+			["casual", "休闲"],
+			["cursive", "手写"],
+			["small-caps", "小型大写字母"]
 		]
 	},
 	size: {
-		label: "Tamaño de fuente",
+		label: "字号",
 		values: [
 			"50",
 			"75",
@@ -30835,20 +30835,20 @@ var YE = {
 		].map((e) => [e, `${e}%`])
 	},
 	color: {
-		label: "color de texto",
+		label: "文字颜色",
 		values: [
-			["white", "Blanco"],
-			["yellow", "Amarillo"],
-			["green", "Verde"],
-			["cyan", "Cian"],
-			["blue", "Azul"],
-			["magenta", "Magenta"],
-			["red", "Rojo"],
-			["black", "Negro"]
+			["white", "白色"],
+			["yellow", "黄色"],
+			["green", "绿色"],
+			["cyan", "青色"],
+			["blue", "蓝色"],
+			["magenta", "品红"],
+			["red", "红色"],
+			["black", "黑色"]
 		]
 	},
 	opacity: {
-		label: "textoNoTransparencia",
+		label: "文字不透明度",
 		values: [
 			"25",
 			"50",
@@ -30857,20 +30857,20 @@ var YE = {
 		].map((e) => [e, `${e}%`])
 	},
 	background: {
-		label: "FondoColor",
+		label: "背景颜色",
 		values: [
-			["black", "Negro"],
-			["white", "Blanco"],
-			["red", "Rojo"],
-			["green", "Verde"],
-			["blue", "Azul"],
-			["yellow", "Amarillo"],
-			["magenta", "Magenta"],
-			["cyan", "Cian"]
+			["black", "黑色"],
+			["white", "白色"],
+			["red", "红色"],
+			["green", "绿色"],
+			["blue", "蓝色"],
+			["yellow", "黄色"],
+			["magenta", "品红"],
+			["cyan", "青色"]
 		]
 	},
 	backgroundOpacity: {
-		label: "FondoNoTransparencia",
+		label: "背景不透明度",
 		values: [
 			"0",
 			"25",
@@ -30880,20 +30880,20 @@ var YE = {
 		].map((e) => [e, `${e}%`])
 	},
 	window: {
-		label: "color de ventana",
+		label: "窗口颜色",
 		values: [
-			["black", "Negro"],
-			["white", "Blanco"],
-			["red", "Rojo"],
-			["green", "Verde"],
-			["blue", "Azul"],
-			["yellow", "Amarillo"],
-			["magenta", "Magenta"],
-			["cyan", "Cian"]
+			["black", "黑色"],
+			["white", "白色"],
+			["red", "红色"],
+			["green", "绿色"],
+			["blue", "蓝色"],
+			["yellow", "黄色"],
+			["magenta", "品红"],
+			["cyan", "青色"]
 		]
 	},
 	windowOpacity: {
-		label: "transparencia de ventana",
+		label: "窗口不透明度",
 		values: [
 			"0",
 			"25",
@@ -30903,13 +30903,13 @@ var YE = {
 		].map((e) => [e, `${e}%`])
 	},
 	edge: {
-		label: "Estilo de borde de carácter",
+		label: "字符边缘样式",
 		values: [
-			["none", "Ninguno"],
-			["raised", "Elevado"],
-			["depressed", "Hundido"],
-			["outline", "Contorno"],
-			["shadow", "Sombra"]
+			["none", "无"],
+			["raised", "凸起"],
+			["depressed", "凹陷"],
+			["outline", "描边"],
+			["shadow", "阴影"]
 		]
 	}
 }, sde = {
@@ -31017,7 +31017,7 @@ var pde = () => "<svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"><path d=\"M11,1
 		this.player = e, this.video = t, this.panels = n, this.styles = fde(e.el(), t, this.cleanup.signal), this.cc = e.el().querySelector(".vjs-subtitles-control > button"), this.cc.innerHTML = pde(), this.cc.onclick = () => {
 			let e = this.tracks().find((e) => e.mode === "showing");
 			e ? (this.last = e, this.select(null)) : this.tracks().length ? this.select(this.last && this.tracks().includes(this.last) ? this.last : this.tracks()[0]) : this.show();
-		}, this.input.type = "file", this.input.accept = ".srt,.ass,.ssa,.vtt", this.input.hidden = !0, this.input.setAttribute("aria-label", "Cargar archivo de subtítulos"), e.el().append(this.input), this.input.addEventListener("change", () => {
+		}, this.input.type = "file", this.input.accept = ".srt,.ass,.ssa,.vtt", this.input.hidden = !0, this.input.setAttribute("aria-label", "加载字幕文件"), e.el().append(this.input), this.input.addEventListener("change", () => {
 			let e = this.input.files?.[0];
 			this.input.value = "", e && this.importFile(e);
 		}, { signal: this.cleanup.signal }), t.textTracks.addEventListener("change", () => this.sync(), { signal: this.cleanup.signal }), t.textTracks.addEventListener("addtrack", () => {
@@ -31032,14 +31032,14 @@ var pde = () => "<svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"><path d=\"M11,1
 		return [...this.video.textTracks].filter((e) => ["subtitles", "captions"].includes(e.kind));
 	}
 	label() {
-		return this.tracks().find((e) => e.mode === "showing")?.label || "Desactivar";
+		return this.tracks().find((e) => e.mode === "showing")?.label || "关闭";
 	}
 	hide() {
 		this.request?.abort(), this.page = "", this.generation++;
 	}
 	sync() {
 		let e = this.tracks().find((e) => e.mode === "showing");
-		this.cc.setAttribute("aria-pressed", String(!!e)), this.cc.setAttribute("aria-label", e ? "DesactivarSubtítulos" : "Activar subtítulos"), e && (this.last = e);
+		this.cc.setAttribute("aria-pressed", String(!!e)), this.cc.setAttribute("aria-label", e ? "关闭字幕" : "开启字幕"), e && (this.last = e);
 	}
 	select(e) {
 		this.tracks().forEach((t) => {
@@ -31047,7 +31047,7 @@ var pde = () => "<svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"><path d=\"M11,1
 		}), this.sync();
 	}
 	header(e, t = "") {
-		return `<div class="vjs-peach-panel-header"><button type="button" class="vjs-peach-menu-back" data-subtitle-back aria-label="Volver al menú anterior">${z("player-menu-back")}</button><strong>${B(e)}</strong>${t}</div>`;
+		return `<div class="vjs-peach-panel-header"><button type="button" class="vjs-peach-menu-back" data-subtitle-back aria-label="返回上一个菜单">${z("player-menu-back")}</button><strong>${B(e)}</strong>${t}</div>`;
 	}
 	panel(e, t, n = 1) {
 		this.generation++, this.panels.open();
@@ -31056,10 +31056,10 @@ var pde = () => "<svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"><path d=\"M11,1
 	}
 	show(e = 1) {
 		this.page = "tracks";
-		let t = this.tracks(), n = [null, ...t], r = this.panel(this.header("Subtítulos", `<button type="button" class="vjs-peach-caption-options" data-subtitle-options aria-label="Opciones de subtítulos">${z("settings")}</button>`) + `<div class="vjs-peach-panel-menu">${n.map((e, n) => {
+		let t = this.tracks(), n = [null, ...t], r = this.panel(this.header("字幕", `<button type="button" class="vjs-peach-caption-options" data-subtitle-options aria-label="字幕选项">${z("settings")}</button>`) + `<div class="vjs-peach-panel-menu">${n.map((e, n) => {
 			let r = e ? e.mode === "showing" : t.every((e) => e.mode !== "showing");
-			return `<button type="button" class="vjs-peach-menu-option" role="menuitemradio" aria-checked="${r}" data-subtitle-track="${n}"><span class="vjs-peach-option-check">${r ? z("check") : ""}</span><span class="vjs-peach-option-label">${B(e?.label || e?.language || (e ? "Subtítulos" : "Desactivar"))}</span></button>`;
-		}).join("")}<button type="button" class="vjs-peach-caption-action" data-subtitle-file>Cargar archivo de subtítulos</button><button type="button" class="vjs-peach-caption-action" data-subtitle-search>Buscar subtítulos en línea</button></div><p class="vjs-peach-subtitle-status" data-subtitle-status role="status" hidden></p>`, () => {
+			return `<button type="button" class="vjs-peach-menu-option" role="menuitemradio" aria-checked="${r}" data-subtitle-track="${n}"><span class="vjs-peach-option-check">${r ? z("check") : ""}</span><span class="vjs-peach-option-label">${B(e?.label || e?.language || (e ? "字幕" : "关闭"))}</span></button>`;
+		}).join("")}<button type="button" class="vjs-peach-caption-action" data-subtitle-file>加载字幕文件</button><button type="button" class="vjs-peach-caption-action" data-subtitle-search>在线搜索字幕</button></div><p class="vjs-peach-subtitle-status" data-subtitle-status role="status" hidden></p>`, () => {
 			this.page = "", this.panels.back();
 		}, e);
 		r.querySelector("[data-subtitle-options]").onclick = () => this.options(), r.querySelector("[data-subtitle-file]").onclick = () => this.input.click(), r.querySelector("[data-subtitle-search]").onclick = () => {
@@ -31072,10 +31072,10 @@ var pde = () => "<svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"><path d=\"M11,1
 	}
 	options(e = 1) {
 		this.page = "options";
-		let t = this.styles.current(), n = this.panel(this.header("Opciones de subtítulos") + `<div class="vjs-peach-panel-menu">${Object.entries(YE).map(([e, n]) => {
+		let t = this.styles.current(), n = this.panel(this.header("字幕选项") + `<div class="vjs-peach-panel-menu">${Object.entries(YE).map(([e, n]) => {
 			let r = n.values.find(([n]) => n === t[e])?.[1] || "";
 			return `<button type="button" class="vjs-peach-caption-setting" data-subtitle-style="${e}"><span>${B(n.label)}</span><b>${B(r)}</b>${z("player-menu-next")}</button>`;
-		}).join("")}<button type="button" class="vjs-peach-caption-action" data-subtitle-reset>Restablecer</button></div>`, () => this.show(-1), e);
+		}).join("")}<button type="button" class="vjs-peach-caption-action" data-subtitle-reset>重置</button></div>`, () => this.show(-1), e);
 		n.querySelectorAll("[data-subtitle-style]").forEach((e) => {
 			e.onclick = () => this.styleOptions(e.dataset.subtitleStyle);
 		}), n.querySelector("[data-subtitle-reset]").onclick = () => {
@@ -31104,7 +31104,7 @@ var pde = () => "<svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"><path d=\"M11,1
 	async text(e) {
 		if (!e.ok) {
 			let t = await e.json().catch(() => null);
-			throw Error(t?.error || "Error al cargar subtítulos");
+			throw Error(t?.error || "字幕加载失败");
 		}
 		return e.text();
 	}
@@ -31118,11 +31118,11 @@ var pde = () => "<svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"><path d=\"M11,1
 		o.kind = "subtitles", o.label = t, o.src = a;
 		try {
 			if (await new Promise((e, t) => {
-				let n = setTimeout(() => i(/* @__PURE__ */ Error("SubtítulosCargartiempo agotado, Por favorReintentar")), 15e3), i = (i) => {
+				let n = setTimeout(() => i(/* @__PURE__ */ Error("字幕加载超时，请重试")), 15e3), i = (i) => {
 					clearTimeout(n), o.removeEventListener("load", a), o.removeEventListener("error", s), r.removeEventListener("abort", c), i ? t(i) : e();
-				}, a = () => i(), s = () => i(/* @__PURE__ */ Error("Línea de tiempo de subtítulosSin capacidad deleer")), c = () => i(new DOMException("Carga de subtítulos ya cancelada", "AbortError"));
+				}, a = () => i(), s = () => i(/* @__PURE__ */ Error("字幕时间轴无法读取")), c = () => i(new DOMException("字幕加载已取消", "AbortError"));
 				o.addEventListener("load", a), o.addEventListener("error", s), r.addEventListener("abort", c, { once: !0 }), r.aborted ? c() : (this.video.append(o), o.track.mode = "hidden");
-			}), r.aborted || this.player.isDisposed()) throw new DOMException("Carga de subtítulos ya cancelada", "AbortError");
+			}), r.aborted || this.player.isDisposed()) throw new DOMException("字幕加载已取消", "AbortError");
 			this.imported.set(n, {
 				node: o,
 				url: a
@@ -31133,51 +31133,51 @@ var pde = () => "<svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"><path d=\"M11,1
 	}
 	async importFile(e) {
 		if (this.show(0), !/\.(srt|ass|ssa|vtt)$/i.test(e.name) || e.size > 4194304) {
-			this.status("Por favorSeleccionar 4 MiB concontenido interno SRT, ASS, SSA o VTT Archivo", !0);
+			this.status("请选择 4 MiB 以内的 SRT、ASS、SSA 或 VTT 文件", !0);
 			return;
 		}
 		let t = this.busy();
-		this.status("Cargando subtítulos...", !1, !0);
+		this.status("正在加载字幕…", !1, !0);
 		try {
 			let n = await this.text(await fetch(`/api/subtitles/convert?name=${encodeURIComponent(e.name)}`, {
 				method: "POST",
 				body: e,
 				signal: t
 			}));
-			await this.attach(n, e.name, `file:${e.name}:${e.size}:${e.lastModified}`, t), t.aborted || (this.show(0), this.status(`YaCargar ${e.name}`));
+			await this.attach(n, e.name, `file:${e.name}:${e.size}:${e.lastModified}`, t), t.aborted || (this.show(0), this.status(`已加载 ${e.name}`));
 		} catch (e) {
-			t.aborted || this.status(e instanceof Error ? e.message : "Error al cargar subtítulos", !0);
+			t.aborted || this.status(e instanceof Error ? e.message : "字幕加载失败", !0);
 		}
 	}
 	searchPanel() {
 		this.request?.abort(), this.page = "search";
 		let e = this.player.peachItem, t = String(e?.code || e?.title || String(e?.name || "").replace(/\.(mp4|mkv|avi|mov|webm|m4v|ts|wmv)$/i, "")).trim().slice(0, 200);
 		t !== this.query && (this.query = t, this.offset = 0, this.results = [], this.searched = !1);
-		let n = this.panel(this.header("BuscarSubtítulos en chino") + "<div class=\"vjs-peach-subtitle-search\"><p class=\"vjs-peach-subtitle-status\" data-subtitle-status role=\"status\" hidden></p><div data-subtitle-results></div><a href=\"https://www.subtitlecat.com\" target=\"_blank\" rel=\"noopener noreferrer\">Subtítulos de SubtitleCat, puede incluir traducción automática</a></div>", () => {
+		let n = this.panel(this.header("搜索中文字幕") + "<div class=\"vjs-peach-subtitle-search\"><p class=\"vjs-peach-subtitle-status\" data-subtitle-status role=\"status\" hidden></p><div data-subtitle-results></div><a href=\"https://www.subtitlecat.com\" target=\"_blank\" rel=\"noopener noreferrer\">中文字幕由 SubtitleCat 提供，可能包含机翻</a></div>", () => {
 			this.request?.abort(), this.show(-1);
 		});
-		t.length < 3 ? this.status("obra actual sin disponibilidad para buscar por código JAV o nombre de video") : this.searched ? this.searchResults(n) : this.runSearch(n, 0);
+		t.length < 3 ? this.status("当前作品没有可用于搜索的番号或片名") : this.searched ? this.searchResults(n) : this.runSearch(n, 0);
 	}
 	searchResults(e) {
 		let t = e.querySelector("[data-subtitle-results]");
-		t.innerHTML = this.results.map((e, t) => `<button type="button" class="vjs-peach-subtitle-result" data-subtitle-result="${t}"><span>${B(e.title)}</span><small>${B([e.language, e.format].filter(Boolean).join(" · "))}</small></button>`).join("") + (this.more ? "<button type=\"button\" class=\"vjs-peach-caption-action\" data-subtitle-more>Más subtítulos</button>" : ""), t.querySelectorAll("[data-subtitle-result]").forEach((e) => {
+		t.innerHTML = this.results.map((e, t) => `<button type="button" class="vjs-peach-subtitle-result" data-subtitle-result="${t}"><span>${B(e.title)}</span><small>${B([e.language, e.format].filter(Boolean).join(" · "))}</small></button>`).join("") + (this.more ? "<button type=\"button\" class=\"vjs-peach-caption-action\" data-subtitle-more>更多字幕</button>" : ""), t.querySelectorAll("[data-subtitle-result]").forEach((e) => {
 			e.onclick = () => {
 				this.showFiles(this.results[Number(e.dataset.subtitleResult)]);
 			};
 		}), t.querySelector("[data-subtitle-more]")?.addEventListener("click", () => {
 			this.runSearch(e, this.offset + 6);
-		}), this.status(this.results.length ? `buscar ${this.results.length} ResultadoSubtítulos en chino` : this.more ? "esteloteResultadoSinChino, puedebuscarverMás subtítulos" : "No encontradoActualObraSubtítulos en chino");
+		}), this.status(this.results.length ? `找到 ${this.results.length} 条中文字幕` : this.more ? "这批结果没有中文，可查看更多字幕" : "没有找到当前作品的中文字幕");
 	}
 	async runSearch(e, t = this.offset) {
 		if (e.getAttribute("aria-busy") === "true") return;
 		let n = this.busy(), r = this.generation, i = e.querySelector("[data-subtitle-more],[data-subtitle-retry]"), a = e.querySelector("[data-subtitle-results]");
-		e.setAttribute("aria-busy", "true"), i && Ts(i), a.inert = !0, this.status("BuscandoSubtítulos...", !1, !0);
+		e.setAttribute("aria-busy", "true"), i && Ts(i), a.inert = !0, this.status("正在搜索字幕…", !1, !0);
 		try {
 			let i = await Lt(`/api/subtitles/search?q=${encodeURIComponent(this.query)}&offset=${t}`, { signal: n });
 			if (n.aborted || r !== this.generation) return;
 			this.offset = t, this.results.push(...i.results), this.more = i.more, this.searched = !0, this.searchResults(e);
 		} catch (i) {
-			!n.aborted && r === this.generation && (this.status(i instanceof Error ? i.message : "Búsqueda de subtítulosFallido", !0), a.querySelector("[data-subtitle-more]")?.remove(), a.querySelector("[data-subtitle-retry]")?.remove(), a.insertAdjacentHTML("beforeend", "<button type=\"button\" class=\"vjs-peach-caption-action\" data-subtitle-retry>Reintentar</button>"), a.querySelector("[data-subtitle-retry]").onclick = () => {
+			!n.aborted && r === this.generation && (this.status(i instanceof Error ? i.message : "字幕搜索失败", !0), a.querySelector("[data-subtitle-more]")?.remove(), a.querySelector("[data-subtitle-retry]")?.remove(), a.insertAdjacentHTML("beforeend", "<button type=\"button\" class=\"vjs-peach-caption-action\" data-subtitle-retry>重试</button>"), a.querySelector("[data-subtitle-retry]").onclick = () => {
 				this.runSearch(e, t);
 			});
 		} finally {
@@ -31186,32 +31186,32 @@ var pde = () => "<svg viewBox=\"0 0 36 36\" aria-hidden=\"true\"><path d=\"M11,1
 	}
 	async showFiles(e) {
 		this.page = "files";
-		let t = this.panel(this.header("Seleccionar subtítulosArchivo") + "<div class=\"vjs-peach-panel-menu\" data-subtitle-files></div><p class=\"vjs-peach-subtitle-status\" data-subtitle-status role=\"status\"></p>", () => {
+		let t = this.panel(this.header("选择字幕文件") + "<div class=\"vjs-peach-panel-menu\" data-subtitle-files></div><p class=\"vjs-peach-subtitle-status\" data-subtitle-status role=\"status\"></p>", () => {
 			this.searchPanel();
 		}), n = this.busy(), r = this.generation;
-		this.status("CargandoSubtítulosArchivo...", !1, !0);
+		this.status("正在读取字幕文件…", !1, !0);
 		try {
 			let i = await Lt(`/api/subtitles/subtitlecat/${e.id}`, { signal: n });
 			if (n.aborted || r !== this.generation) return;
 			let a = i.files.filter((e) => e.playable);
-			t.querySelector("[data-subtitle-files]").innerHTML = a.map((e) => `<button type="button" class="vjs-peach-subtitle-result" data-subtitle-online="${e.index}"><span>${B(e.name)}</span><small>${B(e.language)}</small></button>`).join(""), this.status(a.length ? "Seleccionarnecesario CargarSubtítulos" : "esteResultadoResultadoSinpuedeCargartextoSubtítulos"), t.querySelectorAll("[data-subtitle-online]").forEach((t) => {
+			t.querySelector("[data-subtitle-files]").innerHTML = a.map((e) => `<button type="button" class="vjs-peach-subtitle-result" data-subtitle-online="${e.index}"><span>${B(e.name)}</span><small>${B(e.language)}</small></button>`).join(""), this.status(a.length ? "选择要加载的字幕" : "这条结果没有可加载的文本字幕"), t.querySelectorAll("[data-subtitle-online]").forEach((t) => {
 				t.onclick = () => {
 					let n = a.find((e) => e.index === Number(t.dataset.subtitleOnline));
 					this.loadOnline(e.id, n);
 				};
 			});
 		} catch (e) {
-			!n.aborted && r === this.generation && this.status(e instanceof Error ? e.message : "SubtítulosArchivoNo disponible", !0);
+			!n.aborted && r === this.generation && this.status(e instanceof Error ? e.message : "字幕文件未取得", !0);
 		}
 	}
 	async loadOnline(e, t) {
 		let n = this.busy();
-		this.status("Cargando subtítulos...", !1, !0);
+		this.status("正在加载字幕…", !1, !0);
 		try {
 			let r = `subtitlecat:${e}:${t.index}`, i = this.imported.get(r);
-			i ? this.select(i.node.track) : await this.attach(await this.text(await fetch(`/api/subtitles/subtitlecat/${e}/${t.index}`, { signal: n })), t.name, r, n), n.aborted || (this.show(0), this.status(`YaCargar ${t.name}`));
+			i ? this.select(i.node.track) : await this.attach(await this.text(await fetch(`/api/subtitles/subtitlecat/${e}/${t.index}`, { signal: n })), t.name, r, n), n.aborted || (this.show(0), this.status(`已加载 ${t.name}`));
 		} catch (e) {
-			n.aborted || this.status(e instanceof Error ? e.message : "Error al cargar subtítulos", !0);
+			n.aborted || this.status(e instanceof Error ? e.message : "字幕加载失败", !0);
 		}
 	}
 };
@@ -31239,7 +31239,7 @@ var _de = /* @__PURE__ */ new WeakMap();
 function vde(e) {
 	if (!e) return;
 	let t = LE().settings().theaterMode;
-	e.setAttribute("aria-pressed", String(t)), e.querySelector("use")?.setAttribute("href", t ? "#i-theater-exit" : "#i-theater-enter"), _de.get(e)?.(t ? "Vista predeterminada" : "Modo cine");
+	e.setAttribute("aria-pressed", String(t)), e.querySelector("use")?.setAttribute("href", t ? "#i-theater-exit" : "#i-theater-enter"), _de.get(e)?.(t ? "默认视图" : "影院模式");
 }
 function yde(e, t = !0) {
 	let n = LE(), r = n.settings();
@@ -31286,13 +31286,13 @@ function xde(e, t, n = 0, r = null) {
 	let i = e.el().querySelector(".vjs-control-bar");
 	if (!i || i.querySelector("[data-player-quality]")) return;
 	let a = document.createElement("div");
-	a.className = "vjs-peach-settings vjs-control", a.dataset.playerQuality = "", a.innerHTML = `<button type="button" class="vjs-peach-settings-toggle" aria-label="Configuración del reproductor" aria-expanded="false">
+	a.className = "vjs-peach-settings vjs-control", a.dataset.playerQuality = "", a.innerHTML = `<button type="button" class="vjs-peach-settings-toggle" aria-label="播放器设置" aria-expanded="false">
     ${z("settings")}<span data-player-quality-badge hidden></span></button>
-    <div class="vjs-peach-settings-menu" role="menu" aria-label="Configuración del reproductor" aria-hidden="true"></div>`;
+    <div class="vjs-peach-settings-menu" role="menu" aria-label="播放器设置" aria-hidden="true"></div>`;
 	let o = i.querySelector(".vjs-fullscreen-control");
 	i.insertBefore(a, o || null);
 	let s = a.querySelector("button"), c = a.querySelector("[data-player-quality-badge]");
-	ZE(s, "Configuración");
+	ZE(s, "设置");
 	let l = a.querySelector(".vjs-peach-settings-menu"), u, d = typeof e.qualityLevels == "function" ? e.qualityLevels() : null, f = r, p = "auto", m = (e, t) => {
 		let n = [Number(e), Number(t)].filter((e) => e > 0);
 		return n.length ? Math.min(...n) : 0;
@@ -31301,14 +31301,14 @@ function xde(e, t, n = 0, r = null) {
 		if (d?.length) {
 			d.length > 1 && e.push({
 				key: "auto",
-				label: "Automático",
+				label: "自动",
 				pixels: 0
 			});
 			for (let n = 0; n < d.length; n++) {
 				let r = d[n], i = m(r.width, r.height) || (d.length === 1 ? m(t.videoWidth, t.videoHeight) : 0);
 				e.push({
 					key: String(n),
-					label: i ? `${i}p` : d.length === 1 ? "ActualCalidad de imagen" : `Línea ${n + 1}`,
+					label: i ? `${i}p` : d.length === 1 ? "当前画质" : `线路 ${n + 1}`,
 					pixels: i
 				});
 			}
@@ -31322,7 +31322,7 @@ function xde(e, t, n = 0, r = null) {
 		let r = m(t.videoWidth, t.videoHeight) || Number(n) || 0;
 		return [{
 			key: "original",
-			label: r ? `${r}p` : "Arte original",
+			label: r ? `${r}p` : "原画",
 			pixels: r
 		}];
 	}, g = () => {
@@ -31353,10 +31353,10 @@ function xde(e, t, n = 0, r = null) {
 	}, w = (e, t) => e.querySelector(t), T = "main", E = (t = 0) => {
 		T = "main";
 		let { active: n } = g(), r = Number(e.playbackRate()) || 1, i = C(`<div class="vjs-peach-panel-menu"><button type="button" class="vjs-peach-menu-row" role="menuitemcheckbox" data-player-ambient aria-checked="${LE().settings().ambientMode}">
-      ${z("player-ambient")}<span>AmbienteModo</span><i class="vjs-peach-switch" aria-hidden="true"></i></button>
-      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-speed>${z("player-speed")}<span>Velocidad de reproducción</span><b>${r === 1 ? "Normal" : `${r}×`}</b>${z("player-menu-next")}</button>
-      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-subtitles><span class="vjs-peach-menu-cc" aria-hidden="true">${pde()}</span><span>Subtítulos</span><b>${B(u?.label() || "Desactivar")}</b>${z("player-menu-next")}</button>
-      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-quality-view>${z("player-quality")}<span>Nitidez</span><b>${B(n.label)}</b>${z("player-menu-next")}</button></div>`, t);
+      ${z("player-ambient")}<span>氛围模式</span><i class="vjs-peach-switch" aria-hidden="true"></i></button>
+      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-speed>${z("player-speed")}<span>播放速度</span><b>${r === 1 ? "正常" : `${r}×`}</b>${z("player-menu-next")}</button>
+      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-subtitles><span class="vjs-peach-menu-cc" aria-hidden="true">${pde()}</span><span>字幕</span><b>${B(u?.label() || "关闭")}</b>${z("player-menu-next")}</button>
+      <button type="button" class="vjs-peach-menu-row" role="menuitem" data-player-quality-view>${z("player-quality")}<span>清晰度</span><b>${B(n.label)}</b>${z("player-menu-next")}</button></div>`, t);
 		w(i, "[data-player-ambient]").onclick = () => {
 			gde(!LE().settings().ambientMode), E();
 		}, w(i, "[data-player-speed]").onclick = () => A(), w(i, "[data-player-subtitles]").onclick = () => u?.show(), w(i, "[data-player-quality-view]").onclick = () => M();
@@ -31368,12 +31368,12 @@ function xde(e, t, n = 0, r = null) {
 		3
 	], k = (e) => Number.isInteger(e) ? e.toFixed(1) : String(e), A = (t = 1) => {
 		T = "speed";
-		let n = .25, r = (e) => Math.min(3, Math.max(n, Number(e.toFixed(2)))), i = C(`<div class="vjs-peach-panel-header"><button type="button" class="vjs-peach-menu-back" data-player-menu-back aria-label="Volver al menú anterior">${z("player-menu-back")}</button><strong>Velocidad de reproducción</strong></div>
+		let n = .25, r = (e) => Math.min(3, Math.max(n, Number(e.toFixed(2)))), i = C(`<div class="vjs-peach-panel-header"><button type="button" class="vjs-peach-menu-back" data-player-menu-back aria-label="返回上一个菜单">${z("player-menu-back")}</button><strong>播放速度</strong></div>
       <div class="vjs-peach-speed-panel"><div class="vjs-peach-speed-display"><output data-player-speed-display></output></div>
-      <div class="vjs-peach-speed-slider"><button type="button" class="vjs-peach-speed-button" data-player-speed-step="-1" aria-label="Velocidad de reproducción -0.05">${z("minus")}</button>
-      <input type="range" class="vjs-peach-speed-range" data-player-speed-range min="${n}" max="3" step="${D}" aria-label="Velocidad de reproducción">
-      <button type="button" class="vjs-peach-speed-button" data-player-speed-step="1" aria-label="Velocidad de reproducciónañadir 0.05">${z("plus")}</button></div>
-      <div class="vjs-peach-speed-chips">${O.map((e) => `<span class="vjs-peach-speed-preset"><button type="button" class="vjs-peach-speed-button" data-player-speed-option="${e}" aria-pressed="false">${k(e)}</button>${e === 1 ? "<span class=\"vjs-peach-speed-preset-label\">Normal</span>" : ""}</span>`).join("")}</div></div>`, t), a = i.querySelector("[data-player-speed-display]"), o = i.querySelector("[data-player-speed-range]"), s = r(Number(e.playbackRate()) || 1), c = () => {
+      <div class="vjs-peach-speed-slider"><button type="button" class="vjs-peach-speed-button" data-player-speed-step="-1" aria-label="播放速度减 0.05">${z("minus")}</button>
+      <input type="range" class="vjs-peach-speed-range" data-player-speed-range min="${n}" max="3" step="${D}" aria-label="播放速度">
+      <button type="button" class="vjs-peach-speed-button" data-player-speed-step="1" aria-label="播放速度加 0.05">${z("plus")}</button></div>
+      <div class="vjs-peach-speed-chips">${O.map((e) => `<span class="vjs-peach-speed-preset"><button type="button" class="vjs-peach-speed-button" data-player-speed-option="${e}" aria-pressed="false">${k(e)}</button>${e === 1 ? "<span class=\"vjs-peach-speed-preset-label\">正常</span>" : ""}</span>`).join("")}</div></div>`, t), a = i.querySelector("[data-player-speed-display]"), o = i.querySelector("[data-player-speed-range]"), s = r(Number(e.playbackRate()) || 1), c = () => {
 			a.textContent = `${s.toFixed(2)}x`, o.value = String(s), o.style.setProperty("--peach-speed-percent", `${(s - n) / 2.75 * 100}%`), i.querySelectorAll("[data-player-speed-option]").forEach((e) => e.setAttribute("aria-pressed", String(Number(e.dataset.playerSpeedOption) === s)));
 		}, l = (t) => {
 			s = r(t), e.playbackRate(s), c();
@@ -31404,7 +31404,7 @@ function xde(e, t, n = 0, r = null) {
 		});
 	}, M = (e = 1) => {
 		T = "quality";
-		let t = C(`<div class="vjs-peach-panel-header"><button type="button" class="vjs-peach-menu-back" data-player-menu-back aria-label="Volver al menú anterior">${z("player-menu-back")}</button><strong>Nitidez</strong></div><div class="vjs-peach-panel-menu"></div>`, e);
+		let t = C(`<div class="vjs-peach-panel-header"><button type="button" class="vjs-peach-menu-back" data-player-menu-back aria-label="返回上一个菜单">${z("player-menu-back")}</button><strong>清晰度</strong></div><div class="vjs-peach-panel-menu"></div>`, e);
 		w(t, "[data-player-menu-back]").onclick = () => E(-1), j(w(t, ".vjs-peach-panel-menu"));
 	}, N = () => {
 		if (!_()) {
@@ -31458,7 +31458,7 @@ function Sde(e, t) {
 	let r = LE().settings().theaterMode, i = document.createElement("div");
 	i.className = "vjs-peach-theater vjs-control", i.innerHTML = `<button type="button" data-player-theater aria-pressed="${r}">${z(r ? "theater-exit" : "theater-enter")}</button>`, n.insertBefore(i, t.nextSibling);
 	let a = i.querySelector("button");
-	_de.set(a, ZE(a, "Modo cine", "T")), vde(a), a.onclick = (e) => {
+	_de.set(a, ZE(a, "影院模式", "T")), vde(a), a.onclick = (e) => {
 		e.stopPropagation(), yde(!LE().settings().theaterMode);
 	};
 }
@@ -31474,9 +31474,9 @@ function Cde(e) {
 		e.dataset.peachExplicitIcon = "";
 		let r = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		return r.setAttribute("viewBox", n.getAttribute("viewBox") || ""), r.setAttribute("aria-hidden", "true"), r.setAttribute("class", "vjs-peach-control-icon vjs-peach-morph-icon"), r.innerHTML = n.innerHTML, e.append(r), r;
-	}, a = (e) => [...document.getElementById(`i-${e}`)?.querySelectorAll("path") || []], o = i(n, "player-play")?.querySelector("path"), s = a("player-play")[0]?.getAttribute("d") || "", c = a("player-pause")[0]?.getAttribute("d") || "", l = ZE(n, "Reproducir", "K"), u = CSS.supports("d", "path(\"M0 0\")"), d = () => {
+	}, a = (e) => [...document.getElementById(`i-${e}`)?.querySelectorAll("path") || []], o = i(n, "player-play")?.querySelector("path"), s = a("player-play")[0]?.getAttribute("d") || "", c = a("player-pause")[0]?.getAttribute("d") || "", l = ZE(n, "播放", "K"), u = CSS.supports("d", "path(\"M0 0\")"), d = () => {
 		let t = e.paused() || e.ended(), n = t ? s : c;
-		o && (u ? o.style.setProperty("d", `path("${n}")`) : o.setAttribute("d", n)), l(t ? "Reproducir" : "Pausar");
+		o && (u ? o.style.setProperty("d", `path("${n}")`) : o.setAttribute("d", n)), l(t ? "播放" : "暂停");
 	};
 	e.on([
 		"play",
@@ -31485,9 +31485,9 @@ function Cde(e) {
 	], d), d();
 	let f = t.querySelector(":scope>.vjs-volume-panel"), p = f?.querySelector(":scope>.vjs-mute-control"), m = i(p, "player-volume");
 	m && a("player-volume-muted").forEach((e) => m.append(e.cloneNode(!0)));
-	let h = ZE(p, "Silenciar", "M"), g = () => {
+	let h = ZE(p, "静音", "M"), g = () => {
 		let t = e.muted() || e.volume() === 0;
-		m && (m.dataset.silent = String(t), m.dataset.loud = String(!t && e.volume() > .5)), h(t ? "Activar sonido" : "Silenciar");
+		m && (m.dataset.silent = String(t), m.dataset.loud = String(!t && e.volume() > .5)), h(t ? "取消静音" : "静音");
 	};
 	e.on("volumechange", g), g();
 	let _ = document.createElement("div");
@@ -31501,19 +31501,19 @@ function Cde(e) {
 		let n = t.target;
 		if (n.closest(".vjs-mute-control")) {
 			let t = e.muted() || e.volume() === 0;
-			b(t ? "player-volume" : "player-volume-muted", t ? "Activar sonido" : "Silenciar");
+			b(t ? "player-volume" : "player-volume-muted", t ? "取消静音" : "静音");
 		} else if (n.closest(".vjs-play-control,.vjs-tech,.vjs-poster")) {
 			let t = e.paused() || e.ended();
-			b(t ? "player-play" : "player-pause", t ? "Reproducir" : "Pausar");
+			b(t ? "player-play" : "player-pause", t ? "播放" : "暂停");
 		}
 	}, !0), e.on("dispose", () => {
 		y && clearTimeout(y);
 	});
 	let x = document.createElement("button"), S = !1;
 	x.type = "button", x.className = "vjs-peach-time vjs-control", x.dataset.playerTime = "", x.innerHTML = "<span class=\"vjs-peach-time-text\"></span>";
-	let C = x.querySelector(".vjs-peach-time-text"), w = ZE(x, "MostrarDisponibleHora"), T = () => {
+	let C = x.querySelector(".vjs-peach-time-text"), w = ZE(x, "显示剩余时间"), T = () => {
 		let t = Math.max(0, Number(e.currentTime()) || 0), n = Math.max(0, Number(e.duration()) || 0), r = sn(Math.max(0, n - t));
-		C.textContent = `${S ? `-${r}` : sn(t)} / ${sn(n)}`, x.dataset.remaining = String(S), w(S ? "MostrarYaTiempo de reproducción" : "MostrarDisponibleHora", S ? `Disponible ${r}, TotalDuración ${sn(n)}; clic enMostrarYaTiempo de reproducción` : `Reproducido ${sn(t)}, TotalDuración ${sn(n)}; clic enMostrarDisponibleHora`);
+		C.textContent = `${S ? `-${r}` : sn(t)} / ${sn(n)}`, x.dataset.remaining = String(S), w(S ? "显示已播放时间" : "显示剩余时间", S ? `剩余 ${r}，总时长 ${sn(n)}；点击显示已播放时间` : `已播放 ${sn(t)}，总时长 ${sn(n)}；点击显示剩余时间`);
 	};
 	x.onclick = (e) => {
 		e.stopPropagation(), S = !S, T();
@@ -31523,12 +31523,12 @@ function Cde(e) {
 		"loadedmetadata"
 	], T), T(), f ? f.insertAdjacentElement("afterend", x) : t.append(x);
 	let E = t.querySelector(":scope>.vjs-picture-in-picture-control");
-	ZE(t.querySelector(".vjs-subtitles-control>button"), "Subtítulos"), r(E, "player-pip");
-	let D = ZE(E, "Imagen en imagen");
-	e.on(["enterpictureinpicture", "leavepictureinpicture"], () => D(document.pictureInPictureElement ? "SalirImagen en imagen" : "Imagen en imagen"));
-	let O = t.querySelector(":scope>.vjs-fullscreen-control"), k = r(O, "player-fullscreen-enter"), A = ZE(O, "Pantalla completa", "F"), j = () => {
+	ZE(t.querySelector(".vjs-subtitles-control>button"), "字幕"), r(E, "player-pip");
+	let D = ZE(E, "画中画");
+	e.on(["enterpictureinpicture", "leavepictureinpicture"], () => D(document.pictureInPictureElement ? "退出画中画" : "画中画"));
+	let O = t.querySelector(":scope>.vjs-fullscreen-control"), k = r(O, "player-fullscreen-enter"), A = ZE(O, "全屏", "F"), j = () => {
 		let t = !!e.isFullscreen();
-		e.el().toggleAttribute("data-peach-fullscreen", t), k?.setAttribute("href", t ? "#i-player-fullscreen-exit" : "#i-player-fullscreen-enter"), A(t ? "Salir de pantalla completa" : "Pantalla completa"), UE(e);
+		e.el().toggleAttribute("data-peach-fullscreen", t), k?.setAttribute("href", t ? "#i-player-fullscreen-exit" : "#i-player-fullscreen-enter"), A(t ? "退出全屏" : "全屏"), UE(e);
 	};
 	e.on([
 		"fullscreenchange",
@@ -31544,13 +31544,13 @@ function Cde(e) {
 	].filter((e) => !!e);
 	if (!M.length) return;
 	let N = document.createElement("div");
-	N.className = "vjs-peach-right-controls", N.setAttribute("aria-label", "Control de vista del reproductor"), t.insertBefore(N, M[0]), M.forEach((e) => {
+	N.className = "vjs-peach-right-controls", N.setAttribute("aria-label", "播放器视图控制"), t.insertBefore(N, M[0]), M.forEach((e) => {
 		e.insertAdjacentHTML("beforeend", "<span class=\"vjs-peach-hover\" aria-hidden=\"true\"></span>"), N.append(e);
 	});
 	let P = document.createElement("div");
 	P.className = "vjs-peach-expand vjs-control", P.innerHTML = `<button type="button" data-player-expand aria-expanded="false">${z("player-expand")}</button><span class="vjs-peach-hover" aria-hidden="true"></span>`, N.prepend(P);
-	let F = P.querySelector("button"), I = ZE(F, "Expandir controles"), ee = (t) => {
-		e.el().classList.toggle("vjs-peach-right-expanded", t), F.setAttribute("aria-expanded", String(t)), I(t ? "ColapsarControles" : "Expandir controles");
+	let F = P.querySelector("button"), I = ZE(F, "展开控件"), ee = (t) => {
+		e.el().classList.toggle("vjs-peach-right-expanded", t), F.setAttribute("aria-expanded", String(t)), I(t ? "收起控件" : "展开控件");
 	};
 	F.onclick = (t) => {
 		t.stopPropagation(), ee(!e.el().classList.contains("vjs-peach-right-expanded"));
@@ -31875,7 +31875,7 @@ var sD = (e) => typeof e == "string" ? [e] : e, Ude = (e, t) => {
 	let n = document.createElement("div"), r = document.createElement("video-player");
 	n.className = "video-js vjs-paused vjs-user-active", n.id = e.id || `peach-player-${crypto.randomUUID()}`, n.setAttribute("lang", "zh-CN");
 	let i = document.createElement("media-container"), a = document.createElement("hlsjs-video");
-	e.parentNode?.replaceChild(n, e), e.removeAttribute("id"), e.className = "vjs-tech", e.slot = "media", e.controls = !1, e.preload = t.preload === "auto" ? "auto" : t.preload === "none" ? "none" : "metadata", t.poster && (e.poster = String(t.poster)), a.append(e), i.append(a), r.append(i), n.append(r), t.controls !== !1 && i.insertAdjacentHTML("beforeend", "<div class=\"vjs-loading-spinner\" aria-label=\"Cargando...\"></div>\n      <div class=\"vjs-error-display\"><div class=\"vjs-modal-dialog-content\" role=\"alert\"></div></div>\n      <div class=\"vjs-control-bar\">\n        <media-play-button class=\"vjs-play-control vjs-control vjs-button\" label=\"Reproducir\"></media-play-button>\n        <div class=\"vjs-volume-panel vjs-control vjs-volume-panel-horizontal\">\n          <media-mute-button class=\"vjs-mute-control vjs-control vjs-button\" label=\"Silenciar\"></media-mute-button>\n          <div class=\"vjs-volume-control vjs-volume-horizontal\"><media-volume-slider class=\"vjs-volume-bar vjs-slider vjs-slider-horizontal\" label=\"Volumen\">\n            <media-slider-track><media-slider-fill class=\"vjs-volume-level\"></media-slider-fill></media-slider-track>\n            <media-slider-thumb class=\"vjs-volume-thumb\"></media-slider-thumb>\n            <media-slider-value class=\"vjs-volume-tooltip\"></media-slider-value>\n          </media-volume-slider></div>\n        </div>\n        <div class=\"vjs-progress-control vjs-control\"><media-time-slider class=\"vjs-progress-holder vjs-slider vjs-slider-horizontal\" label=\"Progreso de reproducción\">\n          <media-slider-track><media-slider-buffer class=\"vjs-load-progress\"></media-slider-buffer><media-slider-fill class=\"vjs-play-progress\"></media-slider-fill></media-slider-track>\n          <media-slider-thumb class=\"vjs-progress-thumb\"></media-slider-thumb>\n        </media-time-slider></div>\n        <div class=\"vjs-subtitles-control vjs-control\"><button type=\"button\" class=\"vjs-button\" aria-label=\"Activar subtítulos\" aria-pressed=\"false\">CC</button></div>\n        <media-pip-button class=\"vjs-picture-in-picture-control vjs-control vjs-button\" label=\"Imagen en imagen\"></media-pip-button>\n        <media-fullscreen-button class=\"vjs-fullscreen-control vjs-control vjs-button\" label=\"Pantalla completa\"></media-fullscreen-button>\n      </div>");
+	e.parentNode?.replaceChild(n, e), e.removeAttribute("id"), e.className = "vjs-tech", e.slot = "media", e.controls = !1, e.preload = t.preload === "auto" ? "auto" : t.preload === "none" ? "none" : "metadata", t.poster && (e.poster = String(t.poster)), a.append(e), i.append(a), r.append(i), n.append(r), t.controls !== !1 && i.insertAdjacentHTML("beforeend", "<div class=\"vjs-loading-spinner\" aria-label=\"正在缓冲\"></div>\n      <div class=\"vjs-error-display\"><div class=\"vjs-modal-dialog-content\" role=\"alert\"></div></div>\n      <div class=\"vjs-control-bar\">\n        <media-play-button class=\"vjs-play-control vjs-control vjs-button\" label=\"播放\"></media-play-button>\n        <div class=\"vjs-volume-panel vjs-control vjs-volume-panel-horizontal\">\n          <media-mute-button class=\"vjs-mute-control vjs-control vjs-button\" label=\"静音\"></media-mute-button>\n          <div class=\"vjs-volume-control vjs-volume-horizontal\"><media-volume-slider class=\"vjs-volume-bar vjs-slider vjs-slider-horizontal\" label=\"音量\">\n            <media-slider-track><media-slider-fill class=\"vjs-volume-level\"></media-slider-fill></media-slider-track>\n            <media-slider-thumb class=\"vjs-volume-thumb\"></media-slider-thumb>\n            <media-slider-value class=\"vjs-volume-tooltip\"></media-slider-value>\n          </media-volume-slider></div>\n        </div>\n        <div class=\"vjs-progress-control vjs-control\"><media-time-slider class=\"vjs-progress-holder vjs-slider vjs-slider-horizontal\" label=\"播放进度\">\n          <media-slider-track><media-slider-buffer class=\"vjs-load-progress\"></media-slider-buffer><media-slider-fill class=\"vjs-play-progress\"></media-slider-fill></media-slider-track>\n          <media-slider-thumb class=\"vjs-progress-thumb\"></media-slider-thumb>\n        </media-time-slider></div>\n        <div class=\"vjs-subtitles-control vjs-control\"><button type=\"button\" class=\"vjs-button\" aria-label=\"开启字幕\" aria-pressed=\"false\">CC</button></div>\n        <media-pip-button class=\"vjs-picture-in-picture-control vjs-control vjs-button\" label=\"画中画\"></media-pip-button>\n        <media-fullscreen-button class=\"vjs-fullscreen-control vjs-control vjs-button\" label=\"全屏\"></media-fullscreen-button>\n      </div>");
 	let o = new EventTarget(), s = new AbortController(), c = s.signal, l = !1, u = 0, d = 0, f = 0, p = {
 		src: "",
 		type: ""
@@ -31930,7 +31930,7 @@ var sD = (e) => typeof e == "string" ? [e] : e, Ude = (e, t) => {
 	let y = (e, t = !0) => {
 		m = e, n.classList.add("vjs-error");
 		let r = n.querySelector(".vjs-modal-dialog-content");
-		r && (r.textContent = e?.message || "Videos no disponibles para reproducir en este momento"), t && v("error");
+		r && (r.textContent = e?.message || "视频暂时无法播放"), t && v("error");
 	};
 	a.addEventListener("error", () => y(a.error || e.error), { signal: c }), document.addEventListener("fullscreenchange", () => {
 		n.classList.toggle("vjs-fullscreen", !!document.fullscreenElement && n.contains(document.fullscreenElement)), v("fullscreenchange");
@@ -31988,7 +31988,7 @@ var sD = (e) => typeof e == "string" ? [e] : e, Ude = (e, t) => {
 		error: (t) => t ? y(t, !1) : m || e.error,
 		play: async () => {
 			let t = ++d;
-			if (await Promise.resolve(), l || t !== d) throw new DOMException("ReproducirsolicitudYaCancelar", "AbortError");
+			if (await Promise.resolve(), l || t !== d) throw new DOMException("播放请求已取消", "AbortError");
 			return e.play();
 		},
 		pause: () => {
@@ -32151,23 +32151,23 @@ async function Xde(e, t, n, r = {}) {
 		let w = Zue(t);
 		GE(d.speed, x), GE(d.activity, C), GE(d.buffer, w);
 		let T = String(e.name || ""), E = (T.includes(".") ? T.split(".").pop() || "" : s ? "" : String(l.currentSource()?.type || "").split("/").pop() || "").toUpperCase() || "—", D = x ? `${(x / 1e6).toFixed(1)} Mbps` : "—", O = s || p.bitrate > 0, k = s ? [
-			"actividad de red",
-			`${_ ? cn(_) : "—"} · ${h.length} solicitud`,
-			`Recienteunsegundo(s)actividad de red ${C ? cn(C) : "0 B"}`
+			"网络活动",
+			`${_ ? cn(_) : "—"} · ${h.length} 请求`,
+			`最近一秒网络活动 ${C ? cn(C) : "0 B"}`
 		] : [
-			"YaDescargas",
-			O ? `${cn(S)}${f > 0 ? ` / ${cn(f)}` : ""}` : `${S.toFixed(0)} segundo(s)`,
-			O ? `Recienteunsegundo(s)Descargas ${C ? cn(C) : "0 B"}` : `Recienteunsegundo(s)Descargas ${C.toFixed(1)} segundo(s)`
+			"已下载",
+			O ? `${cn(S)}${f > 0 ? ` / ${cn(f)}` : ""}` : `${S.toFixed(0)} 秒`,
+			O ? `最近一秒下载 ${C ? cn(C) : "0 B"}` : `最近一秒下载 ${C.toFixed(1)} 秒`
 		];
 		n.innerHTML = `<dl>${[
-			["Videos ID / irá a palabras ", c && !r.source ? `${e.id} / ${c.slice(0, 8)}` : `${e.id}`],
-			["Viewport / Fotograma", `${Math.round(a.width)}×${Math.round(a.height)} / ${i ? `${i.totalVideoFrames - i.droppedVideoFrames} of ${i.totalVideoFrames}` : "—"}`],
-			["Resolución actual / óptima", `${o} / ${e.width || t.videoWidth || "?"}×${e.height || t.videoHeight || "?"}`],
-			["Codificación / Transmisión", `${E} / ${s ? "HLS" : "HTTP Range"}`],
+			["视频 ID / 会话", c && !r.source ? `${e.id} / ${c.slice(0, 8)}` : `${e.id}`],
+			["视口 / 帧", `${Math.round(a.width)}×${Math.round(a.height)} / ${i ? `${i.totalVideoFrames - i.droppedVideoFrames} of ${i.totalVideoFrames}` : "—"}`],
+			["当前 / 最佳分辨率", `${o} / ${e.width || t.videoWidth || "?"}×${e.height || t.videoHeight || "?"}`],
+			["编码 / 传输", `${E} / ${s ? "HLS" : "HTTP Range"}`],
 			[
-				"ConectarVelocidad",
+				"连接速度",
 				D,
-				qE(d.speed, "speed", Math.max(1e7, ...d.speed), `ConectarVelocidad ${D === "—" ? "Sin datos disponibles" : D}`)
+				qE(d.speed, "speed", Math.max(1e7, ...d.speed), `连接速度 ${D === "—" ? "暂无数据" : D}`)
 			],
 			[
 				k[0],
@@ -32175,12 +32175,12 @@ async function Xde(e, t, n, r = {}) {
 				qE(d.activity, "activity", Math.max(1, ...d.activity), k[2])
 			],
 			[
-				"Salud del buffer",
-				`${w.toFixed(1)} segundo(s)`,
-				qE(d.buffer, "buffer", 30, `ActualpuedeReproducción continua ${w.toFixed(1)} segundo(s)`)
+				"缓冲健康",
+				`${w.toFixed(1)} 秒`,
+				qE(d.buffer, "buffer", 30, `当前可连续播放 ${w.toFixed(1)} 秒`)
 			],
-			["Tiempo de reproducción", `${sn(t.currentTime)} / ${sn(u || l.duration())}`],
-			["Fecha", (/* @__PURE__ */ new Date()).toLocaleString()]
+			["播放时间", `${sn(t.currentTime)} / ${sn(u || l.duration())}`],
+			["日期", (/* @__PURE__ */ new Date()).toLocaleString()]
 		].map(([e, t, n]) => `<dt>${B(e)}</dt><dd${n ? " data-player-stats-metric=\"\"" : ""}>${n || ""}<span>${B(t)}</span></dd>`).join("")}</dl>`;
 	}, l.on([
 		"loadstart",
@@ -32194,7 +32194,7 @@ async function Xde(e, t, n, r = {}) {
 		let r = v();
 		r || p.sample(t);
 		let i = ade(l, e.id, zde(), r ? null : p), a = r ? JE(i) : ode(i, Zue(t));
-		n.innerHTML = `${z("gauge")}<span class="sr-only">CargarVelocidad</span><span>${B(a)}</span>`;
+		n.innerHTML = `${z("gauge")}<span class="sr-only">加载速度</span><span>${B(a)}</span>`;
 	}, C = () => {
 		let e = y.chrome?.netBadge;
 		e && e.isConnected && (e.hidden = !1, S(), dD && clearInterval(dD), dD = setInterval(S, 500));
@@ -32215,7 +32215,7 @@ async function Xde(e, t, n, r = {}) {
 		b && !x && !l.isDisposed() ? (x = !0, b = !1, l.src(Vde(e)), n && l.play()?.catch(() => {})) : r.checkSourceStatus !== !1 && a.loadSourceStatus().then((t) => {
 			t[String(e.location)] !== !1 || l.isDisposed() || l.error({
 				code: 2,
-				message: `Directorio de mediosSin capacidad deAcceso · ${a.offlineReason(String(e.location))}`
+				message: `媒体目录无法访问 · ${a.offlineReason(String(e.location))}`
 			});
 		});
 	}), l.ready(() => {
@@ -32509,7 +32509,7 @@ function _fe(e, t, n) {
 }
 function vfe(e, t) {
 	let n = new URLSearchParams(Object.entries(e).filter(([, e]) => e));
-	return n.set("orient", "Pantalla vertical"), n.set("limit", "18"), n.set("offset", String(t)), n.toString();
+	return n.set("orient", "竖屏"), n.set("limit", "18"), n.set("offset", String(t)), n.toString();
 }
 function yfe(e, t) {
 	let n = [...t].sort((e, t) => e.at - t.at), r = [], i = 0;
@@ -32576,11 +32576,11 @@ async function OD(e, t, n) {
 	}
 	if (e.kind === "playlist") return Ofe(await H(`${wD}?id=${e.playlistId}`, n));
 	let r = await H(`/api/${e.kind}?id=${e.seedId}`, n);
-	if (r.error || !r.items?.length) throw Error(r.error || "esteungrupoYano existe");
+	if (r.error || !r.items?.length) throw Error(r.error || "这一组已不存在");
 	return {
 		kind: e.kind,
 		seedId: e.seedId,
-		title: `${e.kind === "parts" ? "Volumen" : "Versión"} · ${r.title || ""}`,
+		title: `${e.kind === "parts" ? "分卷" : "版本"} · ${r.title || ""}`,
 		items: r.items,
 		versionCount: e.kind === "editions" ? r.count : void 0
 	};
@@ -32677,9 +32677,9 @@ function Nfe(e) {
 		unowned: !i.length && !c.length && !String(e.creator || "").trim()
 	};
 }
-var Pfe = (e) => Math.min(Math.max(e || 0, 0), 100), Active Directory = (e) => Math.round(Pfe(e) / 20), Ffe = (e) => {
-	let t = Active Directory(e);
-	return t ? `${t} estrellas` : "NoPuntuación";
+var Pfe = (e) => Math.min(Math.max(e || 0, 0), 100), AD = (e) => Math.round(Pfe(e) / 20), Ffe = (e) => {
+	let t = AD(e);
+	return t ? `${t} 星` : "未评分";
 }, Ife = (e, t) => {
 	let n = t * 20;
 	return n === (e || 0) ? 0 : n;
@@ -32724,24 +32724,24 @@ function Ufe(e, t, n) {
 	};
 }
 var Wfe = {
-	Sub. en chino: "subtitle",
-	Sin censura: "uncensored",
-	Sin censura (desbloqueado): "cracked",
-	Con censura: "censored"
+	中字: "subtitle",
+	无码: "uncensored",
+	无码破解: "cracked",
+	有码: "censored"
 }, Gfe = {
 	mix: "Mix",
-	parts: "Volumen",
-	editions: "Versión",
-	playlist: "Lista de reproducción"
+	parts: "分卷",
+	editions: "版本",
+	playlist: "播放列表"
 };
 function Kfe(e) {
-	let t = (e.kind === "editions" ? e.versionCount ?? e.items.length : e.items.length).toLocaleString(), n = e.kind === "parts" ? `${t} Volumen` : e.kind === "editions" ? `${t}  versión(es)` : `${t}  video(s)`;
+	let t = (e.kind === "editions" ? e.versionCount ?? e.items.length : e.items.length).toLocaleString(), n = e.kind === "parts" ? `${t} 卷` : e.kind === "editions" ? `${t} 个版本` : `${t} 个视频`;
 	return {
 		title: Gfe[e.kind],
 		summary: e.kind === "editions" ? n : `${e.title} · ${n}`
 	};
 }
-var MD = (e = "") => /^\d+$/.test(e) ? `Volumen ${e}` : /^[a-h]$/i.test(e) ? `${e.toUpperCase()} Volumen` : e, qfe = (e, t) => (t?.kind === "parts" || t?.kind === "editions") && e.part_label ? `<small class="javedition partlabel">${B(MD(e.part_label))}</small>` : "";
+var MD = (e = "") => /^\d+$/.test(e) ? `第 ${e} 卷` : /^[a-h]$/i.test(e) ? `${e.toUpperCase()} 卷` : e, qfe = (e, t) => (t?.kind === "parts" || t?.kind === "editions") && e.part_label ? `<small class="javedition partlabel">${B(MD(e.part_label))}</small>` : "";
 function Jfe(e, t, n, r) {
 	let i = e.filter((e) => e !== t), a = i.indexOf(n);
 	return i.splice(a + +!!r, 0, t), i;
@@ -32755,7 +32755,7 @@ function Zfe(e) {
 	return !e.play_seconds || !t ? null : Math.min(Number(e.play_seconds) / t, 1) * 100;
 }
 function Qfe(e, t) {
-	return e === "dislike" ? t.feedback === "dislike" ? "MarcadoNo es de mi gusto" : "YaCancelarNo es de mi gusto" : e === "seen" ? t.feedback === "seen" ? "Marcado como visto" : "YaCancelarVisto" : e === "dispose" ? t.disposal === "trash" ? "YaMover a papelera" : "Yamoversalir Papelera" : "YaRegistrounvezOrgasmo";
+	return e === "dislike" ? t.feedback === "dislike" ? "已标记不合口味" : "已取消不合口味" : e === "seen" ? t.feedback === "seen" ? "已标记看过" : "已取消看过" : e === "dispose" ? t.disposal === "trash" ? "已移入回收站" : "已移出回收站" : "已记录一次高潮";
 }
 //#endregion
 //#region src/react/immerse/immerse.ts
@@ -32790,11 +32790,11 @@ function ape(e, t) {
 	return e.concat(t.filter((e) => !n.has(e.id)));
 }
 function ope(e) {
-	let t = e.performers || [], n = t.length ? t.slice(0, 3).join(", ") + (t.length > 3 ? ` etc. ${t.length} persona(s)` : "") : e.creator || "Sin asignar", r = t.length ? "performer" : e.creator ? "creator" : "";
+	let t = e.performers || [], n = t.length ? t.slice(0, 3).join("、") + (t.length > 3 ? ` 等 ${t.length} 人` : "") : e.creator || "未归属", r = t.length ? "performer" : e.creator ? "creator" : "";
 	return {
 		who: n,
 		kind: r,
-		name: t.length ? t[0] : e.creator || "Sin asignar",
+		name: t.length ? t[0] : e.creator || "未归属",
 		ref: r && e.entity_refs?.[r]?.[0] || null
 	};
 }
@@ -32814,7 +32814,7 @@ var lpe = 15e3, upe = {
 	shown: null
 }, ND = null, PD = null, FD = upe, ID = /* @__PURE__ */ new Set(), LD = 0, dpe = 0, RD = 0, fpe = "", zD = [], BD = 0, VD = !1, HD = !1, UD = null, WD = /* @__PURE__ */ new Set(), GD = "", KD = null, qD = 0, JD = null, YD = !1;
 function XD() {
-	if (!ND) throw Error("Modo inmersivoAún no hayconectarsuperiorhost principal (configureImmerse)");
+	if (!ND) throw Error("沉浸模式还没有接上宿主（configureImmerse）");
 	return ND;
 }
 function ppe(e) {
@@ -32932,7 +32932,7 @@ async function Tpe(e = 0) {
 	let t = zD[BD];
 	if (!t || VD) return;
 	let n = LD;
-	XD().route(t.id), VD = !0, QD(e ? "Cambiando en proceso..." : "Cargando...", t);
+	XD().route(t.id), VD = !0, QD(e ? "切换中…" : "加载中…", t);
 	let r = null;
 	try {
 		if (await ipe(t.id).catch((e) => {
@@ -32962,7 +32962,7 @@ async function Tpe(e = 0) {
 async function tO(e) {
 	if (VD || !FD.open) return;
 	let t = LD;
-	if (BD += e, QD("Cambiando en proceso...", zD[BD] ?? null), BD >= zD.length - 3 && !HD) {
+	if (BD += e, QD("切换中…", zD[BD] ?? null), BD >= zD.length - 3 && !HD) {
 		HD = !0;
 		try {
 			RD += 1;
@@ -32981,7 +32981,7 @@ async function Epe(e) {
 		open: !0,
 		idle: !0,
 		shown: null
-	}, document.body.setAttribute("data-immerse-open", ""), QD("Cargando contenido...");
+	}, document.body.setAttribute("data-immerse-open", ""), QD("加载内容…");
 	try {
 		let n = await Cpe();
 		if (e && !n.some((t) => t.id === e)) {
@@ -32993,7 +32993,7 @@ async function Epe(e) {
 		}
 		if (t !== LD) return;
 		if (zD = n, !zD.length) {
-			nO(), XD().warn("Con el filtro actual el siguiente contenido no puede reproducirse directamente");
+			nO(), XD().warn("当前筛选下没有可直接播放的内容");
 			return;
 		}
 		BD = Math.max(0, zD.findIndex((t) => t.id === e)), await Tpe();
@@ -33118,17 +33118,17 @@ var Vpe = [
 	{
 		kind: "dislike",
 		glyph: "thumbs-down",
-		label: "etiquetacomoNo me gusta"
+		label: "标为不喜欢"
 	},
 	{
 		kind: "seen",
 		glyph: "eye",
-		label: "etiquetacomoVisto"
+		label: "标为看过"
 	},
 	{
 		kind: "o",
 		glyph: "heart",
-		label: "Registrar un orgasmo"
+		label: "记一次高潮"
 	}
 ];
 function Hpe(e) {
@@ -33155,7 +33155,7 @@ function Upe({ kind: e, glyph: t, label: n, id: r }) {
 				tO(1);
 			}, 260);
 		},
-		onError: (e) => XD().failure("ActualizarComentarios", e)
+		onError: (e) => XD().failure("更新反馈", e)
 	}), o = a.isPending, s = e !== "o" && i ? i.feedback === e ? "true" : "false" : void 0;
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		"data-immerse-action": "",
@@ -33179,9 +33179,9 @@ function Upe({ kind: e, glyph: t, label: n, id: r }) {
 		}), /* @__PURE__ */ (0, C.jsxs)("span", {
 			"data-immerse-label": "",
 			children: [
-				e === "dislike" ? "No me gusta" : null,
-				e === "seen" ? i?.feedback === "seen" ? "Ya visto" : "Visto" : null,
-				e === "o" ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: ["Orgasmo ", /* @__PURE__ */ (0, C.jsx)("b", { children: i?.o_count || 0 })] }) : null
+				e === "dislike" ? "不喜欢" : null,
+				e === "seen" ? i?.feedback === "seen" ? "已看" : "看过" : null,
+				e === "o" ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: ["高潮 ", /* @__PURE__ */ (0, C.jsx)("b", { children: i?.o_count || 0 })] }) : null
 			]
 		})]
 	});
@@ -33200,7 +33200,7 @@ function Wpe({ shown: e }) {
 				/* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
 					"data-immerse-avatar": "",
-					"aria-label": "AbrirDetalles",
+					"aria-label": "打开资料",
 					onClick: a,
 					dangerouslySetInnerHTML: { __html: s }
 				}),
@@ -33215,11 +33215,11 @@ function Wpe({ shown: e }) {
 			type: "button",
 			"data-immerse-title": "",
 			onClick: o,
-			children: t ? i.displayName(t).trim() || "Video sin nombre" : ""
+			children: t ? i.displayName(t).trim() || "未命名视频" : ""
 		})]
 	});
 }
-var Gpe = { __html: Ao("MediosCargarEn proceso") };
+var Gpe = { __html: Ao("媒体加载中") };
 function Kpe({ view: e }) {
 	let t = (0, S.useRef)(null), n = (0, S.useRef)(null), r = (0, S.useRef)(null), i = (0, S.useRef)(null);
 	(0, S.useLayoutEffect)(() => {
@@ -33269,8 +33269,8 @@ function Kpe({ view: e }) {
 			/* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
 				"data-immerse-close": "",
-				title: "Desactivar",
-				"aria-label": "Desactivar",
+				title: "关闭",
+				"aria-label": "关闭",
 				onClick: nO,
 				children: /* @__PURE__ */ (0, C.jsx)("svg", {
 					viewBox: "0 0 24 24",
@@ -33316,18 +33316,18 @@ function Xpe() {
 //#endregion
 //#region src/manage-header.ts
 var Zpe = {
-	"/junk-files": "Archivos basura",
-	"/duplicates": "Archivos duplicados",
-	"/review": "Revisión manual",
-	"/trash": "Papelera",
-	"/quality-goals": "Versión HD",
-	"/sources": "Fuentes y credenciales"
+	"/junk-files": "垃圾文件",
+	"/duplicates": "重复文件",
+	"/review": "人工复核",
+	"/trash": "回收站",
+	"/quality-goals": "高清版",
+	"/sources": "来源和凭证"
 }, Qpe = /* @__PURE__ */ new Set(["/data-cleanup", "/sources"]);
 function $pe(e) {
 	let t = Zpe[e.path] ? "cleanup" : e.section;
 	return e.menu.some(([e]) => e === t) ? t : "";
 }
-var eme = ({ total: e, shown: t }) => `${e.toLocaleString()} que cumple · Mostrar ${t.toLocaleString()}`;
+var eme = ({ total: e, shown: t }) => `${e.toLocaleString()} 个符合 · 显示 ${t.toLocaleString()}`;
 function dO(e) {
 	let t = e.sections.find(([t]) => t === e.section);
 	if (!t) return null;
@@ -33357,10 +33357,10 @@ function rme(e) {
 	let n = e.menu.map(([e, n, r]) => {
 		let i = e === t.pressed;
 		return `<button type="button" data-manage="${fO(e)}" aria-pressed="${i}"${i ? " aria-current=\"page\"" : ""}>${tme(r)}<span>${fO(n)}</span></button>`;
-	}).join(""), r = t.crumb ? `<nav data-manage-crumb="" aria-label="Breadcrumb"><ol><li><a href="/data-cleanup">Gestión de datos</a>${tme("chevron-right")}</li><li aria-current="true"><span>${fO(t.crumb)}</span></li></ol></nav>` : "", i = t.lede.kind === "none" ? "" : `<p class="mono" data-manage-lede="">${t.lede.kind === "skeleton" ? nme : `<span data-lede-text="">${fO(t.lede.text)}</span>${t.lede.total ? ime : ""}`}</p>`;
-	return `<nav data-manage-bar="" aria-label="Gestionar"><div data-manage-menu="">${n}</div></nav>` + r + `<h2 data-manage-title=""${t.compact ? " data-compact=\"\"" : ""}>${fO(t.title)}</h2>` + i;
+	}).join(""), r = t.crumb ? `<nav data-manage-crumb="" aria-label="Breadcrumb"><ol><li><a href="/data-cleanup">数据管理</a>${tme("chevron-right")}</li><li aria-current="true"><span>${fO(t.crumb)}</span></li></ol></nav>` : "", i = t.lede.kind === "none" ? "" : `<p class="mono" data-manage-lede="">${t.lede.kind === "skeleton" ? nme : `<span data-lede-text="">${fO(t.lede.text)}</span>${t.lede.total ? ime : ""}`}</p>`;
+	return `<nav data-manage-bar="" aria-label="管理"><div data-manage-menu="">${n}</div></nav>` + r + `<h2 data-manage-title=""${t.compact ? " data-compact=\"\"" : ""}>${fO(t.title)}</h2>` + i;
 }
-var ime = "<button type=\"button\" data-empty-trash=\"\" title=\"Eliminar permanentemente el contenido de la papelera\">Vaciar papelera</button>";
+var ime = "<button type=\"button\" data-empty-trash=\"\" title=\"永久删除回收站内容\">清空回收站</button>";
 //#endregion
 //#region src/react/settings-panel/icon.tsx
 function pO({ name: e }) {
@@ -33435,7 +33435,7 @@ function fme({ host: e, pressed: t, menu: n }) {
 		n < e.scrollLeft ? e.scrollLeft = n : i > e.scrollLeft + e.clientWidth && (e.scrollLeft = i - e.clientWidth);
 	}, [t, n]), /* @__PURE__ */ (0, C.jsx)("nav", {
 		"data-manage-bar": "",
-		"aria-label": "Gestionar",
+		"aria-label": "管理",
 		children: /* @__PURE__ */ (0, C.jsx)("div", {
 			ref: r,
 			"data-manage-menu": "",
@@ -33462,7 +33462,7 @@ function pme({ host: e, label: t }) {
 			onClick: (t) => {
 				t.metaKey || t.ctrlKey || t.shiftKey || t.altKey || t.button || (t.preventDefault(), e.openDataCleanup());
 			},
-			children: "Gestión de datos"
+			children: "数据管理"
 		}), /* @__PURE__ */ (0, C.jsx)(pO, { name: "chevron-right" })] }), /* @__PURE__ */ (0, C.jsx)("li", {
 			"aria-current": "true",
 			children: /* @__PURE__ */ (0, C.jsx)("span", { children: t })
@@ -33480,9 +33480,9 @@ function mme({ host: e, lede: t }) {
 			type: "button",
 			"data-empty-trash": "",
 			"data-danger": "",
-			title: "Eliminar permanentemente el contenido de la papelera",
+			title: "永久删除回收站内容",
 			onClick: () => e.emptyTrash(),
-			children: "Vaciar papelera"
+			children: "清空回收站"
 		}) : null] })
 	});
 }
@@ -34338,18 +34338,18 @@ function BO(e, t = []) {
 //#endregion
 //#region src/history/settings-route.ts
 var VO = {
-	appearance: "Apariencia y navegación",
-	playback: "Explorar y reproducir",
-	jav: "JAV y nuevos lanzamientos",
-	search: "Búsqueda y recomendaciones",
-	content: "Visualización de contenido"
+	appearance: "外观与导航",
+	playback: "浏览与播放",
+	jav: "JAV 与新作",
+	search: "搜索与推荐",
+	content: "内容显示"
 }, HO = {
-	library: "Biblioteca y catalogación",
-	subscriptions: "Fuentes y suscripciones",
-	downloads: "Canal de descarga",
-	network: "Red y acceso",
-	maintenance: "App y mantenimiento",
-	diagnostics: "Diagnóstico del sistema"
+	library: "媒体库与入库",
+	subscriptions: "来源与订阅",
+	downloads: "下载渠道",
+	network: "网络与访问",
+	maintenance: "应用与维护",
+	diagnostics: "系统诊断"
 };
 function Jhe(e) {
 	return HO[e.split("/")[2]] || HO.library;
@@ -34483,7 +34483,7 @@ function nk(e) {
 //#region src/history/route-meta.ts
 var rk = {
 	"/settings": {
-		title: "Configuración",
+		title: "设置",
 		refresh: "skip"
 	},
 	...Object.fromEntries(Object.entries(VO).map(([e, t]) => [`/settings/${e}`, {
@@ -34502,74 +34502,74 @@ var rk = {
 	},
 	"/stats": {
 		section: "stats",
-		title: "Estadísticas"
+		title: "统计"
 	},
 	"/taste": {
 		section: "taste",
-		title: "Preferencias",
+		title: "口味",
 		refresh: "reopen"
 	},
 	"/review": {
 		section: "review",
-		title: "Revisión manual",
+		title: "人工复核",
 		refresh: "reopen"
 	},
 	"/data-cleanup": {
 		section: "cleanup",
-		title: "Gestión de datos"
+		title: "数据管理"
 	},
 	"/duplicates": {
 		section: "cleanup",
-		title: "Archivos duplicados",
+		title: "重复文件",
 		refresh: "reopen"
 	},
 	"/quality-goals": {
 		section: "quality",
-		title: "Versión HD",
+		title: "高清版",
 		refresh: "reopen"
 	},
 	"/sources": {
 		section: "cleanup",
-		title: "Fuentes y credenciales",
+		title: "来源和凭证",
 		refresh: "reopen"
 	},
 	"/subscriptions": {
 		section: "follow",
-		title: "Gestionar seguidos",
+		title: "关注管理",
 		refresh: "skip"
 	},
 	"/settings/library": {
 		section: "configuration",
-		title: "Configuración de Peach",
+		title: "Peach 配置",
 		refresh: "reopen"
 	},
 	"/tasks": {
 		section: "activity",
-		title: "Centro de tareas",
+		title: "任务中心",
 		refresh: "reopen"
 	},
-	"/resource-sync": { title: "Gestión de datos" },
+	"/resource-sync": { title: "数据管理" },
 	"/performers": {
 		nav: "performers",
-		title: "Actriz",
+		title: "艺人",
 		reload: "reopen"
 	},
 	"/creators": {
-		title: "Vendedor",
+		title: "卖家",
 		reload: "reopen"
 	},
 	"/studios": {
 		nav: "studios",
-		title: "Sello",
+		title: "厂牌",
 		reload: "reopen"
 	},
 	"/agencies": {
-		title: "Agencia",
+		title: "事务所",
 		reload: "reopen"
 	},
 	"/tags": {
 		nav: "tags",
-		title: "Etiqueta",
+		title: "标签",
 		reload: "reopen"
 	},
 	"/performers/*": { reload: "reopen" },
@@ -34580,45 +34580,45 @@ var rk = {
 	"/tags/*": { reload: "reopen" },
 	"/playlists": {
 		nav: "playlists",
-		title: "Lista de reproducción",
+		title: "播放列表",
 		refresh: "reopen"
 	},
 	"/follow": {
 		nav: "follow",
-		title: "Seguir",
+		title: "关注",
 		refresh: "skip"
 	},
 	"/": {},
 	"/unseen": {
 		nav: "fresh",
-		title: "No visto"
+		title: "没看过"
 	},
 	"/watch-later": {
 		nav: "later",
-		title: "Ver más tarde"
+		title: "稍后看"
 	},
 	"/flagged": {
 		nav: "flagged",
-		title: "Marcado"
+		title: "已标记"
 	},
 	"/junk-files": {
 		nav: "ads",
-		title: "Archivos basura"
+		title: "垃圾文件"
 	},
 	"/trash": { section: "trash" },
-	"/assets/:id": { title: "MediosRegistro" },
+	"/assets/:id": { title: "媒体记录" },
 	"/works/:code": {
 		nav: "jav",
-		title: "Obras JAV"
+		title: "JAV 作品"
 	},
-	"/posts/:id": { title: "Seguir" },
+	"/posts/:id": { title: "关注" },
 	"/immerse": {
 		nav: "immerse",
-		title: "Modo inmersivo"
+		title: "沉浸模式"
 	},
 	"/wall": {
 		nav: "wall",
-		title: "Muro de reproducción"
+		title: "播放墙"
 	}
 };
 function ik(e) {
@@ -34638,7 +34638,7 @@ function ik(e) {
 	}[n] || "", Number(r[0])) : r.join("/");
 	return Object.hasOwn(rk, i) ? {
 		...rk[i],
-		title: a || "Detalles"
+		title: a || "资料"
 	} : null;
 }
 //#endregion
@@ -34814,9 +34814,9 @@ function mge(e, t = e?.name) {
 		title: n
 	};
 	let i = String(e?.display_code || r).trim().toUpperCase(), a = n.toUpperCase(), o = a === r || a === i || a.startsWith(r) && /^[\s._\-[\]]/.test(n.slice(r.length)) || a.startsWith(i) && /^[\s._\-[\]]/.test(n.slice(i.length)), s = a.startsWith(i) ? i.length : r.length, c = (o ? n.slice(s) : n).replace(/^[\s._-]+/, "").trim(), l = pge(e), u = Object.prototype.hasOwnProperty.call(e || {}, "display_title") ? String(e.display_title || "").trim() : c, d = l || u, f = Array.isArray(e?.edition_badges) ? e.edition_badges.filter((e) => [
-		"Sub. en chino",
-		"Sin censura",
-		"Sin censura (desbloqueado)"
+		"中字",
+		"无码",
+		"无码破解"
 	].includes(e)) : [], p = [Number(e?.width) || 0, Number(e?.height) || 0];
 	return Math.min(...p) >= 2160 && Math.max(...p) >= 3840 && f.push("4K"), {
 		code: i,
@@ -34835,7 +34835,7 @@ var Ek = (e, t = e?.name) => {
 function Dk(e, t = e?.name) {
 	let { code: n, title: r, badges: i = [] } = mge(e, t);
 	if (!n) return B(r);
-	let a = i.map((e) => `<small class="javedition ${e === "Sub. en chino" ? "subtitle" : e === "Sin censura" ? "uncensored" : e === "Sin censura (desbloqueado)" ? "cracked" : "quality"}">${B(e)}</small>`).join("");
+	let a = i.map((e) => `<small class="javedition ${e === "中字" ? "subtitle" : e === "无码" ? "uncensored" : e === "无码破解" ? "cracked" : "quality"}">${B(e)}</small>`).join("");
 	return `<span class="ui-javidentity"><strong class="ui-javcode">${B(n)}</strong>${a}</span>${r ? ` <span class="ui-javtitle">${B(r)}</span>` : ""}`;
 }
 //#endregion
@@ -37719,46 +37719,46 @@ async function kve(e) {
 	});
 }
 var qA = {
-	manual: "Manual",
-	scheduled: "Programado",
-	startup: "Iniciar",
-	cli: "Línea de comandos"
+	manual: "手动",
+	scheduled: "定时",
+	startup: "启动",
+	cli: "命令行"
 }, Ave = {
-	pending: "En cola en proceso",
-	running: "En progreso",
-	succeeded: "Completado",
-	failed: "Fallido",
-	cancelled: "YaCancelar",
-	interrupted: "Interrumpido"
+	pending: "排队中",
+	running: "进行中",
+	succeeded: "已完成",
+	failed: "失败",
+	cancelled: "已取消",
+	interrupted: "被打断"
 }, jve = (e) => Ave[e] || e, Mve = {
-	checked: "Verificado",
-	total: "Total",
-	scanned: "YaEscanear",
-	identified: "YaReconocer",
-	candidates: "DetallesResultado",
-	covers: "Portada",
-	changed: "Ya renombrado y movido",
-	operation: "Acción",
-	ok: "Obtener",
-	miss: "No disponible",
-	kept: "Conservar",
-	planned: "Planificado",
-	done: "YaProcesar",
-	added: "Nuevo",
-	written: "Yaescrito",
-	removed: "YaQuitar",
-	exit_code: "Código de salida",
-	issue_count: "Problema",
-	followups: "Enviar sucesor",
-	followups_duplicate: "Ya en la cola",
-	followups_truncated: "Límite superior excedido, no se envía",
-	followups_depth_exceeded: "Profundidad excedida, no se envía",
-	outcome: "Resultado",
-	name: "Nombre de archivo",
-	matched: "GaleríanombrarEn proceso",
-	size: "Tamaño",
-	source: "Fuente",
-	cover_network: "Portadasin conexión al host de imágenes"
+	checked: "已检查",
+	total: "总数",
+	scanned: "已扫描",
+	identified: "已识别",
+	candidates: "资料结果",
+	covers: "封面",
+	changed: "已改动",
+	operation: "操作",
+	ok: "取得",
+	miss: "未取得",
+	kept: "保留",
+	planned: "计划",
+	done: "已处理",
+	added: "新增",
+	written: "已写入",
+	removed: "已移除",
+	exit_code: "退出码",
+	issue_count: "问题",
+	followups: "派出后继",
+	followups_duplicate: "已在排队",
+	followups_truncated: "超上限未派",
+	followups_depth_exceeded: "超深度未派",
+	outcome: "结果",
+	name: "档案名称",
+	matched: "图库命中",
+	size: "尺寸",
+	source: "来源",
+	cover_network: "封面连不上图片主机"
 };
 function Nve(e) {
 	let t = /* @__PURE__ */ new Map();
@@ -37793,17 +37793,17 @@ function Pve(e, t) {
 }
 var Fve = (e) => e.trigger === "scheduled" && e.status === "succeeded" && !e.error && !(Number(e.result_summary?.added) > 0) && !(Number(e.result_summary?.followups) > 0), JA = (e) => e.status === "pending" || e.status === "running";
 function Ive(e) {
-	let t = `${e.task_label}: `, n = e.progress_label || "", r = n.startsWith(t) ? n.slice(t.length) : n === e.task_label ? "" : n, i = e.progress_total || 0;
-	return [r, ZA(e.error) || $A(e.result_summary) || (JA(e) && i > 0 ? `${XA(e.progress_current, i)} elemento(s)` : "")].filter(Boolean).join(" · ");
+	let t = `${e.task_label}：`, n = e.progress_label || "", r = n.startsWith(t) ? n.slice(t.length) : n === e.task_label ? "" : n, i = e.progress_total || 0;
+	return [r, ZA(e.error) || $A(e.result_summary) || (JA(e) && i > 0 ? `${XA(e.progress_current, i)} 项` : "")].filter(Boolean).join(" · ");
 }
 function YA(e) {
 	if (typeof e != "number" || !Number.isFinite(e) || e < 0) return "";
 	let t = Math.floor(e);
-	if (t < 60) return `${t} segundo(s)`;
+	if (t < 60) return `${t} 秒`;
 	let n = Math.floor(t / 60);
-	if (n < 60) return `${n} sección ${t % 60} segundo(s)`;
+	if (n < 60) return `${n} 分 ${t % 60} 秒`;
 	let r = Math.floor(n / 60);
-	return r < 48 ? `${r} hora(s) ${n % 60} sección` : `${Math.floor(r / 24).toLocaleString()} día(s) ${r % 24} hora(s)`;
+	return r < 48 ? `${r} 小时 ${n % 60} 分` : `${Math.floor(r / 24).toLocaleString()} 天 ${r % 24} 小时`;
 }
 function XA(e, t) {
 	let n = Math.max(0, Number(t) || 0);
@@ -37878,7 +37878,7 @@ var nj = "/api/downloads", rj = ["downloads"], Vve = "/api/downloads/cancel", Hv
 	failed: "rose",
 	cancelled: "yellow",
 	stalled: "yellow"
-}, Wve = (e) => e.title || e.display_name || e.remote_name || e.code || `magnet ${e.info_hash?.slice(0, 8) ?? e.id}`, aj = (e) => e.failure_label ? [e.failure_label, e.failure_detail].filter(Boolean).join(": ") : "";
+}, Wve = (e) => e.title || e.display_name || e.remote_name || e.code || `磁力 ${e.info_hash?.slice(0, 8) ?? e.id}`, aj = (e) => e.failure_label ? [e.failure_label, e.failure_detail].filter(Boolean).join("：") : "";
 function Gve() {
 	let e = (0, S.useId)(), t = pt({
 		queryKey: rj,
@@ -37892,7 +37892,7 @@ function Gve() {
 			/* @__PURE__ */ (0, C.jsx)("h3", {
 				id: e,
 				className: "text-title-2-semibold text-text-primary",
-				children: "Descarga en la nube"
+				children: "云下载"
 			}),
 			t.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
@@ -37972,7 +37972,7 @@ function Kve({ task: e, writable: t }) {
 					})]
 				}),
 				e.state === "remote_running" && e.progress != null ? /* @__PURE__ */ (0, C.jsx)(CA, {
-					label: "remotoDescargasProgreso",
+					label: "远端下载进度",
 					value: Math.round(e.progress * 100),
 					max: 100
 				}) : null,
@@ -37989,27 +37989,27 @@ function Kve({ task: e, writable: t }) {
 							size: "small",
 							...Y(r.busy === "cancel"),
 							onClick: u,
-							children: "Cancelar"
+							children: "取消"
 						}) : null,
 						t && e.resubmittable ? /* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
 							size: "small",
 							...Y(r.busy === "resubmit"),
 							onClick: d,
-							children: "de nuevoEnviar"
+							children: "重新提交"
 						}) : null,
 						t && e.postprocess_retryable ? /* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
 							size: "small",
 							...Y(r.busy === "postprocess"),
 							onClick: p,
-							children: "ReintentardespuésProcesar"
+							children: "重试后处理"
 						}) : null,
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "ghost",
 							size: "small",
 							onClick: f,
-							children: i ? "Enlace magnet copiado" : "Copiar enlace magnet"
+							children: i ? "已复制磁力" : "复制磁力"
 						})
 					]
 				})
@@ -38046,7 +38046,7 @@ function oj({ text: e, className: t = "" }) {
 			"aria-expanded": n,
 			"aria-controls": n ? i : void 0,
 			onClick: () => r(!n),
-			children: n ? "Ocultar detalles" : "Ver detalles"
+			children: n ? "收起详情" : "查看详情"
 		}) : null]
 	});
 }
@@ -38119,7 +38119,7 @@ function cj({ run: e, meta: t, children: n, footer: r, followups: i }) {
 			i?.length ? /* @__PURE__ */ (0, C.jsx)("div", {
 				className: "border-t border-separator-border px-5 py-2.5",
 				children: /* @__PURE__ */ (0, C.jsx)(BA, {
-					summary: `Detalles de tarea · ${i.length} elemento(s)`,
+					summary: `任务明细 · ${i.length} 项`,
 					defaultOpen: i.some((e) => JA(e) || e.status === "failed"),
 					children: /* @__PURE__ */ (0, C.jsx)(Jve, { rows: i })
 				})
@@ -38135,7 +38135,7 @@ function cj({ run: e, meta: t, children: n, footer: r, followups: i }) {
 	});
 }
 function Yve({ run: e, followups: t }) {
-	let n = e.progress_total || 0, r = e.progress_current || 0, i = e.progress_label || "En progreso", a = YA(e.elapsed_seconds), o = [qA[e.trigger] || e.trigger, a && `Yaejecutar ${a}`].filter(Boolean).join(" · ");
+	let n = e.progress_total || 0, r = e.progress_current || 0, i = e.progress_label || "正在进行", a = YA(e.elapsed_seconds), o = [qA[e.trigger] || e.trigger, a && `已跑 ${a}`].filter(Boolean).join(" · ");
 	return /* @__PURE__ */ (0, C.jsx)(cj, {
 		run: e,
 		meta: o,
@@ -38152,7 +38152,7 @@ function Yve({ run: e, followups: t }) {
 					i,
 					" · ",
 					XA(r, n),
-					" elemento(s)"
+					" 项"
 				]
 			})]
 		}) : /* @__PURE__ */ (0, C.jsx)(bA, { label: i })
@@ -38161,12 +38161,12 @@ function Yve({ run: e, followups: t }) {
 function lj({ run: e, followups: t, runs: n }) {
 	let r = $A(e.result_summary), i = YA(e.elapsed_seconds), a = n && n.length > 1 ? n[n.length - 1] : void 0, o = (a ? [
 		qA[e.trigger] || e.trigger,
-		`Últimas ${n.length} rondas`,
+		`近 ${n.length} 轮`,
 		`${QA(a.finished_at)} – ${QA(e.finished_at)}`
 	] : [
 		qA[e.trigger] || e.trigger,
 		QA(e.finished_at),
-		i && `usarcuando ${i}`
+		i && `用时 ${i}`
 	]).filter(Boolean).join(" · ");
 	return /* @__PURE__ */ (0, C.jsx)(cj, {
 		run: e,
@@ -38213,7 +38213,7 @@ function Xve() {
 	}), u = e.error ? V(e.error) : "";
 	if (!t) return /* @__PURE__ */ (0, C.jsx)(xA, { children: /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		children: u || "leerCentro de tareasFallido"
+		children: u || "读取任务中心失败"
 	}) });
 	let d = WA(t.finished || [], r), f = [
 		...t.running || [],
@@ -38232,16 +38232,16 @@ function Xve() {
 		}) : null,
 		t.available === !1 ? /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: "warning",
-			children: t.message || "Base de datostabla de registros de tareas aún no lista"
+			children: t.message || "数据库尚未准备好任务记录表"
 		}) : null,
 		D ? /* @__PURE__ */ (0, C.jsx)(yA, {
 			shell: "plain",
 			icon: zk,
-			title: "Aún no hay registros de tareas",
-			children: "Escanear, verificar actualizaciones seguidas, Operación en lote y Línea de comandosprocesamiento por lotesdespués de iniciar, estedentromostrará su progreso y resultados. "
+			title: "还没有任务记录",
+			children: "扫描、追更检查、批量操作和命令行批处理跑起来之后，这里会显示它们的进度与结果。"
 		}) : /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 			/* @__PURE__ */ (0, C.jsx)(uj, {
-				title: "En progreso",
+				title: "正在进行",
 				children: x.length || b.length ? /* @__PURE__ */ (0, C.jsxs)(dj, {
 					live: !0,
 					children: [x.map((e) => /* @__PURE__ */ (0, C.jsx)(Yve, {
@@ -38253,18 +38253,18 @@ function Xve() {
 					}, e.id))]
 				}) : /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "neutral",
-					children: "No hay tareas en ejecución."
+					children: "没有任务在跑。"
 				})
 			}),
 			w.length ? /* @__PURE__ */ (0, C.jsx)(uj, {
-				title: "Rechazados",
+				title: "被挡下的",
 				children: /* @__PURE__ */ (0, C.jsx)(dj, { children: w.map((e) => /* @__PURE__ */ (0, C.jsx)(lj, {
 					run: e,
 					followups: p.get(e.id)
 				}, e.id)) })
 			}) : null,
 			T.length || v ? /* @__PURE__ */ (0, C.jsxs)(uj, {
-				title: "Completados recientemente",
+				title: "最近完成",
 				children: [
 					T.length ? /* @__PURE__ */ (0, C.jsx)(dj, { children: E.map(({ run: e, runs: t }) => /* @__PURE__ */ (0, C.jsx)(lj, {
 						run: e,
@@ -38282,7 +38282,7 @@ function Xve() {
 						className: "self-start",
 						...Y(l.isPending),
 						onClick: y,
-						children: "Cargar más antiguo"
+						children: "加载更早"
 					}) : null
 				]
 			}) : null
@@ -38363,7 +38363,7 @@ function hj(e, t = !0) {
 var Zve = ({ className: e }) => /* @__PURE__ */ (0, C.jsx)("span", {
 	"aria-hidden": !0,
 	className: e,
-	dangerouslySetInnerHTML: { __html: Ao("Procesando") }
+	dangerouslySetInnerHTML: { __html: Ao("正在处理") }
 });
 function gj({ label: e, icon: t, busy: n = !1, onPress: r, ...i }) {
 	return /* @__PURE__ */ (0, C.jsx)(pj, {
@@ -39256,10 +39256,10 @@ vM = {
 //#region node_modules/react-aria-components/dist/private/intl/ja-JP.mjs
 var yM = {};
 yM = {
-	colorSwatchPicker: "Paleta de colores",
-	dropzoneLabel: "Zona de arrastre",
-	selectPlaceholder: "Seleccionar elemento objetivo",
-	tableResizer: "Herramienta de cambio de tamaño"
+	colorSwatchPicker: "カラースウォッチ",
+	dropzoneLabel: "ドロップゾーン",
+	selectPlaceholder: "項目を選択",
+	tableResizer: "サイズ変更ツール"
 };
 //#endregion
 //#region node_modules/react-aria-components/dist/private/intl/ko-KR.mjs
@@ -39409,19 +39409,19 @@ FM = {
 //#region node_modules/react-aria-components/dist/private/intl/zh-CN.mjs
 var IM = {};
 IM = {
-	colorSwatchPicker: "paleta de colores",
-	dropzoneLabel: "colocarconfigurarárea",
-	selectPlaceholder: "Seleccionarunelemento(s)objetivo",
-	tableResizer: "Tamañoajuste completo de Dispositivo"
+	colorSwatchPicker: "颜色色板",
+	dropzoneLabel: "放置区域",
+	selectPlaceholder: "选择一个项目",
+	tableResizer: "尺寸调整器"
 };
 //#endregion
 //#region node_modules/react-aria-components/dist/private/intl/zh-TW.mjs
 var LM = {};
 LM = {
-	colorSwatchPicker: "selector de color",
-	dropzoneLabel: "Zona de arrastre y suelta",
-	selectPlaceholder: "seleccionarelemento objetivo",
-	tableResizer: "Ajustar tamaño al dispositivo completo"
+	colorSwatchPicker: "色票",
+	dropzoneLabel: "放置區",
+	selectPlaceholder: "選取項目",
+	tableResizer: "大小調整器"
 };
 //#endregion
 //#region node_modules/react-aria-components/dist/private/intlStrings.mjs
@@ -43651,12 +43651,12 @@ function uxe(e) {
 //#endregion
 //#region src/react/library-shortcuts/shortcut-controls.tsx
 var NP = EP("star"), dxe = EP("bookmark-plus"), PP = EP("chevron-right"), FP = {
-	performer: "Actriz",
-	creator: "Creador",
-	studio: "Productoras y sellos",
-	series: "Serie",
-	agency: "Agencia",
-	tag: "Etiqueta"
+	performer: "艺人",
+	creator: "创作者",
+	studio: "片商与厂牌",
+	series: "系列",
+	agency: "事务所",
+	tag: "标签"
 }, IP = {
 	all: EP("star"),
 	performer: EP("user-round"),
@@ -43667,9 +43667,9 @@ var NP = EP("star"), dxe = EP("bookmark-plus"), PP = EP("chevron-right"), FP = {
 	tag: EP("tags"),
 	filters: EP("list-filter")
 }, LP = [
-	["all", "Todo"],
+	["all", "全部"],
 	...Object.entries(FP),
-	["filters", "Filtros guardados"]
+	["filters", "保存的筛选"]
 ];
 function RP({ item: e }) {
 	return /* @__PURE__ */ (0, C.jsx)(fxe, { item: e }, `${e.kind}:${e.entity_id}:${e.name}`);
@@ -43683,8 +43683,8 @@ function fxe({ item: e }) {
 				type: "button",
 				"data-favorite": "",
 				"aria-pressed": !!i,
-				"aria-label": `${i ? "Quitar de favoritos" : "Añadir a favoritos"}${e.name}`,
-				title: `${i ? "Quitar de favoritos" : "Añadir a favoritos"}${e.name}`,
+				"aria-label": `${i ? "取消收藏" : "收藏"}${e.name}`,
+				title: `${i ? "取消收藏" : "收藏"}${e.name}`,
 				...Y(r.isPending),
 				onClick: () => {
 					r.isPending || r.mutate({
@@ -43706,7 +43706,7 @@ function fxe({ item: e }) {
 				variant: "secondary",
 				size: "small",
 				onClick: () => void t.refetch(),
-				children: "Reintentar cargar favoritos"
+				children: "重试读取收藏"
 			}) : null
 		]
 	});
@@ -43717,7 +43717,7 @@ function zP({ currentHref: e, kind: t }) {
 		"data-shortcuts-entry": "",
 		children: /* @__PURE__ */ (0, C.jsx)(gj, {
 			"data-shortcuts-trigger": "",
-			label: "Mis favoritos",
+			label: "我的收藏",
 			icon: NP,
 			"aria-haspopup": "dialog",
 			"aria-expanded": n,
@@ -43727,7 +43727,7 @@ function zP({ currentHref: e, kind: t }) {
 		isOpen: n,
 		onOpenChange: r,
 		width: "collections",
-		label: "Mis favoritos",
+		label: "我的收藏",
 		children: n ? /* @__PURE__ */ (0, C.jsx)(pxe, {
 			currentHref: e,
 			kind: t,
@@ -43754,7 +43754,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 	}, [s]), (0, S.useLayoutEffect)(() => {
 		x.current?.();
 	});
-	let T = LP.find(([e]) => e === s)?.[1] || "Todo", E = (e) => {
+	let T = LP.find(([e]) => e === s)?.[1] || "全部", E = (e) => {
 		let t = [...e.currentTarget.querySelectorAll("[role=\"tab\"]")], n = t.indexOf(e.target);
 		if (n < 0) return;
 		let r = e.key === "Home" ? 0 : e.key === "End" ? t.length - 1 : ["ArrowDown", "ArrowRight"].includes(e.key) ? (n + 1) % t.length : ["ArrowUp", "ArrowLeft"].includes(e.key) ? (n + t.length - 1) % t.length : -1;
@@ -43765,7 +43765,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 			name: a.trim(),
 			href: e()
 		}, { onSuccess: () => {
-			o(""), f("Filtro guardado");
+			o(""), f("筛选已保存");
 		} });
 	}, O = r.data, k = (O?.favorites || []).filter((e) => (s === "all" || e.kind === s) && e.name.toLocaleLowerCase().includes(l.trim().toLocaleLowerCase()));
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -43778,7 +43778,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 					className: "text-title-2-semibold text-text-primary",
 					children: T
 				}), /* @__PURE__ */ (0, C.jsx)(DP, {
-					label: "Cerrar mis favoritos",
+					label: "关闭我的收藏",
 					onPress: n
 				})]
 			}),
@@ -43791,7 +43791,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 					"data-shortcuts-categories": "",
 					"data-glass-pane": m ? "" : void 0,
 					role: "tablist",
-					"aria-label": "Tipo de favorito",
+					"aria-label": "收藏类型",
 					onKeyDown: E,
 					onPointerLeave: w.leave,
 					children: [
@@ -43805,7 +43805,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 						/* @__PURE__ */ (0, C.jsx)("p", {
 							"data-shortcuts-caption": "",
 							role: "presentation",
-							children: "Mis favoritos"
+							children: "我的收藏"
 						}),
 						LP.map(([e, t]) => {
 							let n = IP[e] || NP, r = e === "filters" ? O?.filters.length || 0 : (O?.favorites || []).filter((t) => e === "all" || t.kind === e).length;
@@ -43835,13 +43835,13 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 					]
 				}), /* @__PURE__ */ (0, C.jsxs)("nav", {
 					"data-shortcuts-footer": "",
-					"aria-label": "Lista de obras favoritas",
+					"aria-label": "收藏作品清单",
 					children: [/* @__PURE__ */ (0, C.jsxs)("a", {
 						href: "/flagged",
 						onClick: n,
 						children: [
 							/* @__PURE__ */ (0, C.jsx)(NP, { "aria-hidden": !0 }),
-							"Marcado",
+							"已标记",
 							/* @__PURE__ */ (0, C.jsx)(PP, { "aria-hidden": !0 })
 						]
 					}), /* @__PURE__ */ (0, C.jsxs)("a", {
@@ -43849,7 +43849,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 						onClick: n,
 						children: [
 							/* @__PURE__ */ (0, C.jsx)(dxe, { "aria-hidden": !0 }),
-							"Ver más tarde",
+							"稍后看",
 							/* @__PURE__ */ (0, C.jsx)(PP, { "aria-hidden": !0 })
 						]
 					})]
@@ -43874,7 +43874,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 						action: /* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
 							onClick: () => void r.refetch(),
-							children: "Reintentar"
+							children: "重试"
 						}),
 						children: V(r.error)
 					}) : null,
@@ -43886,8 +43886,8 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 						O.filters.length ? null : /* @__PURE__ */ (0, C.jsx)(yA, {
 							shell: "plain",
 							icon: EP("list-filter"),
-							title: "No hay filtros guardados",
-							children: "Guarda las condiciones actuales en la página de colección para acceder cuando quieras."
+							title: "还没有保存的筛选",
+							children: "在馆藏页保存当前条件，随时打开。"
 						}),
 						O.filters.map((e) => /* @__PURE__ */ (0, C.jsxs)("div", {
 							className: "flex min-w-0 items-center justify-between gap-2",
@@ -43899,7 +43899,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 							}), /* @__PURE__ */ (0, C.jsx)(q, {
 								variant: "secondary",
 								size: "small",
-								"aria-label": `EliminarFiltrar${e.name}`,
+								"aria-label": `删除筛选${e.name}`,
 								...Y(i.isPending),
 								onClick: () => {
 									i.isPending || i.mutate({
@@ -43907,16 +43907,16 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 										id: e.id
 									});
 								},
-								children: "Eliminar"
+								children: "删除"
 							})]
 						}, e.id)),
 						e ? /* @__PURE__ */ (0, C.jsxs)("form", {
 							onSubmit: D,
 							className: "flex flex-col gap-3",
-							"aria-label": "Guardar filtro actual",
+							"aria-label": "保存当前筛选",
 							children: [
 								/* @__PURE__ */ (0, C.jsx)(SP, {
-									label: "Nombre del filtro",
+									label: "筛选名称",
 									value: a,
 									onChange: o,
 									maxLength: 80
@@ -43925,7 +43925,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 									type: "submit",
 									disabled: !a.trim(),
 									...Y(i.isPending),
-									children: "Guardar filtro actual"
+									children: "保存当前筛选"
 								}),
 								d ? /* @__PURE__ */ (0, C.jsx)("span", {
 									role: "status",
@@ -43936,8 +43936,8 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 						}) : null
 					] }) : /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 						/* @__PURE__ */ (0, C.jsx)(SP, {
-							"aria-label": "BuscarAñadir a favoritos",
-							placeholder: "BuscarAñadir a favoritos",
+							"aria-label": "搜索收藏",
+							placeholder: "搜索收藏",
 							leadingIcon: EP("search"),
 							value: l,
 							onChange: u
@@ -43945,8 +43945,8 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 						k.length ? null : /* @__PURE__ */ (0, C.jsx)(yA, {
 							shell: "plain",
 							icon: NP,
-							title: l ? "No hay favoritos que coincidan" : O.favorites.length ? "Aún no hay favoritos de este tipo" : "Aún no tienes favoritos",
-							children: l ? "Prueba con otro nombre." : "Añade a favoritos desde la página de detalles o de etiquetas."
+							title: l ? "没有匹配的收藏" : O.favorites.length ? "还没有此类收藏" : "还没有收藏",
+							children: l ? "试试其他名称。" : "在资料页或标签页收藏常用内容。"
 						}),
 						/* @__PURE__ */ (0, C.jsx)("div", {
 							"data-shortcuts-list": "",
@@ -43971,7 +43971,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 								}), /* @__PURE__ */ (0, C.jsx)(q, {
 									variant: "secondary",
 									size: "small",
-									"aria-label": `Quitar de favoritos${e.name}`,
+									"aria-label": `取消收藏${e.name}`,
 									...Y(i.isPending),
 									onClick: () => {
 										i.isPending || i.mutate({
@@ -43980,7 +43980,7 @@ function pxe({ currentHref: e, kind: t, close: n }) {
 											on: !1
 										});
 									},
-									children: "Quitar de favoritos"
+									children: "取消收藏"
 								})]
 							}, e.key))
 						})
@@ -45035,14 +45035,14 @@ var sF = /*#__PURE__*/ S.forwardRef(function(e, t) {
 ].includes(e.status);
 function dF(e) {
 	if (!uF(e)) return "";
-	if (e.status === "paused") return "Pausado; actualizar estimación para continuar";
-	if (e.status === "pausing") return "Pausando; se pausará después del paso actual final";
-	if (e.stalled) return "etc.PendienteActualArchivorespuesta, DisponibleHoraPendienteActualizar";
+	if (e.status === "paused") return "已暂停，继续后更新预估";
+	if (e.status === "pausing") return "正在暂停，当前步骤结束后暂停";
+	if (e.stalled) return "等待当前文件响应，剩余时间待更新";
 	let t = e.eta_seconds_min, n = e.eta_seconds_max;
-	if (t == null || n == null || !Number.isFinite(t) || !Number.isFinite(n) || t < 0 || n < t) return "Procesando, calculando tiempo disponible...";
-	if (n < 60) return "disponible estimado No 1 minuto(s)";
-	let r = n >= 86400 ? 86400 : n >= 3600 ? 3600 : 60, i = r === 86400 ? "día(s)" : r === 3600 ? "hora(s)" : "minuto(s)", a = r === 60 ? 1 : 10, o = Math.max(1 / a, Math.floor(t / r * a) / a), s = Math.max(o, Math.ceil(n / r * a) / a);
-	return `Disponible aprox. ${o === s ? `${s}` : `${o}–${s}`} ${i}${e.eta_initial || e.eta_kind !== "measured" ? "(estimado)" : ""}${e.eta_scope ? ` · ${e.eta_scope}` : ""}`;
+	if (t == null || n == null || !Number.isFinite(t) || !Number.isFinite(n) || t < 0 || n < t) return "正在估算剩余时间…";
+	if (n < 60) return "预计剩余不到 1 分钟";
+	let r = n >= 86400 ? 86400 : n >= 3600 ? 3600 : 60, i = r === 86400 ? "天" : r === 3600 ? "小时" : "分钟", a = r === 60 ? 1 : 10, o = Math.max(1 / a, Math.floor(t / r * a) / a), s = Math.max(o, Math.ceil(n / r * a) / a);
+	return `预计剩余约 ${o === s ? `${s}` : `${o}–${s}`} ${i}${e.eta_initial || e.eta_kind !== "measured" ? "（粗估）" : ""}${e.eta_scope ? ` · ${e.eta_scope}` : ""}`;
 }
 var fF = (e) => H(cF, e);
 async function pF(e) {
@@ -45051,43 +45051,43 @@ async function pF(e) {
 		queryFn: () => fF(e)
 	});
 }
-var Xxe = 2e3, Zxe = 1e4, mF = "ConectarEn procesointerrumpir, Procesandode nuevoleerProcesarProgreso";
+var Xxe = 2e3, Zxe = 1e4, mF = "连接中断，正在重新读取处理进度";
 function hF(e, t) {
 	return uF(e) ? Xxe : t ? Zxe : !1;
 }
 var Qxe = {
-	scanning_files: "EscanearArchivo",
-	reading_local: "Verificarconjunto de archivos según cuota",
-	reading_local_cover: "leercuotajuego de imágenes",
-	querying_metadata: "Buscar detalles de títulos externos",
-	fetching_cover: "Portada faltante a recopilar",
-	generating_preview: "Generar vista previa de video",
-	writing_candidates: "Guardarpendiente de confirmarDetalles"
+	scanning_files: "扫描文件",
+	reading_local: "检查配套文件",
+	reading_local_cover: "读取配套图片",
+	querying_metadata: "查询外部资料",
+	fetching_cover: "采集缺失封面",
+	generating_preview: "生成视频预览",
+	writing_candidates: "保存待确认资料"
 }, gF = {
-	querying_metadata: "SinDetalles",
-	fetching_cover: "SinPortada"
+	querying_metadata: "没有资料",
+	fetching_cover: "没有封面"
 };
 function $xe(e) {
-	let t = Object.entries(e).filter(([e, t]) => gF[e] && t > 0).map(([e, t]) => `${gF[e]} ${t.toLocaleString()}  título(s)`);
-	return t.length ? `título(s) de fuente externa${t.join(", ")}, no preguntar en los próximos 7 días. ` : "";
+	let t = Object.entries(e).filter(([e, t]) => gF[e] && t > 0).map(([e, t]) => `${gF[e]} ${t.toLocaleString()} 部`);
+	return t.length ? `外部来源${t.join("、")}，7 天内不再问。` : "";
 }
 function eSe(e) {
-	if (e.status === "paused") return "Pausado";
-	if (e.status === "pausing") return "Pausando";
-	let t = Qxe[e.current_action || ""] || e.stage || "Procesando", n = e.waited_seconds ? ` · Yaetc.Pendiente ${YA(e.waited_seconds)}` : "";
-	return e.current_asset_name ? `Actual:${e.current_asset_name} · ${t}${n}` : t + n;
+	if (e.status === "paused") return "已暂停";
+	if (e.status === "pausing") return "正在暂停";
+	let t = Qxe[e.current_action || ""] || e.stage || "正在处理", n = e.waited_seconds ? ` · 已等待 ${YA(e.waited_seconds)}` : "";
+	return e.current_asset_name ? `当前：${e.current_asset_name} · ${t}${n}` : t + n;
 }
 function tSe(e) {
-	let t = e.total ? `${XA(e.checked, e.total)} elemento(s)` : e.current_action === "scanning_files" || e.stage === "EscanearArchivo" ? `YaDescubrir ${(e.scanned || 0).toLocaleString()} Archivo` : "";
+	let t = e.total ? `${XA(e.checked, e.total)} 项` : e.current_action === "scanning_files" || e.stage === "扫描文件" ? `已发现 ${(e.scanned || 0).toLocaleString()} 个文件` : "";
 	return eSe(e) + (t ? ` · ${t}` : "");
 }
 function nSe(e) {
 	let t = e.issue_preview || [];
 	return t.length ? {
-		label: e.issues_truncated ? `Problemalista de verificación: Total: ${e.issue_count || 0} elemento(s), expandir para ver los primeros ${t.length} elementos` : `Problemalista de verificación: Total: ${e.issue_count || 0} elemento(s)`,
+		label: e.issues_truncated ? `问题清单：共 ${e.issue_count || 0} 项，展开查看前 ${t.length} 项` : `问题清单：共 ${e.issue_count || 0} 项`,
 		items: t.map((e, t) => ({
 			key: `${e.asset_id ?? "source"}-${t}`,
-			label: e.title || (e.asset_id ? `Videos ${e.asset_id}` : "Fuente de medios"),
+			label: e.title || (e.asset_id ? `视频 ${e.asset_id}` : "媒体来源"),
 			href: e.asset_id ? `/assets/${e.asset_id}` : "",
 			note: e.message,
 			hint: e.path || ""
@@ -45106,7 +45106,7 @@ function iSe(e, t, n) {
 			if (e.job_id && localStorage.getItem(_F) === e.job_id) return;
 			e.job_id && localStorage.setItem(_F, e.job_id);
 		} catch {}
-		e.requested_stage === "previews" ? t(`Vista previa de video ya generada: ${e.previews || 0}  título(s)`) : t(`EscanearyDetallesRecolectarCompletado: Reconocer ${e.identified || 0} Código JAV, Organizar ${e.candidates || 0} grupo(s)DetallesResultado, AutomáticoGuardar ${e.auto_applied || 0} Resultado` + (e.previews ? `, generando ${e.previews}  título(s) vista previa de video` : ""));
+		e.requested_stage === "previews" ? t(`视频预览已生成：${e.previews || 0} 部`) : t(`扫描与资料采集已完成：识别 ${e.identified || 0} 个番号，整理 ${e.candidates || 0} 组资料结果，自动保存 ${e.auto_applied || 0} 条` + (e.previews ? `，生成 ${e.previews} 部视频预览` : ""));
 	}
 }
 //#endregion
@@ -45195,9 +45195,9 @@ var xF = [
 	"standard",
 	"high"
 ], SF = [
-	"Bajo uso",
-	"Estándar",
-	"Máxima velocidad"
+	"低占用",
+	"标准",
+	"全速"
 ], CF = EP("snail"), wF = EP("zap");
 function TF({ className: e }) {
 	return /* @__PURE__ */ (0, C.jsxs)("svg", {
@@ -45267,7 +45267,7 @@ function cSe({ value: e, busy: t, onChange: n, animate: r = !0 }) {
 			ref: i,
 			size: "small",
 			variant: "secondary",
-			"aria-label": `Velocidad de procesamiento: ${SF[s]}`,
+			"aria-label": `处理速度：${SF[s]}`,
 			"aria-haspopup": "dialog",
 			"aria-expanded": a,
 			"aria-disabled": t,
@@ -45286,14 +45286,14 @@ function cSe({ value: e, busy: t, onChange: n, animate: r = !0 }) {
 		offset: 8,
 		className: UP,
 		children: /* @__PURE__ */ (0, C.jsxs)(bF, {
-			"aria-label": "Velocidad de procesamiento",
+			"aria-label": "处理速度",
 			className: "processing-effort-panel flex flex-col gap-3 p-2 outline-none",
 			children: [
 				/* @__PURE__ */ (0, C.jsxs)("p", {
 					className: "text-body-medium",
 					children: [/* @__PURE__ */ (0, C.jsx)("span", {
 						className: "text-text-tertiary",
-						children: "Intensidad de procesamiento "
+						children: "处理强度 "
 					}), SF[c]]
 				}),
 				/* @__PURE__ */ (0, C.jsxs)("div", {
@@ -45302,20 +45302,20 @@ function cSe({ value: e, busy: t, onChange: n, animate: r = !0 }) {
 					children: [
 						/* @__PURE__ */ (0, C.jsxs)("span", {
 							"data-selected": c === 0 || void 0,
-							children: [/* @__PURE__ */ (0, C.jsx)(CF, {}), "Más lento"]
+							children: [/* @__PURE__ */ (0, C.jsx)(CF, {}), "最慢"]
 						}),
 						/* @__PURE__ */ (0, C.jsxs)("span", {
 							"data-selected": c === 1 || void 0,
-							children: [/* @__PURE__ */ (0, C.jsx)(wF, {}), "Estándar"]
+							children: [/* @__PURE__ */ (0, C.jsx)(wF, {}), "标准"]
 						}),
 						/* @__PURE__ */ (0, C.jsxs)("span", {
 							"data-selected": c === 2 || void 0,
-							children: [/* @__PURE__ */ (0, C.jsx)(TF, {}), "Más rápido"]
+							children: [/* @__PURE__ */ (0, C.jsx)(TF, {}), "最快"]
 						})
 					]
 				}),
 				/* @__PURE__ */ (0, C.jsxs)(bye, {
-					"aria-label": "Velocidad de procesamiento",
+					"aria-label": "处理速度",
 					minValue: 0,
 					maxValue: 2,
 					step: 1,
@@ -45328,7 +45328,7 @@ function cSe({ value: e, busy: t, onChange: n, animate: r = !0 }) {
 					className: "processing-effort-slider",
 					children: [/* @__PURE__ */ (0, C.jsx)(Bj, {
 						className: "processing-effort-label",
-						children: "Velocidad de procesamiento"
+						children: "处理速度"
 					}), /* @__PURE__ */ (0, C.jsxs)("div", {
 						className: "processing-effort-track",
 						"data-max": c === 2 || void 0,
@@ -45359,7 +45359,7 @@ function cSe({ value: e, busy: t, onChange: n, animate: r = !0 }) {
 				}),
 				/* @__PURE__ */ (0, C.jsxs)("div", {
 					className: "flex justify-between text-caption-1-regular text-text-tertiary",
-					children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "Bajo uso" }), /* @__PURE__ */ (0, C.jsx)("span", { children: "Alto uso" })]
+					children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "占用少" }), /* @__PURE__ */ (0, C.jsx)("span", { children: "占用多" })]
 				})
 			]
 		})
@@ -45368,7 +45368,7 @@ function cSe({ value: e, busy: t, onChange: n, animate: r = !0 }) {
 //#endregion
 //#region src/react/library-processing/processing-controls.tsx
 function EF({ state: e, disabled: t = !1 }) {
-	let n = wA(), r = uF(e), i = e.status === "paused" ? "Continuar" : e.status === "pausing" ? "Pausando" : "Pausar", a = (e) => {
+	let n = wA(), r = uF(e), i = e.status === "paused" ? "继续" : e.status === "pausing" ? "正在暂停" : "暂停", a = (e) => {
 		t || n.busy || n.run(e.action, (t) => U(cF, e, "POST", t), (e) => {
 			W.setQueryData(lF, e), W.invalidateQueries({ queryKey: lF });
 		});
@@ -45507,7 +45507,7 @@ function dSe({ value: e, max: t }) {
 	let n = Math.max(0, Math.min(100, e / t * 100));
 	return /* @__PURE__ */ (0, C.jsxs)("svg", {
 		role: "progressbar",
-		"aria-label": "Tasa de finalización de la fase actual",
+		"aria-label": "当前阶段完成率",
 		"aria-valuemin": 0,
 		"aria-valuemax": 100,
 		"aria-valuenow": n,
@@ -45555,12 +45555,12 @@ function MF({ state: e, problem: t = "", measure: n = !1 }) {
 			t = !0, i.disconnect(), document.documentElement.style.removeProperty("--processing-toast-space");
 		};
 	}, [n]), !t && !s && !o) return null;
-	let l = !!t || !!e?.stalled, u = o ? "EscanearyDetallesRecolectarNoFinalizar" : e?.status === "paused" ? "Escaneo y recopilaciónPausado" : "Escaneo y recopilación";
+	let l = !!t || !!e?.stalled, u = o ? "扫描与资料采集未完成" : e?.status === "paused" ? "扫描与采集已暂停" : "扫描与采集";
 	return /* @__PURE__ */ (0, C.jsxs)("aside", {
 		ref: a,
 		"data-processing-dock": "",
 		"data-processing-tone": o ? "error" : l ? "warning" : "neutral",
-		"aria-label": "Escanear tarea",
+		"aria-label": "扫描任务",
 		role: o ? "alert" : "status",
 		className: fA("flex min-w-0 flex-col gap-3 border bg-background-primary-default p-4", o ? "border-current/35 text-text-error-primary" : l ? "border-current/35 text-status-yellow-text" : "border-border-button-default text-text-primary"),
 		children: [
@@ -45593,7 +45593,7 @@ function MF({ state: e, problem: t = "", measure: n = !1 }) {
 						variant: "secondary",
 						iconOnly: !0,
 						leadingIcon: r ? Ok : jk,
-						"aria-label": r ? "Colapsar detalles de tarea" : "Expandir detalles de tarea",
+						"aria-label": r ? "收起任务详情" : "展开任务详情",
 						"aria-expanded": r,
 						onClick: c
 					})
@@ -45603,7 +45603,7 @@ function MF({ state: e, problem: t = "", measure: n = !1 }) {
 				className: fA("flex min-w-0 flex-col gap-2 border-t pt-3", o ? "border-border-error-default/20" : l ? "border-current/20" : "border-separator-border"),
 				children: [
 					e?.steps?.length ? /* @__PURE__ */ (0, C.jsx)("ol", {
-						"aria-label": "Pasos de procesamiento",
+						"aria-label": "处理步骤",
 						className: "flex min-w-0 flex-col gap-1.5",
 						children: e.steps.map((e) => /* @__PURE__ */ (0, C.jsxs)("li", {
 							"data-processing-step": e.status,
@@ -45617,7 +45617,7 @@ function MF({ state: e, problem: t = "", measure: n = !1 }) {
 									"aria-hidden": !0,
 									className: fA("size-4 shrink-0", e.status === "current" && "text-border-focus-ring")
 								}),
-								/* @__PURE__ */ (0, C.jsx)(wx, { children: e.status === "complete" ? "Completado: " : e.status === "current" ? "Actual:" : "PendienteProcesar: " }),
+								/* @__PURE__ */ (0, C.jsx)(wx, { children: e.status === "complete" ? "已完成：" : e.status === "current" ? "当前：" : "待处理：" }),
 								e.status === "complete" ? /* @__PURE__ */ (0, C.jsx)("s", {
 									className: "wrap-anywhere",
 									children: e.label
@@ -45630,15 +45630,15 @@ function MF({ state: e, problem: t = "", measure: n = !1 }) {
 					}) : null,
 					/* @__PURE__ */ (0, C.jsx)("p", {
 						className: "text-body-2-regular wrap-anywhere",
-						children: t || (o ? e?.error || "Por favorVer y procesarNoFinalizarelemento(s)" : /* @__PURE__ */ (0, C.jsx)(lSe, { state: e }))
+						children: t || (o ? e?.error || "请查看并处理未完成项" : /* @__PURE__ */ (0, C.jsx)(lSe, { state: e }))
 					}),
 					s && e?.stage && !e.steps?.length ? /* @__PURE__ */ (0, C.jsxs)("p", {
 						className: "text-caption-1-regular text-text-tertiary",
-						children: ["Actualetapafragmento · ", e.stage]
+						children: ["当前阶段 · ", e.stage]
 					}) : null,
 					e?.stalled && !t ? /* @__PURE__ */ (0, C.jsx)("p", {
 						className: "text-caption-1-regular",
-						children: "El paso actual lleva más tiempo, procesando... espera el progreso"
+						children: "当前步骤耗时较长，正在等待进展"
 					}) : null
 				]
 			}) : null,
@@ -45652,7 +45652,7 @@ function MF({ state: e, problem: t = "", measure: n = !1 }) {
 					variant: "secondary",
 					size: "small",
 					trailingIcon: kk,
-					children: t || o ? "Ver y procesar" : "Detalles de tarea"
+					children: t || o ? "查看并处理" : "任务详情"
 				})]
 			})
 		]
@@ -46005,11 +46005,11 @@ function VF({ className: e, children: t, ...n }) {
 //#endregion
 //#region src/react/catalog-folders/catalog-folders.ts
 var HF = {
-	category: "Clasificación personal",
-	creator: "Creador/Cuenta",
-	performer: "Persona",
-	seller: "Vendedor",
-	studio: "Sello"
+	category: "个人分类",
+	creator: "创作者／账号",
+	performer: "人物",
+	seller: "卖家",
+	studio: "厂牌"
 };
 function UF(e, t = "", n = "") {
 	let r = new URLSearchParams({
@@ -46047,18 +46047,18 @@ function MSe({ folder: e, rule: t, revision: n, close: r }) {
 			action: "save",
 			plan_version: m.plan_version,
 			expected_revision: n
-		}, "POST", e), (e) => b(`GuardadoDirectoriousaruso${e.applied ? `, Asociar ${e.applied} elemento(s)` : ""}`));
+		}, "POST", e), (e) => b(`已保存目录用途${e.applied ? `，关联 ${e.applied} 项` : ""}`));
 	}, T = async () => {
 		(0, gt.flushSync)(() => _(!0)), (await Rs({
-			title: "Quitar directorioRegla",
-			body: `"${e.name}"directorio de regla será eliminada, revirtiendolas vinculaciones creadas por esta regla. `,
-			confirmLabel: "Quitar directorioRegla",
+			title: "移除目录规则",
+			body: `「${e.name}」的目录规则将被移除，并撤回这条规则建立的关联。`,
+			confirmLabel: "移除目录规则",
 			onConfirm: () => U("/api/folders/rule", {
 				folder: e.id,
 				action: "remove",
 				expected_revision: n
 			})
-		})).confirmed ? b("Ya quitados directorioRegla") : _(!1);
+		})).confirmed ? b("已移除目录规则") : _(!1);
 	}, E = !!a.busy, D = (e, t) => a.busy === e ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao(t) } }), t] }) : null;
 	return g ? null : /* @__PURE__ */ (0, C.jsx)(CP, {
 		isOpen: !0,
@@ -46066,7 +46066,7 @@ function MSe({ folder: e, rule: t, revision: n, close: r }) {
 			!e && !E && r();
 		},
 		width: "form",
-		label: "Configurar uso del directorio",
+		label: "设置目录用途",
 		children: /* @__PURE__ */ (0, C.jsxs)("div", {
 			className: "peach-react",
 			children: [
@@ -46077,13 +46077,13 @@ function MSe({ folder: e, rule: t, revision: n, close: r }) {
 						children: [/* @__PURE__ */ (0, C.jsx)(Wj, {
 							slot: "title",
 							className: "text-title-2-medium",
-							children: "Configurar uso del directorio"
+							children: "设置目录用途"
 						}), /* @__PURE__ */ (0, C.jsx)("p", {
 							className: "mt-1 text-body-2-regular text-text-secondary wrap-anywhere",
 							children: e.path
 						})]
 					}), /* @__PURE__ */ (0, C.jsx)(DP, {
-						label: "DesactivarDirectoriousaruso",
+						label: "关闭目录用途",
 						onPress: () => {
 							E || r();
 						}
@@ -46094,8 +46094,8 @@ function MSe({ folder: e, rule: t, revision: n, close: r }) {
 					children: [
 						/* @__PURE__ */ (0, C.jsxs)("div", {
 							className: "flex flex-col gap-1",
-							children: [/* @__PURE__ */ (0, C.jsx)(_P, { children: "esta carpeta se usa para" }), /* @__PURE__ */ (0, C.jsx)(BF, {
-								"aria-label": "esta carpeta se usa para",
+							children: [/* @__PURE__ */ (0, C.jsx)(_P, { children: "这个文件夹用于" }), /* @__PURE__ */ (0, C.jsx)(BF, {
+								"aria-label": "这个文件夹用于",
 								selectedKey: o,
 								isDisabled: E,
 								onSelectionChange: (e) => {
@@ -46108,12 +46108,12 @@ function MSe({ folder: e, rule: t, revision: n, close: r }) {
 							})]
 						}),
 						o === "category" ? null : /* @__PURE__ */ (0, C.jsx)(SP, {
-							label: "AsociarNombre",
+							label: "关联名称",
 							value: c,
 							onChange: (e) => {
 								l(e), y();
 							},
-							placeholder: "IntroducirPersona, CuentaoSelloNombre",
+							placeholder: "输入人物、账号或厂牌名称",
 							maxLength: 200,
 							isDisabled: E,
 							isRequired: !0
@@ -46124,7 +46124,7 @@ function MSe({ folder: e, rule: t, revision: n, close: r }) {
 							onChange: (e) => {
 								d(e), y();
 							},
-							children: "Aplicar a subcarpeta"
+							children: "应用到子文件夹"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(XP, {
 							isSelected: f,
@@ -46132,28 +46132,28 @@ function MSe({ folder: e, rule: t, revision: n, close: r }) {
 							onChange: (e) => {
 								p(e), y();
 							},
-							children: "Nuevo archivo: usar esta regla"
+							children: "新文件沿用此规则"
 						}),
 						m ? /* @__PURE__ */ (0, C.jsxs)("section", {
-							"aria-label": "Alcance del directorio según uso",
+							"aria-label": "目录用途影响范围",
 							className: "flex flex-col gap-3",
 							children: [
 								/* @__PURE__ */ (0, C.jsxs)("p", {
 									className: "text-body-medium",
 									children: [
 										m.total,
-										" elemento(s) · puedeAplicar ",
+										" 项 · 可应用 ",
 										m.applicable,
-										" elemento(s)",
-										m.conflicts.length ? ` · conservar asignación existente ${m.conflicts.length} elemento(s)` : ""
+										" 项",
+										m.conflicts.length ? ` · 保留现有归属 ${m.conflicts.length} 项` : ""
 									]
 								}),
 								m.withdrawn ? /* @__PURE__ */ (0, C.jsxs)("p", {
 									className: "text-body-2-regular text-text-secondary",
 									children: [
-										"Revertir entradas existentes de esta regla: ",
+										"撤回此规则已有的 ",
 										m.withdrawn,
-										" elementos vinculados, luego aplica el ámbito actual. "
+										" 项关联，再按当前范围应用。"
 									]
 								}) : null,
 								m.sample.length ? /* @__PURE__ */ (0, C.jsx)("ul", {
@@ -46167,19 +46167,19 @@ function MSe({ folder: e, rule: t, revision: n, close: r }) {
 									tone: "warning",
 									extra: /* @__PURE__ */ (0, C.jsxs)("details", {
 										className: "mt-2 text-body-2-regular",
-										children: [/* @__PURE__ */ (0, C.jsx)("summary", { children: "Ver conflictos de asignación" }), /* @__PURE__ */ (0, C.jsx)("ul", {
+										children: [/* @__PURE__ */ (0, C.jsx)("summary", { children: "查看归属冲突" }), /* @__PURE__ */ (0, C.jsx)("ul", {
 											className: "mt-2 flex flex-col gap-2",
 											children: m.conflicts.slice(0, 30).map((e) => /* @__PURE__ */ (0, C.jsxs)("li", {
 												className: "wrap-anywhere",
 												children: [
 													e.name,
-													": ",
+													"：",
 													e.reason
 												]
 											}, e.id))
 										})]
 									}),
-									children: "YaconAsignaciónoarchivo por archivo confirmarcontenido internoConservar, DirectorioReglasolo se aplica a otro contenido interno. "
+									children: "已有归属或逐件确认的内容保留，目录规则只应用到其余内容。"
 								}) : null
 							]
 						}) : null,
@@ -46199,20 +46199,20 @@ function MSe({ folder: e, rule: t, revision: n, close: r }) {
 								E || T();
 							},
 							...Y(a.busy === "remove"),
-							children: "QuitarRegla"
+							children: "移除规则"
 						}) : null,
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
 							onClick: () => {
 								E || r();
 							},
-							children: "Cancelar"
+							children: "取消"
 						}),
 						m ? /* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "primary",
 							...Y(a.busy === "save"),
 							onClick: w,
-							children: D("save", "ProcesandoGuardar") || "GuardarDirectoriousaruso"
+							children: D("save", "正在保存") || "保存目录用途"
 						}) : /* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "primary",
 							disabled: o !== "category" && !c.trim(),
@@ -46220,7 +46220,7 @@ function MSe({ folder: e, rule: t, revision: n, close: r }) {
 							onClick: () => {
 								x();
 							},
-							children: D("preview", "ProcesandoVista previa") || "Vista previa"
+							children: D("preview", "正在预览") || "预览影响"
 						})
 					]
 				})
@@ -46262,8 +46262,8 @@ function FSe() {
 	return /* @__PURE__ */ (0, C.jsx)(pj, {
 		size: "small",
 		"data-folder-mode-toggle": "",
-		"aria-label": "CarpetaModo",
-		title: "CarpetaModo",
+		"aria-label": "文件夹模式",
+		title: "文件夹模式",
 		"aria-pressed": r,
 		icon: Lk,
 		onClick: () => t?.navigate(WF(e, r ? {
@@ -46317,19 +46317,19 @@ function ISe() {
 						/* @__PURE__ */ (0, C.jsx)("span", {
 							className: "folder-drawer-trigger",
 							children: /* @__PURE__ */ (0, C.jsx)(pj, {
-								"aria-label": "AbrirCarpetaDirectorio",
+								"aria-label": "打开文件夹目录",
 								icon: qge,
 								size: "small",
 								onClick: () => c(!0)
 							})
 						}),
 						/* @__PURE__ */ (0, C.jsxs)(vxe, {
-							"aria-label": "CarpetaRuta",
+							"aria-label": "文件夹路径",
 							children: [/* @__PURE__ */ (0, C.jsx)(VP, {
 								current: !a,
 								onClick: () => p(""),
 								icon: Lk,
-								children: "TodoCarpeta"
+								children: "全部文件夹"
 							}), m?.ancestors.map((e, t) => /* @__PURE__ */ (0, C.jsx)(VP, {
 								current: t === m.ancestors.length - 1,
 								onClick: () => p(e.id),
@@ -46341,7 +46341,7 @@ function ISe() {
 							}, e.id))]
 						}),
 						m?.selected ? /* @__PURE__ */ (0, C.jsx)(pj, {
-							"aria-label": "Configurar uso del directorio",
+							"aria-label": "设置目录用途",
 							icon: Ige,
 							size: "small",
 							onClick: () => u(!0)
@@ -46356,7 +46356,7 @@ function ISe() {
 						onClick: () => {
 							o.refetch();
 						},
-						children: "Reintentar"
+						children: "重试"
 					}),
 					children: V(o.error)
 				}) : null,
@@ -46366,9 +46366,9 @@ function ISe() {
 						variant: "secondary",
 						size: "small",
 						onClick: () => u(!0),
-						children: "Ver conflictos de asignación"
+						children: "查看归属冲突"
 					}),
-					children: [m.conflicts.length, " elementos, conservar asignación existente"]
+					children: [m.conflicts.length, " 项保留现有归属"]
 				}) : null,
 				m?.selected ? /* @__PURE__ */ (0, C.jsxs)("div", {
 					className: "folder-scope-row",
@@ -46376,21 +46376,21 @@ function ISe() {
 						size: "sm",
 						isSelected: n.get("folder_recursive") !== "0",
 						onChange: (n) => t.navigate(WF(e, { folder_recursive: n ? null : "0" })),
-						children: "Incluir subcarpeta"
+						children: "包含子文件夹"
 					}), /* @__PURE__ */ (0, C.jsx)("span", {
 						className: "text-caption-1-regular text-text-tertiary",
-						children: m.rule ? `${HF[m.rule.purpose]}${m.rule.name ? ` · ${m.rule.name}` : ""}` : "Clasificación personal"
+						children: m.rule ? `${HF[m.rule.purpose]}${m.rule.name ? ` · ${m.rule.name}` : ""}` : "个人分类"
 					})]
 				}) : null,
 				o.isPending ? /* @__PURE__ */ (0, C.jsx)("div", {
 					"data-skeleton": "",
 					"aria-busy": "true",
-					"aria-label": "CargandoCarpeta",
+					"aria-label": "正在读取文件夹",
 					className: "h-8 w-full rounded-md skeleton-sheen"
 				}) : null,
 				m?.children.length ? /* @__PURE__ */ (0, C.jsx)("div", {
 					className: "folder-children",
-					"aria-label": "Subcarpeta",
+					"aria-label": "子文件夹",
 					children: m.children.map((e) => /* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "secondary",
 						size: "small",
@@ -46408,14 +46408,14 @@ function ISe() {
 			isOpen: s,
 			onOpenChange: c,
 			width: "form",
-			label: "CarpetaDirectorio",
+			label: "文件夹目录",
 			children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex items-center justify-between border-b border-separator-border p-4",
 				children: [/* @__PURE__ */ (0, C.jsx)("h2", {
 					className: "text-title-2-medium",
-					children: "Carpeta"
+					children: "文件夹"
 				}), /* @__PURE__ */ (0, C.jsx)(DP, {
-					label: "DesactivarCarpetaDirectorio",
+					label: "关闭文件夹目录",
 					onPress: () => c(!1)
 				})]
 			}), /* @__PURE__ */ (0, C.jsx)("div", {
@@ -46450,10 +46450,10 @@ function LSe({ scope: e, selected: t, current: n, go: r }) {
 			label: e.name,
 			icon: Lk,
 			expandedIcon: Fge,
-			trailingContent: e.parent ? void 0 : e.location === "local" ? "Local" : e.location,
+			trailingContent: e.parent ? void 0 : e.location === "local" ? "本地" : e.location,
 			children: e.has_children ? t ? t.map(h) : /* @__PURE__ */ (0, C.jsx)(KP, {
 				id: `${e.id}:loading`,
-				label: "CargandoCarpeta",
+				label: "正在读取文件夹",
 				isDisabled: !0
 			}) : null
 		}, e.id);
@@ -46464,12 +46464,12 @@ function LSe({ scope: e, selected: t, current: n, go: r }) {
 		}
 	}, _ = i.error || p.find((e) => e.error)?.error;
 	return /* @__PURE__ */ (0, C.jsxs)("section", {
-		"aria-label": "Carpetaimportarnavegación",
+		"aria-label": "文件夹导航",
 		className: "flex min-w-0 flex-col gap-3",
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(SP, {
-				"aria-label": "BuscarCarpeta",
-				placeholder: "BuscarCarpeta",
+				"aria-label": "查找文件夹",
+				placeholder: "查找文件夹",
 				leadingIcon: Uk,
 				value: s,
 				onChange: c,
@@ -46485,7 +46485,7 @@ function LSe({ scope: e, selected: t, current: n, go: r }) {
 							e.error && e.refetch();
 						});
 					},
-					children: "Reintentar"
+					children: "重试"
 				}),
 				children: V(_)
 			}) : null,
@@ -46497,7 +46497,7 @@ function LSe({ scope: e, selected: t, current: n, go: r }) {
 					children: i.isPending ? /* @__PURE__ */ (0, C.jsx)("div", {
 						"data-skeleton": "",
 						"aria-busy": "true",
-						"aria-label": "Cargando árbol de directorios",
+						"aria-label": "正在读取目录树",
 						className: "h-60 w-full rounded-xl skeleton-sheen"
 					}) : l ? /* @__PURE__ */ (0, C.jsx)("div", {
 						className: "flex flex-col gap-1",
@@ -46505,7 +46505,7 @@ function LSe({ scope: e, selected: t, current: n, go: r }) {
 							"data-skeleton": "",
 							"aria-busy": "true",
 							className: "h-8 skeleton-sheen",
-							"aria-label": "ProcesandoBuscarCarpeta"
+							"aria-label": "正在查找文件夹"
 						}) : u.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 							tone: "error",
 							children: V(u.error)
@@ -46520,11 +46520,11 @@ function LSe({ scope: e, selected: t, current: n, go: r }) {
 						}, e.id)) : /* @__PURE__ */ (0, C.jsx)(yA, {
 							shell: "plain",
 							icon: Uk,
-							title: "Sin carpeta que coincida con la cuota",
-							children: "Prueba con un nombre de directorio diferente. "
+							title: "没有匹配的文件夹",
+							children: "换个目录名称试试。"
 						})
 					}) : /* @__PURE__ */ (0, C.jsx)(xxe, {
-						"aria-label": "Directorio de medios",
+						"aria-label": "媒体目录",
 						size: "sm",
 						expandedKeys: a,
 						onExpandedChange: o,
@@ -46533,8 +46533,8 @@ function LSe({ scope: e, selected: t, current: n, go: r }) {
 						renderEmptyState: () => /* @__PURE__ */ (0, C.jsx)(yA, {
 							shell: "plain",
 							icon: Lk,
-							title: "Aún no se ha añadido directorio de medios",
-							children: "enBiblioteca de mediosConfiguraciónEn procesoAñadir directorioy escanear. "
+							title: "尚未添加媒体目录",
+							children: "在媒体库设置中添加目录并扫描。"
 						}),
 						children: i.data?.roots.map(h)
 					})
@@ -46565,7 +46565,7 @@ var qF = "inline-flex w-max max-w-full items-center gap-0.5 overflow-x-auto over
 function ZF() {
 	let e = vD();
 	return /* @__PURE__ */ (0, C.jsxs)(PN, {
-		"aria-label": "Modo de visualización de colección",
+		"aria-label": "馆藏显示方式",
 		orientation: "horizontal",
 		value: e,
 		onChange: rfe,
@@ -46573,11 +46573,11 @@ function ZF() {
 		className: YF,
 		children: [/* @__PURE__ */ (0, C.jsx)(FN, {
 			value: "cards",
-			"aria-label": "Tarjeta",
+			"aria-label": "卡片",
 			className: XF,
 			"data-glass-segment": "",
 			children: /* @__PURE__ */ (0, C.jsx)("span", {
-				title: "Tarjeta",
+				title: "卡片",
 				className: "pointer-events-none contents",
 				children: /* @__PURE__ */ (0, C.jsx)(Hge, {
 					"aria-hidden": "true",
@@ -46586,11 +46586,11 @@ function ZF() {
 			})
 		}), /* @__PURE__ */ (0, C.jsx)(FN, {
 			value: "list",
-			"aria-label": "Lista",
+			"aria-label": "列表",
 			className: XF,
 			"data-glass-segment": "",
 			children: /* @__PURE__ */ (0, C.jsx)("span", {
-				title: "Lista",
+				title: "列表",
 				className: "pointer-events-none contents",
 				children: /* @__PURE__ */ (0, C.jsx)(Wge, {
 					"aria-hidden": "true",
@@ -46611,7 +46611,7 @@ function tI(e, t = "") {
 	let n = B(ur(t || e)), r = Yr(e);
 	return r ? `<img data-follow-site-icon="" src="${r}" alt="" loading="lazy" data-drop="initial" data-initial="${n}" data-drop-class="follow-site-initial">` : `<span class="follow-site-initial" aria-hidden="true">${n}</span>`;
 }
-var nI = (e) => QF(e.title).trim() || "Nonombrarnombrecontenido interno", rI = (e, t) => lr(e, $F(t));
+var nI = (e) => QF(e.title).trim() || "未命名内容", rI = (e, t) => lr(e, $F(t));
 function iI(e) {
 	let t = e.filter((e) => e.entity_id && e.entity_name);
 	if (new Set(t.map((e) => e.entity_id)).size !== 1) return "";
@@ -46620,7 +46620,7 @@ function iI(e) {
 }
 function aI(e, t) {
 	let { src: n, fallback: r } = dr(e), i = ur(t);
-	if (!n) return `<span class="favatar none" title="No hay avatar disponible">${B(i)}</span>`;
+	if (!n) return `<span class="favatar none" title="没有可用头像">${B(i)}</span>`;
 	let a = r ? ` data-fallbacks="${B(r)}"` : "";
 	return `<img class="favatar" src="${B(n)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-drop="initial"${a} data-initial="${B(i)}" data-drop-class="favatar none">`;
 }
@@ -46629,7 +46629,7 @@ function oI(e, t, n) {
 	if (!a) {
 		let n = lr(t, r);
 		return {
-			author: n || QF(e.author) || QF(e.source_label) || "CreadorNo disponible",
+			author: n || QF(e.author) || QF(e.source_label) || "创作者未取得",
 			avatar: aI(t, n),
 			credited: "",
 			entityName: iI(t)
@@ -46645,10 +46645,10 @@ function oI(e, t, n) {
 }
 function sI(e, t = e.primary) {
 	let n = [], r = (e, t) => `<small class="javedition" data-follow-edition="${e}">${t}</small>`;
-	e.primary.variant_kind === "wip" ? n.push(r("wip", "WIP")) : e.has_wip && n.push(r("has-wip", "Incluye WIP"));
+	e.primary.variant_kind === "wip" ? n.push(r("wip", "WIP")) : e.has_wip && n.push(r("has-wip", "含 WIP"));
 	let i = QF(e.primary.version);
 	i && n.push(r("version", B(i)));
-	let a = QF(t.audio), o = a === "voiced" ? "Versión doblada" : a === "silent" ? "Versión sin sonido" : "";
+	let a = QF(t.audio), o = a === "voiced" ? "配音版" : a === "silent" ? "无声版" : "";
 	return o && n.push(r(a, o)), n.join("");
 }
 function cI(e, t = e.primary) {
@@ -46659,11 +46659,11 @@ function cI(e, t = e.primary) {
 	].filter((e) => e.provider !== t.provider).map((e) => [e.provider, e.provider_label || e.provider]));
 	if (!n.size) return "";
 	let r = [...n].map(([e, t]) => eI(e, t) || `<span>${B(t)}</span>`).join("");
-	return `<span data-follow-seealso="" title="Ver también ${B([...n.values()].join(", "))}"><span data-follow-seealso-label="">Ver también</span> ${r}</span>`;
+	return `<span data-follow-seealso="" title="另见 ${B([...n.values()].join("、"))}"><span data-follow-seealso-label="">另见</span> ${r}</span>`;
 }
 function lI(e, t) {
 	let n = QF(e.media_error);
-	return n ? `MediosNo disponible: ${n}` : e.media_needs_credential && !t.credentials.has(e.provider) ? e.playable ? "ParcialMediosNo disponible: Necesario F95 Iniciar sesiónirá a análisis de resolución" : "MediosNo disponible: Necesario F95 Iniciar sesiónirá a análisis de resolución" : "";
+	return n ? `媒体未取得：${n}` : e.media_needs_credential && !t.credentials.has(e.provider) ? e.playable ? "部分媒体未取得：需要 F95 登录会话解析" : "媒体未取得：需要 F95 登录会话解析" : "";
 }
 var zSe = 864e5, BSe = (e, t) => {
 	let n = new Date(/[Zz]|[+-]\d\d:?\d\d$/.test(e) ? e : `${e}Z`).getTime();
@@ -46674,18 +46674,18 @@ function uI(e, t) {
 	if (!n) return null;
 	let r = e.published_precision === "approximate", i = Mn(n);
 	return {
-		prefix: r ? "Aprox. " : "",
+		prefix: r ? "约 " : "",
 		full: r ? i.slice(0, 10) : i,
-		suffix: BSe(n, t) ? " · Más tarde que ahora" : ""
+		suffix: BSe(n, t) ? " · 晚于现在" : ""
 	};
 }
 function dI(e, t = Date.now()) {
 	let n = uI(e, t);
-	return n ? `${n.prefix}${n.full}${n.suffix}` : "HoraNo disponible";
+	return n ? `${n.prefix}${n.full}${n.suffix}` : "时间未取得";
 }
 function VSe(e, t = Date.now()) {
 	let n = uI(e, t);
-	if (!n) return "HoraNo disponible";
+	if (!n) return "时间未取得";
 	if (!/^\d{4}-/.test(n.full)) return `${n.prefix}${n.full}${n.suffix}`;
 	let r = n.full.startsWith(String(new Date(t).getFullYear())) ? n.full.slice(5, 10) : n.full.slice(0, 10);
 	return `${n.prefix}${r}${n.suffix}`;
@@ -46730,8 +46730,8 @@ function WSe(e) {
 		hidden: !l,
 		actions: s
 	}), /* @__PURE__ */ (0, C.jsx)(_j, {
-		label: "Filtrar y ordenar",
-		topLabel: "MediosyEtiqueta",
+		label: "筛选与排序",
+		topLabel: "媒体与标签",
 		attrs: {
 			"data-filter-frame": "",
 			"data-entity-filter-glass": ""
@@ -46777,7 +46777,7 @@ function WSe(e) {
 				children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 					ref: g,
 					role: "group",
-					"aria-label": u ? "Estado" : "VerEstado",
+					"aria-label": u ? "状态" : "观看状态",
 					"data-entity-states": "",
 					hidden: !d,
 					onPointerLeave: x.leave,
@@ -46816,12 +46816,12 @@ function WSe(e) {
 }
 var GSe = [[
 	"videos",
-	"Videos",
+	"视频",
 	"play",
 	"video"
 ], [
 	"images",
-	"Imágenes",
+	"图片",
 	"pics",
 	"image"
 ]];
@@ -46829,7 +46829,7 @@ function KSe({ head: e, row: t, glide: n, onMedia: r }) {
 	return /* @__PURE__ */ (0, C.jsx)("div", {
 		ref: t,
 		role: "group",
-		"aria-label": "En líneaTipo de medio",
+		"aria-label": "在线媒体类型",
 		"data-entity-media": "",
 		"data-online-media": "",
 		onPointerLeave: n.leave,
@@ -46859,7 +46859,7 @@ function qSe({ head: e, actions: t }) {
 			"data-entity-press": "",
 			"aria-pressed": e.provider === n,
 			title: r,
-			"aria-label": `Fuente: ${r}`,
+			"aria-label": `来源：${r}`,
 			onClick: () => t.onlineProvider(n),
 			dangerouslySetInnerHTML: { __html: eI(n) }
 		}, n)),
@@ -46887,19 +46887,19 @@ function JSe({ keys: e, view: t, row: n, glide: r, onView: i }) {
 		kind: "people"
 	}), e.videos && a.push({
 		value: "videos",
-		text: "Videos",
+		text: "视频",
 		count: e.videos.count,
 		symbol: "play",
 		kind: "video"
 	}), e.photos && a.push({
 		value: "photos",
-		text: "Foto",
+		text: "照片",
 		count: e.photos.count,
 		symbol: "pics",
 		kind: "image"
 	}), e.online && a.push({
 		value: "online",
-		text: "En línea",
+		text: "在线",
 		count: e.online.count,
 		symbol: "rss",
 		kind: "online"
@@ -46933,7 +46933,7 @@ function _I({ items: e, hidden: t, actions: n }) {
 			"data-combo-chip": "",
 			children: [e.label, /* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
-				"aria-label": `Quitar ${e.label}`,
+				"aria-label": `撤掉 ${e.label}`,
 				onClick: () => e.kind === "untag" ? n.toggleTag(e.key) : n.clearFilter(e.key),
 				children: "✕"
 			})]
@@ -46941,7 +46941,7 @@ function _I({ items: e, hidden: t, actions: n }) {
 			type: "button",
 			"data-combo-clear": "",
 			onClick: n.clearAll,
-			children: "Limpiar todo"
+			children: "全部清除"
 		})] }) : null
 	});
 }
@@ -46955,7 +46955,7 @@ function YSe(e) {
 			children: [/* @__PURE__ */ (0, C.jsx)("span", {
 				className: "contents",
 				dangerouslySetInnerHTML: { __html: z("chevron-left") }
-			}), /* @__PURE__ */ (0, C.jsx)("span", { children: "TodoFoto" })]
+			}), /* @__PURE__ */ (0, C.jsx)("span", { children: "全部照片" })]
 		}) : null,
 		/* @__PURE__ */ (0, C.jsx)(XSe, {
 			text: n,
@@ -47015,7 +47015,7 @@ function vI({ name: e, label: t, value: n, options: r, onChange: i }) {
 function yI({ onPress: e, busy: t = !1 }) {
 	return /* @__PURE__ */ (0, C.jsx)(gj, {
 		"data-entity-batch": "",
-		label: "Cargar nuevos",
+		label: "换一批",
 		busy: t,
 		icon: EP("shuffle"),
 		onPress: e
@@ -47028,7 +47028,7 @@ function ZSe({ head: e, actions: t }) {
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(yI, { onPress: () => void t.reshuffle() }),
 			e.jav && n === "cards" ? /* @__PURE__ */ (0, C.jsx)(vI, {
-				label: "Diseño de tarjeta JAV",
+				label: "JAV 卡片版式",
 				value: e.jav.layout,
 				options: e.jav.options,
 				onChange: t.setJavLayout
@@ -47061,7 +47061,7 @@ function QSe({ head: e, actions: t }) {
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(yI, { onPress: t.onlineShuffle }),
 			e.media === "images" ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(vI, {
-				label: "Diseño de imágenes",
+				label: "图片布局",
 				value: e.photoLayout,
 				options: e.photoLayouts,
 				onChange: t.setPhotoLayout
@@ -47069,8 +47069,8 @@ function QSe({ head: e, actions: t }) {
 				type: "button",
 				"data-follow-images-only": "",
 				"aria-pressed": e.imagesOnly,
-				title: "Solo mostrar imágenes",
-				"aria-label": "Solo mostrar imágenes",
+				title: "仅显示图片",
+				"aria-label": "仅显示图片",
 				onClick: () => t.onlineImagesOnly(!e.imagesOnly),
 				children: [e.imagesOnly ? /* @__PURE__ */ (0, C.jsx)("span", {
 					"data-view-glide": "",
@@ -47101,7 +47101,7 @@ function $Se({ head: e, actions: t, helpers: n }) {
 				busy: r
 			}) : null,
 			/* @__PURE__ */ (0, C.jsx)(vI, {
-				label: "Diseño de imágenes",
+				label: "图片布局",
 				value: e.layout,
 				options: e.layouts,
 				onChange: t.setPhotoLayout
@@ -47158,8 +47158,8 @@ function tCe(e) {
 	]), (0, S.useLayoutEffect)(() => {
 		Vo(o.current, "tagbar");
 	}, [f]), /* @__PURE__ */ (0, C.jsx)(_j, {
-		label: "Filtrar y ordenar",
-		topLabel: "Vista y etiquetas",
+		label: "筛选与排序",
+		topLabel: "视图与标签",
 		attrs: {
 			"data-filter-frame": "",
 			"data-catalog-frame": "",
@@ -47181,7 +47181,7 @@ function tCe(e) {
 			children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 				ref: i,
 				role: "group",
-				"aria-label": "Vista",
+				"aria-label": "视图",
 				"data-catalog-views": "",
 				onPointerLeave: u.leave,
 				children: [e.views.map((n) => /* @__PURE__ */ (0, C.jsx)("a", {
@@ -47329,7 +47329,7 @@ function aCe({ count: e, refreshing: t, layout: n, sorts: r, actions: i }) {
 	})] });
 }
 function oCe({ count: e }) {
-	let t = (0, S.useRef)(null), n = (0, S.useRef)(null), r = e ? `${e.total.toLocaleString()} que cumple · Mostrar ${e.shown.toLocaleString()}` : "";
+	let t = (0, S.useRef)(null), n = (0, S.useRef)(null), r = e ? `${e.total.toLocaleString()} 个符合 · 显示 ${e.shown.toLocaleString()}` : "";
 	return (0, S.useLayoutEffect)(() => {
 		if (e === !1) return;
 		if (!e) {
@@ -47437,7 +47437,7 @@ function TI({ message: e, onRetry: t }) {
 		},
 		dangerouslySetInnerHTML: { __html: ko(e, {
 			variant: "error",
-			actionLabel: "Reintentar"
+			actionLabel: "重试"
 		}) }
 	});
 }
@@ -47487,7 +47487,7 @@ function OI(e) {
 }
 //#endregion
 //#region src/react/components/media-card.tsx
-var lCe = 9 / 16, kI = "Video sin nombre";
+var lCe = 9 / 16, kI = "未命名视频";
 function AI({ name: e }) {
 	return /* @__PURE__ */ (0, C.jsx)("svg", {
 		viewBox: "0 0 24 24",
@@ -47496,38 +47496,38 @@ function AI({ name: e }) {
 	});
 }
 var uCe = {
-	image: "Imágenes",
-	audio: "Audio",
-	archive: "Archivo comprimido",
-	other: "Otros archivos"
+	image: "图片",
+	audio: "音频",
+	archive: "压缩包",
+	other: "其它文件"
 }, dCe = {
-	manual: "Manual",
-	junk: "Basura",
-	duplicate: "Duplicado",
-	missing: "Archivo faltante"
+	manual: "手动",
+	junk: "垃圾",
+	duplicate: "重复",
+	missing: "文件缺失"
 };
 function jI({ item: e }) {
 	if (e.disposal !== "trash") return null;
-	let t = e.disposal_reason && dCe[e.disposal_reason] || "Motivo no registrado";
+	let t = e.disposal_reason && dCe[e.disposal_reason] || "原因未记录";
 	return /* @__PURE__ */ (0, C.jsx)("span", {
 		"data-media-disposal-reason": "",
-		title: `asignar al original por causa: ${t}`,
+		title: `归入原因：${t}`,
 		children: t
 	});
 }
 function MI({ item: e, actions: t }) {
-	let [n, r] = (0, S.useState)(!1), [i, a] = (0, S.useState)(""), o = e.disposal === "trash" ? "restore" : "dispose", s = o === "restore" ? "Restaurar" : "Mover a papelera";
+	let [n, r] = (0, S.useState)(!1), [i, a] = (0, S.useState)(""), o = e.disposal === "trash" ? "restore" : "dispose", s = o === "restore" ? "还原" : "移入回收站";
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("button", {
 		type: "button",
 		"data-media-resource-action": o,
-		"aria-label": `${s} ${e.name || "Recurso sin nombre"}`,
+		"aria-label": `${s} ${e.name || "未命名资源"}`,
 		title: s,
 		onClick: (i) => {
-			i.preventDefault(), i.stopPropagation(), !n && (r(!0), a(""), t.resourceOperation(e, o).catch((e) => a(e instanceof Error ? e.message : "Error en la operación, por favor inténtalo de nuevo")).finally(() => r(!1)));
+			i.preventDefault(), i.stopPropagation(), !n && (r(!0), a(""), t.resourceOperation(e, o).catch((e) => a(e instanceof Error ? e.message : "操作失败，请重试")).finally(() => r(!1)));
 		},
 		"aria-busy": n || void 0,
 		"aria-disabled": n || void 0,
-		children: n ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao(`Procesando${s}`) } }), /* @__PURE__ */ (0, C.jsx)("span", { children: `Procesando${s}` })] }) : /* @__PURE__ */ (0, C.jsx)("span", { children: s })
+		children: n ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao(`正在${s}`) } }), /* @__PURE__ */ (0, C.jsx)("span", { children: `正在${s}` })] }) : /* @__PURE__ */ (0, C.jsx)("span", { children: s })
 	}), i ? /* @__PURE__ */ (0, C.jsx)("span", {
 		"data-media-operation-error": "",
 		role: "alert",
@@ -47547,7 +47547,7 @@ function fCe(e) {
 				"data-media-avatar": "",
 				"data-entity-kind": "performer",
 				"data-entity-name": e,
-				title: `Abrir página ${c}: ${e}`,
+				title: `打开${c}页：${e}`,
 				dangerouslySetInnerHTML: { __html: ga(e, a[t] ?? null, "performer") }
 			}, `${e}:${t}`))
 		}) : t ? /* @__PURE__ */ (0, C.jsx)("button", {
@@ -47555,7 +47555,7 @@ function fCe(e) {
 			"data-media-avatar": "",
 			"data-entity-kind": t,
 			"data-entity-name": n,
-			title: `Abrir${t === "performer" ? c : "Detalles"}página`,
+			title: `打开${t === "performer" ? c : "资料"}页`,
 			dangerouslySetInnerHTML: { __html: ga(n, t === "performer" ? a[0] ?? null : e.creator_entity ?? null, t) }
 		}) : /* @__PURE__ */ (0, C.jsx)("span", {
 			"data-media-avatar": "",
@@ -47569,7 +47569,7 @@ function fCe(e) {
 			children: [/* @__PURE__ */ (0, C.jsx)(AI, { name: "user-round" }), /* @__PURE__ */ (0, C.jsx)("span", { children: s })]
 		}), /* @__PURE__ */ (0, C.jsx)("span", {
 			"data-media-who-more": "",
-			children: `etc. ${o} persona(s)`
+			children: `等 ${o} 人`
 		})] }) : t ? /* @__PURE__ */ (0, C.jsxs)("button", {
 			type: "button",
 			"data-media-who": "",
@@ -47589,8 +47589,8 @@ function pCe() {
 		type: "button",
 		"data-media-preview": "",
 		"data-open": "",
-		title: "Abrir vista previa",
-		"aria-label": "Abrir vista previa",
+		title: "打开预览",
+		"aria-label": "打开预览",
 		children: [/* @__PURE__ */ (0, C.jsxs)("svg", {
 			viewBox: "-18 -18 36 36",
 			"aria-hidden": "true",
@@ -47611,8 +47611,8 @@ function mCe({ item: e, actions: t }) {
 			type: "button",
 			"data-later": "",
 			"aria-pressed": o,
-			title: "Ver más tarde",
-			"aria-label": "Ver más tarde",
+			title: "稍后看",
+			"aria-label": "稍后看",
 			onClick: (n) => {
 				n.stopPropagation(), !i && (a(!0), t.watchLater(e, (t) => r({
 					id: e.id,
@@ -47672,7 +47672,7 @@ function hCe({ item: e, variant: t, layout: n, selected: r, selectMode: i, seekS
 				relayout: (e) => gc(e, h)
 			}) : /* @__PURE__ */ (0, C.jsx)("span", {
 				"data-media-nopic": "",
-				children: "Sin vista previa"
+				children: "无预览"
 			}),
 			/* @__PURE__ */ (0, C.jsx)("div", {
 				"data-media-badge": "",
@@ -47684,16 +47684,16 @@ function hCe({ item: e, variant: t, layout: n, selected: r, selectMode: i, seekS
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("span", {
 				"data-media-trash-mark": "",
-				children: [/* @__PURE__ */ (0, C.jsx)(AI, { name: "trash" }), /* @__PURE__ */ (0, C.jsx)("b", { children: "Papelera" })]
+				children: [/* @__PURE__ */ (0, C.jsx)(AI, { name: "trash" }), /* @__PURE__ */ (0, C.jsx)("b", { children: "回收站" })]
 			}),
 			f && !p ? /* @__PURE__ */ (0, C.jsx)("span", {
 				"data-media-group": "",
-				children: `${Number(f.count).toLocaleString()} Volumen`
+				children: `${Number(f.count).toLocaleString()} 卷`
 			}) : null,
 			p ? /* @__PURE__ */ (0, C.jsx)("span", {
 				"data-media-group": "",
 				title: p.editions.join(" · "),
-				children: `${Number(p.count).toLocaleString()}  versión(es)`
+				children: `${Number(p.count).toLocaleString()} 个版本`
 			}) : null,
 			/* @__PURE__ */ (0, C.jsx)("span", {
 				"data-media-duration": "",
@@ -47706,7 +47706,7 @@ function hCe({ item: e, variant: t, layout: n, selected: r, selectMode: i, seekS
 			T > 0 ? /* @__PURE__ */ (0, C.jsx)("div", {
 				"data-media-progress": "",
 				role: "progressbar",
-				"aria-label": "Progreso",
+				"aria-label": "观看进度",
 				"aria-valuemin": 0,
 				"aria-valuemax": 100,
 				"aria-valuenow": Math.round(T * 100),
@@ -47728,8 +47728,8 @@ function hCe({ item: e, variant: t, layout: n, selected: r, selectMode: i, seekS
 						onClick: (e) => {
 							e.stopPropagation(), PI(l.current, -a);
 						},
-						title: `retroceder ${a} segundos`,
-						"aria-label": `retroceder ${a} segundos`,
+						title: `后退 ${a} 秒`,
+						"aria-label": `后退 ${a} 秒`,
 						children: /* @__PURE__ */ (0, C.jsx)(AI, { name: "rotate-ccw" })
 					}),
 					/* @__PURE__ */ (0, C.jsx)("button", {
@@ -47737,15 +47737,15 @@ function hCe({ item: e, variant: t, layout: n, selected: r, selectMode: i, seekS
 						onClick: (e) => {
 							e.stopPropagation(), PI(l.current, a);
 						},
-						title: `Adelantar ${a} segundo(s)`,
-						"aria-label": `Adelantar ${a} segundo(s)`,
+						title: `前进 ${a} 秒`,
+						"aria-label": `前进 ${a} 秒`,
 						children: /* @__PURE__ */ (0, C.jsx)(AI, { name: "rotate-cw" })
 					}),
 					/* @__PURE__ */ (0, C.jsx)("button", {
 						type: "button",
 						"data-open": "",
-						title: "Abrir detalles",
-						"aria-label": "Abrir detalles",
+						title: "打开详情",
+						"aria-label": "打开详情",
 						children: /* @__PURE__ */ (0, C.jsx)(AI, { name: "expand" })
 					})
 				]
@@ -47769,7 +47769,7 @@ function hCe({ item: e, variant: t, layout: n, selected: r, selectMode: i, seekS
 				type: "button",
 				"data-media-open": "",
 				"data-open": "",
-				"aria-label": `Abrir ${y}${p ? "Versión" : f ? "Volumen" : "Detalles"}`
+				"aria-label": `打开 ${y}${p ? "版本" : f ? "分卷" : "详情"}`
 			}),
 			m ? /* @__PURE__ */ (0, C.jsx)("div", {
 				"data-media-stack": "",
@@ -47805,11 +47805,11 @@ function hCe({ item: e, variant: t, layout: n, selected: r, selectMode: i, seekS
 								}) : null,
 								/* @__PURE__ */ (0, C.jsxs)("span", {
 									"data-media-size": "",
-									children: [/* @__PURE__ */ (0, C.jsx)(AI, { name: "hard-drive" }), Number(x) > 0 ? cn(Number(x)) : "Tamaño desconocido"]
+									children: [/* @__PURE__ */ (0, C.jsx)(AI, { name: "hard-drive" }), Number(x) > 0 ? cn(Number(x)) : "大小未知"]
 								}),
 								e.play_count ? /* @__PURE__ */ (0, C.jsx)("span", {
 									"data-media-watch-count": "",
-									children: `Visto ${e.play_count}`
+									children: `看过 ${e.play_count}`
 								}) : null,
 								/* @__PURE__ */ (0, C.jsx)("span", {
 									"data-media-flags": "",
@@ -47835,7 +47835,7 @@ function hCe({ item: e, variant: t, layout: n, selected: r, selectMode: i, seekS
 	});
 }
 function gCe({ item: e, selected: t, selectMode: n, helpers: r, actions: i, onOpen: a }) {
-	let o = (0, S.useRef)(null), s = e.medium === "image" && e.location !== "online", c = String(e.name || ""), l = c.toLowerCase().endsWith(".url") ? "Acceso directo URL" : uCe[e.medium || ""] || "Otros archivos", u = s ? "pics" : l === "Acceso directo URL" ? "globe" : "hard-drive";
+	let o = (0, S.useRef)(null), s = e.medium === "image" && e.location !== "online", c = String(e.name || ""), l = c.toLowerCase().endsWith(".url") ? "网址快捷方式" : uCe[e.medium || ""] || "其它文件", u = s ? "pics" : l === "网址快捷方式" ? "globe" : "hard-drive";
 	return /* @__PURE__ */ (0, C.jsxs)("article", {
 		ref: o,
 		"data-media-card": "",
@@ -47870,7 +47870,7 @@ function gCe({ item: e, selected: t, selectMode: n, helpers: r, actions: i, onOp
 				}),
 				/* @__PURE__ */ (0, C.jsxs)("span", {
 					"data-media-trash-mark": "",
-					children: [/* @__PURE__ */ (0, C.jsx)(AI, { name: "trash" }), /* @__PURE__ */ (0, C.jsx)("b", { children: "Papelera" })]
+					children: [/* @__PURE__ */ (0, C.jsx)(AI, { name: "trash" }), /* @__PURE__ */ (0, C.jsx)("b", { children: "回收站" })]
 				}),
 				n ? null : /* @__PURE__ */ (0, C.jsx)(MI, {
 					item: e,
@@ -47891,7 +47891,7 @@ function gCe({ item: e, selected: t, selectMode: n, helpers: r, actions: i, onOp
 						"data-media-title": "",
 						"data-middle-truncate": "",
 						title: c,
-						dangerouslySetInnerHTML: { __html: B(c || "Recurso sin nombre") }
+						dangerouslySetInnerHTML: { __html: B(c || "未命名资源") }
 					}),
 					/* @__PURE__ */ (0, C.jsxs)("div", {
 						"data-media-byline": "",
@@ -47906,7 +47906,7 @@ function gCe({ item: e, selected: t, selectMode: n, helpers: r, actions: i, onOp
 							}) : null,
 							/* @__PURE__ */ (0, C.jsx)("span", {
 								"data-media-size": "",
-								children: Number(e.size) > 0 ? cn(Number(e.size)) : "Tamaño desconocido"
+								children: Number(e.size) > 0 ? cn(Number(e.size)) : "大小未知"
 							})
 						]
 					}),
@@ -48019,8 +48019,8 @@ function CCe({ faces: e, fallback: t, onOpenEntity: n }) {
 		"data-mix-avatars": "",
 		children: e.slice(0, 5).map((e) => /* @__PURE__ */ (0, C.jsx)("button", {
 			type: "button",
-			title: `Abrir página de detalles: ${e.name}`,
-			"aria-label": `Abrir página de detalles: ${e.name}`,
+			title: `打开资料页：${e.name}`,
+			"aria-label": `打开资料页：${e.name}`,
 			onClick: () => n(e.kind, e.name),
 			className: `${RI} cursor-pointer outline-none`,
 			dangerouslySetInnerHTML: { __html: ha(e.name, e, Qi(e.name), e.kind) }
@@ -48066,7 +48066,7 @@ function zI({ name: e, caption: t, count: n, poster: r, flipImages: i, canFlip: 
 						relayout: m
 					}) : r ? /* @__PURE__ */ (0, C.jsx)(SCe, { src: r }, r) : /* @__PURE__ */ (0, C.jsx)("span", {
 						className: "text-caption-1-regular tracking-caps text-text-secondary uppercase",
-						children: "Sin vista previa"
+						children: "无预览"
 					}),
 					/* @__PURE__ */ (0, C.jsx)("div", {
 						"data-mix-faces": "",
@@ -48097,7 +48097,7 @@ function zI({ name: e, caption: t, count: n, poster: r, flipImages: i, canFlip: 
 						children: [/* @__PURE__ */ (0, C.jsx)(LI, {
 							"aria-hidden": !0,
 							className: "size-3.75"
-						}), g ?? `${n.toLocaleString()}  video(s)`]
+						}), g ?? `${n.toLocaleString()} 个视频`]
 					})
 				]
 			})
@@ -52449,8 +52449,8 @@ function VCe({ item: e, playing: t, frame: n, starting: r, pendingGroup: i, grou
 					"data-wall-play": "",
 					"data-wall-pause": T ? void 0 : "",
 					...Y(w),
-					"aria-label": r ? "ProcesandoAbrir" : i ? "CargandoVersión" : T ? "Reproducir" : "Pausar",
-					title: T ? "Reproducir" : "Pausar",
+					"aria-label": r ? "正在打开" : i ? "正在读取版本" : T ? "播放" : "暂停",
+					title: T ? "播放" : "暂停",
 					onClick: () => void E(),
 					children: w ? /* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao() } }) : /* @__PURE__ */ (0, C.jsx)("svg", {
 						viewBox: "0 0 24 24",
@@ -52460,8 +52460,8 @@ function VCe({ item: e, playing: t, frame: n, starting: r, pendingGroup: i, grou
 				}),
 				/* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
-					"aria-label": "Video anterior",
-					title: "Video anterior",
+					"aria-label": "上一个视频",
+					title: "上一个视频",
 					disabled: !c,
 					onClick: p,
 					children: /* @__PURE__ */ (0, C.jsx)("svg", {
@@ -52472,8 +52472,8 @@ function VCe({ item: e, playing: t, frame: n, starting: r, pendingGroup: i, grou
 				}),
 				/* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
-					"aria-label": a ? "CambiarVolumenoVersión" : "CambiarVideos",
-					title: a ? "VolumenyVersión" : "Lista de obras",
+					"aria-label": a ? "切换分卷或版本" : "切换视频",
+					title: a ? "分卷与版本" : "作品列表",
 					"aria-expanded": o,
 					"aria-controls": "wall-queue",
 					disabled: !s,
@@ -52486,8 +52486,8 @@ function VCe({ item: e, playing: t, frame: n, starting: r, pendingGroup: i, grou
 				}),
 				/* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
-					"aria-label": "Video siguiente",
-					title: "Video siguiente",
+					"aria-label": "下一个视频",
+					title: "下一个视频",
 					disabled: !l,
 					onClick: m,
 					children: /* @__PURE__ */ (0, C.jsx)("svg", {
@@ -52499,8 +52499,8 @@ function VCe({ item: e, playing: t, frame: n, starting: r, pendingGroup: i, grou
 				/* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
 					...Y(d),
-					"aria-label": u ? "moversalir Ver más tarde" : "Ver más tarde",
-					title: "Ver más tarde",
+					"aria-label": u ? "移出稍后看" : "稍后看",
+					title: "稍后看",
 					"aria-pressed": u,
 					onClick: g,
 					children: d ? /* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao() } }) : /* @__PURE__ */ (0, C.jsx)("svg", {
@@ -52519,8 +52519,8 @@ function VCe({ item: e, playing: t, frame: n, starting: r, pendingGroup: i, grou
 				}),
 				/* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
-					"aria-label": "Detalles",
-					title: "Abrir detalles",
+					"aria-label": "详情",
+					title: "打开详情",
 					onClick: _,
 					children: /* @__PURE__ */ (0, C.jsx)("svg", {
 						viewBox: "0 0 24 24",
@@ -52532,7 +52532,7 @@ function VCe({ item: e, playing: t, frame: n, starting: r, pendingGroup: i, grou
 		}), /* @__PURE__ */ (0, C.jsx)("input", {
 			"data-wall-seek": "",
 			type: "range",
-			"aria-label": "Progreso de reproducción",
+			"aria-label": "播放进度",
 			min: 0,
 			max: S || 1,
 			step: .1,
@@ -52568,8 +52568,8 @@ function iL({ kind: e, title: t, summary: n, onClose: r, actions: i, listRef: a,
 				children: [i, /* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
 					"data-queue-close": "",
-					title: "Desactivar",
-					"aria-label": "Desactivar",
+					title: "关闭",
+					"aria-label": "关闭",
 					onClick: r,
 					dangerouslySetInnerHTML: { __html: z("x") }
 				})]
@@ -52620,8 +52620,8 @@ function UCe({ items: e, activeId: t, kind: n, label: r, choose: i, close: a }) 
 		id: "wall-queue",
 		children: /* @__PURE__ */ (0, C.jsx)(iL, {
 			kind: n,
-			title: n === "parts" ? "Volumen" : n === "editions" ? "Versión" : "Obra",
-			summary: `${e.length}  video(s)`,
+			title: n === "parts" ? "分卷" : n === "editions" ? "版本" : "作品",
+			summary: `${e.length} 个视频`,
 			onClose: a,
 			children: e.map((e) => /* @__PURE__ */ (0, C.jsxs)(aL, {
 				current: e.id === t,
@@ -52900,7 +52900,7 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 				ge(!1);
 			}
 		}
-	}, Je = (e) => u.displayName(e, String(e.name || e.code || "Video sin nombre")), Ye = ee || E;
+	}, Je = (e) => u.displayName(e, String(e.name || e.code || "未命名视频")), Ye = ee || E;
 	(0, S.useLayoutEffect)(() => {
 		let e = x.current;
 		if (!e || !Ye?.code) return;
@@ -52959,7 +52959,7 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 		}),
 		/* @__PURE__ */ (0, C.jsxs)("span", {
 			"data-wall-number": "",
-			children: [ae ? "Reproduciendo · " : "", String((Ne?.index || 0) + 1).padStart(2, "0")]
+			children: [ae ? "正在播放 · " : "", String((Ne?.index || 0) + 1).padStart(2, "0")]
 		}),
 		/* @__PURE__ */ (0, C.jsxs)("div", {
 			"data-wall-focus-head": "",
@@ -52970,15 +52970,15 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 					children: Ye.code || Je(Ye)
 				}),
 				Ye.code ? /* @__PURE__ */ (0, C.jsx)("strong", { children: Je(Ye).startsWith(Ye.code) ? Je(Ye).slice(Ye.code.length).trim() : Je(Ye) }) : null,
-				/* @__PURE__ */ (0, C.jsx)("span", { children: Ye.performers?.join(" · ") || Ye.creator || "Sin asignar" }),
+				/* @__PURE__ */ (0, C.jsx)("span", { children: Ye.performers?.join(" · ") || Ye.creator || "未归属" }),
 				I ? /* @__PURE__ */ (0, C.jsx)("small", { children: [Ye.edition_label, Ye.part_label ? MD(Ye.part_label) : ""].filter(Boolean).join(" · ") }) : null
 			]
 		}),
 		/* @__PURE__ */ (0, C.jsx)("button", {
 			type: "button",
 			"data-wall-focus-close": "",
-			"aria-label": "ColapsarObra",
-			title: "Colapsar",
+			"aria-label": "收起作品",
+			title: "收起",
 			onClick: () => Ie(),
 			children: /* @__PURE__ */ (0, C.jsx)("svg", {
 				viewBox: "0 0 24 24",
@@ -52995,7 +52995,7 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 				size: "small",
 				variant: "ghost",
 				onClick: () => void F.refetch(),
-				children: "Reintentar"
+				children: "重试"
 			}) : null]
 		}) : null,
 		/* @__PURE__ */ (0, C.jsx)(VCe, {
@@ -53042,8 +53042,8 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 			/* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
 				"data-wall-back": "",
-				"aria-label": "SalirMuro de reproducción",
-				title: "Volver",
+				"aria-label": "退出播放墙",
+				title: "返回",
 				onClick: oL,
 				children: /* @__PURE__ */ (0, C.jsx)("svg", {
 					viewBox: "0 0 24 24",
@@ -53059,16 +53059,16 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 					viewBox: "0 0 24 24",
 					"aria-hidden": "true",
 					children: /* @__PURE__ */ (0, C.jsx)("use", { href: "#i-info" })
-				}), /* @__PURE__ */ (0, C.jsx)("p", { children: "Actualmente mostrando solo resultados filtrados" })] }), /* @__PURE__ */ (0, C.jsx)(q, {
+				}), /* @__PURE__ */ (0, C.jsx)("p", { children: "当前仅显示筛选结果" })] }), /* @__PURE__ */ (0, C.jsx)(q, {
 					size: "small",
 					variant: "ghost",
 					onClick: () => Sk.push(GCe()),
-					children: "Limpiar filtros"
+					children: "清除筛选"
 				})]
 			}) : null,
 			ye ? /* @__PURE__ */ (0, C.jsxs)("div", {
 				"data-wall-toolbar": "",
-				"aria-label": "Herramientas del muro de reproducción",
+				"aria-label": "播放墙工具",
 				children: [
 					/* @__PURE__ */ (0, C.jsxs)("form", {
 						onSubmit: (e) => {
@@ -53083,24 +53083,24 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 						}), /* @__PURE__ */ (0, C.jsx)("input", {
 							type: "search",
 							name: "q",
-							"aria-label": "BuscarMuro de reproducción",
-							placeholder: "BuscarObra",
+							"aria-label": "搜索播放墙",
+							placeholder: "搜索作品",
 							defaultValue: new URLSearchParams(location.search).get("q") || ""
 						})]
 					}),
 					/* @__PURE__ */ (0, C.jsxs)(KF, {
-						"aria-label": "Muro de reproducciónImágenes",
+						"aria-label": "播放墙图片",
 						value: we,
 						onChange: Te,
 						className: qF,
 						children: [/* @__PURE__ */ (0, C.jsx)(FN, {
 							value: "cover",
 							className: JF,
-							children: "Portada"
+							children: "封面"
 						}), /* @__PURE__ */ (0, C.jsx)(FN, {
 							value: "thumbnail",
 							className: JF,
-							children: "Miniatura"
+							children: "缩略图"
 						})]
 					}),
 					/* @__PURE__ */ (0, C.jsxs)("div", {
@@ -53109,28 +53109,28 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 							/* @__PURE__ */ (0, C.jsx)(q, {
 								size: "small",
 								variant: "ghost",
-								"aria-label": "AlejarMuro de reproducción",
+								"aria-label": "缩小播放墙",
 								onClick: () => L.zoom(1 / 1.2),
-								children: "Alejar"
+								children: "缩小"
 							}),
 							/* @__PURE__ */ (0, C.jsx)(q, {
 								size: "small",
 								variant: "ghost",
-								"aria-label": "AcercarMuro de reproducción",
+								"aria-label": "放大播放墙",
 								onClick: () => L.zoom(1.2),
-								children: "Acercar"
+								children: "放大"
 							}),
 							/* @__PURE__ */ (0, C.jsx)(q, {
 								size: "small",
 								variant: "ghost",
 								onClick: L.reset,
-								children: "Volver al inicio"
+								children: "回到起点"
 							})
 						]
 					}),
 					/* @__PURE__ */ (0, C.jsx)("span", {
 						"data-wall-hint": "",
-						children: "Arrastrar para navegar · Shift + Rueda para desplazar"
+						children: "拖动浏览 · Shift + 滚轮横移"
 					})
 				]
 			}) : null,
@@ -53139,7 +53139,7 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 				"data-wall-viewport": "",
 				tabIndex: 0,
 				role: "region",
-				"aria-label": "Muro de reproducción, arrastraoteclas de flecha para explorar",
+				"aria-label": "播放墙，拖动或方向键浏览",
 				"aria-busy": i || _ !== null || r && Ge || void 0,
 				"data-skeleton": i ? "wall" : void 0,
 				...i || _ !== null ? {} : L.handlers,
@@ -53179,7 +53179,7 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 							"data-playing": r && (ae || le) ? "" : void 0,
 							role: r ? "group" : "button",
 							tabIndex: r ? -1 : 0,
-							"aria-label": r ? Je(n) : `Expandir ${Je(n)}`,
+							"aria-label": r ? Je(n) : `展开 ${Je(n)}`,
 							"aria-expanded": r ? void 0 : !1,
 							initial: te || m ? !1 : {
 								opacity: 0,
@@ -53239,7 +53239,7 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 								}),
 								/* @__PURE__ */ (0, C.jsxs)("span", {
 									"data-wall-copy": "",
-									children: [/* @__PURE__ */ (0, C.jsx)("b", { children: n.code || Je(n) }), /* @__PURE__ */ (0, C.jsx)("span", { children: n.performers?.join(" · ") || n.creator || n.studio || "Sin asignar" })]
+									children: [/* @__PURE__ */ (0, C.jsx)("b", { children: n.code || Je(n) }), /* @__PURE__ */ (0, C.jsx)("span", { children: n.performers?.join(" · ") || n.creator || n.studio || "未归属" })]
 								}),
 								n.duration ? /* @__PURE__ */ (0, C.jsx)("span", {
 									"data-wall-duration": "",
@@ -53248,7 +53248,7 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 								Number(n.leave_ratio) > 0 ? /* @__PURE__ */ (0, C.jsx)("span", {
 									"data-wall-progress": "",
 									style: { "--wall-progress": `${Math.min(100, Number(n.leave_ratio) * 100)}%` },
-									"aria-label": "Progreso"
+									"aria-label": "观看进度"
 								}) : null,
 								/* @__PURE__ */ (0, C.jsx)(U_.span, {
 									"data-wall-dim": "",
@@ -53269,7 +53269,7 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 					size: "small",
 					variant: "ghost",
 					onClick: o,
-					children: "Reintentar"
+					children: "重试"
 				})]
 			}) : null,
 			!i && !a && !e.length ? /* @__PURE__ */ (0, C.jsx)("div", {
@@ -53290,7 +53290,7 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 					variant: "secondary",
 					...Y(r),
 					onClick: () => void We(),
-					children: [r ? /* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao() } }) : null, "Cargar más"]
+					children: [r ? /* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao() } }) : null, "载入更多"]
 				})
 			}) : null,
 			pe ? /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -53303,14 +53303,14 @@ function KCe({ items: e, finite: t, hasMore: n, busy: r, loading: i = !1, error:
 					variant: "ghost",
 					...Y(r),
 					onClick: () => void We(),
-					children: "Reintentar"
+					children: "重试"
 				})]
 			}) : null,
 			/* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
 				"data-wall-tools-button": "",
-				"aria-label": "Herramientas del muro de reproducción",
-				title: "Herramientas del muro de reproducción",
+				"aria-label": "播放墙工具",
+				title: "播放墙工具",
 				"aria-expanded": ye,
 				onClick: () => be(!ye),
 				children: /* @__PURE__ */ (0, C.jsx)("svg", {
@@ -53330,28 +53330,28 @@ function uL({ busy: e, scan: t = !1, metadataOnly: n = !1, speedMode: r = "stand
 	let a = (0, S.useRef)(null), o = (0, S.useRef)(null);
 	(0, S.useEffect)(() => () => o.current?.close(), []);
 	let [s, c] = (0, S.useState)(!1), l = {
-		label: t ? "Sincronizar biblioteca" : "Sincronizar estas películas",
+		label: t ? "同步媒体库" : "同步这些影片",
 		icon: Pk,
 		command: t ? {} : { stage: "collect" }
 	}, u = [
 		l,
 		...t ? [{
-			label: "Solo escanear archivos",
+			label: "仅扫描文件",
 			icon: Rk,
 			command: { stage: "scan" }
 		}] : [],
 		...t ? [{
-			label: "Solo sincronizar películas catalogadas",
+			label: "仅同步已入库影片",
 			icon: Pk,
 			command: { stage: "collect" }
 		}] : [],
 		{
-			label: "Solo generar vistas previas de video",
+			label: "仅生成视频预览",
 			icon: Rk,
 			command: { stage: "previews" }
 		},
 		{
-			label: "Solo completar datos",
+			label: "仅补全资料",
 			icon: Lge,
 			command: { stage: "metadata" }
 		}
@@ -53367,13 +53367,13 @@ function uL({ busy: e, scan: t = !1, metadataOnly: n = !1, speedMode: r = "stand
 			return;
 		}
 		if (o.current) return;
-		let l = a.stage === "previews", u = l ? "Generar vista previa de video" : a.stage === "scan" ? "EscanearMediosArchivo" : "Sincronizar biblioteca", d = Is({
+		let l = a.stage === "previews", u = l ? "生成视频预览" : a.stage === "scan" ? "扫描媒体文件" : "同步媒体库", d = Is({
 			title: u,
-			description: l ? "Generar vista previa de videoleerá los videos y ocupandousarProcesarDispositivo, puedepuedepuede ralentizar el ordenador. Necesariomismocuandousarordenadorcuando, OpcionalelegirBajo usoModo. " : `Procesar leerá los archivos de medios${a.stage === "scan" ? "" : n ? " y DescargasDetalles" : ", DescargasDetalles y Generar vista previa de video"}, puedepuedepuede ralentizar el ordenador. Necesariomismocuandousarordenadorcuando, OpcionalelegirBajo usoModo. `,
-			body: Os("processing-speed", "ProcesarModo", [
-				["low", "Bajo uso"],
-				["standard", "Estándar"],
-				["high", "Máxima velocidad"]
+			description: l ? "生成视频预览会读取视频并占用处理器，可能让电脑变慢。需要同时使用电脑时，可选择低占用模式。" : `处理会读取媒体文件${a.stage === "scan" ? "" : n ? "并下载资料" : "、下载资料并生成视频预览"}，可能让电脑变慢。需要同时使用电脑时，可选择低占用模式。`,
+			body: Os("processing-speed", "处理模式", [
+				["low", "低占用"],
+				["standard", "标准"],
+				["high", "全速"]
 			], r, { text: !0 }),
 			confirmLabel: u,
 			onConfirm: async () => {
@@ -53404,7 +53404,7 @@ function uL({ busy: e, scan: t = !1, metadataOnly: n = !1, speedMode: r = "stand
 			ref: a,
 			iconOnly: !0,
 			leadingIcon: Ok,
-			"aria-label": "Más opciones de sincronización",
+			"aria-label": "更多同步方式",
 			"aria-haspopup": "dialog",
 			"aria-expanded": s,
 			...Y(e),
@@ -53420,14 +53420,14 @@ function uL({ busy: e, scan: t = !1, metadataOnly: n = !1, speedMode: r = "stand
 		offset: 4,
 		className: UP,
 		children: /* @__PURE__ */ (0, C.jsx)(bF, {
-			"aria-label": "Modo de sincronización",
+			"aria-label": "同步方式",
 			className: "flex w-56 flex-col gap-1 outline-none",
 			children: u.map(({ label: e, icon: t, command: r }) => {
 				let i = n && "stage" in r && r.stage === "previews";
 				return /* @__PURE__ */ (0, C.jsxs)("button", {
 					type: "button",
 					disabled: i,
-					title: i ? "Por favor, primero activa la generación de vista previa de video en Configuración de biblioteca de medios" : void 0,
+					title: i ? "请先在媒体库设置中开启视频预览生成" : void 0,
 					className: fA(WP, GP, "text-body-2-medium"),
 					onClick: () => d(r),
 					children: [/* @__PURE__ */ (0, C.jsx)(t, {
@@ -53465,15 +53465,15 @@ function qCe({ assetIds: e, onComplete: t }) {
 		}
 	}), l = n.data;
 	if ((0, S.useEffect)(() => {
-		l && r && l.job_id === r && !uF(l) && s.current !== r && (s.current = r, l.status === "complete" && o(`Finalización: Obtenidos ${l.covers || 0}  imagen(es)Portada, generando ${l.previews || 0}  título(s) vista previa de video. `), W.invalidateQueries({ queryKey: ["catalog-grid"] }), t?.());
+		l && r && l.job_id === r && !uF(l) && s.current !== r && (s.current = r, l.status === "complete" && o(`补全完成：取得 ${l.covers || 0} 张封面，生成 ${l.previews || 0} 部视频预览。`), W.invalidateQueries({ queryKey: ["catalog-grid"] }), t?.());
 	}, [
 		l,
 		r,
 		t
 	]), uF(l)) return null;
-	let u = c.isPending || uF(l), d = c.error ? V(c.error) : n.error ? mF : r && l?.job_id === r && l.status === "failed" ? l.error || "CompletarNoFinalizar" : "", f = d || (c.isPending ? "ProcesandoIniciarCompletar..." : a || `Este lote tiene ${e.length.toLocaleString()}  título(s)sin vista previa aún, puedecompletar detalles e imágenes. `);
+	let u = c.isPending || uF(l), d = c.error ? V(c.error) : n.error ? mF : r && l?.job_id === r && l.status === "failed" ? l.error || "补全未完成" : "", f = d || (c.isPending ? "正在启动补全…" : a || `这批影片中有 ${e.length.toLocaleString()} 部暂无预览，可补全资料与图片。`);
 	return /* @__PURE__ */ (0, C.jsx)("section", {
-		"aria-label": "CompletarVista previa",
+		"aria-label": "补全预览",
 		"aria-live": "polite",
 		"data-library-completion": "",
 		className: "@container mb-4",
@@ -53496,7 +53496,7 @@ function qCe({ assetIds: e, onComplete: t }) {
 					href: "/data-cleanup#libraryProcessing",
 					size: "small",
 					trailingIcon: kk,
-					children: d ? "Ver y procesar" : "buscarverProcesarDetalles"
+					children: d ? "查看并处理" : "查看处理详情"
 				})
 			]
 		})
@@ -55660,7 +55660,7 @@ function tz({ children: e, follow: t = !1, onRowClick: n }) {
 }
 //#endregion
 //#region src/react/components/table-pagination.tsx
-function nz({ page: e, pages: t, onPage: n, label: r = "Lista de seguidosPaginación" }) {
+function nz({ page: e, pages: t, onPage: n, label: r = "关注列表分页" }) {
 	return t <= 1 ? null : /* @__PURE__ */ (0, C.jsxs)("nav", {
 		"aria-label": r,
 		className: "flex flex-wrap items-center justify-center gap-2",
@@ -55670,29 +55670,29 @@ function nz({ page: e, pages: t, onPage: n, label: r = "Lista de seguidosPaginac
 				size: "small",
 				disabled: e <= 1,
 				onClick: () => n(e - 1),
-				children: "Página anterior"
+				children: "上一页"
 			}),
 			/* @__PURE__ */ (0, C.jsx)("ul", {
 				className: "flex flex-wrap items-center gap-1",
-				children: Tn(e, t).map((t, r) => /* @__PURE__ */ (0, C.jsx)("li", { children: t === "..." ? /* @__PURE__ */ (0, C.jsx)("span", {
+				children: Tn(e, t).map((t, r) => /* @__PURE__ */ (0, C.jsx)("li", { children: t === "…" ? /* @__PURE__ */ (0, C.jsx)("span", {
 					"aria-hidden": !0,
 					className: "px-1 text-body-2-regular text-text-tertiary",
-					children: "..."
+					children: "…"
 				}) : /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: t === e ? "secondary" : "ghost",
 					size: "small",
-					"aria-label": `Página ${t}`,
+					"aria-label": `第 ${t} 页`,
 					"aria-current": t === e ? "page" : void 0,
 					onClick: () => n(Number(t)),
 					children: t
-				}) }, t === "..." ? `dots-${r}` : t))
+				}) }, t === "…" ? `dots-${r}` : t))
 			}),
 			/* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
 				size: "small",
 				disabled: e >= t,
 				onClick: () => n(e + 1),
-				children: "Página siguiente"
+				children: "下一页"
 			})
 		]
 	});
@@ -55704,7 +55704,7 @@ function rz({ label: e, options: t, sorting: n, onChange: r }) {
 	return /* @__PURE__ */ (0, C.jsxs)("span", {
 		className: "flex items-center gap-2",
 		children: [/* @__PURE__ */ (0, C.jsxs)(BF, {
-			"aria-label": `${e}Ordenar`,
+			"aria-label": `${e}排序`,
 			selectedKey: i?.id ?? "default",
 			onSelectionChange: (e) => {
 				e !== null && r(e === "default" ? [] : [{
@@ -55714,7 +55714,7 @@ function rz({ label: e, options: t, sorting: n, onChange: r }) {
 			},
 			children: [/* @__PURE__ */ (0, C.jsx)(VF, {
 				id: "default",
-				children: "orden predeterminado"
+				children: "默认顺序"
 			}), t.map((e) => /* @__PURE__ */ (0, C.jsx)(VF, {
 				id: e.id,
 				children: e.label
@@ -55724,7 +55724,7 @@ function rz({ label: e, options: t, sorting: n, onChange: r }) {
 			iconOnly: !0,
 			disabled: !i,
 			leadingIcon: i?.desc ? gge : _ge,
-			"aria-label": `${e}cambiar a ${i?.desc ? "Ascendente" : "Descendente"}`,
+			"aria-label": `${e}改为${i?.desc ? "升序" : "降序"}`,
 			onClick: () => {
 				i && r([{
 					...i,
@@ -55734,7 +55734,7 @@ function rz({ label: e, options: t, sorting: n, onChange: r }) {
 		})]
 	});
 }
-function iz({ label: e, total: t, pagination: n, onChange: r, unit: i = " registro(s)", pageUnit: a = "Resultado" }) {
+function iz({ label: e, total: t, pagination: n, onChange: r, unit: i = "条记录", pageUnit: a = "条" }) {
 	let o = Math.max(1, Math.ceil(t / n.pageSize)), s = Math.min(n.pageIndex, o - 1), c = t ? s * n.pageSize + 1 : 0, l = Math.min((s + 1) * n.pageSize, t);
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		"data-table-pagination": !0,
@@ -55745,7 +55745,7 @@ function iz({ label: e, total: t, pagination: n, onChange: r, unit: i = " regist
 				children: `${c.toLocaleString()}–${l.toLocaleString()} / ${t.toLocaleString()} ${i}`
 			}),
 			/* @__PURE__ */ (0, C.jsx)(BF, {
-				"aria-label": "Por páginaMostrarCantidad",
+				"aria-label": "每页显示数量",
 				size: "sm",
 				selectedKey: String(n.pageSize),
 				onSelectionChange: (e) => {
@@ -55761,11 +55761,11 @@ function iz({ label: e, total: t, pagination: n, onChange: r, unit: i = " regist
 					100
 				].map((e) => /* @__PURE__ */ (0, C.jsx)(VF, {
 					id: String(e),
-					children: `Por página ${e} ${a}`
+					children: `每页 ${e} ${a}`
 				}, e))
 			}),
 			/* @__PURE__ */ (0, C.jsx)(nz, {
-				label: `${e}Paginación`,
+				label: `${e}分页`,
 				page: s + 1,
 				pages: o,
 				onPage: (e) => r({
@@ -55785,39 +55785,39 @@ var mEe = oR({
 }), hEe = [
 	{
 		id: "name",
-		label: "Nombre"
+		label: "名称"
 	},
 	{
 		id: "dur",
-		label: "Duración"
+		label: "时长"
 	},
 	{
 		id: "size",
-		label: "Tamaño"
+		label: "体积"
 	},
 	{
 		id: "new",
-		label: "Fecha de catalogación"
+		label: "入库时间"
 	},
 	{
 		id: "release",
-		label: "Fecha de lanzamiento"
+		label: "发行时间"
 	},
 	{
 		id: "rating",
-		label: "Puntuación"
+		label: "评分"
 	},
 	{
 		id: "o",
-		label: "Contador de orgasmos"
+		label: "高潮计数"
 	},
 	{
 		id: "plays",
-		label: "Reproducciones"
+		label: "观看次数"
 	},
 	{
 		id: "played",
-		label: "Tiempo de reproducción"
+		label: "观看时间"
 	}
 ], az = /* @__PURE__ */ new Map();
 function gEe(e) {
@@ -55895,7 +55895,7 @@ function gEe(e) {
 					id: "select",
 					header: ({ table: e }) => /* @__PURE__ */ (0, C.jsx)(XP, {
 						slot: null,
-						"aria-label": "Seleccionar toda la páginaObra",
+						"aria-label": "全选本页作品",
 						isDisabled: l.isPlaceholderData,
 						isSelected: e.getIsAllRowsSelected(),
 						isIndeterminate: e.getIsSomeRowsSelected(),
@@ -55903,7 +55903,7 @@ function gEe(e) {
 					}),
 					cell: ({ row: t }) => /* @__PURE__ */ (0, C.jsx)(XP, {
 						slot: null,
-						"aria-label": `Seleccionar ${e.helpers.displayName(t.original, t.original.name || "")}`,
+						"aria-label": `选择 ${e.helpers.displayName(t.original, t.original.name || "")}`,
 						isDisabled: l.isPlaceholderData,
 						isSelected: t.getIsSelected(),
 						onChange: (e) => t.toggleSelected(e)
@@ -55911,7 +55911,7 @@ function gEe(e) {
 				}),
 				t.accessor((e) => e.name || "", {
 					id: "name",
-					header: "Nombre",
+					header: "名称",
 					enableSorting: !0,
 					cell: ({ row: t }) => /* @__PURE__ */ (0, C.jsx)(_Ee, {
 						item: t.original,
@@ -55921,19 +55921,19 @@ function gEe(e) {
 				}),
 				t.accessor((e) => e.duration, {
 					id: "dur",
-					header: "Duración",
+					header: "时长",
 					enableSorting: !0,
 					cell: ({ row: e }) => on(e.original.duration) || "—"
 				}),
 				t.accessor((e) => e.size, {
 					id: "size",
-					header: "Tamaño",
+					header: "体积",
 					enableSorting: !0,
 					cell: ({ row: e }) => e.original.size == null ? "—" : cn(e.original.size)
 				}),
 				t.accessor((e) => e.play_count, {
 					id: "plays",
-					header: "Reproducciones",
+					header: "观看次数",
 					enableSorting: !0,
 					cell: ({ row: e }) => Number(e.original.play_count || 0).toLocaleString()
 				})
@@ -55981,9 +55981,9 @@ function gEe(e) {
 			/* @__PURE__ */ (0, C.jsx)("div", {
 				className: "flex flex-wrap justify-end gap-2",
 				role: "toolbar",
-				"aria-label": "Barra de herramientas de lista de obras",
+				"aria-label": "作品列表工具栏",
 				children: /* @__PURE__ */ (0, C.jsx)(rz, {
-					label: "Lista de obras",
+					label: "作品列表",
 					options: hEe,
 					sorting: a,
 					onChange: (e) => p.setSorting(e)
@@ -56000,7 +56000,7 @@ function gEe(e) {
 					l.isPlaceholderData || e.actions.toggleSelection(Number(t), !1);
 				},
 				children: /* @__PURE__ */ (0, C.jsxs)(ez, {
-					"aria-label": "Lista de obras",
+					"aria-label": "作品列表",
 					size: "sm",
 					sortDescriptor: c ? {
 						column: c.id,
@@ -56028,9 +56028,9 @@ function gEe(e) {
 							"data-table-skeleton": "",
 							"aria-busy": "true",
 							role: "status",
-							"aria-label": "CargandoLista de obras",
+							"aria-label": "正在读取作品列表",
 							children: Array.from({ length: 6 }, (e, t) => /* @__PURE__ */ (0, C.jsxs)("div", { children: [/* @__PURE__ */ (0, C.jsx)("i", { className: "skeleton-sheen" }), /* @__PURE__ */ (0, C.jsx)("span", { className: "skeleton-sheen" })] }, t))
-						}) : l.isError ? "Lista de obrasNo disponible" : "Sinque cumpleObra",
+						}) : l.isError ? "作品列表未取得" : "没有符合的作品",
 						children: p.getRowModel().rows.map((e) => /* @__PURE__ */ (0, C.jsx)(iP, {
 							id: e.id,
 							"data-catalog-row": "",
@@ -56042,25 +56042,25 @@ function gEe(e) {
 				})
 			}),
 			l.data ? /* @__PURE__ */ (0, C.jsx)(iz, {
-				label: "Lista de obras",
+				label: "作品列表",
 				total: d,
 				pagination: o,
 				onChange: (e) => p.setPagination(e),
-				unit: " obra(s)",
-				pageUnit: " título(s)"
+				unit: "部作品",
+				pageUnit: "部"
 			}) : null
 		]
 	});
 }
 function _Ee({ item: e, props: t, disabled: n }) {
-	let r = Ca(e, "small", !1, t.layout.javImage), i = t.helpers.displayName(e, e.name || "").trim() || "Obra sin nombre", a = e.creator || e.performers?.join(", ") || e.studio;
+	let r = Ca(e, "small", !1, t.layout.javImage), i = t.helpers.displayName(e, e.name || "").trim() || "未命名作品", a = e.creator || e.performers?.join("、") || e.studio;
 	return /* @__PURE__ */ (0, C.jsx)("div", {
 		"data-list-identity": "",
 		children: /* @__PURE__ */ (0, C.jsxs)("button", {
 			type: "button",
 			"data-list-open": "",
 			disabled: n,
-			"aria-label": `Abrir ${i}`,
+			"aria-label": `打开 ${i}`,
 			onClick: (n) => {
 				t.selectMode || n.shiftKey || n.ctrlKey || n.metaKey ? t.actions.toggleSelection(e.id, n.shiftKey) : (t.filters?.state === "trash" ? t.actions.openResource : t.actions.open)(e, n.currentTarget);
 			},
@@ -56069,7 +56069,7 @@ function _Ee({ item: e, props: t, disabled: n }) {
 				children: r.html ? /* @__PURE__ */ (0, C.jsx)(EI, {
 					artwork: r,
 					relayout: (e) => gc(e, "small")
-				}) : /* @__PURE__ */ (0, C.jsx)("span", { children: "Sin vista previa" })
+				}) : /* @__PURE__ */ (0, C.jsx)("span", { children: "无预览" })
 			}), /* @__PURE__ */ (0, C.jsxs)("span", {
 				"data-list-text": "",
 				children: [/* @__PURE__ */ (0, C.jsx)("span", {
@@ -56078,7 +56078,7 @@ function _Ee({ item: e, props: t, disabled: n }) {
 					children: i
 				}), /* @__PURE__ */ (0, C.jsxs)("span", {
 					"data-list-byline": "",
-					children: [a || "Sin asignar", /* @__PURE__ */ (0, C.jsxs)("span", {
+					children: [a || "未归属", /* @__PURE__ */ (0, C.jsxs)("span", {
 						"data-list-mobile-metrics": "",
 						children: [
 							on(e.duration),
@@ -56219,7 +56219,7 @@ function bEe(e) {
 					loading: l.isPending || !l.data && l.isFetching,
 					error: !l.data && !l.isPending ? Pt(l.error) : "",
 					retry: () => void l.refetch(),
-					emptyHtml: l.data && !_.length ? d.length ? No("image", "esteloteObraSinPortada", l.hasNextPage ? "Cargar másObradespuésContinuarExplorar. " : "cambiarFiltrarámbitorangoluego intentar. ") : e.emptyHtml?.({
+					emptyHtml: l.data && !_.length ? d.length ? No("image", "这批作品没有封面", l.hasNextPage ? "载入更多作品后继续浏览。" : "换个筛选范围再试。") : e.emptyHtml?.({
 						trash: a,
 						libraryEmpty: !!l.data.pages[0]?.libraryEmpty
 					}) : "",
@@ -56318,14 +56318,14 @@ function sz({ entity: e, load: t, enabled: n, children: r }) {
 		"data-entity-more": "",
 		...f,
 		onClick: () => void u(!0),
-		children: r ?? "Cargar más"
+		children: r ?? "载入更多"
 	}) : /* @__PURE__ */ (0, C.jsx)("div", {
 		ref: d,
 		"data-load-more": "",
 		...f,
 		hidden: !!s.error,
 		onClick: () => void u(!0),
-		dangerouslySetInnerHTML: { __html: jo("Cargando más...") }
+		dangerouslySetInnerHTML: { __html: jo("继续载入中…") }
 	}), s.error ? /* @__PURE__ */ (0, C.jsx)(TI, {
 		message: s.error,
 		onRetry: () => void u(!0)
@@ -56369,16 +56369,16 @@ function SEe({ cut: e, props: t, onOpen: n }) {
 	}, [i]), /* @__PURE__ */ (0, C.jsxs)("section", {
 		"data-shorts-strip": "",
 		children: [/* @__PURE__ */ (0, C.jsxs)("h2", { children: [
-			"Pantalla vertical ",
+			"竖屏 ",
 			/* @__PURE__ */ (0, C.jsx)("span", {
 				"data-shorts-count": "",
-				children: `${e.total.toLocaleString()} `
+				children: `${e.total.toLocaleString()} 个`
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("button", {
 				type: "button",
 				"data-shorts-enter": "",
 				onClick: () => t.actions.openShorts(),
-				children: [/* @__PURE__ */ (0, C.jsx)(vEe, { name: "gallery-vertical-end" }), /* @__PURE__ */ (0, C.jsx)("span", { children: "entrar en modo inmersivo" })]
+				children: [/* @__PURE__ */ (0, C.jsx)(vEe, { name: "gallery-vertical-end" }), /* @__PURE__ */ (0, C.jsx)("span", { children: "进入沉浸模式" })]
 			})
 		] }), /* @__PURE__ */ (0, C.jsx)("div", {
 			ref: r,
@@ -56410,7 +56410,7 @@ function CEe({ seed: e, layout: t, helpers: n, actions: r }) {
 	return /* @__PURE__ */ (0, C.jsx)(zI, {
 		"data-mix-seed": String(e.id),
 		name: `Mix · ${o}`,
-		caption: `${n.displayName(e, e.name || "")}y obras similares`,
+		caption: `${n.displayName(e, e.name || "")}及相似作品`,
 		count: 0,
 		badge: "Mix",
 		glyph: !0,
@@ -56429,7 +56429,7 @@ function CEe({ seed: e, layout: t, helpers: n, actions: r }) {
 		faces: [],
 		onOpenEntity: r.openEntity,
 		onOpen: (t) => r.openMix(e.id, t),
-		openLabel: `Abrir Mix · ${o}`
+		openLabel: `打开 Mix · ${o}`
 	});
 }
 //#endregion
@@ -56440,7 +56440,7 @@ async function lz(e) {
 		queryFn: () => An(e)
 	});
 }
-var wEe = (e) => (e?.sources ?? []).filter((e) => jt.includes(e.location) && (e.roots === void 0 || e.roots.length > 0)).map((e) => e.location), TEe = "/api/duplicates?limit=120", uz = ["duplicates"], dz = "/api/batch", fz = (e) => H(TEe, e), EEe = /[\s\-_.()[\][]/\\]/;
+var wEe = (e) => (e?.sources ?? []).filter((e) => jt.includes(e.location) && (e.roots === void 0 || e.roots.length > 0)).map((e) => e.location), TEe = "/api/duplicates?limit=120", uz = ["duplicates"], dz = "/api/batch", fz = (e) => H(TEe, e), EEe = /[\s\-_.()[\]【】/\\]/;
 function DEe(e) {
 	if (e.length < 2) return "";
 	let t = 0, n = e[0];
@@ -56450,7 +56450,7 @@ function DEe(e) {
 	for (; r > 0 && !EEe.test(n[r - 1]);) --r;
 	return r >= 8 ? n.slice(0, r) : "";
 }
-var OEe = (e, t) => t && e.startsWith(t) && e.length > t.length ? `...${e.slice(t.length)}` : e;
+var OEe = (e, t) => t && e.startsWith(t) && e.length > t.length ? `…${e.slice(t.length)}` : e;
 async function kEe(e) {
 	await Promise.all([W.fetchQuery({
 		queryKey: uz,
@@ -56458,11 +56458,11 @@ async function kEe(e) {
 	}), lz(e)]);
 }
 var pz = {
-	largest: "Más grandeun",
-	longest: "El más largoun",
-	115: "115 (dejar máximo si no hay)",
-	pikpak: "PikPak (dejar máximo si no hay)",
-	all: "Cero archivos"
+	largest: "最大的一个",
+	longest: "最长的一个",
+	115: "115（没有则留最大）",
+	pikpak: "PikPak（没有则留最大）",
+	all: "零个文件"
 }, AEe = (e, t) => t.filter((t) => e.some((e) => e.location === t)), mz = (e, t) => AEe(e, t).filter((t) => e.some((e) => e.location !== t)), jEe = (e, t) => t.filter((t) => e.some((e) => mz(e.files, [t]).length));
 function MEe(e, t) {
 	let n = [];
@@ -56521,12 +56521,12 @@ async function FEe(e) {
 var xz = (e) => Number(e).toLocaleString();
 function IEe(e) {
 	if (e.status === "running") {
-		let t = e.total ? `${xz(Math.min(e.checked || 0, e.total))} / ${xz(e.total)}` : "preparando";
-		return e.stage === "Reparar" && e.message ? `Reparar ${t} · ${e.message}` : `${e.stage || "Escanear"} ${t}`;
+		let t = e.total ? `${xz(Math.min(e.checked || 0, e.total))} / ${xz(e.total)}` : "准备中";
+		return e.stage === "修复" && e.message ? `修复 ${t} · ${e.message}` : `${e.stage || "扫描"} ${t}`;
 	}
-	return e.status === "complete" && (e.repaired || e.failed) ? e.failed ? `Reparados ${xz(e.repaired)}  título(s), ${xz(e.failed)}  título(s) sin reparar` : `Reparados ${xz(e.repaired)}  título(s)` : "";
+	return e.status === "complete" && (e.repaired || e.failed) ? e.failed ? `修好 ${xz(e.repaired)} 部，${xz(e.failed)} 部修不了` : `修好 ${xz(e.repaired)} 部` : "";
 }
-var LEe = (e) => `${xz(e.missing_tool)}  título(s)FaltaIndexarvideosdebe instalar untrunc para reparar y obtener , descárgalo en la página Configuración"Información de ejecución"dentro. `, REe = "/api/quality-goals?limit=200", Sz = ["quality-goals"], Cz = (e) => H(REe, e);
+var LEe = (e) => `${xz(e.missing_tool)} 部缺索引的片子要装上 untrunc 才修得了，下载入口在配置页的「运行信息」里。`, REe = "/api/quality-goals?limit=200", Sz = ["quality-goals"], Cz = (e) => H(REe, e);
 async function zEe(e) {
 	await W.fetchQuery({
 		queryKey: Sz,
@@ -56543,32 +56543,32 @@ function Tz(e, t, n, r, i, a = i || !e.has(r)) {
 //#endregion
 //#region src/react/review/review.ts
 var BEe = "/api/review", VEe = "/api/review/decision", HEe = "/api/review/genre", Ez = ["review"], Dz = {
-	metadata_fields: "Campos de metadatos",
-	creator_tags: "Etiquetas de creador",
-	studio_logos: "Logo de sello",
-	performer_avatars: "Avatar de actriz",
-	western_identity: "Reasignación de identidad occidental",
-	code_creators: "Directorio de códigos JAV en duda",
-	fc2_markings: "Marcas de comentarios FC2",
-	fc2_similarity: "Similitudes entre códigos FC2",
-	video_endcards: "Evidencia de créditos/fuente"
+	metadata_fields: "元数据字段",
+	creator_tags: "创作者标签",
+	studio_logos: "厂牌 Logo",
+	performer_avatars: "女优头像",
+	western_identity: "西方身份回配",
+	code_creators: "番号目录存疑",
+	fc2_markings: "FC2 评论标记",
+	fc2_similarity: "FC2 跨号相似",
+	video_endcards: "片尾/出处证据"
 }, UEe = Object.keys(Dz), WEe = "metadata_fields", Oz = (e) => typeof e == "string" && Object.hasOwn(Dz, e), GEe = {
 	creator_tags: "creator",
 	western_identity: "creator"
 };
 function KEe(e, t) {
-	let n = [["candidates", t ? "segúnFuenteCantidad" : "TodoPendientevolver verificar"]];
-	return e.some((e) => e.source || e.candidates?.some((e) => e.source)) && n.push(["source", "segúnFuente"]), e.some((e) => e.field) && n.push(["field", "Por campo"]), n;
+	let n = [["candidates", t ? "按来源数量" : "全部待复核"]];
+	return e.some((e) => e.source || e.candidates?.some((e) => e.source)) && n.push(["source", "按来源"]), e.some((e) => e.field) && n.push(["field", "按字段"]), n;
 }
 function kz(e, t) {
 	let n = /* @__PURE__ */ new Map();
 	for (let r of e) {
 		let e, i;
-		if (t === "field") e = r.field || "__unspecified_field", i = r.field_label || r.field || "Campo sin etiqueta";
+		if (t === "field") e = r.field || "__unspecified_field", i = r.field_label || r.field || "未标注字段";
 		else if (t === "source") {
 			let t = [...new Set((r.candidates?.map((e) => e.source || "") || [r.source || ""]).filter(Boolean))].sort();
-			e = JSON.stringify(t), i = t.join(" / ") || "Fuente sin etiqueta";
-		} else e = r.candidates ? r.candidates.length === 1 ? "single" : "multiple" : "pending", i = e === "single" ? "una sola fuente" : e === "multiple" ? "Seleccionar fuente requerida" : "Pendientevolver verificar";
+			e = JSON.stringify(t), i = t.join(" / ") || "未标注来源";
+		} else e = r.candidates ? r.candidates.length === 1 ? "single" : "multiple" : "pending", i = e === "single" ? "单一来源" : e === "multiple" ? "需选择来源" : "待复核";
 		n.has(e) || n.set(e, {
 			key: e,
 			title: i,
@@ -56629,7 +56629,7 @@ function Nz(e, t, n, r) {
 		...i ? { expected_revision: t.asset_mutation_revision } : {}
 	};
 }
-var nDe = (e) => e === "approved" ? "YaAceptarDetalles" : e === "rejected" ? "YaRechazarDetalles" : "YaOmitirDetalles", Pz = (e) => H(BEe, e);
+var nDe = (e) => e === "approved" ? "已通过资料" : e === "rejected" ? "已拒绝资料" : "已跳过资料", Pz = (e) => H(BEe, e);
 async function Fz(e) {
 	let t = await U(VEe, e);
 	if (t.ok && t.asset_revisions) {
@@ -56686,19 +56686,19 @@ var aDe = () => W.invalidateQueries({
 	exact: !0
 });
 function oDe(e, t) {
-	return e?.state === "live" ? "ProcesandoMostrarescritoextremorealcuandocola de re-verificación" : e?.state === "cached" ? `Escritura temporalmente inaccesible, mostrando ${Mn(e.fetched_at)} en caché` : e?.error || t;
+	return e?.state === "live" ? "正在显示写入端的实时复核队列" : e?.state === "cached" ? `写入端暂时不可达，显示 ${Mn(e.fetched_at)} 的缓存` : e?.error || t;
 }
 //#endregion
 //#region src/react/data-cleanup/links.ts
 var sDe = "/api/links", Rz = "/api/links/check", zz = "/api/links/prune", Bz = ["links"], Vz = ["links", "check"], Hz = ["links", "prune"], Uz = {
-	official: "Sitio oficial/Agencia",
-	social: "Cuenta social",
-	catalog: "Sitio de información de obras",
-	source_reference: "Detallessalir lugar"
+	official: "官网/事务所",
+	social: "社交账号",
+	catalog: "作品资料站",
+	source_reference: "资料出处"
 };
 async function Wz(e) {
 	let t = await e;
-	if (t.ok === !1) throw Error(t.error || "Operación no completada, Por favorReintentar");
+	if (t.ok === !1) throw Error(t.error || "操作未完成，请重试");
 	return t;
 }
 var Gz = (e) => H(sDe, e), Kz = (e) => U(Rz, { status_only: !0 }, "POST", e), cDe = ({ retry: e, checkId: t }) => Wz(U(Rz, e ? {
@@ -56709,10 +56709,10 @@ var Gz = (e) => H(sDe, e), Kz = (e) => U(Rz, { status_only: !0 }, "POST", e), cD
 	check_id: e,
 	background: !0,
 	...t ? { ids: t } : {}
-})), Jz = (e) => Number(e || 0).toLocaleString(), Yz = (e) => `YaEliminar ${Jz(e.removed)} Resultado; ${e.marked ? `Yaretiroretroceder Actriz ${Jz(e.marked)} Resultadomantenido como registro sin clic posible; ` : ""}Conservar ${Jz(e.recovered)} ResultadoNoConfirmarInválidoenlaceconectar. `;
+})), Jz = (e) => Number(e || 0).toLocaleString(), Yz = (e) => `已删除 ${Jz(e.removed)} 条；${e.marked ? `已隐退女优的 ${Jz(e.marked)} 条留作不可点的记录；` : ""}保留 ${Jz(e.recovered)} 条未确认失效的链接。`;
 function uDe(e) {
 	let t = e.scope === "retry";
-	return e.total ? `${t ? "Ya reverificado" : "Verificado"} ${Jz(e.checked)} / ${Jz(e.total)} resultados de enlace conectados` : t ? "Reverificandoenlaceconectar" : "verificando enlaces conectados";
+	return e.total ? `${t ? "已重验" : "已检查"} ${Jz(e.checked)} / ${Jz(e.total)} 条链接` : t ? "正在重验链接" : "正在检查链接";
 }
 //#endregion
 //#region src/react/settings-panel/settings-data.ts
@@ -56770,7 +56770,7 @@ async function CDe(e) {
 var wDe = (e, t) => e && {
 	...e,
 	...t
-}, TDe = /Plantilla de directorio|secciónsímbolo|letra de unidad|`\.`/;
+}, TDe = /目录模板|分隔符|盘符|`\.`/;
 function oB(e) {
 	let t = String(e || "");
 	return t.slice(Math.max(t.lastIndexOf("\\"), t.lastIndexOf("/")) + 1);
@@ -56778,12 +56778,12 @@ function oB(e) {
 var sB = (e) => Number(e || 0).toLocaleString();
 function EDe(e) {
 	let t = Object.entries(e.reasons || {}).sort((e, t) => t[1] - e[1]).map(([e, t]) => `${e} ${sB(t)}`).join(" · ");
-	return Number(e.counts?.change || 0) ? `${sB(e.counts.change)} archivos serán renombrados o movidos, ${sB(e.counts.unchanged)} ya con nombre objetivo${t ? `; Omitir ${t}` : ""}. ` : `Sinnecesario cambiar de archivos. ${t ? `Omitir: ${t}. ` : ""}`;
+	return Number(e.counts?.change || 0) ? `${sB(e.counts.change)} 个文件会改名或移动，${sB(e.counts.unchanged)} 个已经就是目标名字${t ? `；跳过 ${t}` : ""}。` : `没有要改的文件。${t ? `跳过：${t}。` : ""}`;
 }
 function cB(e) {
 	let t = e.restored !== void 0, n = Number(e.failed || 0), r = Number(t ? e.restored : e.moved || 0);
 	return {
-		text: t ? `Ya revertidos ${sB(r)} archivos${n ? `, ${sB(n)} filas que no se pueden revertir` : ""}. ` : `YaOrganizar ${sB(r)} Archivo${n ? `, ${sB(n)} filas que no se pueden procesar` : ""}. `,
+		text: t ? `已退回 ${sB(r)} 个文件${n ? `，${sB(n)} 行未能退回` : ""}。` : `已整理 ${sB(r)} 个文件${n ? `，${sB(n)} 行未能处理` : ""}。`,
 		failed: n,
 		rollback: t
 	};
@@ -56811,49 +56811,49 @@ async function kDe(e) {
 		queryFn: () => mB(e)
 	})]);
 }
-var Active Directorye = (e) => !!(e?.missing || e?.empty || e?.cache?.files), gB = (e) => Number(e || 0).toLocaleString(), jDe = (e) => e.total_sources ? `Ya escaneados ${e.completed_sources || 0}/${e.total_sources}  fuente(s)` : "EscaneandoFuente", _B = (e) => e.purge ?? Number(e.missing || 0) - Number(e.vanish || 0), vB = (e) => e.vanish ? `${gB(e.vanish)} Resultadocon persona(s)Registroetiquetacomoya desaparecido , Registrotodavía presentes, puedeenRegistros huérfanosdentroconectarNuevo archivooEliminar permanentemente. ` : "", yB = (e) => e.vanish ? "Esto no se puede deshacer. " : "Este paso no se puede deshacer. ", MDe = (e) => `Eliminará permanentemente los ${gB(_B(e))}  registro(s) y ${gB(e.empty)} Carpeta vacía, y limpiar ${gB(e.cache?.files)} caché inactivo. ${yB(e)}${vB(e)}`, NDe = (e) => `Eliminará permanentemente los ${gB(_B(e))}  registro(s)(incluyendo los de la papelera), ${gB(e.empty)} Carpeta vacía, y limpiar ${gB(e.cache?.files)} caché inactivo. Directorio raízDirectorioConservar. ${yB(e)}${vB(e)}`, PDe = (e) => e.online ? [
-	`No encontradoArchivo · Total: ${gB(e.total)} elemento(s)`,
-	e.vanish ? `${gB(e.vanish)} elemento(s) con registros de persona` : "",
-	e.empty ? `Carpeta vacía ${gB(e.empty)} ` : "",
-	e.unreadable ? `${gB(e.unreadable)} DirectorioleerFallido, YaOmitir` : ""
-].filter(Boolean).join(" · ") : `ColecciónEn procesocon ${gB(e.total)} elemento(s)`;
+var ADe = (e) => !!(e?.missing || e?.empty || e?.cache?.files), gB = (e) => Number(e || 0).toLocaleString(), jDe = (e) => e.total_sources ? `已扫描 ${e.completed_sources || 0}/${e.total_sources} 个来源` : "正在扫描来源", _B = (e) => e.purge ?? Number(e.missing || 0) - Number(e.vanish || 0), vB = (e) => e.vanish ? `${gB(e.vanish)} 条带个人记录的标为已消失，记录留着，可在孤儿记录里接到新文件或彻底删除。` : "", yB = (e) => e.vanish ? "这几样不可撤销。" : "这一步不可撤销。", MDe = (e) => `将永久删除文件已不在盘上的 ${gB(_B(e))} 条记录和 ${gB(e.empty)} 个空文件夹，并清理 ${gB(e.cache?.files)} 个闲置缓存。${yB(e)}${vB(e)}`, NDe = (e) => `将永久删除文件已不在盘上的 ${gB(_B(e))} 条记录（含回收站里的）、${gB(e.empty)} 个空文件夹，并清理 ${gB(e.cache?.files)} 个闲置缓存。来源根目录保留。${yB(e)}${vB(e)}`, PDe = (e) => e.online ? [
+	`找不到文件 · 共 ${gB(e.total)} 项`,
+	e.vanish ? `${gB(e.vanish)} 项带个人记录` : "",
+	e.empty ? `空文件夹 ${gB(e.empty)} 个` : "",
+	e.unreadable ? `${gB(e.unreadable)} 个目录读取失败，已跳过` : ""
+].filter(Boolean).join(" · ") : `馆藏中有 ${gB(e.total)} 项`;
 function bB(e) {
-	let t = e.blocked ?? [], n = Number(e.dir_errors || 0), r = e.cache_blocked ?? [], i = Number(e.purged || 0) + Number(e.vanished || 0) + Number(e.reattached || 0) + Number(e.dirs_removed || 0) + Number(e.cache_removed || 0), a = t.length + n + r.length, o = t.slice(0, 3).map((e) => `"${e.name}"`).join(", ") + (t.length > 3 ? " etc." : "");
+	let t = e.blocked ?? [], n = Number(e.dir_errors || 0), r = e.cache_blocked ?? [], i = Number(e.purged || 0) + Number(e.vanished || 0) + Number(e.reattached || 0) + Number(e.dirs_removed || 0) + Number(e.cache_removed || 0), a = t.length + n + r.length, o = t.slice(0, 3).map((e) => `「${e.name}」`).join("、") + (t.length > 3 ? " 等" : "");
 	return {
 		done: i,
 		left: a,
 		rest: [
-			t.length ? `${gB(t.length)}  registro(s)SinEliminar(${o})` : "",
-			n ? `${gB(n)} Carpetas no eliminadas` : "",
-			r.length ? `${gB(r.length)} CachéSinLimpiar` : ""
-		].filter(Boolean).join(", ")
+			t.length ? `${gB(t.length)} 条记录没有删除（${o}）` : "",
+			n ? `${gB(n)} 个文件夹没有删除` : "",
+			r.length ? `${gB(r.length)} 个缓存没有清理` : ""
+		].filter(Boolean).join("，")
 	};
 }
 var FDe = (e, t) => {
-	let { rest: n } = bB(e), r = `Ya eliminado permanentemente ${gB(e.purged)} registros inválidos y  ${gB(e.dirs_removed)} Carpeta vacía, Limpiar ${gB(e.cache_removed)} Caché, liberar ${t(e.bytes_reclaimed || 0)}. ` + (e.vanished ? `${gB(e.vanished)} Resultadocon persona(s)RegistroYaetiquetacomoya desaparecido , puedeenRegistros huérfanosdentroProcesar. ` : "") + (e.reattached ? `${gB(e.reattached)} registro ya reconectado a otra versión en la biblioteca. ` : "");
-	return n ? `${r}${n}, Puedes reverificar más tarde. ` : r;
+	let { rest: n } = bB(e), r = `已永久删除 ${gB(e.purged)} 条失效记录和 ${gB(e.dirs_removed)} 个空文件夹，清理 ${gB(e.cache_removed)} 个缓存，释放 ${t(e.bytes_reclaimed || 0)}。` + (e.vanished ? `${gB(e.vanished)} 条带个人记录的已标为已消失，可在孤儿记录里处理。` : "") + (e.reattached ? `${gB(e.reattached)} 条的记录已接到库里的另一个版本。` : "");
+	return n ? `${r}${n}，重新检查后可再试。` : r;
 }, IDe = "/api/review?counts=1", xB = ["review", "counts"], LDe = "/api/ads?limit=1", SB = ["junk-summary"], CB = "/api/items?state=trash&limit=1", wB = ["trash-summary"], RDe = [
-	["video", "Videos"],
-	["image", "Imágenes"],
-	["archive", "Archivo comprimido"],
-	["audio", "Audio"],
-	["url", "URL"],
-	["other", "Otros"]
+	["video", "视频"],
+	["image", "图片"],
+	["archive", "压缩包"],
+	["audio", "音频"],
+	["url", "网址"],
+	["other", "其它"]
 ], TB = (e) => H(IDe, e), EB = (e) => H(LDe, e), DB = (e) => {
 	let t = sessionStorage.getItem("peach.library");
 	return H(t ? `${CB}&library=${encodeURIComponent(t)}` : CB, e);
 }, OB = (e) => Number(e || 0).toLocaleString();
 function zDe(e) {
 	let t = Dz, n = Object.entries(e?.counts ?? {}).map(([e, n]) => [t[e] || e, Number(n) || 0]).filter(([, e]) => e > 0).sort((e, t) => t[1] - e[1]), r = n.reduce((e, [, t]) => e + t, 0), i = n.slice(0, 3).map(([e, t]) => `${e} ${t.toLocaleString()}`), a = n.slice(3).reduce((e, [, t]) => e + t, 0);
-	return a && i.push(`otros ${a.toLocaleString()}`), {
-		figure: `${r.toLocaleString()} ResultadoPendientevolver verificar`,
+	return a && i.push(`其余 ${a.toLocaleString()}`), {
+		figure: `${r.toLocaleString()} 条待复核`,
 		meta: i.join(" · ")
 	};
 }
 function BDe(e) {
 	if (!e) return "";
 	let t = RDe.filter(([t]) => Number(e.counts?.[t]) > 0).map(([t, n]) => `${n} ${OB(e.counts[t])}`);
-	return Number(e.dismissed_total) > 0 && t.push(`Ignorado ${OB(e.dismissed_total)}`), t.join(" · ");
+	return Number(e.dismissed_total) > 0 && t.push(`已忽略 ${OB(e.dismissed_total)}`), t.join(" · ");
 }
 var VDe = [
 	[xB, ({ signal: e }) => TB(e)],
@@ -56980,44 +56980,44 @@ function NB({ label: e, icon: t, accent: n = 0, figure: r, footer: i }) {
 }
 //#endregion
 //#region src/management.ts
-var PB = "SincronizarArchivoyPelículaDetalles, segúnConfiguracióngenerarLocalVista previa de video. menú desplegableOpcionalelegirsolo EscanearArchivo, SincronizarCatalogadoPelícula, generarVista previaoCompletar detalles. ", FB = "Reparar: falta marca de tiempo en tabla (bloqueos de reproducción) y falta indexado (no abre) MP4. Ve primero los videos para reparar. ", IB = "<span class=\"skeleton skeleton-text\" aria-hidden=\"true\"></span>", LB = "type=\"button\" disabled data-skeleton-action", RB = "disabled data-skeleton-action", qDe = "aria-disabled=\"true\"", zB = (e) => `<div class="peach-react"><div class="flex flex-col gap-4">${e}</div></div>`, BB = (e, t) => `<div data-geist-fieldset-content>
+var PB = "同步文件与影片资料，按设置生成本地视频预览。下拉菜单可选择只扫描文件、同步已入库影片、生成预览或补全资料。", FB = "修缺时间戳表（播放卡顿）和缺索引（打不开）的 MP4。常看的片子先修。", IB = "<span class=\"skeleton skeleton-text\" aria-hidden=\"true\"></span>", LB = "type=\"button\" disabled data-skeleton-action", RB = "disabled data-skeleton-action", qDe = "aria-disabled=\"true\"", zB = (e) => `<div class="peach-react"><div class="flex flex-col gap-4">${e}</div></div>`, BB = (e, t) => `<div data-geist-fieldset-content>
           <h3 class="text-title-2-medium text-text-primary">${e}</h3>
           <p class="text-body-2-regular text-text-secondary">${t}</p></div>`;
 function JDe() {
-	return zB(`<section aria-label="Escaneo y recopilación" data-geist-fieldset data-cleanup-task data-cleanup-processing data-fieldset-stack>
-        ${BB("Escaneo y recopilación", PB)}
-        <footer data-geist-fieldset-footer><a href="/sources" class="inline-flex items-center justify-center gap-1 whitespace-nowrap font-sans rounded-sm text-body-medium text-accent-600"><span>Fuentes y credenciales</span>${ho("arrow-up", "size-[18px] shrink-0 rotate-90")}</a><span data-button-group data-split-button data-variant="primary">${vo({
+	return zB(`<section aria-label="扫描与采集" data-geist-fieldset data-cleanup-task data-cleanup-processing data-fieldset-stack>
+        ${BB("扫描与采集", PB)}
+        <footer data-geist-fieldset-footer><a href="/sources" class="inline-flex items-center justify-center gap-1 whitespace-nowrap font-sans rounded-sm text-body-medium text-accent-600"><span>来源和凭证</span>${ho("arrow-up", "size-[18px] shrink-0 rotate-90")}</a><span data-button-group data-split-button data-variant="primary">${vo({
 		glyph: "database",
-		label: "Sincronizar biblioteca",
+		label: "同步媒体库",
 		attrs: RB
 	})}${vo({
 		glyph: "chevron-down",
-		attrs: `${RB} aria-label="Más opciones de sincronización"`
+		attrs: `${RB} aria-label="更多同步方式"`
 	})}</span></footer>
       </section>`);
 }
 function YDe() {
-	return zB(`<section aria-label="Reparación de medios" data-geist-fieldset data-cleanup-task data-cleanup-processing>
-        ${BB("Reparación de medios", FB)}
+	return zB(`<section aria-label="媒体修复" data-geist-fieldset data-cleanup-task data-cleanup-processing>
+        ${BB("媒体修复", FB)}
         <footer data-geist-fieldset-footer>${bo(IB, {
 		className: "w-48",
 		attrs: qDe
 	})}${vo({
-		label: "Iniciar reparación",
+		label: "开始修复",
 		attrs: RB
 	})}</footer>
       </section>`);
 }
 function VB() {
 	let e = [
-		["Revisión manual", "square-check-big"],
-		["Versión HD", "sparkles"],
-		["Archivos duplicados", "file-stack"],
-		["Archivos basura", "file-archive"],
-		["Papelera", "trash"]
+		["人工复核", "square-check-big"],
+		["高清版", "sparkles"],
+		["重复文件", "file-stack"],
+		["垃圾文件", "file-archive"],
+		["回收站", "trash"]
 	], t = `<span class="geist-button ui-organize-preset-skeleton">${IB}</span>`.repeat(3), n = (e) => `<div class="ui-organizefield"><span>${e}</span>
             <span class="geist-input ui-organize-input-skeleton">${IB}</span></div>`;
-	return `<div class="ui-cleanuppage" data-skeleton="cleanup" aria-busy="true" aria-label="CargandoGestión de datosEstado">
+	return `<div class="ui-cleanuppage" data-skeleton="cleanup" aria-busy="true" aria-label="正在读取数据管理状态">
     <div class="ui-cleanupstats">${e.map(([e, t]) => `
       <button type="button" class="board-plain-stat" disabled>
         <span class="ui-board-plain-stat-head"><span class="ui-board-stat-tile">${z(t)}</span>${e}</span>
@@ -57026,35 +57026,35 @@ function VB() {
       <div class="cleanupscraping">${JDe()}</div>
       <div class="cleanupmediarepair">${YDe()}</div>
       <section class="cleanupfieldset cleanuporganize" data-geist-fieldset data-cleanup-task aria-labelledby="cleanup-loading-organize">
-        <div class="geist-fieldset-content"><h3 class="geist-fieldset-title" id="cleanup-loading-organize">Organizar</h3>
-          <p>renombrar y asignar archivos según la plantilla al directorio. primero Vista previa, Confirmardespuésejecutar; ejecutar un lote puede revertirse completamente. </p>
+        <div class="geist-fieldset-content"><h3 class="geist-fieldset-title" id="cleanup-loading-organize">整理</h3>
+          <p>按模板给文件改名并归入目录。先预览，确认后执行；执行过的一批可以整批退回。</p>
           <div class="ui-organizefields">
             <div class="organizesource"><span class="ui-gselect"><span class="gselectfield organize-source-skeleton">${IB}${z("chevron-down")}</span></span></div>
-            ${n("Plantilla de nombre de archivo")}
-            ${n("Plantilla de directorio")}
+            ${n("文件名模板")}
+            ${n("目录模板")}
             <div class="ui-organizepresets">${t}</div>
             <p class="cleanupmeta">${IB}</p>
           </div></div>
-        <footer class="geist-fieldset-footer" data-geist-fieldset-footer><button class="geist-button primary" ${LB}>Vista previa</button></footer>
+        <footer class="geist-fieldset-footer" data-geist-fieldset-footer><button class="geist-button primary" ${LB}>预览</button></footer>
       </section></div>
     <section class="ui-resourcesync" aria-labelledby="cleanup-loading-links">
-      <h2 id="cleanup-loading-links">Gestión de enlaces</h2>
+      <h2 id="cleanup-loading-links">链接管理</h2>
       <div class="resourcesyncbox" data-geist-fieldset data-cleanup-task data-fieldset-stack>
-        <div class="resourcesyncbody geist-fieldset-content"><h3 class="geist-fieldset-title">Enlace externo</h3>
-          <div class="linksummary"><div class="ui-linkstats"><div><span>Total de enlaces</span><b>${IB}</b><small>${IB}</small></div>${[
-		"Sitio oficial/Agencia",
-		"Cuenta social",
-		"Sitio de información de obras"
+        <div class="resourcesyncbody geist-fieldset-content"><h3 class="geist-fieldset-title">站外链接</h3>
+          <div class="linksummary"><div class="ui-linkstats"><div><span>链接总数</span><b>${IB}</b><small>${IB}</small></div>${[
+		"官网/事务所",
+		"社交账号",
+		"作品资料站"
 	].map((e) => `<div><span>${e}</span><b>${IB}</b></div>`).join("")}</div>
-          <div class="ui-linkhosts"><span>Sitio principal</span><b>${IB}</b></div></div></div>
-        <div class="resourcesyncfooter geist-fieldset-footer" data-geist-fieldset-footer><button class="resourceaction primary" ${LB}>${z("unlink")}<span>Verificar enlaces rotos</span></button></div>
+          <div class="ui-linkhosts"><span>主要站点</span><b>${IB}</b></div></div></div>
+        <div class="resourcesyncfooter geist-fieldset-footer" data-geist-fieldset-footer><button class="resourceaction primary" ${LB}>${z("unlink")}<span>检查死链</span></button></div>
       </div></section>
     <section class="ui-resourcesync" aria-labelledby="cleanup-loading-sync">
-      <h2 id="cleanup-loading-sync">Sincronización de recursos</h2>
+      <h2 id="cleanup-loading-sync">资源同步</h2>
       <div class="resourcesyncbox" data-geist-fieldset data-cleanup-task>
-        <div class="resourcesyncbody geist-fieldset-content"><h3 class="geist-fieldset-title">ArchivoyRegistroverificar</h3>
-          <p>segúnColecciónRegistrobuscar resultado por resultadoLocalDiscoyAlmacenamiento en la nubesuperiorde archivos, listar registros de archivos que ya no existen, Carpeta vacía, con y ya no se usará en caché. </p></div>
-        <div class="resourcesyncfooter geist-fieldset-footer" data-geist-fieldset-footer><button class="resourceaction primary" ${LB}>${z("git-compare")}<span>Verificar archivos</span></button></div>
+        <div class="resourcesyncbody geist-fieldset-content"><h3 class="geist-fieldset-title">文件与记录核对</h3>
+          <p>按馆藏记录逐条查找本地磁盘与网盘上的文件，列出文件已不存在的记录、空文件夹，以及不再被引用的缓存。</p></div>
+        <div class="resourcesyncfooter geist-fieldset-footer" data-geist-fieldset-footer><button class="resourceaction primary" ${LB}>${z("git-compare")}<span>检查文件</span></button></div>
       </div></section></div>`;
 }
 //#endregion
@@ -57125,7 +57125,7 @@ function rOe({ className: e }) {
 		children: /* @__PURE__ */ (0, C.jsx)("use", { href: "#i-folder-open" })
 	});
 }
-var iOe = "Error al abrir el explorador, por favor inténtalo de nuevo";
+var iOe = "打开文件管理器失败，请重试";
 function GB({ path: e, prefix: t, className: n, onRevealed: r }) {
 	let [i, a] = (0, S.useState)(!1), [o, s] = (0, S.useState)(""), c = (0, S.useRef)(!0);
 	(0, S.useEffect)(() => () => {
@@ -57135,7 +57135,7 @@ function GB({ path: e, prefix: t, className: n, onRevealed: r }) {
 		if (!i) {
 			a(!0), s("");
 			try {
-				await U("/api/reveal", { path: e }), r?.("Mostrado en el explorador");
+				await U("/api/reveal", { path: e }), r?.("已在资源管理器中显示");
 			} catch (e) {
 				c.current && s(e instanceof vn ? e.message : iOe);
 			} finally {
@@ -57154,7 +57154,7 @@ function GB({ path: e, prefix: t, className: n, onRevealed: r }) {
 				icon: rOe,
 				size: "small",
 				className: "shrink-0",
-				"aria-label": "Mostrar en explorador",
+				"aria-label": "在资源管理器中显示",
 				onClick: () => void l(),
 				...Y(i)
 			})]
@@ -57166,12 +57166,12 @@ function GB({ path: e, prefix: t, className: n, onRevealed: r }) {
 }
 //#endregion
 //#region src/react/library-processing/library-processing-card.tsx
-var aOe = "Este elemento tarda más de lo esperado; sin progreso nuevo por ahora. Después de finalizar la tarea actual puedes reintentar sin terminar de forma parcial. ", oOe = (e) => {
+var aOe = "这一项耗时较长，暂时没有新进展。任务结束后可以重试未完成的部分。", oOe = (e) => {
 	let t = e.performer_aliases || 0, n = e.performer_avatars || 0, r = e.performer_profile_conflicts || 0, i = e.performer_profile_failed || 0;
 	if (!t && !n && !r && !i) return "";
-	let a = [`completar detalles de actriz: alias ${t} , avatar ${n}  imagen(es)`];
-	return r && a.push(`${r} conflictos de nombre idéntico para volver a revisar`), i && a.push(`${i}  imagen(es)avatarNo disponible`), `${a.join(", ")}. `;
-}, sOe = (e) => e.requested_stage === "previews" ? `Yagenerando ${e.previews || 0}  título(s) vista previa de video. ` : `Ya escaneados ${e.scanned || 0} Archivo, Reconocer ${e.identified || 0} Código JAV, Organizar ${e.candidates || 0} grupo(s)DetallesResultado, AutomáticoGuardar ${e.auto_applied || 0} Resultado. ` + (e.previews ? `Yagenerando ${e.previews}  título(s) vista previa de video. ` : "") + oOe(e);
+	let a = [`补齐女优资料：别名 ${t} 个，头像 ${n} 张`];
+	return r && a.push(`${r} 个同名冲突交回人工`), i && a.push(`${i} 张头像未取得`), `${a.join("，")}。`;
+}, sOe = (e) => e.requested_stage === "previews" ? `已生成 ${e.previews || 0} 部视频预览。` : `已扫描 ${e.scanned || 0} 个文件，识别 ${e.identified || 0} 个番号，整理 ${e.candidates || 0} 组资料结果，自动保存 ${e.auto_applied || 0} 条。` + (e.previews ? `已生成 ${e.previews} 部视频预览。` : "") + oOe(e);
 function cOe({ state: e, problem: t, settled: n, onRetry: r, toast: i }) {
 	let a = nSe(e), o = e.status === "failed" && !!e.retryable_asset_ids?.length, s = $xe(e.notes || {}), c = ZP();
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -57180,7 +57180,7 @@ function cOe({ state: e, problem: t, settled: n, onRetry: r, toast: i }) {
 		children: [
 			e.status === "running" && e.stalled ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "warning",
-				title: "Procesamiento lento",
+				title: "处理较慢",
 				children: aOe
 			}) : null,
 			t || e.status === "failed" ? /* @__PURE__ */ (0, C.jsx)(J, {
@@ -57190,7 +57190,7 @@ function cOe({ state: e, problem: t, settled: n, onRetry: r, toast: i }) {
 					variant: "primary",
 					size: "small",
 					onClick: r,
-					children: "ReintentarNoFinalizarelemento(s)"
+					children: "重试未完成项"
 				}) : null,
 				extra: a ? /* @__PURE__ */ (0, C.jsx)("div", {
 					className: "mt-3 border-t border-current/20 pt-3",
@@ -57228,18 +57228,18 @@ function cOe({ state: e, problem: t, settled: n, onRetry: r, toast: i }) {
 							className: "mt-3 border-t border-border-error-default/20 pt-3 text-text-secondary",
 							children: /* @__PURE__ */ (0, C.jsx)(GB, {
 								path: a.log,
-								prefix: "Todos los registros completados:",
+								prefix: "完整记录：",
 								className: "text-caption-1-regular",
 								onRevealed: i
 							})
 						}) : null]
 					})
 				}) : null,
-				children: t || e.error || "ProcesarNoFinalizar, Por favorReintentar"
+				children: t || e.error || "处理未完成，请重试"
 			}) : null,
 			n?.status === "complete" ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "success",
-				title: "Procesamiento completado",
+				title: "处理完成",
 				children: sOe(n)
 			}) : null,
 			!uF(e) && s ? /* @__PURE__ */ (0, C.jsx)(J, {
@@ -57248,7 +57248,7 @@ function cOe({ state: e, problem: t, settled: n, onRetry: r, toast: i }) {
 					className: "mt-1.5 border-t border-current/20 pt-1.5 text-text-secondary",
 					children: /* @__PURE__ */ (0, C.jsx)(GB, {
 						path: e.issues_log,
-						prefix: "Todos los registros completados:",
+						prefix: "完整记录：",
 						className: "text-caption-1-regular",
 						onRevealed: i
 					})
@@ -57275,19 +57275,19 @@ function KB(e) {
 		className: "flex flex-col gap-4",
 		children: [/* @__PURE__ */ (0, C.jsx)(WB, {
 			layout: "stack",
-			label: "Escaneo y recopilación",
+			label: "扫描与采集",
 			footer: /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 				/* @__PURE__ */ (0, C.jsx)(kA, {
 					href: "/sources",
 					size: "small",
 					trailingIcon: kk,
-					children: "Fuentes y credenciales"
+					children: "来源和凭证"
 				}),
 				s.candidates ? /* @__PURE__ */ (0, C.jsx)(kA, {
 					href: "/review",
 					size: "small",
 					trailingIcon: kk,
-					children: "Detalles de re-verificación"
+					children: "复核资料"
 				}) : null,
 				/* @__PURE__ */ (0, C.jsx)(uL, {
 					scan: !0,
@@ -57300,14 +57300,14 @@ function KB(e) {
 			children: /* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-2",
 				children: [
-					/* @__PURE__ */ (0, C.jsx)(UB, { children: "Escaneo y recopilación" }),
+					/* @__PURE__ */ (0, C.jsx)(UB, { children: "扫描与采集" }),
 					/* @__PURE__ */ (0, C.jsx)("p", {
 						className: "text-body-2-regular text-text-secondary",
 						children: PB
 					}),
 					s.status === "paused" && !s.total ? /* @__PURE__ */ (0, C.jsx)("p", {
 						className: "text-caption-1-regular text-text-secondary",
-						children: "Pausado"
+						children: "已暂停"
 					}) : uF(s) ? /* @__PURE__ */ (0, C.jsx)(uSe, { state: s }) : null,
 					uF(s) ? /* @__PURE__ */ (0, C.jsx)("p", {
 						className: "text-body-2-regular text-text-secondary tabular-nums",
@@ -57383,22 +57383,22 @@ function fOe() {
 		queryFn: ({ signal: e }) => bz(e)
 	}), [n, r] = (0, S.useState)(""), i = wA(), a = e.data ?? PEe, o = t.data ?? [], s = a.status === "running", c = o.find((e) => e.id === (s ? a.library : n)) ?? o.find((e) => e.id === a.library) ?? o[0], l = () => {
 		c && Rs({
-			title: `RepararBiblioteca de medios"${c.name}"`,
-			body: "Falta marca de tiempo en tabla: guarda los videos como un nuevo elemento reparado; el archivo original no se mueve. Falta de indexado: recrea y reemplaza el archivo original; el archivo original dañado se renombra como archivo oculto en el mismo directorio (.Nombre de archivo.peach-original)todavía presentes. " + (c.metered ? "esta biblioteca tiene fuentes de cargo superior; para reparar cada título se necesario mover videosCompletadoCompletojalarun ronda. " : ""),
-			confirmLabel: "RepararBiblioteca de medios",
+			title: `修复媒体库「${c.name}」`,
+			body: "缺时间戳表的片子另存一份修好的头，原文件不动；缺索引的片子重建后替换原文件，坏原件改名成同目录的隐藏文件（.文件名.peach-original）留着。" + (c.metered ? "这个库在计费来源上，每修一部都要把片子完整拉一遍。" : ""),
+			confirmLabel: "修复媒体库",
 			onConfirm: async () => YB(await U(gz, {
 				library: c.id,
 				restart: !0
 			}))
 		});
-	}, u = () => void i.run("stop", (e) => U(gz, { stop: !0 }, "POST", e), YB), d = IEe(a), f = a.status === "complete", p = i.error || a.error || (e.error ? "leerNoReparación de mediosEstado" : "");
+	}, u = () => void i.run("stop", (e) => U(gz, { stop: !0 }, "POST", e), YB), d = IEe(a), f = a.status === "complete", p = i.error || a.error || (e.error ? "读不到媒体修复的状态" : "");
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		className: "flex flex-col gap-4",
 		children: [/* @__PURE__ */ (0, C.jsx)(WB, {
 			layout: "split",
-			label: "Reparación de medios",
+			label: "媒体修复",
 			footer: /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(BF, {
-				"aria-label": "Biblioteca de medios",
+				"aria-label": "媒体库",
 				className: "w-48",
 				selectedKey: c?.id ?? null,
 				isDisabled: s || !o.length,
@@ -57413,22 +57413,22 @@ function fOe() {
 			}), s ? /* @__PURE__ */ (0, C.jsx)(q, {
 				onClick: u,
 				...Y(i.busy === "stop"),
-				children: "Detener"
+				children: "停止"
 			}) : /* @__PURE__ */ (0, C.jsx)(q, {
 				onClick: l,
 				disabled: !c,
-				children: "Iniciar reparación"
+				children: "开始修复"
 			})] }),
 			children: /* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-2",
 				children: [
-					/* @__PURE__ */ (0, C.jsx)(UB, { children: "Reparación de medios" }),
+					/* @__PURE__ */ (0, C.jsx)(UB, { children: "媒体修复" }),
 					/* @__PURE__ */ (0, C.jsx)("p", {
 						className: "text-body-2-regular text-text-secondary",
 						children: FB
 					}),
 					s && a.total ? /* @__PURE__ */ (0, C.jsx)(CA, {
-						label: "RepararProgreso",
+						label: "修复进度",
 						value: a.checked,
 						max: a.total
 					}) : null,
@@ -57445,12 +57445,12 @@ function fOe() {
 			children: [
 				f && !a.repaired && !a.failed ? /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "info",
-					title: "Nada que reparar",
-					children: "Todos los videos de esta biblioteca pueden reproducirse directamente. "
+					title: "没有要修的",
+					children: "这个库里的片子都能直接播。"
 				}) : null,
 				f && a.missing_tool ? /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "warning",
-					title: "Falta untrunc",
+					title: "缺少 untrunc",
 					children: LEe(a)
 				}) : null,
 				p ? /* @__PURE__ */ (0, C.jsx)(J, {
@@ -57481,7 +57481,7 @@ var pOe = oR({
 	sortedRowModel: QR(),
 	paginatedRowModel: ZR()
 });
-function QB({ label: e, items: t, columns: n, rowId: r, rowLabel: i, selected: a, onSelected: o, actions: s, title: c = e, titleId: l, description: u, footerActions: d, panel: f = !0, unit: p = " registro(s)" }) {
+function QB({ label: e, items: t, columns: n, rowId: r, rowLabel: i, selected: a, onSelected: o, actions: s, title: c = e, titleId: l, description: u, footerActions: d, panel: f = !0, unit: p = "条记录" }) {
 	let [m, h] = (0, S.useState)([]), [g, _] = (0, S.useState)({
 		pageIndex: 0,
 		pageSize: 20
@@ -57494,14 +57494,14 @@ function QB({ label: e, items: t, columns: n, rowId: r, rowLabel: i, selected: a
 				id: "select",
 				header: ({ table: t }) => /* @__PURE__ */ (0, C.jsx)(XP, {
 					slot: null,
-					"aria-label": `Seleccionar todo${e}`,
+					"aria-label": `全选${e}`,
 					isSelected: t.getIsAllRowsSelected(),
 					isIndeterminate: t.getIsSomeRowsSelected(),
 					onChange: (e) => t.toggleAllRowsSelected(e)
 				}),
 				cell: ({ row: e }) => /* @__PURE__ */ (0, C.jsx)(XP, {
 					slot: null,
-					"aria-label": `Seleccionar ${i(e.original)}`,
+					"aria-label": `选择 ${i(e.original)}`,
 					isSelected: e.getIsSelected(),
 					onChange: (t) => e.toggleSelected(t)
 				})
@@ -57553,7 +57553,7 @@ function QB({ label: e, items: t, columns: n, rowId: r, rowLabel: i, selected: a
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-wrap items-center gap-2",
 				role: "toolbar",
-				"aria-label": `${e}Herramientasbarra`,
+				"aria-label": `${e}工具栏`,
 				children: [
 					/* @__PURE__ */ (0, C.jsx)("h3", {
 						id: l,
@@ -57585,14 +57585,14 @@ function QB({ label: e, items: t, columns: n, rowId: r, rowLabel: i, selected: a
 				children: u
 			}) : null,
 			/* @__PURE__ */ (0, C.jsxs)(eE, {
-				label: `${e}Operación en lote`,
+				label: `${e}批量操作`,
 				visible: T.length > 0,
-				count: `Ya seleccionados ${T.length.toLocaleString()} ${p}`,
+				count: `已选 ${T.length.toLocaleString()} ${p}`,
 				children: [s(T, () => o([])), /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "ghost",
 					size: "small",
 					onClick: () => o([]),
-					children: "Deseleccionar"
+					children: "取消选择"
 				})]
 			}),
 			/* @__PURE__ */ (0, C.jsx)(tz, {
@@ -57619,7 +57619,7 @@ function QB({ label: e, items: t, columns: n, rowId: r, rowLabel: i, selected: a
 							}) : null]
 						})
 					}, e.id)) }), /* @__PURE__ */ (0, C.jsx)(tP, {
-						renderEmptyState: () => "SinRegistro",
+						renderEmptyState: () => "没有记录",
 						children: w.getRowModel().rows.map((e) => /* @__PURE__ */ (0, C.jsx)(iP, {
 							id: e.id,
 							"data-board-selected": e.getIsSelected() || void 0,
@@ -57647,7 +57647,7 @@ function QB({ label: e, items: t, columns: n, rowId: r, rowLabel: i, selected: a
 }
 //#endregion
 //#region src/react/data-cleanup/link-manager.tsx
-var mOe = EP("unlink"), $B = EP("rotate-cw"), hOe = "SitioVolver 404 o 410, ConfirmaresteDirecciónno existe. ", gOe = "El sitio rechazó el acceso al programa; en caso de fallo temporal todo irá aquí. Los enlaces conservados puedenemarcar despuéssimpleindependienteReintentar. ", _Oe = "Eliminarprimeros irá a uno por uno Resultadoreverificarunvez; esta acción no puede deshacerse. ", vOe = "Sin progreso disponible, reconectando...", eV = (e) => Number(e || 0).toLocaleString();
+var mOe = EP("unlink"), $B = EP("rotate-cw"), hOe = "站点返回 404 或 410，确认这个地址不存在。", gOe = "站点拒绝程序访问或一次临时故障都会落在这里。链接保留，可勾选后单独重试。", _Oe = "删除前会逐条重验一次；此操作不可撤销。", vOe = "暂时无法读取进度，正在重新连接…", eV = (e) => Number(e || 0).toLocaleString();
 function tV({ label: e, value: t, note: n }) {
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		className: "flex min-w-0 flex-col gap-0.5",
@@ -57676,7 +57676,7 @@ function nV({ title: e, items: t, hint: n, picked: r, onPick: i, children: a, fo
 			columns: [
 				{
 					id: "entity",
-					label: "Pertenece a",
+					label: "所属",
 					value: (e) => e.entity,
 					render: (e) => /* @__PURE__ */ (0, C.jsx)("span", {
 						className: "block min-w-24 wrap-anywhere",
@@ -57685,13 +57685,13 @@ function nV({ title: e, items: t, hint: n, picked: r, onPick: i, children: a, fo
 				},
 				{
 					id: "kind",
-					label: "Tipo",
+					label: "类型",
 					value: (e) => Uz[e.link_kind] || e.link_kind,
 					render: (e) => Uz[e.link_kind] || e.link_kind
 				},
 				{
 					id: "label",
-					label: "Etiqueta",
+					label: "标签",
 					value: (e) => e.label || "",
 					render: (e) => /* @__PURE__ */ (0, C.jsx)("span", {
 						className: "block min-w-24 wrap-anywhere",
@@ -57700,7 +57700,7 @@ function nV({ title: e, items: t, hint: n, picked: r, onPick: i, children: a, fo
 				},
 				{
 					id: "note",
-					label: "Resultado",
+					label: "结果",
 					value: (e) => e.note,
 					render: (e) => /* @__PURE__ */ (0, C.jsx)("div", {
 						className: "min-w-40 max-w-80",
@@ -57712,7 +57712,7 @@ function nV({ title: e, items: t, hint: n, picked: r, onPick: i, children: a, fo
 				},
 				{
 					id: "url",
-					label: "Dirección",
+					label: "地址",
 					value: (e) => e.url,
 					render: (e) => /* @__PURE__ */ (0, C.jsxs)("a", {
 						href: e.url,
@@ -57733,10 +57733,10 @@ function nV({ title: e, items: t, hint: n, picked: r, onPick: i, children: a, fo
 			],
 			rowId: (e) => String(e.id),
 			description: n,
-			unit: "resultados de enlace conectados",
+			unit: "条链接",
 			panel: !1,
 			footerActions: o,
-			rowLabel: (e) => `${e.entity} de ${e.label || e.url}`,
+			rowLabel: (e) => `${e.entity} 的${e.label || e.url}`,
 			selected: r.map(String),
 			onSelected: (e) => i(e.map(Number)),
 			actions: () => a
@@ -57778,9 +57778,9 @@ function yOe() {
 		} : {});
 	}, b = (e) => {
 		!u && f.length && Rs({
-			title: "Eliminar enlaces inválidos",
-			body: `Se eliminarán ${e?.length ?? f.length} enlaces inválidos. Se verificará antes de eliminar; no se puede restaurar después. `,
-			confirmLabel: "Eliminar enlaces inválidos",
+			title: "删除失效链接",
+			body: `将删除 ${e?.length ?? f.length} 条失效链接。删除前会再次检查，删除后无法恢复。`,
+			confirmLabel: "删除失效链接",
 			danger: !0,
 			onConfirm: () => a.start.mutateAsync({
 				checkId: c,
@@ -57790,28 +57790,28 @@ function yOe() {
 	}, x = a.outcome, w = o.start.error ?? a.start.error, T = null, E = null;
 	if (x?.status === "failed") E = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "enlaceconectarLimpiarNoFinalizar",
-		children: x.error || "Por favorVer tareasRegistro, verificarYaProcesarenlaceconectar. "
+		title: "链接清理未完成",
+		children: x.error || "请查看任务记录，核对已处理的链接。"
 	});
 	else if (x && !f.length && !p.length) E = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "success",
-		title: "Finalizar",
+		title: "完成",
 		children: Yz(x)
 	});
 	else if (w) E = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "Error de verificación",
+		title: "检查失败",
 		children: V(w)
 	});
 	else if (o.query.isError && s) E = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "neutral",
-		title: "Estado de tarea",
+		title: "任务状态",
 		children: vOe
 	});
 	else if (s?.status === "failed") E = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "Error de verificación",
-		children: s.error || "Error de verificación"
+		title: "检查失败",
+		children: s.error || "检查失败"
 	});
 	else if (s && s.status !== "idle") {
 		T = /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [s.status === "running" ? /* @__PURE__ */ (0, C.jsx)(OF, {
@@ -57821,21 +57821,21 @@ function yOe() {
 			total: s.total
 		}) : null, u ? /* @__PURE__ */ (0, C.jsx)(OF, {
 			embedded: !0,
-			label: a.job?.message || "Reverificando y eliminando enlaces inválidos...",
+			label: a.job?.message || "正在重验并删除失效链接…",
 			value: Math.min(a.job?.checked || 0, a.job?.total || 0),
 			total: a.job?.total
 		}) : null] });
-		let e = g.length ? `ReintentarseleccionarEn proceso ${g.length} Resultado` : "ReintentarseleccionarEn procesoenlaceconectar";
+		let e = g.length ? `重试选中的 ${g.length} 条` : "重试选中的链接";
 		E = d || f.length || p.length ? /* @__PURE__ */ (0, C.jsxs)("div", {
 			className: tOe,
 			children: [
 				x?.status === "complete" ? /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "success",
-					title: "Finalizar",
+					title: "完成",
 					children: Yz(x)
 				}) : null,
 				/* @__PURE__ */ (0, C.jsx)(nV, {
-					title: "DirecciónYaInválido",
+					title: "地址已失效",
 					items: f,
 					hint: hOe,
 					picked: r,
@@ -57846,11 +57846,11 @@ function yOe() {
 						disabled: !d || !h.length,
 						...Y(u),
 						onClick: () => b(h),
-						children: `Eliminar seleccionados (${h.length})`
+						children: `删除所选（${h.length}）`
 					})
 				}),
 				/* @__PURE__ */ (0, C.jsx)(nV, {
-					title: "Este intento sin acceso exitoso",
+					title: "本次未访问成功",
 					items: p,
 					hint: gOe,
 					picked: t,
@@ -57859,7 +57859,7 @@ function yOe() {
 						leadingIcon: $B,
 						...Y(l),
 						onClick: () => y(m.map((e) => e.id)),
-						children: `TodoReintentar(${m.length})`
+						children: `全部重试（${m.length}）`
 					}) : null,
 					children: m.length ? /* @__PURE__ */ (0, C.jsx)(C.Fragment, { children: /* @__PURE__ */ (0, C.jsx)(q, {
 						leadingIcon: $B,
@@ -57876,12 +57876,12 @@ function yOe() {
 						variant: "danger",
 						...Y(u),
 						onClick: () => b(),
-						children: `Eliminar ${f.length} ResultadoInválidoenlaceconectar`
+						children: `删除 ${f.length} 条失效链接`
 					})
 				}) : null,
 				d && !f.length && !p.length ? /* @__PURE__ */ (0, C.jsx)("p", {
 					className: `${HB} text-body-regular text-notification-success-foreground`,
-					children: "Todos los enlaces están accesibles. "
+					children: "全部链接均可访问。"
 				}) : null
 			]
 		}) : null;
@@ -57897,24 +57897,24 @@ function yOe() {
 				leadingIcon: mOe,
 				...Y(l),
 				onClick: () => y(),
-				children: l ? "Verificando" : d ? "Reverificar" : "Verificar enlaces rotos"
+				children: l ? "检查中" : d ? "重新检查" : "检查死链"
 			}),
 			children: [
 				/* @__PURE__ */ (0, C.jsx)(UB, {
 					id: "link-manager-title",
 					gap: "small",
-					children: "Gestión de enlaces"
+					children: "链接管理"
 				}),
 				e.isError ? /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "error",
-					title: "enlaceconectarEstadísticasleerFallido",
+					title: "链接统计读取失败",
 					children: V(e.error)
 				}) : _ ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 					className: "link-stat-grid mt-4 gap-x-8 gap-y-3",
 					children: [/* @__PURE__ */ (0, C.jsx)(tV, {
-						label: "Total de enlaces",
+						label: "链接总数",
 						value: eV(_.total),
-						note: `distribuidos en ${eV(_.entities)} actrices, sellos y series`
+						note: `分布在 ${eV(_.entities)} 个女优、厂牌与系列`
 					}), Object.entries(_.by_kind ?? {}).map(([e, t]) => /* @__PURE__ */ (0, C.jsx)(tV, {
 						label: Uz[e] || e,
 						value: eV(t)
@@ -57923,7 +57923,7 @@ function yOe() {
 					className: "mt-4 flex min-w-0 flex-col gap-0.5",
 					children: [/* @__PURE__ */ (0, C.jsx)("span", {
 						className: "text-caption-1-regular text-text-secondary",
-						children: "Sitio principal"
+						children: "主要站点"
 					}), /* @__PURE__ */ (0, C.jsx)("b", {
 						className: "text-body-2-medium break-words text-text-primary",
 						children: v
@@ -57944,7 +57944,7 @@ function yOe() {
 }
 //#endregion
 //#region src/react/data-cleanup/organize-card.tsx
-var bOe = (e) => `se renombrarán y moverán estos dos elementos según la plantilla a "${e}" en nombre y directorio, objetivoetiquetaYaexistente en irá a Completo Omitir. esteun lotepuedecondesde"RevertirLote anterior"Completoloterevertir. `, xOe = "serámover Lote anteriorOrganizarmover de archivosrevertirOrganizarprimeros NombreyPosición, Ruta de la base de datosseguiral revertir. Tras revertir, este lote ya no aparecerá aquí.", SOe = 8;
+var bOe = (e) => `将按这两份模板改动「${e}」上的文件名与目录，目标已存在的行会整行跳过。这一批可以从「回滚上一批」整批退回。`, xOe = "将把上一批整理动过的文件退回整理前的名字与位置，数据库路径跟着退回。退回后这一批不再出现在这里。", SOe = 8;
 function COe({ plan: e }) {
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("ol", {
 		className: "mt-2 flex min-w-0 flex-col gap-1",
@@ -57971,7 +57971,7 @@ function COe({ plan: e }) {
 		}, e.current_path))
 	}), e.truncated ? /* @__PURE__ */ (0, C.jsx)("p", {
 		className: "text-caption-1-regular text-text-secondary",
-		children: "Solo se listan las primeras 8 filas; el planificado completo está en el CSV planificado. "
+		children: "只列出前 8 行，完整计划在计划 CSV 里。"
 	}) : null] });
 }
 function wOe({ toast: e, failure: t }) {
@@ -58008,14 +58008,14 @@ function wOe({ toast: e, failure: t }) {
 				exact: !0
 			}), n.status !== "complete") return;
 			let { text: r, failed: i } = cB(n);
-			i ? t("organizar según la plantilla", /* @__PURE__ */ Error(`${i} filas que no se pueden procesar`)) : e(r.replace(/. $/, ""));
+			i ? t("按模板整理", /* @__PURE__ */ Error(`${i} 行未能处理`)) : e(r.replace(/。$/, ""));
 		}
 	}), b = y.running || y.start.isPending, x = v.data, w = Number(x?.counts?.change || 0), T = pn[s] || s, E = (r?.placeholders ?? []).map((e) => `{${e.key}} ${e.label}`).join(" · "), D = () => {
 		!v.isPending && s && (m(null), v.mutate(_()));
 	}, O = () => void Rs({
-		title: "Organizar archivos según la plantilla",
+		title: "按模板整理文件",
 		body: bOe(T),
-		confirmLabel: "OrganizarArchivo",
+		confirmLabel: "整理文件",
 		onConfirm: async () => {
 			let e = _();
 			await y.start.mutateAsync({
@@ -58030,13 +58030,13 @@ function wOe({ toast: e, failure: t }) {
 			});
 		}
 	}), k = () => void Rs({
-		title: "RevertirLote anteriorOrganizar",
+		title: "回滚上一批整理",
 		body: xOe,
-		confirmLabel: "RevertirOrganizar",
+		confirmLabel: "回滚整理",
 		onConfirm: () => y.start.mutateAsync({ kind: "rollback" })
 	}), A = null, j = y.job, M = y.outcome;
 	if (j?.status === "running") {
-		let e = j.message || j.stage || "ProcesandoOrganizarArchivo...";
+		let e = j.message || j.stage || "正在整理文件…";
 		A = /* @__PURE__ */ (0, C.jsx)(OF, {
 			embedded: !0,
 			label: e,
@@ -58045,30 +58045,30 @@ function wOe({ toast: e, failure: t }) {
 		});
 	} else if (M?.status === "failed") A = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "ArchivoOrganizarNoFinalizar",
-		children: M.error || "Revisa el registro de tareas para verificar los archivos procesados."
+		title: "文件整理未完成",
+		children: M.error || "请查看任务记录，核对已处理的文件。"
 	});
 	else if (M) {
 		let { text: e, failed: t } = cB(M);
 		A = /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: t ? "warning" : "success",
-			title: t ? "Parcialmente completado" : "OrganizarResultado",
+			title: t ? "部分完成" : "整理结果",
 			children: e
 		});
 	} else y.start.isError ? A = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "OrganizarFallido",
+		title: "整理失败",
 		children: V(y.start.error)
 	}) : v.isPending ? A = /* @__PURE__ */ (0, C.jsx)(OF, {
 		embedded: !0,
-		label: "Procesando, calculando planificado según plantilla..."
+		label: "正在按模板算计划…"
 	}) : v.isError ? A = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "Plantilla no disponible",
+		title: "模板不可用",
 		children: V(v.error)
 	}) : x && (A = /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "neutral",
-		title: "Vista previaResultado",
+		title: "预览结果",
 		children: EDe(x)
 	}), w ? /* @__PURE__ */ (0, C.jsx)(COe, { plan: x }) : null] }));
 	return /* @__PURE__ */ (0, C.jsxs)(WB, {
@@ -58081,34 +58081,34 @@ function wOe({ toast: e, failure: t }) {
 				disabled: !i.length,
 				...Y(v.isPending),
 				onClick: D,
-				children: "Vista previa"
+				children: "预览"
 			}),
 			w && !b && !y.outcome ? /* @__PURE__ */ (0, C.jsx)(q, {
 				onClick: O,
-				children: "ejecutarOrganizar"
+				children: "执行整理"
 			}) : null,
 			r?.last_batch ? /* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
 				...Y(b),
 				onClick: k,
-				children: "RevertirLote anterior"
+				children: "回滚上一批"
 			}) : null
 		] }),
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(UB, {
 				id: "cleanup-organize-title",
 				gap: "medium",
-				children: "Organizar"
+				children: "整理"
 			}),
 			/* @__PURE__ */ (0, C.jsx)("p", {
 				className: "text-body-regular text-text-secondary",
-				children: "Renombrar y asignar archivos a un directorio según la plantilla. Primero vista previa, luego confirma y ejecuta; un lote puede revertirse completamente. "
+				children: "按模板给文件改名并归入目录。先预览，确认后执行；执行过的一批可以整批退回。"
 			}),
 			n.isError ? /* @__PURE__ */ (0, C.jsx)("div", {
 				className: "mt-3",
 				children: /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "error",
-					title: "OrganizarConfiguraciónleerFallido",
+					title: "整理配置读取失败",
 					children: V(n.error)
 				})
 			}) : null,
@@ -58116,7 +58116,7 @@ function wOe({ toast: e, failure: t }) {
 				className: "mt-3 flex flex-col gap-3",
 				children: [
 					i.length ? /* @__PURE__ */ (0, C.jsx)(BF, {
-						"aria-label": "Qué fuente(s) organizar",
+						"aria-label": "整理哪个来源",
 						className: "w-fit min-w-25",
 						selectedKey: s || null,
 						onSelectionChange: (e) => {
@@ -58129,7 +58129,7 @@ function wOe({ toast: e, failure: t }) {
 						}, e.location))
 					}) : null,
 					/* @__PURE__ */ (0, C.jsx)(SP, {
-						label: "Plantilla de nombre de archivo",
+						label: "文件名模板",
 						placeholder: "{number}[ {title}]",
 						value: d.file,
 						ref: h,
@@ -58140,8 +58140,8 @@ function wOe({ toast: e, failure: t }) {
 						}
 					}),
 					/* @__PURE__ */ (0, C.jsx)(SP, {
-						label: "Plantilla de directorio",
-						placeholder: "Deja vacío para mantener el nombre original",
+						label: "目录模板",
+						placeholder: "留空表示原地改名",
 						value: d.dir,
 						ref: g,
 						spellCheck: "false",
@@ -58170,7 +58170,7 @@ function wOe({ toast: e, failure: t }) {
 					}) : null,
 					/* @__PURE__ */ (0, C.jsx)("p", {
 						className: "text-caption-1-regular leading-4.5 text-text-secondary",
-						children: `${E ? `${E}; ` : ""}el contenido entre corchetes se omite cuando el campo está vacío. `
+						children: `${E ? `${E}；` : ""}方括号里的内容在字段为空时整段省略。`
 					})
 				]
 			}),
@@ -58185,12 +58185,12 @@ function wOe({ toast: e, failure: t }) {
 //#endregion
 //#region src/react/data-cleanup/orphan-records.ts
 var TOe = "/api/orphan-records", EOe = "/api/orphan-records/attach", rV = ["orphan-records"], DOe = [
-	["asset_preference", "Me gusta y razón"],
-	["watch_queue", "Ver más tarde"],
-	["playlist_item", "Lista de reproducción"],
-	["asset_quality_goal", "Buscar mejor versión"],
-	["activity_event", "VerHistorial"],
-	["asset_tag_preference", "OcultarEtiqueta"]
+	["asset_preference", "喜欢与理由"],
+	["watch_queue", "稍后看"],
+	["playlist_item", "播放列表"],
+	["asset_quality_goal", "寻找更好版本"],
+	["activity_event", "观看历史"],
+	["asset_tag_preference", "隐藏标签"]
 ], OOe = (e) => H(TOe, e), kOe = (e, t) => U(EOe, {
 	id: e,
 	target: t
@@ -58198,10 +58198,10 @@ var TOe = "/api/orphan-records", EOe = "/api/orphan-records/attach", rV = ["orph
 	ids: Array.isArray(e) ? e : [e],
 	operation: "delete"
 }), AOe = (e) => [
-	e.rating ? `Puntuación ${e.rating}` : "",
-	e.play_count ? `Reproducir ${Number(e.play_count).toLocaleString()} veces` : e.last_played ? "Reproducido" : "",
-	e.o_count ? `Orgasmo ${Number(e.o_count).toLocaleString()} veces` : ""
-], aV = (e) => [...DOe.filter(([t]) => e[t]).map(([t, n]) => `${n} ${Number(e[t]).toLocaleString()}`), ...AOe(e)].filter(Boolean).join(" · "), jOe = (e) => e ? `${Math.round(e / 60)} minuto(s)` : "", oV = (e) => [e.name, jOe(e.duration)].filter(Boolean).join(" · "), MOe = EP("play"), sV = () => W.invalidateQueries({
+	e.rating ? `评分 ${e.rating}` : "",
+	e.play_count ? `播放 ${Number(e.play_count).toLocaleString()} 次` : e.last_played ? "播放过" : "",
+	e.o_count ? `高潮 ${Number(e.o_count).toLocaleString()} 次` : ""
+], aV = (e) => [...DOe.filter(([t]) => e[t]).map(([t, n]) => `${n} ${Number(e[t]).toLocaleString()}`), ...AOe(e)].filter(Boolean).join(" · "), jOe = (e) => e ? `${Math.round(e / 60)} 分钟` : "", oV = (e) => [e.name, jOe(e.duration)].filter(Boolean).join(" · "), MOe = EP("play"), sV = () => W.invalidateQueries({
 	queryKey: rV,
 	exact: !0
 });
@@ -58209,19 +58209,19 @@ function NOe({ item: e, toast: t }) {
 	let [n, r] = (0, S.useState)(e.candidates[0]?.id ?? null), i = mt({
 		mutationFn: () => kOe(e.id, Number(n)),
 		onSuccess: (e) => {
-			t(`RegistroYaconectarNuevo archivo, lotevez ${e.batch}`), sV();
+			t(`记录已接到新文件，批次 ${e.batch}`), sV();
 		},
 		onError: (e) => t(V(e))
 	}), a = mt({
 		mutationFn: () => iV(e.id),
 		onSuccess: (n) => {
-			t(n.blocked.length ? `${e.name} de archivosvolvió al disco, no eliminado; siguiente unvezEscanearlo reintegrará a la biblioteca` : `YaEliminar permanentemente ${e.name}`), sV();
+			t(n.blocked.length ? `${e.name} 的文件又回到盘上，没有删除；下一次扫描会把它接回在库` : `已彻底删除 ${e.name}`), sV();
 		}
 	}), o = () => {
 		Rs({
-			title: "Eliminar permanentemente",
-			body: `Se eliminará "${e.name}", este resultado y sus registros (${aV(e.records)}). Esta acción no puede deshacerse. `,
-			confirmLabel: "Eliminar permanentemente",
+			title: "彻底删除",
+			body: `将删除「${e.name}」这一条和它带的记录（${aV(e.records)}）。此操作不可撤销。`,
+			confirmLabel: "彻底删除",
 			danger: !0,
 			onConfirm: () => a.mutateAsync()
 		});
@@ -58230,7 +58230,7 @@ function NOe({ item: e, toast: t }) {
 		className: "flex min-w-48 flex-wrap items-center gap-2",
 		children: [
 			e.candidates.length ? /* @__PURE__ */ (0, C.jsx)(BF, {
-				"aria-label": `Conectar el registro de ${e.name} a qué archivo`,
+				"aria-label": `把 ${e.name} 的记录接到哪个文件`,
 				className: "w-52",
 				selectedKey: n,
 				onSelectionChange: (e) => {
@@ -58243,21 +58243,21 @@ function NOe({ item: e, toast: t }) {
 				}, e.id))
 			}) : /* @__PURE__ */ (0, C.jsx)("span", {
 				className: "text-text-secondary",
-				children: "Sin código JAV ni nombre de archivo obtenido del superior de archivos"
+				children: "没有番号或文件名对得上的文件"
 			}),
 			e.candidates.length ? /* @__PURE__ */ (0, C.jsx)(q, {
 				size: "small",
 				disabled: n === null,
 				...Y(s),
 				onClick: () => i.mutate(),
-				children: "conectaresteArchivo"
+				children: "接到这个文件"
 			}) : null,
 			/* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "danger",
 				size: "small",
 				...Y(s),
 				onClick: o,
-				children: "Eliminar permanentemente"
+				children: "彻底删除"
 			})
 		]
 	});
@@ -58297,13 +58297,13 @@ function FOe({ toast: e }) {
 	}), i = r.data?.items ?? [], a = mt({
 		mutationFn: (e) => iV(e),
 		onSuccess: (t) => {
-			e(`YaEliminar permanentemente ${t.purged}  registro(s)${t.blocked.length ? `, ${t.blocked.length} ResultadoArchivoYaRestaurar, NoEliminar` : ""}`), n([]), sV();
+			e(`已彻底删除 ${t.purged} 条记录${t.blocked.length ? `，${t.blocked.length} 条文件已恢复，未删除` : ""}`), n([]), sV();
 		}
 	}), o = (e) => void Rs({
-		title: "Eliminar permanentemente los registros seleccionados",
-		body: `Se eliminarán ${e.length} resultados de obras y todos sus registros. Esta acción no puede deshacerse. `,
+		title: "彻底删除所选记录",
+		body: `将删除以下 ${e.length} 条作品和它们带的全部记录。此操作不可撤销。`,
 		items: e.map((e) => e.name),
-		confirmLabel: "Eliminar permanentemente los registros seleccionados",
+		confirmLabel: "彻底删除所选记录",
 		danger: !0,
 		onConfirm: () => a.mutateAsync(e.map((e) => e.id))
 	});
@@ -58316,34 +58316,34 @@ function FOe({ toast: e }) {
 			labelledBy: "orphan-records-title",
 			children: [/* @__PURE__ */ (0, C.jsx)(UB, {
 				id: "orphan-records-title",
-				children: "Registros huérfanos"
+				children: "孤儿记录"
 			}), /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
-				title: "Registros huérfanosleerFallido",
+				title: "孤儿记录读取失败",
 				children: V(r.error)
 			})]
 		}) : /* @__PURE__ */ (0, C.jsx)(QB, {
-			label: "Obra con archivo desaparecido",
+			label: "文件已消失的作品",
 			items: i,
 			columns: [
 				{
 					id: "item",
-					label: "Obra",
+					label: "作品",
 					value: (e) => e.name,
 					render: (e) => /* @__PURE__ */ (0, C.jsx)(POe, { item: e })
 				},
 				{
 					id: "records",
-					label: "Con registros",
+					label: "带的记录",
 					value: (e) => aV(e.records),
 					render: (e) => /* @__PURE__ */ (0, C.jsx)("span", {
 						className: "block min-w-28",
-						children: aV(e.records) || "Ningunopersona(s)Registro"
+						children: aV(e.records) || "无个人记录"
 					})
 				},
 				{
 					id: "target",
-					label: "conectaryAcción",
+					label: "接到与操作",
 					value: (e) => e.candidates.length,
 					render: (t) => /* @__PURE__ */ (0, C.jsx)(NOe, {
 						item: t,
@@ -58351,10 +58351,10 @@ function FOe({ toast: e }) {
 					})
 				}
 			],
-			title: "Registros huérfanos",
+			title: "孤儿记录",
 			titleId: "orphan-records-title",
-			unit: "ResultadoObra",
-			description: "estas obras con archivos ya no están en discosuperior, Me gusta, Ver más tarde, Lista de reproducciónyVerHistorialtodosaúntodavía presentes. conectarNuevo archivodespuésRegistroseguir ir a , antiguoesteunResultadoeliminar. ",
+			unit: "条作品",
+			description: "这些作品的文件已不在盘上，喜欢、稍后看、播放列表与观看历史都还留着。接到新文件后记录跟过去，旧的这一条删掉。",
 			rowId: (e) => String(e.id),
 			rowLabel: (e) => e.name,
 			selected: t,
@@ -58365,14 +58365,14 @@ function FOe({ toast: e }) {
 				disabled: !e.length,
 				...Y(a.isPending),
 				onClick: () => o(e),
-				children: `Eliminar permanentemente seleccionados (${e.length})`
+				children: `彻底删除所选（${e.length}）`
 			})
 		})
 	});
 }
 //#endregion
 //#region src/react/data-cleanup/resource-sync-card.tsx
-var IOe = EP("git-compare"), LOe = EP("rotate-cw"), ROe = "Sin progreso disponible, reconectando...", cV = "LimpiarInválidoResultadoobjetivo", lV = "inline-grid w-full grid-flow-col auto-cols-fr gap-4 max-plain-stat-pair:grid-flow-row max-plain-stat-pair:grid-cols-2 max-plain-stat-single:grid-cols-1", uV = (e) => Number(e || 0).toLocaleString();
+var IOe = EP("git-compare"), LOe = EP("rotate-cw"), ROe = "暂时无法读取进度，正在重新连接…", cV = "清理失效条目", lV = "inline-grid w-full grid-flow-col auto-cols-fr gap-4 max-plain-stat-pair:grid-flow-row max-plain-stat-pair:grid-cols-2 max-plain-stat-single:grid-cols-1", uV = (e) => Number(e || 0).toLocaleString();
 function dV({ scan: e, partial: t = !1 }) {
 	let n = e.cache ?? {
 		files: 0,
@@ -58383,13 +58383,13 @@ function dV({ scan: e, partial: t = !1 }) {
 		children: (e.sources ?? []).map((e) => /* @__PURE__ */ (0, C.jsx)("article", {
 			className: jB(),
 			children: /* @__PURE__ */ (0, C.jsx)(MB, {
-				label: Mt[e.location] || "Fuente de medios",
+				label: Mt[e.location] || "媒体来源",
 				mark: /* @__PURE__ */ (0, C.jsx)(VA, { mark: so[e.location] ?? "database" }),
 				aside: /* @__PURE__ */ (0, C.jsx)("span", {
 					className: e.online ? "text-notification-success-foreground" : "text-text-error-primary",
-					children: e.online ? "Accesible" : "Sin conexión, YaOmitir"
+					children: e.online ? "可访问" : "离线，已跳过"
 				}),
-				figure: e.online ? `${uV(e.missing)} elemento(s)` : "—",
+				figure: e.online ? `${uV(e.missing)} 项` : "—",
 				meta: PDe(e),
 				wrapMeta: !0
 			})
@@ -58400,32 +58400,32 @@ function dV({ scan: e, partial: t = !1 }) {
 			/* @__PURE__ */ (0, C.jsx)("article", {
 				className: jB(),
 				children: /* @__PURE__ */ (0, C.jsx)(MB, {
-					label: "Pendienteeliminar permanentemente",
-					figure: `${uV(_B(e))} elemento(s)`,
-					meta: "Archivo ya no está en el disco (incluyendo papelera)"
+					label: "待永久删除",
+					figure: `${uV(_B(e))} 项`,
+					meta: "文件已不在盘上，含回收站"
 				})
 			}),
 			/* @__PURE__ */ (0, C.jsx)("article", {
 				className: jB(),
 				children: /* @__PURE__ */ (0, C.jsx)(MB, {
-					label: "Se etiquetará como desaparecido",
-					figure: `${uV(e.vanish)} elemento(s)`,
-					meta: "con persona(s)Registro, Registrotodavía presentes"
+					label: "将标为已消失",
+					figure: `${uV(e.vanish)} 项`,
+					meta: "带个人记录，记录留着"
 				})
 			}),
 			/* @__PURE__ */ (0, C.jsx)("article", {
 				className: jB(),
 				children: /* @__PURE__ */ (0, C.jsx)(MB, {
-					label: "Carpeta vacía",
-					figure: `${uV(e.empty)} `,
-					meta: "Conservar directorio raíz"
+					label: "空文件夹",
+					figure: `${uV(e.empty)} 个`,
+					meta: "保留来源根目录"
 				})
 			}),
 			/* @__PURE__ */ (0, C.jsx)("article", {
 				className: jB(),
 				children: /* @__PURE__ */ (0, C.jsx)(MB, {
-					label: "puedeLimpiarCaché",
-					figure: `${uV(n.files)} `,
+					label: "可清理的缓存",
+					figure: `${uV(n.files)} 个`,
 					meta: n.files ? cn(n.bytes) : ""
 				})
 			})
@@ -58446,14 +58446,14 @@ function zOe({ toast: e }) {
 				exact: !0
 			}), t.status !== "complete") return;
 			let { done: n, left: r } = bB(t);
-			r ? e(`Completado ${uV(n)} elemento(s), ${uV(r)} elemento(s)SinProcesar`, { warning: !0 }) : e("YaLimpiarInválidoResultadoobjetivo");
+			r ? e(`已完成 ${uV(n)} 项，${uV(r)} 项没有处理`, { warning: !0 }) : e("已清理失效条目");
 		}
 	}), n = JB({
 		queryKey: dB,
 		queryFn: ({ signal: e }) => pB(e),
 		start: DDe,
 		onStarted: () => t.dismiss()
-	}), r = n.job, i = n.running || n.start.isPending, a = t.running || t.start.isPending, o = r?.status === "complete" || r?.status === "failed", s = i ? "EscanearEn proceso" : o ? "de nuevoEscanear" : "Verificar archivos", c = (e) => void Rs({
+	}), r = n.job, i = n.running || n.start.isPending, a = t.running || t.start.isPending, o = r?.status === "complete" || r?.status === "failed", s = i ? "扫描中" : o ? "重新扫描" : "检查文件", c = (e) => void Rs({
 		title: cV,
 		body: NDe(e),
 		confirmLabel: cV,
@@ -58463,28 +58463,28 @@ function zOe({ toast: e }) {
 		let t = bB(e).left > 0;
 		return /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: t ? "warning" : "success",
-			title: t ? "Parcialmente completado" : "LimpiarResultado",
+			title: t ? "部分完成" : "清理结果",
 			children: FDe(e, cn)
 		});
 	}, d = null, f = null;
 	if (l?.status === "failed") f = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "RecursoLimpiarNoFinalizar",
-		children: l.error || "Revisa el registro de tareas para verificar los archivos procesados."
+		title: "资源清理未完成",
+		children: l.error || "请查看任务记录，核对已处理的文件。"
 	});
 	else if (l) f = u(l);
 	else if (t.running) d = /* @__PURE__ */ (0, C.jsx)(OF, {
 		embedded: !0,
-		label: t.job?.message || "Procesandovolver verificary limpiarInválidoResultadoobjetivo..."
+		label: t.job?.message || "正在复核并清理失效条目…"
 	});
 	else if (n.start.isError) f = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "Error de escaneo",
+		title: "扫描失败",
 		children: V(n.start.error)
 	});
 	else if (n.query.isError && r) f = /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "neutral",
-		title: "Estado de tarea",
+		title: "任务状态",
 		children: ROe
 	});
 	else if (r?.status === "running") {
@@ -58503,21 +58503,21 @@ function zOe({ toast: e }) {
 		partial: !0
 	}) : null, /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "Error de escaneo",
-		children: r.error || "después Error de escaneo"
+		title: "扫描失败",
+		children: r.error || "后台扫描失败"
 	})] });
 	else if (r?.status === "complete" && r.applied) f = t.job?.status === "complete" ? u(t.job) : /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "neutral",
-		title: "LimpiarResultado",
-		children: "estevezVerificarResultadoya Limpiar, de nuevoEscanearpuedeluegoverificar. "
+		title: "清理结果",
+		children: "这次检查的结果已经清理，重新扫描可再核对。"
 	});
 	else if (r?.status === "complete") {
-		let e = Active Directorye(r);
+		let e = ADe(r);
 		f = /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 			/* @__PURE__ */ (0, C.jsx)(dV, { scan: r }),
 			e ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "neutral",
-				title: "Limpiarcontenido interno",
+				title: "清理内容",
 				children: MDe(r)
 			}) : null,
 			/* @__PURE__ */ (0, C.jsx)("div", {
@@ -58526,17 +58526,17 @@ function zOe({ toast: e }) {
 					variant: "danger",
 					...Y(a),
 					onClick: () => c(r),
-					children: a ? "Procesandovolver verificary limpiar..." : cV
+					children: a ? "正在复核并清理…" : cV
 				}) : /* @__PURE__ */ (0, C.jsx)("p", {
 					className: "mr-auto text-body-regular text-notification-success-foreground",
-					children: "VerificadoAccesibleFuente, SinPendienteLimpiarRegistro, Carpeta vacíaoCaché. "
+					children: "已检查可访问的来源，没有待清理的记录、空文件夹或缓存。"
 				})
 			})
 		] });
 	}
 	return t.start.isError && !l && (f = /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [f, /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "LimpiarFallido",
+		title: "清理失败",
 		children: V(t.start.error)
 	})] })), /* @__PURE__ */ (0, C.jsxs)("section", {
 		id: "resource-sync",
@@ -58558,11 +58558,11 @@ function zOe({ toast: e }) {
 				/* @__PURE__ */ (0, C.jsx)(UB, {
 					id: "resource-sync-title",
 					gap: "small",
-					children: "Sincronización de recursos"
+					children: "资源同步"
 				}),
 				/* @__PURE__ */ (0, C.jsx)("p", {
 					className: "max-w-190 text-body-2-regular leading-5 text-text-secondary",
-					children: "segúnColecciónRegistrobuscar resultado por resultadoLocalDiscoyAlmacenamiento en la nubesuperiorde archivos, listar registros de archivos que ya no existen, Carpeta vacía, con y ya no se usará en caché. "
+					children: "按馆藏记录逐条查找本地磁盘与网盘上的文件，列出文件已不存在的记录、空文件夹，以及不再被引用的缓存。"
 				}),
 				/* @__PURE__ */ (0, C.jsx)("div", {
 					"aria-live": "polite",
@@ -58580,7 +58580,7 @@ function zOe({ toast: e }) {
 //#endregion
 //#region src/react/data-cleanup/data-cleanup-page.tsx
 function fV(e, t) {
-	return e.data === void 0 ? { figure: e.isError ? "leerFallido" : "—" } : t(e.data);
+	return e.data === void 0 ? { figure: e.isError ? "读取失败" : "—" } : t(e.data);
 }
 function pV({ section: e, label: t, icon: n, value: r, open: i }) {
 	return /* @__PURE__ */ (0, C.jsx)("button", {
@@ -58632,46 +58632,46 @@ function qOe({ toast: e, failure: t, open: n }) {
 			children: [
 				/* @__PURE__ */ (0, C.jsx)(pV, {
 					section: "review",
-					label: "Revisión manual",
+					label: "人工复核",
 					icon: BOe,
 					open: n,
 					value: fV(r, zDe)
 				}),
 				/* @__PURE__ */ (0, C.jsx)(pV, {
 					section: "quality",
-					label: "Versión HD",
+					label: "高清版",
 					icon: VOe,
 					open: n,
-					value: fV(i, (e) => ({ figure: `${Number(e.total || 0).toLocaleString()} Pendiente de actualización` }))
+					value: fV(i, (e) => ({ figure: `${Number(e.total || 0).toLocaleString()} 个待升级` }))
 				}),
 				/* @__PURE__ */ (0, C.jsx)(pV, {
 					section: "duplicates",
-					label: "Archivos duplicados",
+					label: "重复文件",
 					icon: HOe,
 					open: n,
 					value: fV(a, (e) => Number(e.total || 0) ? {
-						figure: `${Number(e.total).toLocaleString()} grupo(s) · ${Number(e.files || 0).toLocaleString()} Archivo`,
-						meta: `recuperables ${cn(e.reclaimable || 0)}`
-					} : { figure: "SinContenido duplicado" })
+						figure: `${Number(e.total).toLocaleString()} 组 · ${Number(e.files || 0).toLocaleString()} 个文件`,
+						meta: `可回收 ${cn(e.reclaimable || 0)}`
+					} : { figure: "没有重复内容" })
 				}),
 				/* @__PURE__ */ (0, C.jsx)(pV, {
 					section: "ads",
-					label: "Archivos basura",
+					label: "垃圾文件",
 					icon: UOe,
 					open: n,
 					value: fV(o, (e) => ({
-						figure: `${Number(e.pending_total || 0).toLocaleString()} pendiente de juicio`,
+						figure: `${Number(e.pending_total || 0).toLocaleString()} 个待判断`,
 						meta: BDe(e)
 					}))
 				}),
 				/* @__PURE__ */ (0, C.jsx)(pV, {
 					section: "trash",
-					label: "Papelera",
+					label: "回收站",
 					icon: WOe,
 					open: n,
 					value: fV(s, (e) => ({
-						figure: `${Number(e.total || 0).toLocaleString()} elemento(s) en la papelera`,
-						meta: e.total ? `ocupando ${cn(e.bytes || 0)}` : ""
+						figure: `${Number(e.total || 0).toLocaleString()} 项在回收站`,
+						meta: e.total ? `占用 ${cn(e.bytes || 0)}` : ""
 					}))
 				})
 			]
@@ -58846,16 +58846,16 @@ async function nke(e) {
 //#endregion
 //#region src/identity-filter.ts
 var OV = [
-	["all", "Todo"],
-	["japanese_av", "Actriz"],
-	["amateur", "Amateur"],
-	["western", "Occidental"],
-	["blogger", "Influencer"],
-	["animation", "Animador"]
+	["all", "全部"],
+	["japanese_av", "女优"],
+	["amateur", "素人"],
+	["western", "西方"],
+	["blogger", "网黄博主"],
+	["animation", "动画作者"]
 ], kV = "mb-4 flex flex-wrap gap-2";
 function rke(e) {
 	let t = OV.some(([t]) => t === e) ? e : "all";
-	return `<div class="peach-react"><div aria-label="Clasificación de identidad" class="${kV}">${OV.map(([e, n]) => vo({
+	return `<div class="peach-react"><div aria-label="身份分类" class="${kV}">${OV.map(([e, n]) => vo({
 		variant: e === t ? "primary" : "secondary",
 		size: "small",
 		label: n,
@@ -58890,33 +58890,33 @@ function lke(e, t, n, r) {
 	return t && t !== "all" && i.set("type", t), e && i.set("q", e), `${ake}?${i}`;
 }
 var uke = (e, t, n, r) => H(cke(e, t, n), r), dke = (e, t, n, r, i) => H(lke(e, t, n, r), i), fke = "/api/index", AV = {
-	performers: "Actriz",
-	creators: "Vendedor",
-	studios: "Sello",
-	agencies: "Agencia",
-	tags: "Etiqueta"
+	performers: "艺人",
+	creators: "卖家",
+	studios: "厂牌",
+	agencies: "事务所",
+	tags: "标签"
 }, pke = {
 	performers: "performer",
 	creators: "creator",
 	studios: "studio",
 	agencies: "agency"
 }, jV = [
-	["all", "Todo"],
-	["meta", "Propiedades del video"],
-	["relationship", "Relaciones de personas"],
-	["role", "configuración de rol"],
-	["appearance", "Apariencia y figura"],
-	["scene", "Entorno/Lugar"],
-	["story", "Argumento/Historia"],
-	["position", "posición sexual"],
-	["general", "Otrocontenido interno"]
+	["all", "全部"],
+	["meta", "影片属性"],
+	["relationship", "人物关系"],
+	["role", "角色设定"],
+	["appearance", "外貌身材"],
+	["scene", "情境场所"],
+	["story", "故事剧情"],
+	["position", "性交体位"],
+	["general", "其他内容"]
 ], MV = [
-	["all", "Todo"],
-	["general", "General"],
-	["artist", "Creador"],
-	["character", "rol"],
-	["copyright", "Obra"],
-	["metadata", "Metadatos"]
+	["all", "全部"],
+	["general", "通用"],
+	["artist", "创作者"],
+	["character", "角色"],
+	["copyright", "作品"],
+	["metadata", "元数据"]
 ], NV = {
 	people: 120,
 	tags: 180
@@ -59011,14 +59011,14 @@ async function mke(e, t) {
 		getNextPageParam: n.getNextPageParam
 	});
 }
-var hke = (e) => e ? e.pages.flatMap((e) => e.items) : [], gke = (e, t) => `${e.toLocaleString()}${t ? "+" : ""} elemento(s)`, VV = (e, t) => e ? `r34-${t || "unknown"}` : t || "general", _ke = (e, t) => e === "agencies" ? `${(t.members || 0).toLocaleString()} persona(s)` : `${(t.n || 0).toLocaleString()}  video(s)`, vke = {
+var hke = (e) => e ? e.pages.flatMap((e) => e.items) : [], gke = (e, t) => `${e.toLocaleString()}${t ? "+" : ""} 项`, VV = (e, t) => e ? `r34-${t || "unknown"}` : t || "general", _ke = (e, t) => e === "agencies" ? `${(t.members || 0).toLocaleString()} 人` : `${(t.n || 0).toLocaleString()} 个视频`, vke = {
 	numeric: !0,
 	sensitivity: "base"
 };
 function yke(e, t) {
 	let n = /* @__PURE__ */ new Map();
 	for (let r of [...e].sort((e, t) => e.k.localeCompare(t.k, "zh-CN", vke))) {
-		let e = dn(t(r.k).normalize("NFKC"), "").toUpperCase(), i = /[A-Z]/.test(e) ? e : /[0-9]/.test(e) ? "#" : /[㐀-鿿]/.test(e) ? "Chino" : "Otro", a = n.get(i);
+		let e = dn(t(r.k).normalize("NFKC"), "").toUpperCase(), i = /[A-Z]/.test(e) ? e : /[0-9]/.test(e) ? "#" : /[㐀-鿿]/.test(e) ? "中文" : "其他", a = n.get(i);
 		a ? a.push(r) : n.set(i, [r]);
 	}
 	return [...n].sort(([e], [t]) => e.localeCompare(t, "zh-CN"));
@@ -59055,7 +59055,7 @@ function UV({ name: e, readout: t, big: n, children: r, following: i, onPress: a
 			i ? /* @__PURE__ */ (0, C.jsx)("span", {
 				"data-index-feed": "",
 				role: "img",
-				"aria-label": "Suscrito a nuevas obras",
+				"aria-label": "已订阅新作",
 				className: "absolute top-4 right-4 z-2 inline-flex",
 				children: /* @__PURE__ */ (0, C.jsx)(hA, {
 					variant: "caption",
@@ -59114,7 +59114,7 @@ function Ske({ items: e, layout: t, props: n }) {
 			"data-follow-author": e.key,
 			"data-kind": "performer",
 			name: e.k,
-			readout: `${e.n.toLocaleString()}  actualización(es)${e.held_by ? " · pendiente de confirmar" : ""}`,
+			readout: `${e.n.toLocaleString()} 项更新${e.held_by ? " · 待确认" : ""}`,
 			big: r,
 			onPress: () => {
 				e.entity_id ? n.openEntity("creator", e.k) : e.held_by ? n.openEntity("creator", e.held_by) : n.openFollowAuthor(e.key);
@@ -59314,14 +59314,14 @@ function Oke(e, t, n) {
 }
 var eH = (e) => {
 	let t = Number(e) || 0;
-	return t ? (t < 1048576 ? `${Math.max(1, Math.round(t / 1024))} KB` : cn(t)).replace(" ", "\xA0") : "Tamaño desconocido";
-}, kke = (e) => e.asset?.name || e.name || "NonombrarnombreImágenes";
+	return t ? (t < 1048576 ? `${Math.max(1, Math.round(t / 1024))} KB` : cn(t)).replace(" ", "\xA0") : "大小未知";
+}, kke = (e) => e.asset?.name || e.name || "未命名图片";
 function Ake(e, t) {
 	let n = e.asset;
-	if (n) return [pn[n.location ?? ""] || n.location || "FuenteDesconocido", eH(n.size)].join(" · ");
+	if (n) return [pn[n.location ?? ""] || n.location || "来源未知", eH(n.size)].join(" · ");
 	let r = t?.[0] && t[1] ? `${t[0]} × ${t[1]}` : "";
 	return [
-		e.source || "Imagen en línea",
+		e.source || "在线图片",
 		r,
 		e.size ? eH(e.size) : ""
 	].filter(Boolean).join(" · ");
@@ -59385,7 +59385,7 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 				clickable: !0,
 				dynamicBullets: !0,
 				dynamicMainBullets: 3,
-				renderBullet: (e, t) => `<button type="button" class="${t}" aria-label="buscarverNo. ${e + 1}  imagen(es)"></button>`
+				renderBullet: (e, t) => `<button type="button" class="${t}" aria-label="查看第 ${e + 1} 张图片"></button>`
 			},
 			navigation: {
 				prevEl: u.current,
@@ -59445,7 +59445,7 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 	}, L = (e) => h.current?.apply(e);
 	return /* @__PURE__ */ (0, C.jsxs)("dialog", {
 		ref: o,
-		"aria-label": "Explorar imágenes",
+		"aria-label": "图片浏览",
 		"data-photo-lightbox": "",
 		"data-has-strip": i ? "" : void 0,
 		onCancel: (e) => {
@@ -59459,7 +59459,7 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 			/* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
 				"data-photo-close": "",
-				"aria-label": "Desactivar",
+				"aria-label": "关闭",
 				onClick: iH,
 				dangerouslySetInnerHTML: { __html: z("x") }
 			}),
@@ -59468,8 +59468,8 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 				className: "swiper",
 				"data-photo-main": "",
 				role: "region",
-				"aria-roledescription": "Carrusel",
-				"aria-label": "Explorar imágenes",
+				"aria-roledescription": "轮播",
+				"aria-label": "图片浏览",
 				children: [
 					/* @__PURE__ */ (0, C.jsx)("div", {
 						className: "swiper-wrapper",
@@ -59479,7 +59479,7 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 								className: "swiper-zoom-container",
 								children: D.has(t) ? /* @__PURE__ */ (0, C.jsx)("span", {
 									"data-photo-missing": "",
-									children: "Imágenes no disponibles"
+									children: "图片取不到"
 								}) : /* @__PURE__ */ (0, C.jsx)("img", {
 									src: T.has(t) ? e.thumb : e.src,
 									alt: e.name ?? "",
@@ -59495,14 +59495,14 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 						ref: u,
 						type: "button",
 						"data-photo-nav": "back",
-						"aria-label": "Anterior",
+						"aria-label": "上一张",
 						dangerouslySetInnerHTML: { __html: z("chevron-left") }
 					}),
 					/* @__PURE__ */ (0, C.jsx)("button", {
 						ref: d,
 						type: "button",
 						"data-photo-nav": "fwd",
-						"aria-label": "Siguiente",
+						"aria-label": "下一张",
 						dangerouslySetInnerHTML: { __html: z("chevron-left") }
 					})
 				]
@@ -59517,8 +59517,8 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 						"aria-expanded": "false",
 						"aria-controls": a,
 						"aria-haspopup": "dialog",
-						"aria-label": "ImágenesDetalles",
-						title: "ImágenesDetalles",
+						"aria-label": "图片详情",
+						title: "图片详情",
 						dangerouslySetInnerHTML: { __html: z("info") }
 					}),
 					/* @__PURE__ */ (0, C.jsxs)("div", { children: [/* @__PURE__ */ (0, C.jsx)("div", {
@@ -59528,7 +59528,7 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 					}), i ? /* @__PURE__ */ (0, C.jsx)("div", {
 						ref: l,
 						"data-photo-pagination": "",
-						"aria-label": "SeleccionarImágenes"
+						"aria-label": "选择图片"
 					}) : null] }),
 					/* @__PURE__ */ (0, C.jsxs)("div", {
 						"data-photo-zoom": "",
@@ -59536,7 +59536,7 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 							/* @__PURE__ */ (0, C.jsx)("button", {
 								type: "button",
 								"data-zoom-step": "-1",
-								"aria-label": "Alejar",
+								"aria-label": "缩小",
 								onClick: () => L(y - 10),
 								dangerouslySetInnerHTML: { __html: z("zoom-out") }
 							}),
@@ -59547,13 +59547,13 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 								max: 400,
 								step: "1",
 								value: y,
-								"aria-label": "Zoom",
+								"aria-label": "缩放",
 								onChange: (e) => L(Number(e.currentTarget.value))
 							}),
 							/* @__PURE__ */ (0, C.jsx)("button", {
 								type: "button",
 								"data-zoom-step": "1",
-								"aria-label": "Acercar",
+								"aria-label": "放大",
 								onClick: () => L(y + 10),
 								dangerouslySetInnerHTML: { __html: z("zoom-in") }
 							}),
@@ -59564,16 +59564,16 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 							/* @__PURE__ */ (0, C.jsx)("button", {
 								type: "button",
 								"data-photo-scale": "fit",
-								"aria-label": "Ajustar a ventana",
-								title: "Ajustar a ventana",
+								"aria-label": "适应窗口",
+								title: "适应窗口",
 								onClick: () => L("fit"),
 								dangerouslySetInnerHTML: { __html: z("maximize") }
 							}),
 							/* @__PURE__ */ (0, C.jsx)("button", {
 								type: "button",
 								"data-photo-scale": "original",
-								"aria-label": "Tamaño original",
-								title: "Tamaño original",
+								"aria-label": "原大小",
+								title: "原大小",
 								onClick: () => L(100),
 								children: "1:1"
 							})
@@ -59607,7 +59607,7 @@ function Nke({ slides: e, index: t, Swiper: n, host: r }) {
 						"data-photo-reveal": "",
 						hidden: !P || !r,
 						onClick: (e) => void F(e.currentTarget),
-						dangerouslySetInnerHTML: { __html: (k ? Ao("Localizando") : z("folder-open")) + "<span>Mostrar en explorador</span>" }
+						dangerouslySetInnerHTML: { __html: (k ? Ao("正在定位") : z("folder-open")) + "<span>在资源管理器中显示</span>" }
 					}),
 					/* @__PURE__ */ (0, C.jsx)("span", {
 						"data-photo-status": "",
@@ -59696,8 +59696,8 @@ var Lke = (e) => Array.from({ length: e.n }, (t, n) => ({
 	code: e.code,
 	position: n + 1,
 	total: e.n,
-	name: `${e.code} Muestra ${n + 1}`,
-	source: e.site_label || "Muestra oficial"
+	name: `${e.code} 样张 ${n + 1}`,
+	source: e.site_label || "官方样张"
 })), oH = (e) => e.sample === !0, sH = (e) => `code=${encodeURIComponent(e.code)}&n=${e.position}`, cH = (e) => oH(e) ? `/sample-thumb?${sH(e)}` : `/photo-thumb?id=${e.id}`, Rke = (e) => oH(e) ? {
 	src: `/sample-image?${sH(e)}`,
 	thumb: cH(e),
@@ -59739,17 +59739,17 @@ function zke({ photos: e, props: t }) {
 			label: e.code,
 			title: e.name,
 			meta: [
-				`${e.site_label || "Oficial"} Muestra`,
+				`${e.site_label || "官方"} 样张`,
 				e.release_date,
-				`${e.n.toLocaleString()}  imagen(es)`
+				`${e.n.toLocaleString()} 张`
 			].filter(Boolean).join(" · ")
 		}), /* @__PURE__ */ (0, C.jsx)("div", {
 			...f,
 			children: o.slice(t, t + e.n).map((e, n) => d(e, t + n))
 		})] }, e.code)),
 		m.length && e.total ? /* @__PURE__ */ (0, C.jsx)(lH, {
-			label: "Imagen local",
-			meta: `${e.total.toLocaleString()}  imagen(es)`
+			label: "本地图片",
+			meta: `${e.total.toLocaleString()} 张`
 		}) : null,
 		/* @__PURE__ */ (0, C.jsx)("div", {
 			...f,
@@ -59880,7 +59880,7 @@ function Uke(e) {
 				children: [/* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
 					"data-follow-open": "",
-					"aria-label": `Abrir ${k} Detalles`
+					"aria-label": `打开 ${k} 详情`
 				}), /* @__PURE__ */ (0, C.jsxs)("div", {
 					"data-media-pic": "",
 					children: [
@@ -59911,7 +59911,7 @@ function Uke(e) {
 							children: [/* @__PURE__ */ (0, C.jsx)("span", {
 								"data-media-badge": "",
 								title: u.provider_label || u.provider,
-								"aria-label": `Fuente: ${u.provider_label || u.provider}`,
+								"aria-label": `来源：${u.provider_label || u.provider}`,
 								dangerouslySetInnerHTML: { __html: tI(u.provider, u.provider_label) }
 							}), N ? /* @__PURE__ */ (0, C.jsx)("span", {
 								"data-follow-badges": "",
@@ -59945,8 +59945,8 @@ function Uke(e) {
 									/* @__PURE__ */ (0, C.jsx)("button", {
 										type: "button",
 										"data-follow-save": u.id,
-										title: P ? "Guardado" : "Guardar en base de datos",
-										"aria-label": P ? "Guardado" : "Guardar en base de datos",
+										title: P ? "已保存" : "保存到数据库",
+										"aria-label": P ? "已保存" : "保存到数据库",
 										disabled: P,
 										"aria-busy": s === "save" || void 0,
 										"aria-disabled": s === "save" || void 0,
@@ -59957,8 +59957,8 @@ function Uke(e) {
 										type: "button",
 										"data-follow-status": u.id,
 										"data-to": "seen",
-										title: "Marcar como visto",
-										"aria-label": "Marcar como visto",
+										title: "标记已看",
+										"aria-label": "标记已看",
 										disabled: u.status === "seen",
 										"aria-busy": s === "seen" || void 0,
 										"aria-disabled": s === "seen" || void 0,
@@ -59969,8 +59969,8 @@ function Uke(e) {
 										type: "button",
 										"data-follow-status": u.id,
 										"data-to": "ignored",
-										title: "Ignorar",
-										"aria-label": "Ignorar",
+										title: "忽略",
+										"aria-label": "忽略",
 										disabled: u.status === "ignored",
 										"aria-busy": s === "ignored" || void 0,
 										"aria-disabled": s === "ignored" || void 0,
@@ -59981,8 +59981,8 @@ function Uke(e) {
 										type: "button",
 										"data-follow-status": u.id,
 										"data-to": "new",
-										title: "Restaurar no vistos",
-										"aria-label": "Restaurar no vistos",
+										title: "恢复未看",
+										"aria-label": "恢复未看",
 										"aria-busy": s === "new" || void 0,
 										"aria-disabled": s === "new" || void 0,
 										onClick: (t) => I(t, () => e.onStatus?.(u.id, "new")),
@@ -60002,12 +60002,12 @@ function Uke(e) {
 						actions: l,
 						"data-media-avatar": "",
 						"data-follow-avatar": "",
-						"aria-label": `ver la página del autor ${O.author}`,
+						"aria-label": `查看 ${O.author} 的作者页`,
 						dangerouslySetInnerHTML: { __html: O.avatar }
 					}) : /* @__PURE__ */ (0, C.jsx)("span", {
 						"data-media-avatar": "",
 						"data-follow-avatar": "",
-						title: "avatar del creador",
+						title: "创作者头像",
 						dangerouslySetInnerHTML: { __html: O.avatar }
 					}),
 					/* @__PURE__ */ (0, C.jsxs)("div", {
@@ -60039,8 +60039,8 @@ function Uke(e) {
 									}),
 									O.credited ? /* @__PURE__ */ (0, C.jsx)("span", {
 										"data-follow-credit": "",
-										title: `crédito incluye ${O.credited}`,
-										children: `crédito incluye ${O.credited}`
+										title: `署名含 ${O.credited}`,
+										children: `署名含 ${O.credited}`
 									}) : null
 								]
 							}),
@@ -60114,11 +60114,11 @@ var pH = () => /* @__PURE__ */ (0, C.jsx)("span", {
 	"aria-hidden": "true"
 }), Gke = EP("settings"), mH = EP("chevron-down"), Kke = EP("history"), qke = [[
 	"fixed",
-	"Proporción fija",
+	"固定比例",
 	"layout-grid"
 ], [
 	"masonry",
-	"Cascada",
+	"瀑布流",
 	"columns-2"
 ]];
 function Jke(e, t, n) {
@@ -60230,7 +60230,7 @@ function Yke(e) {
 		}, h.generation),
 		!h.busy && h.report ? /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: "neutral",
-			title: "Resultado de verificación",
+			title: "检查结果",
 			children: h.report
 		}) : null,
 		/* @__PURE__ */ (0, C.jsxs)("div", {
@@ -60242,13 +60242,13 @@ function Yke(e) {
 					children: d.sources.length ? /* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "primary",
 						"data-follow-recheck": "",
-						"aria-label": "Buscar actualizaciones de cada fuente(s)",
+						"aria-label": "检查每个来源的更新",
 						"aria-busy": h.busy || void 0,
 						onClick: () => void h.start(!1),
 						children: h.starting === "check" ? /* @__PURE__ */ (0, C.jsx)("span", {
 							className: "contents",
-							dangerouslySetInnerHTML: { __html: Ao("Verificando") }
-						}) : "Comprobar actualizaciones"
+							dangerouslySetInnerHTML: { __html: Ao("检查中") }
+						}) : "检查更新"
 					}) : null
 				}),
 				/* @__PURE__ */ (0, C.jsx)(Qke, {
@@ -60306,7 +60306,7 @@ function Yke(e) {
 							load: async () => {
 								await o.fetchNextPage({ throwOnError: !0 });
 							},
-							children: [/* @__PURE__ */ (0, C.jsx)(mH, { className: "size-3.5" }), "Cargar más"]
+							children: [/* @__PURE__ */ (0, C.jsx)(mH, { className: "size-3.5" }), "加载更多"]
 						}, o.data?.pages.length) : /* @__PURE__ */ (0, C.jsx)(Xke, {
 							busy: o.isFetchingNextPage,
 							error: o.isFetchNextPageError ? Pt(o.error) : "",
@@ -60324,8 +60324,8 @@ function Yke(e) {
 							onClick: () => void h.start(!0),
 							children: h.olderBusy ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("span", {
 								className: "contents",
-								dangerouslySetInnerHTML: { __html: Ao("ObtenerEn proceso") }
-							}), /* @__PURE__ */ (0, C.jsx)("span", { children: "ObtenerEn proceso..." })] }) : "Obtener página anterior"
+								dangerouslySetInnerHTML: { __html: Ao("抓取中") }
+							}), /* @__PURE__ */ (0, C.jsx)("span", { children: "抓取中…" })] }) : "抓更早的一页"
 						}), /* @__PURE__ */ (0, C.jsx)("span", {
 							"data-follow-backfill": "",
 							children: Si(d.sources)
@@ -60341,7 +60341,7 @@ function hH({ onManage: e, children: t }) {
 		"data-follow-head": "",
 		children: [/* @__PURE__ */ (0, C.jsx)("h2", {
 			"data-follow-title": "",
-			children: "Seguir"
+			children: "关注"
 		}), /* @__PURE__ */ (0, C.jsxs)("span", {
 			"data-follow-head-actions": "",
 			children: [/* @__PURE__ */ (0, C.jsx)(q, {
@@ -60349,7 +60349,7 @@ function hH({ onManage: e, children: t }) {
 				leadingIcon: Gke,
 				"data-follow-manage": "",
 				onClick: e,
-				children: "GestionarSeguir"
+				children: "管理关注"
 			}), t]
 		})]
 	});
@@ -60361,7 +60361,7 @@ function Xke({ busy: e, error: t, load: n }) {
 		"aria-busy": e || void 0,
 		"aria-disabled": e || void 0,
 		onClick: n,
-		children: [/* @__PURE__ */ (0, C.jsx)(mH, { className: "size-3.5" }), "Cargar más"]
+		children: [/* @__PURE__ */ (0, C.jsx)(mH, { className: "size-3.5" }), "加载更多"]
 	}), t ? /* @__PURE__ */ (0, C.jsx)(TI, {
 		message: t,
 		onRetry: n
@@ -60440,7 +60440,7 @@ function Qke({ facets: e, pressed: t, context: n, props: r, onPick: i }) {
 		children: /* @__PURE__ */ (0, C.jsx)("div", {
 			ref: a,
 			"data-follow-authors": "",
-			"aria-label": "Creador",
+			"aria-label": "创作者",
 			children: e.authorOrder.map((n) => {
 				let a = e.authorSources.get(n) || [], s = iI(a), c = /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("span", {
 					"data-follow-ring": "",
@@ -60453,7 +60453,7 @@ function Qke({ facets: e, pressed: t, context: n, props: r, onPick: i }) {
 					name: s,
 					actions: r.actions,
 					"data-follow-author": n,
-					"aria-label": `ver la página del autor ${o(n)}`,
+					"aria-label": `查看 ${o(n)} 的作者页`,
 					children: c
 				}, n) : /* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
@@ -60473,7 +60473,7 @@ function $ke({ rows: e, pressed: t, props: n, onPick: r }) {
 	}, [n.helpers]), e.length ? /* @__PURE__ */ (0, C.jsx)("div", {
 		ref: i,
 		"data-follow-works": "",
-		"aria-label": "segúnGénero/TemáticaFiltrar",
+		"aria-label": "按题材筛选",
 		children: e.map((e) => /* @__PURE__ */ (0, C.jsxs)("button", {
 			type: "button",
 			"data-follow-work": e[0],
@@ -60494,8 +60494,8 @@ function eAe({ facets: e, view: t, total: n, busy: r, props: i, route: a }) {
 	}, [o]);
 	let _ = [...e.providers], v = _.length + e.tagRows.length > 0, y = t.media === "images";
 	return /* @__PURE__ */ (0, C.jsx)(_j, {
-		label: "Filtrar y ordenar",
-		topLabel: m ? "MediosySeguirFiltrar" : "SeguirFiltrar",
+		label: "筛选与排序",
+		topLabel: m ? "媒体与关注筛选" : "关注筛选",
 		attrs: {
 			"data-filter-frame": "",
 			"data-follow-filter-glass": ""
@@ -60514,18 +60514,18 @@ function eAe({ facets: e, view: t, total: n, busy: r, props: i, route: a }) {
 		top: /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [m ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("div", {
 			ref: d,
 			role: "group",
-			"aria-label": "Tipo de medio",
+			"aria-label": "媒体类型",
 			"data-entity-media": "",
 			onPointerLeave: g.leave,
 			children: [[
 				"videos",
-				"Videos",
+				"视频",
 				e.mediaCounts.videos,
 				"play",
 				"video"
 			], [
 				"images",
-				"Imágenes",
+				"图片",
 				e.mediaCounts.images,
 				"pics",
 				"image"
@@ -60551,7 +60551,7 @@ function eAe({ facets: e, view: t, total: n, busy: r, props: i, route: a }) {
 			children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 				ref: u,
 				role: "group",
-				"aria-label": "Estado",
+				"aria-label": "状态",
 				"data-entity-states": "",
 				onPointerLeave: h.leave,
 				children: [Qr.map(([e, n]) => /* @__PURE__ */ (0, C.jsx)("button", {
@@ -60576,7 +60576,7 @@ function eAe({ facets: e, view: t, total: n, busy: r, props: i, route: a }) {
 						"data-entity-press": "",
 						"aria-pressed": e.provider === t,
 						title: n,
-						"aria-label": `Fuente: ${n}`,
+						"aria-label": `来源：${n}`,
 						onClick: () => a({ provider: e.provider === t ? "" : t }),
 						dangerouslySetInnerHTML: { __html: tI(t, n) }
 					}, t)),
@@ -60599,7 +60599,7 @@ function eAe({ facets: e, view: t, total: n, busy: r, props: i, route: a }) {
 			/* @__PURE__ */ (0, C.jsx)("h3", {
 				"data-entity-readout": "",
 				"data-follow-readout": "",
-				children: `${n.toLocaleString()}  actualización(es) · Mostrar ${e.visible.length.toLocaleString()}`
+				children: `${n.toLocaleString()} 项更新 · 显示 ${e.visible.length.toLocaleString()}`
 			}),
 			/* @__PURE__ */ (0, C.jsx)(zP, {
 				currentHref: () => location.pathname + location.search,
@@ -60610,7 +60610,7 @@ function eAe({ facets: e, view: t, total: n, busy: r, props: i, route: a }) {
 				children: [
 					/* @__PURE__ */ (0, C.jsx)(yI, { onPress: s.shuffle }),
 					y ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(vI, {
-						label: "Diseño de imágenes",
+						label: "图片布局",
 						value: i.photoLayout,
 						options: qke,
 						onChange: (e) => s.setPhotoLayout(e === "fixed" ? "fixed" : "masonry")
@@ -60618,8 +60618,8 @@ function eAe({ facets: e, view: t, total: n, busy: r, props: i, route: a }) {
 						type: "button",
 						"data-follow-images-only": "",
 						"aria-pressed": i.imagesOnly,
-						title: "Solo mostrar imágenes",
-						"aria-label": "Solo mostrar imágenes",
+						title: "仅显示图片",
+						"aria-label": "仅显示图片",
 						onClick: () => s.setImagesOnly(!i.imagesOnly),
 						children: [i.imagesOnly ? /* @__PURE__ */ (0, C.jsx)("span", {
 							"data-view-glide": "",
@@ -60655,12 +60655,12 @@ function tAe({ conditions: e, onDrop: t, onClear: n }) {
 		"data-entity-combo": "",
 		"data-follow-combo": "",
 		children: e.length ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [e.map((e) => {
-			let n = `${e.kind === "Etiqueta" ? "" : `${e.kind} `}${e.label}`;
+			let n = `${e.kind === "标签" ? "" : `${e.kind} `}${e.label}`;
 			return /* @__PURE__ */ (0, C.jsxs)("span", {
 				"data-combo-chip": "",
 				children: [n, /* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
-					"aria-label": `Quitar ${n}`,
+					"aria-label": `撤掉 ${n}`,
 					"data-follow-drop": e.key,
 					"data-follow-drop-kind": e.kind,
 					onClick: () => t(e),
@@ -60671,7 +60671,7 @@ function tAe({ conditions: e, onDrop: t, onClear: n }) {
 			type: "button",
 			"data-combo-clear": "",
 			onClick: n,
-			children: "Limpiar todo"
+			children: "全部清除"
 		})] }) : null
 	});
 }
@@ -60681,7 +60681,7 @@ function nAe({ count: e, onManage: t }) {
 		onClick: (e) => {
 			e.target.closest("[data-follow-manage]") && t();
 		},
-		dangerouslySetInnerHTML: { __html: `<div class="geist-note geist-note-error fwarn" role="alert">${z("alert")}<span>${e}  fuente(s) con error de verificación, <button type="button" class="flink" data-follow-manage>GestionarSeguir</button>Ver motivo.</span></div>` }
+		dangerouslySetInnerHTML: { __html: `<div class="geist-note geist-note-error fwarn" role="alert">${z("alert")}<span>${e} 个来源上次检查失败，去<button type="button" class="flink" data-follow-manage>管理关注</button>看原因。</span></div>` }
 	});
 }
 function rAe({ pending: e, facets: t, data: n, context: r, props: i, retryKey: a }) {
@@ -60736,7 +60736,7 @@ function gH(e, t) {
 	return _i(e, t.media).id;
 }
 function aAe({ data: e, filtered: t }) {
-	let n = (e.groups || []).length ? No("search-x", "No hay actualizaciones con el filtro actual", "CambiarTipo de medio, Creador, Fuente, DuraciónoEtiquetadespuésluego intentar. ") : (e.sources || []).length ? t ? No("rss", "Sinque cumple los criterios de resultado deActualizar", "CambiarEstadooFuenteFiltrardespuésluego intentar. ") : No("rss", "aúnNo hay actualizaciones disponibles", "Haz clic en "Comprobar actualizaciones" para ir a cada fuente y obtener una ronda; cuando las fuentes tengan contenido nuevo se recopilará y mostrará aquí en proceso. ") : No("rss", "Aún no haySeguircualquierFuente", "AñadirCreadoroSuscribirseFuentedespués, Actualizarirá a recopilarEn procesoMostrarenestedentro. ", { actions: "<a class=\"geist-button primary\" href=\"/subscriptions?tab=add\">Agregar seguimiento</a>" });
+	let n = (e.groups || []).length ? No("search-x", "当前筛选下没有更新", "切换媒体类型、创作者、来源、时长或标签后再试。") : (e.sources || []).length ? t ? No("rss", "没有符合条件的更新", "切换状态或来源筛选后再试。") : No("rss", "还没有更新", "点「检查更新」去各个来源取一遍；来源有新内容时会集中显示在这里。") : No("rss", "还没有关注任何来源", "添加创作者或订阅来源后，更新会集中显示在这里。", { actions: "<a class=\"geist-button primary\" href=\"/subscriptions?tab=add\">添加关注</a>" });
 	return /* @__PURE__ */ (0, C.jsx)("div", {
 		"data-follow-empty": "",
 		className: "contents",
@@ -60744,9 +60744,9 @@ function aAe({ data: e, filtered: t }) {
 	});
 }
 var oAe = {
-	new: "YaRestaurar no vistos",
-	seen: "YaMarcar como visto",
-	ignored: "Ignorado"
+	new: "已恢复未看",
+	seen: "已标记已看",
+	ignored: "已忽略"
 };
 function _H(e) {
 	let { view: t, revision: n, actions: r } = e, [i, a] = (0, S.useState)(() => /* @__PURE__ */ new Map()), [o, s] = (0, S.useState)(() => /* @__PURE__ */ new Map()), c = ii(t, n).queryKey, l = (e, t, n) => n((n) => {
@@ -60771,7 +60771,7 @@ function _H(e) {
 			to: t
 		}),
 		onSuccess: (e, { id: t, to: n, was: i }) => {
-			u(t, n), d(), r.toast(oAe[n] || "Estado de seguimiento actualizado", { undo: i === "saved" ? void 0 : async () => {
+			u(t, n), d(), r.toast(oAe[n] || "已更新关注状态", { undo: i === "saved" ? void 0 : async () => {
 				await U(Bn, {
 					item: t,
 					to: i
@@ -60779,16 +60779,16 @@ function _H(e) {
 			} });
 		},
 		onError: (e, { id: t }) => {
-			l(t, Pt(e), s), r.failure("Actualizar estado de seguimiento", e);
+			l(t, Pt(e), s), r.failure("更新关注状态", e);
 		},
 		onSettled: (e, t, { id: n }) => l(n, "", a)
 	}), m = mt({
 		mutationFn: (e) => U("/api/follow/save", { item: e }),
 		onSuccess: (e, t) => {
-			u(t, "saved"), d(), r.toast("Guardado en la base de datos");
+			u(t, "saved"), d(), r.toast("已保存到数据库");
 		},
 		onError: (e, t) => {
-			l(t, Pt(e), s), r.failure("Guardar en base de datos", e);
+			l(t, Pt(e), s), r.failure("保存到数据库", e);
 		},
 		onSettled: (e, t, n) => l(n, "", a)
 	}), h = (0, S.useRef)({
@@ -60885,7 +60885,7 @@ function cAe({ view: e, media: t, data: n, visible: r, context: i, photoSize: a,
 	});
 }
 function lAe({ searched: e }) {
-	let t = e ? No("search-x", "No hay actualizaciones con el filtro actual", "Intenta cambiando el tipo de medio, estado, fuente o etiqueta.") : No("rss", "No se han encontrado actualizaciones todavía", "Después de verificar actualizaciones, el nuevo contenido del creador aparecerá aquí.");
+	let t = e ? No("search-x", "当前筛选下没有更新", "切换媒体类型、状态、来源或标签后再试。") : No("rss", "还没有抓到更新", "关注页检查更新之后，这位创作者的新内容会出现在这里。");
 	return /* @__PURE__ */ (0, C.jsx)("div", {
 		"data-follow-empty": "",
 		className: "contents",
@@ -61165,7 +61165,7 @@ function DH({ src: e, aspect: t, box: n, size: r, onBox: i, onSize: a, label: o 
 			] }),
 			l ? /* @__PURE__ */ (0, C.jsx)("p", {
 				className: "p-4 text-body-2-regular text-text-secondary",
-				children: "Esta imagen no pudo cargarse; cambia a otra imagen y enmarca. "
+				children: "这张图读不出来，换一张再框。"
 			}) : null
 		]
 	});
@@ -61203,7 +61203,7 @@ async function PH(e, t) {
 		body: t
 	}), r = await n.json().catch(() => null);
 	if (n.ok) return r;
-	throw new vn(r?.error || `Solicitud fallida (${n.status})`, n.status, r);
+	throw new vn(r?.error || `请求失败（${n.status}）`, n.status, r);
 }
 function FH(e, t, n) {
 	let r = t.width === e.width && t.height === e.height;
@@ -61234,34 +61234,34 @@ var IH = 2;
 function OAe(e, t) {
 	if (!t) return e;
 	let n = t.matched_names.filter((t) => t !== e);
-	return n.length ? `${e}: Galeríadentrosegún${`"${n.slice(0, IH).join("""")}"`}${n.length > IH ? `etc. ${n.length.toLocaleString()} Nombre` : ""}buscar. ` : t.choices.length ? `${e}: cambiarsuperiorese imagen(es)mantener enEsta máquina, seguircuandopuedecambiarvolver  . ` : `${e}: Aún no hayreservaseleccionarImágenes, puedeIntroducirCódigo JAV, ImágenesDirecciónodesdeEsta máquinaSeleccionar. `;
+	return n.length ? `${e}：图库里按${`「${n.slice(0, IH).join("」「")}」`}${n.length > IH ? `等 ${n.length.toLocaleString()} 个名字` : ""}找到的。` : t.choices.length ? `${e}：换上的那张留在本机，随时能换回来。` : `${e}：还没有备选图片，可输入番号、图片地址或从本机选择。`;
 }
-var kAe = (e) => e < 48 ? `${Math.max(1, Math.round(e))} hora(s)` : `${Math.floor(e / 24)} día(s)`;
+var kAe = (e) => e < 48 ? `${Math.max(1, Math.round(e))} 小时` : `${Math.floor(e / 24)} 天`;
 function AAe(e) {
-	return !e || !e.index_stale || e.choices.some((e) => e.source === "gfriends") ? "" : e.index_age_hours === null ? "El índice de galería aún no se ha obtenido; solo se puede seleccionar desde las imágenes usadas. " : `Galería sin actualizar (${kAe(e.index_age_hours)}); nuevas imágenes de actores aún en búsquedarNo. `;
+	return !e || !e.index_stale || e.choices.some((e) => e.source === "gfriends") ? "" : e.index_age_hours === null ? "图库索引还没取过，只能从用过的图里选。" : `图库索引 ${kAe(e.index_age_hours)}没更新，新收的人像这里还查不到。`;
 }
-var LH = (e) => e.cast > 1, jAe = (e) => LH(e) ? `${e.label}: ${e.cast.toLocaleString()} personas en reparto, Primero encuentra su rostro, luego arrastra el marco para seleccionar un área. ` : `${e.label}: Arrastra el marco para seleccionar un área; usa la rueda o el cuadro de la esquina para cambiar el tamaño. `, MAe = {
-	gfriends: "Galería",
-	history: "Usado",
-	asset: "imagen de la obra",
-	code: "Código JAVPortada",
-	url: "Dirección",
-	upload: "Esta máquina",
-	social: "Avatar de redes sociales",
-	online: "Obras en línea"
+var LH = (e) => e.cast > 1, jAe = (e) => LH(e) ? `${e.label}：${e.cast.toLocaleString()} 人合演，先找到她自己的脸，再拖动方框选一块。` : `${e.label}：拖动方框选一块，滚轮或角上那枚方块改大小。`, MAe = {
+	gfriends: "图库",
+	history: "用过的",
+	asset: "作品画面",
+	code: "番号封面",
+	url: "地址",
+	upload: "本机",
+	social: "社媒头像",
+	online: "在线作品"
 };
 function NAe(e) {
 	if (e.startsWith("follow:")) {
 		let t = e.split(":")[2];
-		return t === "cover" ? "ObraPortada" : `Imágenes de contenido ${Number(t.replace("image", "") || 0) + 1}`;
+		return t === "cover" ? "作品封面" : `内容图片 ${Number(t.replace("image", "") || 0) + 1}`;
 	}
-	if (e.startsWith("cover:")) return "Portada";
+	if (e.startsWith("cover:")) return "封面";
 	let t = e.split(":")[2] || "";
-	if (t === "cover") return "Portada";
+	if (t === "cover") return "封面";
 	let n = Number(t.replace("cell", ""));
-	return Number.isFinite(n) ? `Celda ${n + 1}` : t;
+	return Number.isFinite(n) ? `第 ${n + 1} 格` : t;
 }
-var PAe = (e) => `${MAe[e.source] || e.source} · ${e.label}` + (e.width ? ` · ${e.width}×${e.height}` : "") + (LH(e) ? ` · ${e.cast.toLocaleString()} personas en reparto` : "") + (e.found_by ? ` · encontrado por "${e.found_by}" encontrado` : "") + (e.source === "asset" && e.detail && e.detail !== e.label ? ` · ${e.detail}` : ""), FAe = 8, IAe = 3 / 4;
+var PAe = (e) => `${MAe[e.source] || e.source} · ${e.label}` + (e.width ? ` · ${e.width}×${e.height}` : "") + (LH(e) ? ` · ${e.cast.toLocaleString()} 人合演` : "") + (e.found_by ? ` · 按「${e.found_by}」找到` : "") + (e.source === "asset" && e.detail && e.detail !== e.label ? ` · ${e.detail}` : ""), FAe = 8, IAe = 3 / 4;
 async function LAe(e, t, n) {
 	switch (n.via) {
 		case "choice": return { choice: await CAe(e, t, n.choice) };
@@ -61280,7 +61280,7 @@ function RAe({ kind: e, entityId: t, name: n, onPicked: r }) {
 		children: /* @__PURE__ */ (0, C.jsx)("button", {
 			type: "button",
 			"aria-haspopup": "dialog",
-			"aria-label": `Cambiar avatar de ${n}`,
+			"aria-label": `更换${n}的头像`,
 			onClick: () => a(!0),
 			className: "flex size-7 cursor-pointer items-center justify-center rounded-full border border-border-button-default bg-background-primary-default text-foreground-icon-primary shadow-xs outline-none ring-2 ring-background-full transition-colors hover:border-border-button-hover hover:bg-background-primary-hover/60 dark:hover:bg-background-primary-hover focus-visible:ring-border-focus-ring active:bg-background-primary-active",
 			children: /* @__PURE__ */ (0, C.jsx)(hge, {
@@ -61292,7 +61292,7 @@ function RAe({ kind: e, entityId: t, name: n, onPicked: r }) {
 		isOpen: i,
 		onOpenChange: a,
 		width: "avatar-picker",
-		label: "Cambiar avatar",
+		label: "更换头像",
 		children: /* @__PURE__ */ (0, C.jsx)(zAe, {
 			kind: e,
 			entityId: t,
@@ -61348,10 +61348,10 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 						children: [/* @__PURE__ */ (0, C.jsx)(Wj, {
 							slot: "title",
 							className: "text-title-3-semibold text-text-primary",
-							children: d ? "Encuadrar el área del avatar" : "Cambiar avatar"
+							children: d ? "框出头像那一块" : "更换头像"
 						}), !d && w.length ? /* @__PURE__ */ (0, C.jsxs)(hA, {
 							color: "soft",
-							children: [w.length.toLocaleString(), "  imagen(es)Opcional"]
+							children: [w.length.toLocaleString(), " 张可选"]
 						}) : null]
 					}),
 					/* @__PURE__ */ (0, C.jsx)("p", {
@@ -61371,7 +61371,7 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 							onClick: () => {
 								h.isFetching || h.refetch();
 							},
-							children: "Reintentar"
+							children: "重试"
 						}) : void 0,
 						children: T
 					}) : null
@@ -61380,7 +61380,7 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 			/* @__PURE__ */ (0, C.jsx)(pj, {
 				icon: Mk,
 				size: "small",
-				"aria-label": "Desactivar",
+				"aria-label": "关闭",
 				onClick: i
 			})
 		]
@@ -61399,7 +61399,7 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 			className: "flex min-h-0 flex-1 flex-col overflow-y-auto border-t border-separator-border px-5 py-4",
 			children: /* @__PURE__ */ (0, C.jsx)("div", {
 				role: "listbox",
-				"aria-label": "Avatar alternativo",
+				"aria-label": "备选头像",
 				"aria-busy": h.isPending || void 0,
 				"data-skeleton": h.isPending ? "avatar-choices" : void 0,
 				className: "inline-grid grid-cols-3 content-start gap-2 sm:grid-cols-4",
@@ -61439,7 +61439,7 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 							children: /* @__PURE__ */ (0, C.jsx)(hA, {
 								variant: "caption",
 								color: "gray",
-								children: "En uso"
+								children: "在用"
 							})
 						}) : null,
 						LH(n) ? /* @__PURE__ */ (0, C.jsx)("span", {
@@ -61447,7 +61447,7 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 							children: /* @__PURE__ */ (0, C.jsxs)(hA, {
 								variant: "caption",
 								color: "gray",
-								children: [n.cast.toLocaleString(), " persona(s)"]
+								children: [n.cast.toLocaleString(), " 人"]
 							})
 						}) : null
 					]
@@ -61467,8 +61467,8 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 			children: [/* @__PURE__ */ (0, C.jsx)("div", {
 				className: "min-w-0 flex-1",
 				children: /* @__PURE__ */ (0, C.jsx)(SP, {
-					"aria-label": "Código JAV",
-					placeholder: "Código JAV, p.ej. ABW-232",
+					"aria-label": "番号",
+					placeholder: "番号，如 ABW-232",
 					value: l,
 					onChange: u
 				})
@@ -61477,7 +61477,7 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 				variant: "secondary",
 				disabled: !l.trim(),
 				...Y(v("code")),
-				children: "enmarcar la portada a obtener"
+				children: "取封面来框"
 			})]
 		}), /* @__PURE__ */ (0, C.jsxs)("div", {
 			className: "flex flex-wrap items-center gap-3",
@@ -61486,7 +61486,7 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 					variant: "secondary",
 					onClick: () => a.current?.click(),
 					...Y(v("file")),
-					children: "seleccionar imágenes desde esta máquina"
+					children: "从本机选图片"
 				}),
 				/* @__PURE__ */ (0, C.jsx)("input", {
 					ref: a,
@@ -61503,8 +61503,8 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 						className: "min-w-0 flex-1",
 						children: /* @__PURE__ */ (0, C.jsx)(SP, {
 							type: "url",
-							"aria-label": "ImágenesDirección",
-							placeholder: "https://...",
+							"aria-label": "图片地址",
+							placeholder: "https://…",
 							value: s,
 							onChange: c
 						})
@@ -61517,7 +61517,7 @@ function zAe({ kind: e, entityId: t, name: n, onPicked: r, close: i }) {
 								url: s.trim()
 							});
 						},
-						children: "usaresteDirección"
+						children: "用这个地址"
 					})]
 				})
 			]
@@ -61580,14 +61580,14 @@ function HAe({ kind: e, entityId: t, choice: n, file: r, busy: i, back: a, confi
 			aspect: 1,
 			box: f,
 			size: u,
-			label: `${n.label} avatarobtenerescenamarco`,
+			label: `${n.label} 的头像取景框`,
 			onSize: (e) => {
 				d(e), bH(e) && p(c === n.ref ? FH(n, e, 1) : xH(e, 1));
 			},
 			onBox: p
 		}) : null, s.length > 1 ? /* @__PURE__ */ (0, C.jsx)("div", {
 			role: "radiogroup",
-			"aria-label": "Imagen de fondo",
+			"aria-label": "底图",
 			className: "flex flex-wrap justify-center gap-2",
 			children: s.map((e) => /* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
@@ -61617,7 +61617,7 @@ function HAe({ kind: e, entityId: t, choice: n, file: r, busy: i, back: a, confi
 					variant: "secondary",
 					onClick: a,
 					...Y(i),
-					children: "Volver a seleccionar imágenes de reserva"
+					children: "返回备选图片"
 				}),
 				n.crop ? null : /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
@@ -61625,7 +61625,7 @@ function HAe({ kind: e, entityId: t, choice: n, file: r, busy: i, back: a, confi
 					onClick: () => {
 						i || o(null);
 					},
-					children: "Imagen(es) completa(s) para usar"
+					children: "整张使用"
 				}),
 				/* @__PURE__ */ (0, C.jsx)(q, {
 					disabled: !f || !u,
@@ -61637,7 +61637,7 @@ function HAe({ kind: e, entityId: t, choice: n, file: r, busy: i, back: a, confi
 							version: m
 						});
 					},
-					children: "Usar este bloque"
+					children: "用这一块"
 				})
 			]
 		})]
@@ -61702,7 +61702,7 @@ function zH({ feedNew: e, host: t, wire: n, act: r, settled: i }) {
 		let l = s.dataset.feedAction || "";
 		if (await r(Number(c.dataset.feedId), l), l === "want" || l === "unwant") {
 			let e = l === "want";
-			s.dataset.feedAction = e ? "unwant" : "want", s.setAttribute("aria-pressed", String(e)), s.title = e ? "Quitar de deseados" : "Deseado";
+			s.dataset.feedAction = e ? "unwant" : "want", s.setAttribute("aria-pressed", String(e)), s.title = e ? "取消想要" : "想要";
 		} else l === "ignore" ? c.remove() : c.classList.add("isread"), o.current?.querySelector("[data-feed-id]") || (t.hidden = !0, i?.(!1));
 	};
 	return l ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("div", {
@@ -61837,7 +61837,7 @@ function UAe({ following: e, busy: t, onToggle: n, tip: r }) {
 				ref: a,
 				type: "checkbox",
 				role: "switch",
-				"aria-label": "Suscribirse a nuevas obras",
+				"aria-label": "订阅新作",
 				"aria-describedby": "entityFeedTip",
 				"data-entity-feed": "",
 				checked: e,
@@ -61870,14 +61870,14 @@ function UAe({ following: e, busy: t, onToggle: n, tip: r }) {
 function WAe({ current: e, choices: t, onChoose: n, onAddAlias: r }) {
 	let [i, a] = (0, S.useState)(!1), o = (0, S.useRef)(null);
 	return (0, S.useEffect)(() => {
-		o.current?.setAttribute("title", "Nombre y alias");
+		o.current?.setAttribute("title", "名字与别名");
 	}, []), /* @__PURE__ */ (0, C.jsxs)(Hye, {
 		isOpen: i,
 		onOpenChange: a,
 		children: [/* @__PURE__ */ (0, C.jsx)(Hj, {
 			ref: o,
 			"data-namepick-toggle": "",
-			"aria-label": "Nombre y alias",
+			"aria-label": "名字与别名",
 			children: /* @__PURE__ */ (0, C.jsx)(BH, { name: "chevron-down" })
 		}), /* @__PURE__ */ (0, C.jsx)(mN, {
 			placement: "bottom start",
@@ -61886,7 +61886,7 @@ function WAe({ current: e, choices: t, onChoose: n, onAddAlias: r }) {
 			className: UP,
 			"data-namepick-menu": "",
 			children: /* @__PURE__ */ (0, C.jsxs)(Wye, {
-				"aria-label": "Nombre y alias",
+				"aria-label": "名字与别名",
 				"data-namepick-list": "",
 				children: [
 					/* @__PURE__ */ (0, C.jsx)(SN, {
@@ -61907,17 +61907,17 @@ function WAe({ current: e, choices: t, onChoose: n, onAddAlias: r }) {
 					/* @__PURE__ */ (0, C.jsx)(Tye, { "data-namepick-rule": "" }),
 					/* @__PURE__ */ (0, C.jsx)(SN, { children: /* @__PURE__ */ (0, C.jsxs)(wN, {
 						id: "alias",
-						textValue: "AñadirAlias",
+						textValue: "添加别名",
 						"data-namepick-alias": "",
 						onAction: r,
-						children: [/* @__PURE__ */ (0, C.jsx)(BH, { name: "plus" }), /* @__PURE__ */ (0, C.jsx)("span", { children: "Añadir alias..." })]
+						children: [/* @__PURE__ */ (0, C.jsx)(BH, { name: "plus" }), /* @__PURE__ */ (0, C.jsx)("span", { children: "添加别名…" })]
 					}) })
 				]
 			})
 		})]
 	});
 }
-var GAe = (e) => e === "studio" || e === "agency", GH = (e) => e === "performer" || e === "creator", KAe = (e) => e ? "Suscrito a nuevas obras, clic enCancelar suscripción" : "Suscribirse a nuevas obras";
+var GAe = (e) => e === "studio" || e === "agency", GH = (e) => e === "performer" || e === "creator", KAe = (e) => e ? "已订阅新作，点击取消订阅" : "订阅新作";
 function qAe(e) {
 	return [e.canonical_name, ...e.aliases || []].filter((e, t, n) => e && n.indexOf(e) === t);
 }
@@ -61935,7 +61935,7 @@ function KH(e) {
 }
 function qH(e, t) {
 	let n = rn(e, "performer"), r = en(t);
-	return r && [e.label, n].map(en).some((e) => e && (r.includes(e) || e.includes(r))) ? `${t} OficialDetalles` : n || e.label || "";
+	return r && [e.label, n].map(en).some((e) => e && (r.includes(e) || e.includes(r))) ? `${t} 官方资料` : n || e.label || "";
 }
 var JH = (e) => ({ site: ree(e) });
 function JAe(e, t) {
@@ -61946,7 +61946,7 @@ function JAe(e, t) {
 		mark: { brand: e.mark || "" }
 	})), i = [e.canonical_name, ...e.aliases || []], a = (e.links || []).map((e) => {
 		if (e.gone) {
-			let t = e.retired_year ? `Ya retirada en ${e.retired_year} ` : "enlaceconectarYaInválido";
+			let t = e.retired_year ? `已于 ${e.retired_year} 年隐退` : "链接已失效";
 			return {
 				type: "gone",
 				title: `${qH(e, n)} · ${t}`
@@ -61955,7 +61955,7 @@ function JAe(e, t) {
 		let r = e.url || "";
 		if (!(e.clickable && /^https?:\/\//i.test(r))) return {
 			type: "private",
-			label: e.label || e.hostname || "YaRegistro"
+			label: e.label || e.hostname || "已记录"
 		};
 		if (GH(t) && e.link_kind !== "social") return {
 			type: "icon",
@@ -61986,7 +61986,7 @@ function YAe(e) {
 	let t = e.filter((e) => e.type === "private");
 	return t.length < 2 ? e : [...e.filter((e) => e.type !== "private"), {
 		type: "private",
-		label: `${t.length.toLocaleString()} NoPúblicoFuente`,
+		label: `${t.length.toLocaleString()} 个不公开来源`,
 		sources: t.map((e) => e.label)
 	}];
 }
@@ -61995,47 +61995,47 @@ function XAe(e) {
 	return [
 		[
 			"legal_name",
-			"Nombre de empresa",
+			"公司名称",
 			"briefcase"
 		],
 		[
 			"founded",
-			"Fundación de la empresa",
+			"公司成立",
 			"calendar"
 		],
 		[
 			"launched",
-			"Inicio de marca",
+			"品牌启动",
 			"flag"
 		],
 		[
 			"country",
-			"País/Región",
+			"国家／地区",
 			"globe"
 		],
 		[
 			"location",
-			"Ubicación",
+			"所在地",
 			"globe"
 		],
 		[
 			"operator",
-			"Empresa operadora",
+			"运营公司",
 			"briefcase"
 		],
 		[
 			"parent",
-			"Empresa matriz",
+			"母公司",
 			"briefcase"
 		],
 		[
 			"group",
-			"grupo al que pertenece",
+			"所属集团",
 			"briefcase"
 		],
 		[
 			"distributor",
-			"Distribuidora",
+			"发行商",
 			"film"
 		]
 	].flatMap(([t, n, r]) => e?.[t]?.value?.trim() ? [{
@@ -62052,12 +62052,12 @@ function ZAe(e) {
 	let t = [];
 	e.birth_date && t.push({
 		glyph: "cake",
-		label: "Cumpleaños",
+		label: "生日",
 		parts: [{
 			text: e.birth_date,
 			tone: "num"
 		}, ...Number.isFinite(e.age) ? [{
-			text: `· ${e.age} años`,
+			text: `· ${e.age} 岁`,
 			tone: "sub"
 		}] : []]
 	});
@@ -62066,10 +62066,10 @@ function ZAe(e) {
 		["B", e.bust],
 		["W", e.waist],
 		["H", e.hip]
-	].filter(([, e]) => e).map(([e, t]) => `${e}${t}`).join(" · "), r = e.cup ? `${n ? "· " : ""}${e.cup} copa` : "";
+	].filter(([, e]) => e).map(([e, t]) => `${e}${t}`).join(" · "), r = e.cup ? `${n ? "· " : ""}${e.cup} 罩杯` : "";
 	(n || r) && t.push({
 		glyph: "ruler",
-		label: "Cuerpo/Físico",
+		label: "身材",
 		parts: [...n ? [{
 			text: n,
 			tone: "num"
@@ -62079,7 +62079,7 @@ function ZAe(e) {
 		}] : []]
 	}), (e.debut_date || e.debut_title) && t.push({
 		glyph: "flag",
-		label: "Debut",
+		label: "出道",
 		clip: e.debut_title || void 0,
 		parts: [...e.debut_date ? [{
 			text: e.debut_date,
@@ -62092,14 +62092,14 @@ function ZAe(e) {
 	let i = e.active || {};
 	return i.from && t.push({
 		glyph: "calendar-range",
-		label: "Carrera",
+		label: "生涯",
 		parts: [{
-			text: `${i.from}${i.ongoing ? " – hasta ahora" : i.to ? ` – ${i.to}` : ""}`,
+			text: `${i.from}${i.ongoing ? " – 至今" : i.to ? ` – ${i.to}` : ""}`,
 			tone: "num"
 		}]
 	}), (e.tags || []).length && t.push({
 		glyph: "tags",
-		label: "Etiqueta",
+		label: "标签",
 		parts: [],
 		tags: e.tags
 	}), t;
@@ -62141,7 +62141,7 @@ function eje({ kind: e, name: t, entity: n, feedNew: r, feedHost: i, actions: a,
 		o.wireScroller(m.current);
 	}, [o, f.length]), /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsxs)("section", {
 		"data-entity-card": "",
-		"aria-label": "Detalles",
+		"aria-label": "资料",
 		children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 			"data-entity-profile": l.length ? "facts" : "",
 			children: [
@@ -62192,7 +62192,7 @@ function eje({ kind: e, name: t, entity: n, feedNew: r, feedHost: i, actions: a,
 						n.related_identities?.length ? /* @__PURE__ */ (0, C.jsx)("div", {
 							className: "flex min-w-0 flex-wrap gap-2 text-caption-1-regular text-text-secondary",
 							children: n.related_identities.map((e) => {
-								let t = `${e.relation === "same_person" ? "Misma persona" : "Cuenta vinculada"}: ${e.canonical_name}`;
+								let t = `${e.relation === "same_person" ? "同一人" : "关联账号"}：${e.canonical_name}`;
 								return /* @__PURE__ */ (0, C.jsx)("button", {
 									type: "button",
 									title: t,
@@ -62234,7 +62234,7 @@ function eje({ kind: e, name: t, entity: n, feedNew: r, feedHost: i, actions: a,
 			]
 		}), f.length ? /* @__PURE__ */ (0, C.jsx)("div", {
 			"data-entity-foot": "",
-			"aria-label": "Coprotagonistas",
+			"aria-label": "同台艺人",
 			children: /* @__PURE__ */ (0, C.jsx)("div", {
 				ref: m,
 				"data-related-people": "",
@@ -62276,7 +62276,7 @@ function nje({ kind: e, entity: t, actions: n }) {
 		"data-agency": r.name,
 		onClick: i("agency", r.name),
 		children: r.name
-	}) : r.name : null, o = /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("b", { children: t.asset_count.toLocaleString() }), "  video(s)"] });
+	}) : r.name : null, o = /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("b", { children: t.asset_count.toLocaleString() }), " 个视频"] });
 	if (e === "performer" || e === "creator") {
 		let e = QAe(t.name_groups);
 		return /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -62285,7 +62285,7 @@ function nje({ kind: e, entity: t, actions: n }) {
 				/* @__PURE__ */ (0, C.jsx)(ZH, { entity: t }),
 				/* @__PURE__ */ (0, C.jsxs)("span", {
 					"data-meta-item": "",
-					title: "Videos",
+					title: "视频",
 					children: [/* @__PURE__ */ (0, C.jsx)(BH, { name: "film" }), /* @__PURE__ */ (0, C.jsx)("span", { children: o })]
 				}),
 				t.follow?.key ? /* @__PURE__ */ (0, C.jsx)(ije, {
@@ -62294,7 +62294,7 @@ function nje({ kind: e, entity: t, actions: n }) {
 				}) : null,
 				a ? /* @__PURE__ */ (0, C.jsxs)("span", {
 					"data-meta-item": "",
-					title: "Agencia",
+					title: "事务所",
 					children: [/* @__PURE__ */ (0, C.jsx)(BH, { name: "briefcase" }), /* @__PURE__ */ (0, C.jsx)("span", { children: a })]
 				}) : null,
 				e ? /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -62303,15 +62303,15 @@ function nje({ kind: e, entity: t, actions: n }) {
 						/* @__PURE__ */ (0, C.jsx)(BH, { name: "id-card" }),
 						/* @__PURE__ */ (0, C.jsx)("span", {
 							"data-alias-names": "",
-							title: "Alias",
+							title: "别名",
 							children: e.names.map((e, t) => /* @__PURE__ */ (0, C.jsx)("span", { children: e }, t))
 						}),
 						e.rest > 0 ? /* @__PURE__ */ (0, C.jsx)(WH, {
 							id: "entityAliasPop",
 							hook: "alias",
 							rest: e.rest,
-							label: `otros ${e.rest.toLocaleString()} alias`,
-							heading: `${e.total.toLocaleString()} alias`,
+							label: `另外 ${e.rest.toLocaleString()} 个别名`,
+							heading: `${e.total.toLocaleString()} 个别名`,
 							children: /* @__PURE__ */ (0, C.jsx)("dl", { children: (t.name_groups?.groups || []).map((e, t) => /* @__PURE__ */ (0, C.jsx)(QH, {
 								label: e.label,
 								names: e.names
@@ -62325,11 +62325,11 @@ function nje({ kind: e, entity: t, actions: n }) {
 	let s = t.display_aliases || [], c = e === "agency" ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 		" · ",
 		/* @__PURE__ */ (0, C.jsx)("b", { children: (t.member_count || 0).toLocaleString() }),
-		"  actriz/actrices"
+		" 位艺人"
 	] }) : (t.labels || []).length ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 		" · ",
 		/* @__PURE__ */ (0, C.jsx)("b", { children: t.labels.length.toLocaleString() }),
-		"  sello(s)"
+		" 个厂牌"
 	] }) : null, l = t.maker;
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		"data-entity-alias": "meta",
@@ -62337,17 +62337,17 @@ function nje({ kind: e, entity: t, actions: n }) {
 			e === "creator" ? /* @__PURE__ */ (0, C.jsx)(ZH, { entity: t }) : null,
 			/* @__PURE__ */ (0, C.jsxs)("span", {
 				"data-meta-item": "",
-				title: "Videos",
+				title: "视频",
 				children: [/* @__PURE__ */ (0, C.jsx)(BH, { name: "film" }), /* @__PURE__ */ (0, C.jsxs)("span", { children: [o, c] })]
 			}),
 			a ? /* @__PURE__ */ (0, C.jsxs)("span", {
 				"data-meta-item": "",
-				title: "Agencia",
+				title: "事务所",
 				children: [/* @__PURE__ */ (0, C.jsx)(BH, { name: "briefcase" }), /* @__PURE__ */ (0, C.jsx)("span", { children: a })]
 			}) : null,
 			l ? /* @__PURE__ */ (0, C.jsxs)("span", {
 				"data-meta-item": "",
-				title: "Productora",
+				title: "片商",
 				children: [/* @__PURE__ */ (0, C.jsx)(BH, { name: "clapperboard" }), /* @__PURE__ */ (0, C.jsx)("a", {
 					href: Kt("studio", l.name, l.id),
 					"data-studio-link": l.name,
@@ -62368,15 +62368,15 @@ function rje({ aliases: e }) {
 			/* @__PURE__ */ (0, C.jsx)(BH, { name: "id-card" }),
 			/* @__PURE__ */ (0, C.jsx)("span", {
 				"data-alias-names": "",
-				title: "Alias",
+				title: "别名",
 				children: t.map((e, t) => /* @__PURE__ */ (0, C.jsx)("span", { children: e }, t))
 			}),
 			n ? /* @__PURE__ */ (0, C.jsx)(WH, {
 				id: "entityAliasPop",
 				hook: "alias",
 				rest: n,
-				label: `otros ${n.toLocaleString()} alias`,
-				heading: `${e.length.toLocaleString()} alias`,
+				label: `另外 ${n.toLocaleString()} 个别名`,
+				heading: `${e.length.toLocaleString()} 个别名`,
 				children: /* @__PURE__ */ (0, C.jsx)("dl", { children: /* @__PURE__ */ (0, C.jsx)(QH, { names: e.map((e) => ({ name: e })) }) })
 			}) : null
 		]
@@ -62387,13 +62387,13 @@ function ije({ follow: e, actions: t }) {
 	return /* @__PURE__ */ (0, C.jsxs)("span", {
 		"data-meta-item": "",
 		"data-entity-follow": "",
-		title: n ? `Seguir · ${n}` : "Seguir",
+		title: n ? `关注 · ${n}` : "关注",
 		children: [/* @__PURE__ */ (0, C.jsx)(BH, { name: "rss" }), /* @__PURE__ */ (0, C.jsxs)("a", {
 			href: "?media=online",
 			onClick: (n) => {
 				n.preventDefault(), t.openFollowAuthor(e.key);
 			},
-			children: [e.n.toLocaleString(), "  actualización(es)"]
+			children: [e.n.toLocaleString(), " 项更新"]
 		})]
 	});
 }
@@ -62413,20 +62413,20 @@ function aje({ follow: e, entity: t, actions: n }) {
 		className: "flex flex-col gap-2",
 		children: e.held.map((e) => /* @__PURE__ */ (0, C.jsxs)(J, {
 			tone: "info",
-			title: `Seguir con autor de mismo nombre: ${e.name}`,
+			title: `关注里有同名作者 ${e.name}`,
 			action: /* @__PURE__ */ (0, C.jsx)(q, {
 				size: "small",
 				...Y(r === e.key),
 				onClick: () => {
 					a(e.key, e.name);
 				},
-				children: "Es la misma persona"
+				children: "是同一个人"
 			}),
 			children: [
-				[e.providers.join(" · "), `${e.n.toLocaleString()}  actualización(es)`].filter(Boolean).join(" · "),
-				".  y  ",
+				[e.providers.join(" · "), `${e.n.toLocaleString()} 项更新`].filter(Boolean).join(" · "),
+				"。和 ",
 				t.canonical_name,
-				" ¿Es la misma persona?"
+				" 是同一个人吗？"
 			]
 		}, e.key))
 	});
@@ -62464,8 +62464,8 @@ function sje({ tags: e }) {
 		id: "entityTagPop",
 		hook: "fact",
 		rest: n,
-		label: `otras ${n.toLocaleString()} etiquetas`,
-		heading: `${e.length.toLocaleString()} Etiqueta`,
+		label: `另外 ${n.toLocaleString()} 个标签`,
+		heading: `${e.length.toLocaleString()} 个标签`,
 		children: /* @__PURE__ */ (0, C.jsx)("div", {
 			"data-fact-tags": "",
 			children: e.map((e) => /* @__PURE__ */ (0, C.jsx)("span", {
@@ -62510,7 +62510,7 @@ function cje({ link: e }) {
 			title: e.sources ? e.sources.join("\n") : e.label,
 			children: [/* @__PURE__ */ (0, C.jsx)($H, { mark: { globe: !0 } }), /* @__PURE__ */ (0, C.jsx)("span", {
 				"data-link-label": "",
-				children: e.sources ? e.label : `Fuente · ${e.label}`
+				children: e.sources ? e.label : `来源 · ${e.label}`
 			})]
 		});
 		default: return /* @__PURE__ */ (0, C.jsxs)("a", {
@@ -62538,7 +62538,7 @@ function lje({ entity: e, actions: t, helpers: n }) {
 			s.current = !1, o(!1);
 		}
 	}, l = async (e) => {
-		await c(e) && (n.receipt(e ? "Suscrito a nuevas obras" : "Suscripción cancelada", { undo: async () => {
+		await c(e) && (n.receipt(e ? "已订阅新作" : "已取消订阅新作", { undo: async () => {
 			await c(!e);
 		} }), e && t.refreshFeedAfterCheck());
 	};
@@ -62711,7 +62711,7 @@ function eU(e) {
 }
 var pje = () => String(((Date.now() ^ (Math.random() * 1e9 | 0)) >>> 0) % 99991);
 function mje(e, t) {
-	return `Foto · ${[e.total || !t ? `${(e.total || 0).toLocaleString()}  imagen(es)` : "", t ? `Muestra ${(e.sample_total || 0).toLocaleString()}  imagen(es) · ${t.toLocaleString()}  obra(s)` : ""].filter(Boolean).join(" · ")}`;
+	return `照片 · ${[e.total || !t ? `${(e.total || 0).toLocaleString()} 张` : "", t ? `样张 ${(e.sample_total || 0).toLocaleString()} 张 · ${t.toLocaleString()} 部作品` : ""].filter(Boolean).join(" · ")}`;
 }
 function hje(e) {
 	let { kind: t, name: n, entity: r, filters: i, media: a, helpers: o, actions: s, hosts: c } = e, l = t === "agency" || t === "studio", u = t === "agency" ? r.related_performers || [] : t === "studio" && r.labels || [], d = Number(r.id) || 0, f = ht(EV(t, n, 0, "")).data?.pages[0], p = f && !f.error ? f : null, m = p ? (p.total || 0) + (p.sample_total || 0) : 0, h = (p?.total || 0) > 0 || DV(p).length > 0, g = t === "creator" && r.follow?.key || "", _ = !!g && !r.asset_count, v = a.media === "photos" && h ? a : (a.media === "online" || _) && g ? {
@@ -62824,16 +62824,16 @@ function hje(e) {
 		chooseName: (e) => {
 			let n = r.canonical_name;
 			e !== n && Rs({
-				title: "Cambiar nombre general",
-				body: `"${e}"se convertirá en el nombre del archivonombre visible, "${n}"quedará como alias. el crédito de la obra, la búsqueda y las etiquetas se actualizarán. `,
-				confirmLabel: "Cambiar nombre general",
+				title: "更改统称",
+				body: `「${e}」将成为这份档案显示的名称，「${n}」留作别名。作品上的署名、搜索和标签都会跟着改写。`,
+				confirmLabel: "更改统称",
 				onConfirm: () => ge.mutateAsync({
 					from: n,
 					to: e
 				})
 			}).then(({ confirmed: e, result: n }) => {
 				let r = n;
-				e && r?.changed && (o.receipt(`Ya se cambió el nombre canónico a ${r.canonical_name}`, { undo: async () => {
+				e && r?.changed && (o.receipt(`已把统称更改为 ${r.canonical_name}`, { undo: async () => {
 					await ge.mutateAsync({
 						from: r.canonical_name || "",
 						to: r.previous_name || ""
@@ -62848,7 +62848,7 @@ function hje(e) {
 			try {
 				await _e.mutateAsync(e);
 			} catch (t) {
-				throw o.failure(e ? "Suscribirse a nuevas obras" : "CancelarSuscribirse a nuevas obras", t), t;
+				throw o.failure(e ? "订阅新作" : "取消订阅新作", t), t;
 			}
 		},
 		refreshFeedAfterCheck: () => {
@@ -62879,9 +62879,9 @@ function hje(e) {
 			try {
 				await ve.mutateAsync(e);
 			} catch (e) {
-				throw o.failure("VincularSeguirautor", e), e;
+				throw o.failure("绑定关注作者", e), e;
 			}
-			o.receipt(`Ya seguido en ${t} registrar ${r.canonical_name} bajo el nombre`), await me();
+			o.receipt(`已把关注里的 ${t} 记到 ${r.canonical_name} 名下`), await me();
 		}
 	}), [
 		s,
@@ -62979,9 +62979,9 @@ function hje(e) {
 		m,
 		g
 	].filter(Boolean).length > 1 ? {
-		label: u.length ? "Vista de página" : "Tipo de medio",
+		label: u.length ? "页面视图" : "媒体类型",
 		people: u.length ? {
-			label: t === "studio" ? "Sello" : "Actriz",
+			label: t === "studio" ? "厂牌" : "艺人",
 			count: u.length,
 			icon: t === "studio" ? "clapperboard" : "user-round"
 		} : null,
@@ -63008,13 +63008,13 @@ function hje(e) {
 		studio: "",
 		owner: ""
 	}, vV), Me = "", Ne = !1;
-	if (E === "people") Me = `${t === "studio" ? "Sello" : "Actriz"} · ${u.length.toLocaleString()}`;
-	else if (E === "online") Ne = D.busy, Me = `En línea · ${(D.total ?? r.follow?.n ?? 0).toLocaleString()}  actualización(es)`;
+	if (E === "people") Me = `${t === "studio" ? "厂牌" : "艺人"} · ${u.length.toLocaleString()}`;
+	else if (E === "online") Ne = D.busy, Me = `在线 · ${(D.total ?? r.follow?.n ?? 0).toLocaleString()} 项更新`;
 	else if (E === "videos") {
 		Ne = !M.data;
 		let e = xV(i.tag).length;
-		Me = `Videos · ${(M.data?.work_total ?? M.data?.total ?? 0).toLocaleString()}${e ? ` · Ya seleccionados ${e.toLocaleString()} Etiqueta` : ""}`;
-	} else ae && !ae.error ? Me = Ee ? `${ae.title} · ${(ae.total || 0).toLocaleString()}  imagen(es)` : mje(ae, DV(ae).length) : Ne = ie.isPending;
+		Me = `视频 · ${(M.data?.work_total ?? M.data?.total ?? 0).toLocaleString()}${e ? ` · 已选 ${e.toLocaleString()} 个标签` : ""}`;
+	} else ae && !ae.error ? Me = Ee ? `${ae.title} · ${(ae.total || 0).toLocaleString()} 张` : mje(ae, DV(ae).length) : Ne = ie.isPending;
 	let Pe = (0, S.useMemo)(() => ({
 		...e.card.actions,
 		loadMorePhotos: async () => {
@@ -63113,17 +63113,17 @@ function hje(e) {
 function gje({ filtered: e, onShowAll: t }) {
 	return e ? /* @__PURE__ */ (0, C.jsx)(yA, {
 		icon: EP("search"),
-		title: "Sinque cumple los criterios de resultado deVideos",
+		title: "没有符合条件的视频",
 		actions: /* @__PURE__ */ (0, C.jsx)(q, {
 			variant: "secondary",
 			onClick: t,
-			children: "buscarverTodoVideos"
+			children: "查看全部视频"
 		}),
-		children: "Limpiar filtrosdespuésbuscarverbajo el nombreTodoVideos. "
+		children: "清除筛选后查看名下全部视频。"
 	}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 		icon: EP("film"),
-		title: "Sin videos todavía",
-		children: "Los videos con este nombre en la biblioteca se mostrarán aquí después. "
+		title: "还没有视频",
+		children: "署上这个名字的视频入库后会显示在这里。"
 	});
 }
 //#endregion
@@ -63171,10 +63171,10 @@ var _je = EP("play"), vje = EP("file-stack"), yje = vA({
 function bje(e) {
 	return e.identical ? /* @__PURE__ */ (0, C.jsx)("span", {
 		className: `${rU} text-(--keep)`,
-		children: "sha1 coincide"
+		children: "sha1 一致"
 	}) : /* @__PURE__ */ (0, C.jsx)("span", {
 		className: `${rU} text-text-secondary`,
-		children: e.evidence === "same_code_short_copy" ? "mismoCódigo JAVcortoVersión" : "Duracióninferir"
+		children: e.evidence === "same_code_short_copy" ? "同番号短版本" : "时长推断"
 	});
 }
 function xje({ file: e, prefix: t, openItem: n }) {
@@ -63185,7 +63185,7 @@ function xje({ file: e, prefix: t, openItem: n }) {
 			/* @__PURE__ */ (0, C.jsxs)("button", {
 				type: "button",
 				onClick: r,
-				"aria-label": `Vista previa ${e.name}`,
+				"aria-label": `预览 ${e.name}`,
 				className: "relative row-span-2 inline-grid aspect-16/10 w-full cursor-pointer place-items-center overflow-hidden rounded-2lg bg-background-tertiary-default text-text-secondary",
 				children: [/* @__PURE__ */ (0, C.jsx)(_je, {
 					"aria-hidden": !0,
@@ -63212,10 +63212,10 @@ function xje({ file: e, prefix: t, openItem: n }) {
 					className: "flex flex-none gap-1",
 					children: [e.is_largest ? /* @__PURE__ */ (0, C.jsx)("i", {
 						className: `${nU} not-italic bg-background-primary-hover text-text-secondary`,
-						children: "Más grande"
+						children: "最大"
 					}) : null, e.is_longest ? /* @__PURE__ */ (0, C.jsx)("i", {
 						className: `${nU} not-italic bg-(--keep)/22 text-(--keep)`,
-						children: "El más largo"
+						children: "最长"
 					}) : null]
 				}) : null]
 			}),
@@ -63252,11 +63252,11 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 	}), [a, o] = (0, S.useState)(""), s = mt({
 		mutationFn: (e) => hz(e, "dispose"),
 		onSuccess: (e, r) => {
-			aU(), t(`Ya movido ${r.length} elementos movidos a la papelera`, { undo: async () => {
+			aU(), t(`已把 ${r.length} 项移入回收站`, { undo: async () => {
 				try {
 					await hz(r, "restore");
 				} catch (e) {
-					n("DeshacerMover a papelera", e);
+					n("撤销移入回收站", e);
 				} finally {
 					aU();
 				}
@@ -63268,17 +63268,17 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 		className: "mx-auto w-full max-w-board",
 		children: /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: "error",
-			title: "Archivos duplicadosleerFallido",
-			children: r.error ? V(r.error) : "No disponibleArchivos duplicadosLista, Por favor actualiza la páginaReintentar. "
+			title: "重复文件读取失败",
+			children: r.error ? V(r.error) : "未取得重复文件列表，请刷新页面重试。"
 		})
 	});
 	let l = c.groups ?? [], u = wEe(i.data), d = ({ groups: e, keep: t, key: n }) => {
 		if (s.isPending) return;
 		let r = MEe(e, t);
 		r.length && Rs({
-			title: "Mover a papelera",
-			body: `se moverán ${r.length} registros de duplicados a la papelera, conservando por grupo${pz[t] ?? pz.largest}. archivos en total ${cn(NEe(e, r))}, el registro se puede restaurar desde la papelera. `,
-			confirmLabel: "Mover a papelera",
+			title: "移入回收站",
+			body: `将把 ${r.length} 个重复文件的馆藏记录移入回收站，每组保留${pz[t] ?? pz.largest}。文件共 ${cn(NEe(e, r))}，记录可从回收站还原。`,
+			confirmLabel: "移入回收站",
 			onConfirm: () => (o(n), s.mutateAsync(r))
 		});
 	}, f = (e) => Y(a === e && s.isPending);
@@ -63286,12 +63286,12 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 		className: "mx-auto w-full max-w-board pb-10.5",
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(tU, {
-				label: "Contenido duplicado",
-				figure: `${Number(c.total || 0).toLocaleString()} grupo(s)`,
-				detail: `${Number(c.files || 0).toLocaleString()} Archivo · recuperables ${cn(c.reclaimable)}`
+				label: "重复内容",
+				figure: `${Number(c.total || 0).toLocaleString()} 组`,
+				detail: `${Number(c.files || 0).toLocaleString()} 个文件 · 可回收 ${cn(c.reclaimable)}`
 			}),
 			l.length ? /* @__PURE__ */ (0, C.jsxs)(Qve, {
-				title: "Conservar en lote",
+				title: "批量保留",
 				children: [
 					/* @__PURE__ */ (0, C.jsx)(yj, {
 						busy: a === "all:largest",
@@ -63300,7 +63300,7 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 							keep: "largest",
 							key: "all:largest"
 						}),
-						children: "Conservar todo: mantener el más grande"
+						children: "全部保留最大"
 					}),
 					/* @__PURE__ */ (0, C.jsx)(yj, {
 						busy: a === "all:longest",
@@ -63309,7 +63309,7 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 							keep: "longest",
 							key: "all:longest"
 						}),
-						children: "Conservar todo: mantener el más largo"
+						children: "全部保留最长"
 					}),
 					jEe(l, u).map((e) => /* @__PURE__ */ (0, C.jsx)(yj, {
 						busy: a === `all:${e}`,
@@ -63320,7 +63320,7 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 						}),
 						children: /* @__PURE__ */ (0, C.jsx)(tj, {
 							source: e,
-							label: `Todoóptimoprimero  ${pn[e] || e}`
+							label: `全部优先 ${pn[e] || e}`
 						})
 					}, e))
 				]
@@ -63329,7 +63329,7 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 				className: "mb-5",
 				children: /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "error",
-					title: "Mover a papeleraFallido",
+					title: "移入回收站失败",
 					children: V(s.error)
 				})
 			}) : null,
@@ -63347,12 +63347,12 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 							}),
 							/* @__PURE__ */ (0, C.jsx)("span", {
 								className: "font-mono text-caption-1-regular leading-5 text-text-primary",
-								children: `${Number(t.count || 0).toLocaleString()}  · recuperables ${cn(t.reclaimable)}`
+								children: `${Number(t.count || 0).toLocaleString()} 个 · 可回收 ${cn(t.reclaimable)}`
 							}),
 							bje(t),
 							t.cross_drive ? /* @__PURE__ */ (0, C.jsx)("span", {
 								className: `${rU} text-text-secondary`,
-								children: `entre discos: ${t.drives.join(" ")}`
+								children: `跨盘 ${t.drives.join(" ")}`
 							}) : null,
 							/* @__PURE__ */ (0, C.jsxs)("span", {
 								className: "ml-auto flex flex-wrap gap-2 max-compact:ml-0 max-compact:w-full",
@@ -63366,7 +63366,7 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 											keep: "largest",
 											key: a("largest")
 										}),
-										children: "Mantener el más grande"
+										children: "留最大"
 									}),
 									/* @__PURE__ */ (0, C.jsx)(q, {
 										variant: "secondary",
@@ -63377,7 +63377,7 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 											keep: "longest",
 											key: a("longest")
 										}),
-										children: "Mantener el más largo"
+										children: "留最长"
 									}),
 									mz(t.files, u).map((e) => /* @__PURE__ */ (0, C.jsx)(q, {
 										variant: "secondary",
@@ -63390,7 +63390,7 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 										}),
 										children: /* @__PURE__ */ (0, C.jsx)(tj, {
 											source: e,
-											label: `mantener ${pn[e] || e}`
+											label: `留 ${pn[e] || e}`
 										})
 									}, e)),
 									/* @__PURE__ */ (0, C.jsx)(q, {
@@ -63402,7 +63402,7 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 											keep: "all",
 											key: a("all")
 										}),
-										children: "Reciclar grupo completo"
+										children: "整组回收"
 									})
 								]
 							})
@@ -63415,12 +63415,12 @@ function Sje({ openItem: e, toast: t, failure: n }) {
 				}, `${t.code}-${n}`);
 			}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 				icon: vje,
-				title: "No encontradoArchivos duplicados",
-				children: "ninguna fuente del intervalo detectó archivos del mismo contenido. EscanearnuevoFuentedespués, estedentrose actualizará automáticamente. "
+				title: "没有找到重复文件",
+				children: "所有来源之间没有检测到内容相同的文件。扫描新来源后，这里会自动更新。"
 			}),
 			l.length > 0 && c.total > l.length ? /* @__PURE__ */ (0, C.jsx)("p", {
 				className: "text-center text-caption-1-regular text-text-secondary",
-				children: `MostrarrecuperablesMásprimeros ${l.length.toLocaleString()} grupo(s), Total: ${Number(c.total).toLocaleString()} grupo(s); Después de procesar estos, otros rellenarán el espacio . `
+				children: `显示可回收最多的前 ${l.length.toLocaleString()} 组，共 ${Number(c.total).toLocaleString()} 组；处理掉这些后，其余的会补上来。`
 			}) : null
 		]
 	});
@@ -63443,11 +63443,11 @@ function cU() {
 		variant: "secondary",
 		attrs: "disabled data-skeleton-action"
 	}), t = (e) => `<div class="flex w-full flex-col rounded-2xl bg-background-secondary-default pl-3"><div class="flex flex-col gap-4 py-4 pr-3">${e}</div></div>`, n = "<span class=\"skeleton h-5 w-1/3\"></span><span class=\"skeleton h-4 w-2/3\"></span>", r = (e, t) => `<section aria-label="${e}" class="flex w-full flex-col gap-2"><p class="w-full px-3 text-body-2-medium text-text-secondary">${e}</p>${t}</section>`;
-	return `<div data-skeleton="diagnostics" aria-busy="true" aria-label="Leyendo diagnóstico del sistema" class="flex min-w-0 flex-col gap-6"><div aria-hidden="true" inert class="flex flex-col gap-6">
-    <div class="flex flex-wrap justify-end gap-2">${e("Descargar informe de diagnóstico")}${e("Reverificar")}</div>
-    ${r("NecesarioSeguir", t(`<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div class="flex min-w-0 flex-1 flex-col gap-2">${n}<span class="skeleton h-4 w-1/2"></span></div>${e("Abrir página relacionada")}</div>`))}
-    ${r("Salud de la biblioteca", t(n))}
-    ${r("Sesión de fuente", `<div class="flex flex-col gap-3">${t(n)}${t(n)}</div>`)}
+	return `<div data-skeleton="diagnostics" aria-busy="true" aria-label="正在读取系统诊断" class="flex min-w-0 flex-col gap-6"><div aria-hidden="true" inert class="flex flex-col gap-6">
+    <div class="flex flex-wrap justify-end gap-2">${e("下载诊断报告")}${e("重新检查")}</div>
+    ${r("需要关注", t(`<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div class="flex min-w-0 flex-1 flex-col gap-2">${n}<span class="skeleton h-4 w-1/2"></span></div>${e("打开相关页面")}</div>`))}
+    ${r("库健康", t(n))}
+    ${r("来源会话", `<div class="flex flex-col gap-3">${t(n)}${t(n)}</div>`)}
   </div></div>`;
 }
 //#endregion
@@ -63481,14 +63481,14 @@ function lU({ source: e }) {
 }
 //#endregion
 //#region src/react/diagnostics/health-list.tsx
-var uU = (e) => e.title || e.name || e.code || `Obra #${e.id}`, wje = (e) => [[
-	"Obra",
-	"Código JAV",
-	"Nombre de archivo",
-	"Biblioteca de medios",
-	"Ruta",
-	"Duración(segundo(s))",
-	"Tamaño (bytes)"
+var uU = (e) => e.title || e.name || e.code || `作品 #${e.id}`, wje = (e) => [[
+	"作品",
+	"番号",
+	"文件名",
+	"媒体库",
+	"路径",
+	"时长（秒）",
+	"大小（字节）"
 ], ...e.map((e) => [
 	uU(e),
 	e.code ?? "",
@@ -63499,10 +63499,10 @@ var uU = (e) => e.title || e.name || e.code || `Obra #${e.id}`, wje = (e) => [[
 	e.size ?? ""
 ])].map((e) => e.map((e) => String(e ?? "").replace(/[\t\r\n]+/g, " ")).join("	")).join("\n");
 function Tje({ group: e, openItem: t, receipt: n }) {
-	let r = wA(), [i, a] = (0, S.useState)([]), o = (e) => void r.run("copy", () => navigator.clipboard.writeText(wje(e)), () => n("Copiadolista de verificación")), s = [
+	let r = wA(), [i, a] = (0, S.useState)([]), o = (e) => void r.run("copy", () => navigator.clipboard.writeText(wje(e)), () => n("已复制清单")), s = [
 		{
 			id: "title",
-			label: "Obra",
+			label: "作品",
 			value: uU,
 			render: (e) => /* @__PURE__ */ (0, C.jsxs)("span", {
 				className: "flex min-w-48 max-w-72 flex-col gap-1",
@@ -63521,66 +63521,66 @@ function Tje({ group: e, openItem: t, receipt: n }) {
 		},
 		{
 			id: "code",
-			label: "Código JAV",
+			label: "番号",
 			value: (e) => e.code || "",
 			render: (e) => /* @__PURE__ */ (0, C.jsx)("span", {
 				className: "whitespace-nowrap",
-				children: e.code || "NoReconocer"
+				children: e.code || "未识别"
 			})
 		},
 		{
 			id: "location",
-			label: "Biblioteca de medios",
+			label: "媒体库",
 			value: (e) => pn[e.location] || e.location,
-			render: (e) => pn[e.location] || e.location || "No disponible"
+			render: (e) => pn[e.location] || e.location || "未取得"
 		},
 		{
 			id: "path",
-			label: "ArchivoRuta",
+			label: "文件路径",
 			value: (e) => e.path,
 			render: (e) => /* @__PURE__ */ (0, C.jsx)("span", {
 				"data-middle-truncate": !0,
 				title: e.path,
 				className: "block w-64 text-body-2-regular text-text-secondary",
-				children: e.path || "No disponible"
+				children: e.path || "未取得"
 			})
 		},
 		{
 			id: "duration",
-			label: "Duración",
+			label: "时长",
 			value: (e) => e.duration ?? 0,
-			render: (e) => e.duration && e.duration > 0 ? on(e.duration) : "No disponible"
+			render: (e) => e.duration && e.duration > 0 ? on(e.duration) : "未取得"
 		},
 		{
 			id: "size",
-			label: "Tamaño",
+			label: "大小",
 			value: (e) => e.size ?? 0,
-			render: (e) => e.size === null ? "No disponible" : cn(e.size)
+			render: (e) => e.size === null ? "未取得" : cn(e.size)
 		}
 	];
 	return /* @__PURE__ */ (0, C.jsx)(BA, {
-		summary: `${e.label} · ${e.count === null ? "No disponible" : `${e.count.toLocaleString()} elemento(s)`}`,
+		summary: `${e.label} · ${e.count === null ? "未取得" : `${e.count.toLocaleString()} 项`}`,
 		children: e.count === null ? /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: "neutral",
-			children: "lista de verificaciónNo disponible, Por favorReverificar. "
+			children: "清单未取得，请重新检查。"
 		}) : e.items.length ? /* @__PURE__ */ (0, C.jsxs)(MA, { children: [
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-wrap items-center justify-between gap-2",
 				children: [e.truncated ? /* @__PURE__ */ (0, C.jsxs)("span", {
 					className: "text-body-2-regular text-text-secondary",
 					children: [
-						"Ya cargado en ",
+						"已载入 ",
 						e.items.length.toLocaleString(),
 						" / ",
 						e.count.toLocaleString(),
-						" elemento(s)"
+						" 项"
 					]
 				}) : null, /* @__PURE__ */ (0, C.jsx)(q, {
 					size: "small",
 					variant: "secondary",
 					...Y(r.busy === "copy"),
 					onClick: () => o(e.items),
-					children: "CopiarActuallista de verificación"
+					children: "复制当前清单"
 				})]
 			}),
 			r.error ? /* @__PURE__ */ (0, C.jsx)(J, {
@@ -63589,8 +63589,8 @@ function Tje({ group: e, openItem: t, receipt: n }) {
 			}) : null,
 			/* @__PURE__ */ (0, C.jsx)(QB, {
 				label: e.label,
-				title: "Obralista de verificación",
-				unit: " obra(s)",
+				title: "作品清单",
+				unit: "部作品",
 				panel: !1,
 				items: e.items,
 				columns: s,
@@ -63603,49 +63603,49 @@ function Tje({ group: e, openItem: t, receipt: n }) {
 					variant: "secondary",
 					...Y(r.busy === "copy"),
 					onClick: () => o(e),
-					children: "Copiarseleccionados"
+					children: "复制所选"
 				})
 			})
 		] }) : /* @__PURE__ */ (0, C.jsx)(yA, {
 			icon: Nge,
-			title: "lista de verificacióncomoVacío",
+			title: "清单为空",
 			shell: "plain",
-			children: "SinNecesarioProcesarObra. "
+			children: "没有需要处理的作品。"
 		})
 	});
 }
 //#endregion
 //#region src/react/diagnostics/diagnostics-page.tsx
 var Eje = {
-	ok: "Normal",
-	warning: "Requiere verificación",
-	failed: "Requiere atención",
-	unknown: "No disponible",
-	disabled: "NoConfiguración",
-	stale: "pendiente de nueva búsqueda",
-	unchecked: "sin registros aún"
+	ok: "正常",
+	warning: "需检查",
+	failed: "需处理",
+	unknown: "未取得",
+	disabled: "未配置",
+	stale: "待复查",
+	unchecked: "尚无记录"
 }, Dje = {
-	"/settings/network": "AbrirRed y acceso",
-	"/settings/maintenance": "AbrirMantenimientoyActualizar",
-	"/tasks": "Ver tareas"
+	"/settings/network": "打开网络与访问",
+	"/settings/maintenance": "打开维护与更新",
+	"/tasks": "查看任务"
 }, Oje = [
-	["Biblioteca de mediosyMontar", ["media_mounts", "data_root"]],
-	["Base de datos y migración", ["database", "schema"]],
-	["Herramientas", ["ffmpeg"]],
-	["Configuración y acceso", [
+	["媒体库与挂载", ["media_mounts", "data_root"]],
+	["数据库与迁移", ["database", "schema"]],
+	["工具", ["ffmpeg"]],
+	["配置与访问", [
 		"configured",
 		"security",
 		"port",
 		"version"
 	]],
-	["Tareas en segundo plano", ["tasks"]]
+	["后台任务", ["tasks"]]
 ], dU = (e) => new Date(e).toLocaleString();
 function fU({ status: e }) {
 	return /* @__PURE__ */ (0, C.jsx)(hA, {
 		variant: "caption",
 		"data-diagnostic-status": e,
 		color: e === "failed" ? "rose" : e === "warning" || e === "stale" ? "yellow" : "neutral",
-		children: Eje[e] ?? "No disponible"
+		children: Eje[e] ?? "未取得"
 	});
 }
 function pU() {
@@ -63656,7 +63656,7 @@ function pU() {
 			variant: "secondary",
 			onClick: () => void e.run("download", async () => {
 				let e = await fetch("/api/diagnostics/bundle", { credentials: "same-origin" });
-				if (!e.ok) throw Error(`Error de descarga del diagnóstico(HTTP ${e.status})`);
+				if (!e.ok) throw Error(`诊断报告下载失败（HTTP ${e.status}）`);
 				let t = URL.createObjectURL(await e.blob()), n = document.createElement("a");
 				n.href = t, n.download = "peach-support.zip", document.body.append(n);
 				try {
@@ -63666,7 +63666,7 @@ function pU() {
 				}
 			}, () => {}),
 			...Y(e.busy === "download"),
-			children: "Descargar informe de diagnóstico"
+			children: "下载诊断报告"
 		}), e.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: "error",
 			children: e.error
@@ -63674,7 +63674,7 @@ function pU() {
 	});
 }
 function mU({ name: e, check: t, navigate: n, configure: r, compact: i = !1 }) {
-	let a = e === "security" || e === "port" ? "Red y acceso" : "Biblioteca y catalogación", o = i ? "h4" : "h3";
+	let a = e === "security" || e === "port" ? "网络与访问" : "媒体库与入库", o = i ? "h4" : "h3";
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		"data-diagnostic-check": e,
 		className: fA("flex flex-col gap-4 border-b border-separator-border pr-3 last:border-b-0 sm:flex-row sm:items-center sm:justify-between", i ? "py-3" : "py-5"),
@@ -63695,7 +63695,7 @@ function mU({ name: e, check: t, navigate: n, configure: r, compact: i = !1 }) {
 				}),
 				t.action ? /* @__PURE__ */ (0, C.jsxs)("p", {
 					className: "text-body-2-regular text-text-secondary",
-					children: ["Procesarsugerencia: ", t.action]
+					children: ["处理建议：", t.action]
 				}) : null
 			]
 		}), t.target ? /* @__PURE__ */ (0, C.jsx)("div", {
@@ -63704,7 +63704,7 @@ function mU({ name: e, check: t, navigate: n, configure: r, compact: i = !1 }) {
 				size: "small",
 				variant: "secondary",
 				onClick: () => t.target === "/settings/library" ? r(a) : n(t.target),
-				children: t.target === "/settings/library" ? `Abrir ${a}` : Dje[t.target] ?? "Abrir página relacionada"
+				children: t.target === "/settings/library" ? `打开${a}` : Dje[t.target] ?? "打开相关页面"
 			})
 		}) : null]
 	});
@@ -63721,21 +63721,21 @@ function kje(e) {
 	}, () => i(""), (e) => i(V(e))), o = t.data;
 	if (!o && t.isPending) return /* @__PURE__ */ (0, C.jsx)("div", {
 		role: "status",
-		"aria-label": "Leyendo diagnóstico del sistema",
+		"aria-label": "正在读取系统诊断",
 		dangerouslySetInnerHTML: { __html: cU() }
 	});
 	if (!o) return /* @__PURE__ */ (0, C.jsxs)("div", {
 		className: "ui-configpage",
 		children: [/* @__PURE__ */ (0, C.jsx)(pU, {}), /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: "error",
-			title: "diagnósticoleerFallido",
+			title: "诊断读取失败",
 			action: /* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
 				onClick: a,
 				...Y(n.busy === "refresh"),
-				children: "Reverificar"
+				children: "重新检查"
 			}),
-			children: t.error ? V(t.error) : "informe de diagnósticoNo disponible. "
+			children: t.error ? V(t.error) : "诊断报告未取得。"
 		})]
 	});
 	let s = Object.entries(o.checks).filter(([, e]) => [
@@ -63756,7 +63756,7 @@ function kje(e) {
 					variant: "secondary",
 					onClick: a,
 					...Y(n.busy === "refresh"),
-					children: "Reverificar"
+					children: "重新检查"
 				})]
 			}),
 			r ? /* @__PURE__ */ (0, C.jsx)(J, {
@@ -63764,7 +63764,7 @@ function kje(e) {
 				children: r
 			}) : null,
 			s.length ? /* @__PURE__ */ (0, C.jsx)(AA, {
-				title: `NecesarioSeguir · ${s.length} elemento(s)`,
+				title: `需要关注 · ${s.length} 项`,
 				children: s.map(([t, n]) => /* @__PURE__ */ (0, C.jsx)(mU, {
 					name: t,
 					check: n,
@@ -63772,19 +63772,19 @@ function kje(e) {
 				}, t))
 			}) : null,
 			/* @__PURE__ */ (0, C.jsx)(AA, {
-				title: "Salud de la biblioteca",
+				title: "库健康",
 				children: /* @__PURE__ */ (0, C.jsxs)(MA, { children: [o.library.issue_at ? /* @__PURE__ */ (0, C.jsxs)("p", {
 					className: "text-body-2-regular text-text-secondary",
-					children: ["ProcesarRegistro · ", dU(o.library.issue_at)]
+					children: ["处理记录 · ", dU(o.library.issue_at)]
 				}) : null, Object.entries(o.library.groups).map(([t, n]) => /* @__PURE__ */ (0, C.jsx)(Tje, {
 					group: n,
 					...e
 				}, t))] })
 			}),
 			c.length ? /* @__PURE__ */ (0, C.jsx)("section", {
-				"aria-label": "SistemaVerificar",
+				"aria-label": "系统检查",
 				children: /* @__PURE__ */ (0, C.jsx)(BA, {
-					summary: `OtroVerificar · ${c.length} elemento(s)`,
+					summary: `其他检查 · ${c.length} 项`,
 					contentClassName: "gap-5",
 					children: Oje.map(([t, n]) => {
 						let r = c.filter(([e]) => n.some((t) => t === e));
@@ -63796,7 +63796,7 @@ function kje(e) {
 								className: "flex items-center gap-2 px-3 text-body-medium text-text-primary",
 								children: [t, /* @__PURE__ */ (0, C.jsxs)("span", {
 									className: "text-caption-1-regular text-text-secondary",
-									children: [r.length, " elemento(s)"]
+									children: [r.length, " 项"]
 								})]
 							}), /* @__PURE__ */ (0, C.jsx)(TA, { children: r.map(([t, n]) => /* @__PURE__ */ (0, C.jsx)(mU, {
 								name: t,
@@ -63809,10 +63809,10 @@ function kje(e) {
 				})
 			}) : null,
 			/* @__PURE__ */ (0, C.jsxs)("section", {
-				"aria-label": "Sesión de fuente",
+				"aria-label": "来源会话",
 				className: "flex min-w-0 flex-col gap-3",
 				children: [
-					/* @__PURE__ */ (0, C.jsx)(EA, { children: "Sesión de fuente" }),
+					/* @__PURE__ */ (0, C.jsx)(EA, { children: "来源会话" }),
 					o.sources.map((e) => /* @__PURE__ */ (0, C.jsx)("article", {
 						"data-diagnostic-source": e.source,
 						children: /* @__PURE__ */ (0, C.jsx)(TA, { children: /* @__PURE__ */ (0, C.jsxs)(MA, { children: [
@@ -63829,16 +63829,16 @@ function kje(e) {
 							}),
 							/* @__PURE__ */ (0, C.jsxs)(RA, { children: [
 								/* @__PURE__ */ (0, C.jsx)(zA, {
-									term: "Último análisis exitoso",
-									children: e.last_success_at ? dU(e.last_success_at) : "sin registros exitosos aún"
+									term: "上次解析成功",
+									children: e.last_success_at ? dU(e.last_success_at) : "尚无成功记录"
 								}),
 								e.last_check_at ? /* @__PURE__ */ (0, C.jsxs)(zA, {
-									term: "Última verificación",
-									children: [dU(e.last_check_at), e.elapsed_s !== void 0 && e.elapsed_s !== null ? ` · ${e.elapsed_s.toFixed(2)} segundo(s)` : ""]
+									term: "上次检查",
+									children: [dU(e.last_check_at), e.elapsed_s !== void 0 && e.elapsed_s !== null ? ` · ${e.elapsed_s.toFixed(2)} 秒` : ""]
 								}) : null,
 								/* @__PURE__ */ (0, C.jsx)(zA, {
-									term: "Corte de enfriamiento",
-									children: e.cooldown_until ? dU(e.cooldown_until) : "Noen período de enfriamiento"
+									term: "冷却截止",
+									children: e.cooldown_until ? dU(e.cooldown_until) : "未在冷却"
 								})
 							] })
 						] }) })
@@ -63847,7 +63847,7 @@ function kje(e) {
 						size: "small",
 						variant: "secondary",
 						onClick: () => e.navigate("/sources"),
-						children: "AbrirFuentes y credenciales"
+						children: "打开来源和凭证"
 					}) })
 				]
 			})
@@ -63894,7 +63894,7 @@ function gU({ group: e, name: t }) {
 		onError: () => a(i + 1),
 		className: "size-8 shrink-0 rounded-full bg-background-tertiary-default object-cover"
 	}) : /* @__PURE__ */ (0, C.jsx)("span", {
-		title: "No hay avatar disponible",
+		title: "没有可用头像",
 		className: "inline-grid size-8 shrink-0 place-items-center rounded-full bg-background-tertiary-default text-caption-1-semibold text-text-secondary",
 		children: ur(t)
 	});
@@ -63912,7 +63912,7 @@ function vU({ source: e }) {
 		href: e.url,
 		target: "_blank",
 		rel: "noreferrer noopener",
-		title: "AbrirOriginalFuente",
+		title: "打开原来源",
 		className: "min-w-0 text-body-medium wrap-anywhere text-text-primary underline-offset-2 hover:underline",
 		children: e.label
 	});
@@ -63942,13 +63942,13 @@ function yU({ text: e, prefix: t = "", tone: n = "error" }) {
 			"aria-expanded": i,
 			className: "-ml-2",
 			onClick: () => a(!i),
-			children: i ? "Ocultar detalles" : "Ver detalles"
+			children: i ? "收起详情" : "查看详情"
 		}) : null]
 	});
 }
 //#endregion
 //#region src/react/follow-manage/add-source.tsx
-var bU = fA(WP, GP, "text-body-2-medium"), jje = "PegarFuenteenlaceconectar, oIntroducirCreadornombre, id...", Mje = "BuscarEn proceso...(la primera búsqueda por nombre puede tardar decenas de segundos para descargar e indexar creadores)", Nje = "ReconocerEn proceso...", Pje = "Contenido del sitio sin fuente de búsqueda", xU = (e, t) => `${e}:${t.url}`;
+var bU = fA(WP, GP, "text-body-2-medium"), jje = "粘贴来源链接，或输入创作者名、id…", Mje = "查找中…（首次按名字查要下载创作者索引，可能几十秒）", Nje = "识别中…", Pje = "站内没有查到来源", xU = (e, t) => `${e}:${t.url}`;
 function Fje({ field: e, menu: t, options: n, active: r, busy: i, onPick: a, onClose: o }) {
 	return (0, S.useEffect)(() => {
 		t.current?.querySelector("[aria-current=\"true\"]")?.scrollIntoView({ block: "nearest" });
@@ -63963,11 +63963,11 @@ function Fje({ field: e, menu: t, options: n, active: r, busy: i, onPick: a, onC
 		},
 		placement: "bottom start",
 		offset: 4,
-		"aria-label": "Sugerencias de fuente",
+		"aria-label": "来源建议",
 		className: fA(UP, "flex w-(--trigger-width) flex-col gap-1 overscroll-contain"),
 		children: [i && !n.length ? /* @__PURE__ */ (0, C.jsx)("div", {
 			className: "px-2 py-1.5",
-			children: /* @__PURE__ */ (0, C.jsx)(bA, { label: "ProcesandoBuscarsugerencia" })
+			children: /* @__PURE__ */ (0, C.jsx)(bA, { label: "正在查找建议" })
 		}) : null, n.map((e, t) => /* @__PURE__ */ (0, C.jsxs)(S.Fragment, { children: [e.group === n[t - 1]?.group ? null : /* @__PURE__ */ (0, C.jsx)("div", {
 			className: "px-2 pt-1 text-caption-1-regular text-text-tertiary",
 			children: e.group
@@ -63995,7 +63995,7 @@ function Fje({ field: e, menu: t, options: n, active: r, busy: i, onPick: a, onC
 	});
 }
 function Ije({ credentials: e, hidden: t, onHidden: n, openCredentials: r }) {
-	let i = (0, S.useRef)(null), [a, o] = (0, S.useState)(!1), s = (e.providers || []).filter((e) => e.followable), c = s.filter((e) => !t.has(e.provider_label)).length, l = c === s.length ? "TodoFuente" : `${c}/${s.length}  fuente(s)`, u = (e, r) => {
+	let i = (0, S.useRef)(null), [a, o] = (0, S.useState)(!1), s = (e.providers || []).filter((e) => e.followable), c = s.filter((e) => !t.has(e.provider_label)).length, l = c === s.length ? "全部来源" : `${c}/${s.length} 个来源`, u = (e, r) => {
 		let i = new Set(t);
 		r ? i.delete(e) : i.add(e), n(i);
 	};
@@ -64016,7 +64016,7 @@ function Ije({ credentials: e, hidden: t, onHidden: n, openCredentials: r }) {
 		offset: 4,
 		className: UP,
 		children: /* @__PURE__ */ (0, C.jsxs)(DN, {
-			"aria-label": "FuenteFiltrar",
+			"aria-label": "来源筛选",
 			className: "flex w-64 flex-col gap-1 outline-none",
 			children: [s.length ? /* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex items-center gap-2 pb-1",
@@ -64024,14 +64024,14 @@ function Ije({ credentials: e, hidden: t, onHidden: n, openCredentials: r }) {
 					variant: "ghost",
 					size: "small",
 					onClick: () => n(/* @__PURE__ */ new Set()),
-					children: "Seleccionar todo"
+					children: "全选"
 				}), /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "ghost",
 					size: "small",
 					onClick: () => n(new Set(s.map((e) => e.provider_label))),
-					children: "Deseleccionar todo"
+					children: "全不选"
 				})]
-			}) : /* @__PURE__ */ (0, C.jsx)(PA, { children: "Sin fuentes disponibles aún" }), s.map((e) => {
+			}) : /* @__PURE__ */ (0, C.jsx)(PA, { children: "暂无可用来源" }), s.map((e) => {
 				let n = e.requirement === "required" && (!e.present || (e.missing || []).length > 0);
 				return /* @__PURE__ */ (0, C.jsxs)("div", {
 					className: "flex items-center gap-2",
@@ -64049,7 +64049,7 @@ function Ije({ credentials: e, hidden: t, onHidden: n, openCredentials: r }) {
 						onClick: () => {
 							o(!1), r();
 						},
-						children: "Requiere configurar credenciales"
+						children: "需要配置凭据"
 					}) : null]
 				}, e.provider);
 			})]
@@ -64060,7 +64060,7 @@ function Lje({ row: e, at: t, hidden: n, unpicked: r, onPick: i }) {
 	if (e.kind === "error") return /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
 		title: e.line,
-		children: e.error || "BuscarFallido"
+		children: e.error || "查找失败"
 	});
 	let a = (e.candidates || []).filter((e) => !n.has(e.provider_label || "")), o = Object.entries(e.failures || {});
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -64094,7 +64094,7 @@ function Lje({ row: e, at: t, hidden: n, unpicked: r, onPick: i }) {
 							}),
 							/* @__PURE__ */ (0, C.jsx)("small", {
 								className: "text-caption-1-regular text-text-secondary",
-								children: e.known ? "ya Seguir" : e.evidence
+								children: e.known ? "已经关注" : e.evidence
 							})
 						]
 					})
@@ -64107,10 +64107,10 @@ function Lje({ row: e, at: t, hidden: n, unpicked: r, onPick: i }) {
 					children: e.evidence
 				}), /* @__PURE__ */ (0, C.jsx)(LA, {
 					href: e.url,
-					children: `${e.label}: ${e.query}`
+					children: `${e.label}：${e.query}`
 				})]
 			}, e.url)),
-			o.length ? /* @__PURE__ */ (0, C.jsx)(PA, { children: o.map(([e, t]) => `${e}: ${t}`).join("; ") }) : null
+			o.length ? /* @__PURE__ */ (0, C.jsx)(PA, { children: o.map(([e, t]) => `${e}：${t}`).join("；") }) : null
 		]
 	});
 }
@@ -64141,7 +64141,7 @@ function Rje({ data: e, credentials: t, readOnly: n, toast: r, openCredentials: 
 		onStarted: () => E(/* @__PURE__ */ new Set()),
 		onError: (e) => O(V(e)),
 		onFinish: (e) => {
-			e.status === "failed" && O(e.error || "BuscarFallido");
+			e.status === "failed" && O(e.error || "查找失败");
 		}
 	}), L = (e) => {
 		let t = e.trim();
@@ -64176,7 +64176,7 @@ function Rje({ data: e, credentials: t, readOnly: n, toast: r, openCredentials: 
 					let e = await Or(r.candidate);
 					n.push(e.source);
 				} catch (e) {
-					t.push(`${r.candidate.label}: ${V(e)}`);
+					t.push(`${r.candidate.label}：${V(e)}`);
 				}
 				A((e) => e + 1);
 			}
@@ -64191,7 +64191,7 @@ function Rje({ data: e, credentials: t, readOnly: n, toast: r, openCredentials: 
 			};
 		},
 		onSuccess: (e) => {
-			Hr(), e.failures.length ? O(e.failures.join("; ")) : (O(""), ee(), r(`YaAñadir ${e.sources.length} SeguirFuente`));
+			Hr(), e.failures.length ? O(e.failures.join("；")) : (O(""), ee(), r(`已添加 ${e.sources.length} 个关注来源`));
 		},
 		onError: (e) => O(V(e))
 	}), ce = e.suggestions || [], le = !l.includes("/");
@@ -64203,7 +64203,7 @@ function Rje({ data: e, credentials: t, readOnly: n, toast: r, openCredentials: 
 		children: [
 			/* @__PURE__ */ (0, C.jsx)("h3", {
 				className: "text-title-2-medium text-text-primary",
-				children: "Agregar seguimiento"
+				children: "添加关注"
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-wrap items-end gap-2",
@@ -64217,7 +64217,7 @@ function Rje({ data: e, credentials: t, readOnly: n, toast: r, openCredentials: 
 							!e.currentTarget.contains(t) && !b.current?.contains(t) && m(!1);
 						},
 						children: [/* @__PURE__ */ (0, C.jsx)(SP, {
-							"aria-label": "Fuenteenlaceconectar, Nombreo id",
+							"aria-label": "来源链接、名字或 id",
 							placeholder: jje,
 							value: a,
 							leadingIcon: Uk,
@@ -64252,7 +64252,7 @@ function Rje({ data: e, credentials: t, readOnly: n, toast: r, openCredentials: 
 						disabled: n || !a.trim(),
 						...Y(P || I.isPending),
 						onClick: () => L(a),
-						children: "Buscar"
+						children: "查找"
 					})
 				]
 			}),
@@ -64261,19 +64261,19 @@ function Rje({ data: e, credentials: t, readOnly: n, toast: r, openCredentials: 
 				className: "flex flex-col gap-3 empty:hidden",
 				children: [P || I.isPending ? /* @__PURE__ */ (0, C.jsx)(OF, {
 					embedded: !0,
-					label: N?.message || (N?.total ? `BuscarEn proceso: ${N.checked || 0}/${N.total}` : le ? Mje : Nje),
+					label: N?.message || (N?.total ? `查找中：${N.checked || 0}/${N.total}` : le ? Mje : Nje),
 					value: N?.checked,
 					total: N?.total
 				}) : null, D ? /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "error",
-					title: "No se completó esta vez",
+					title: "这一次没有完成",
 					children: D
 				}) : null]
 			}),
 			ae.length ? /* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-3",
 				children: [
-					/* @__PURE__ */ (0, C.jsx)(IA, { children: "BuscarResultado" }),
+					/* @__PURE__ */ (0, C.jsx)(IA, { children: "查找结果" }),
 					ae.map((e, t) => /* @__PURE__ */ (0, C.jsx)(Lje, {
 						row: e,
 						at: t,
@@ -64293,18 +64293,18 @@ function Rje({ data: e, credentials: t, readOnly: n, toast: r, openCredentials: 
 								disabled: n || !oe.length,
 								...Y(se.isPending),
 								onClick: () => se.mutate(oe),
-								children: `AñadirseleccionarEn proceso(${oe.length})`
+								children: `添加选中（${oe.length}）`
 							}),
 							/* @__PURE__ */ (0, C.jsx)(q, {
 								variant: "secondary",
 								size: "small",
 								onClick: () => ee(),
-								children: "Desactivar"
+								children: "关闭"
 							}),
 							se.isPending ? /* @__PURE__ */ (0, C.jsx)("span", {
 								role: "status",
 								className: "text-body-2-regular text-text-secondary",
-								children: `AñadirEn proceso... ${k}/${oe.length}`
+								children: `添加中… ${k}/${oe.length}`
 							}) : null
 						]
 					})
@@ -64314,12 +64314,12 @@ function Rje({ data: e, credentials: t, readOnly: n, toast: r, openCredentials: 
 				className: "flex flex-wrap items-center gap-2",
 				children: [/* @__PURE__ */ (0, C.jsx)("span", {
 					className: "text-body-2-regular text-text-secondary",
-					children: "Quizás te guste"
+					children: "猜你喜欢"
 				}), ce.map((e) => /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					size: "small",
 					disabled: n,
-					title: `aparece en el historial del explorador ${e.visits} veces${e.origin ? ` · ${e.origin}` : ""}`,
+					title: `浏览历史里出现 ${e.visits} 次${e.origin ? ` · ${e.origin}` : ""}`,
 					onClick: () => L(e.name),
 					children: e.name
 				}, e.name))]
@@ -64329,7 +64329,7 @@ function Rje({ data: e, credentials: t, readOnly: n, toast: r, openCredentials: 
 }
 //#endregion
 //#region src/react/follow-manage/alias-manager.tsx
-var zje = (e) => `seráQuitarAlias"${e}", vs restaurar fuente como grupo de creadores independiente. `, SU = oR({
+var zje = (e) => `将移除别名「${e}」，对应来源恢复为独立创作者组。`, SU = oR({
 	rowSelectionFeature: LR,
 	rowSortingFeature: XR,
 	rowPaginationFeature: gR,
@@ -64372,7 +64372,7 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 				try {
 					await kr(n.canonical, n.alias);
 				} catch (n) {
-					throw t && Hr(), Error(`${V(n)}(quedan ${e.length - t} grupos sin fusionar)`);
+					throw t && Hr(), Error(`${V(n)}（还有 ${e.length - t} 组没有合并）`);
 				}
 				t += 1;
 			}
@@ -64382,13 +64382,13 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 			};
 		},
 		onSuccess: (e) => {
-			w(""), o({}), Hr(), i(`YaFusionar ${e.done} grupo(s)CreadorAlias`);
+			w(""), o({}), Hr(), i(`已合并 ${e.done} 组创作者别名`);
 		},
 		onError: (e) => w(V(e))
 	}), A = mt({
 		mutationFn: (e) => kr(e.canonical, e.alias),
 		onSuccess: () => {
-			w(""), E(""), O(""), Hr(), i("GuardadoCreadorAlias");
+			w(""), E(""), O(""), Hr(), i("已保存创作者别名");
 		},
 		onError: (e) => w(V(e))
 	}), j = mt({
@@ -64397,26 +64397,26 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 			try {
 				for (let e of t) await Ar(e), n += 1;
 			} catch (e) {
-				throw Error(`${V(e)}(Ya quitados ${n} alias, quedan ${t.length - n} sin quitar)`);
+				throw Error(`${V(e)}（已移除 ${n} 个别名，还有 ${t.length - n} 个未移除）`);
 			} finally {
 				Hr();
 			}
 		},
 		onSuccess: () => {
-			w(""), c({}), i("YaQuitarCreadorAlias");
+			w(""), c({}), i("已移除创作者别名");
 		},
 		onError: (e) => w(V(e))
 	}), M = (e, t) => {
 		e.length && Rs({
-			title: t ? "FusionarTodoCreadorAlias" : "FusionarseleccionadosCreadorAlias",
-			body: `seráFusionarcon ${e.length} grupo(s)Creador: ${e.map((e) => `"${e.alias}"asignar aen"${e.canonical}"`).join("; ")}. `,
-			confirmLabel: t ? "FusionarTodoAlias" : "FusionarseleccionadosAlias",
+			title: t ? "合并全部创作者别名" : "合并所选创作者别名",
+			body: `将合并以下 ${e.length} 组创作者：${e.map((e) => `「${e.alias}」归入「${e.canonical}」`).join("；")}。`,
+			confirmLabel: t ? "合并全部别名" : "合并所选别名",
 			onConfirm: () => k.mutateAsync(e)
 		});
 	}, N = (e) => void Rs({
-		title: "QuitarCreadorAlias",
+		title: "移除创作者别名",
 		body: zje(e),
-		confirmLabel: "QuitarCreadorAlias",
+		confirmLabel: "移除创作者别名",
 		onConfirm: () => j.mutateAsync(e)
 	}), P = (0, S.useRef)({
 		sources: n,
@@ -64443,29 +64443,29 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 					slot: null,
 					isSelected: e.table.getIsAllRowsSelected(),
 					isIndeterminate: e.table.getSelectedRowModel().rows.length > 0 && !e.table.getIsAllRowsSelected(),
-					"aria-label": "Seleccionar todoPendienteFusionarAlias",
+					"aria-label": "全选待合并别名",
 					onChange: (t) => e.table.toggleAllRowsSelected(t)
 				}),
 				cell: (e) => /* @__PURE__ */ (0, C.jsx)(XP, {
 					slot: null,
 					isSelected: e.row.getIsSelected(),
-					"aria-label": `SeleccionarAlias ${e.row.original.alias}, en ${e.row.original.canonical}`,
+					"aria-label": `选择别名 ${e.row.original.alias}，归入 ${e.row.original.canonical}`,
 					onChange: (t) => e.row.toggleSelected(t)
 				})
 			}),
 			e.accessor("canonical", {
-				header: "Normalizar creador",
+				header: "规范创作者",
 				cell: (e) => /* @__PURE__ */ (0, C.jsx)(CU, {
 					sources: P.current.sources,
 					name: e.getValue()
 				})
 			}),
 			e.accessor("alias", {
-				header: "Alias de plataforma",
+				header: "平台别名",
 				cell: (e) => e.getValue()
 			}),
 			e.accessor("evidence", {
-				header: "Criterio",
+				header: "依据",
 				cell: (e) => /* @__PURE__ */ (0, C.jsx)("span", {
 					className: "text-body-2-regular text-text-secondary",
 					children: e.getValue()
@@ -64473,14 +64473,14 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 			}),
 			e.display({
 				id: "actions",
-				header: "Acción",
+				header: "操作",
 				cell: (e) => /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					size: "small",
 					disabled: P.current.readOnly,
 					...Y(P.current.merging),
 					onClick: () => P.current.merge([e.row.original], !1),
-					children: "Fusionar"
+					children: "合并"
 				})
 			})
 		]);
@@ -64491,21 +64491,21 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 				id: "select",
 				header: ({ table: e }) => /* @__PURE__ */ (0, C.jsx)(XP, {
 					slot: null,
-					"aria-label": "Seleccionar todoGuardadoAlias",
+					"aria-label": "全选已保存别名",
 					isSelected: e.getIsAllRowsSelected(),
 					isIndeterminate: e.getIsSomeRowsSelected(),
 					onChange: (t) => e.toggleAllRowsSelected(t)
 				}),
 				cell: ({ row: e }) => /* @__PURE__ */ (0, C.jsx)(XP, {
 					slot: null,
-					"aria-label": `SeleccionarGuardadoAlias ${e.original.canonical_name}`,
+					"aria-label": `选择已保存别名 ${e.original.canonical_name}`,
 					isSelected: e.getIsSelected(),
 					onChange: (t) => e.toggleSelected(t)
 				})
 			}),
 			e.accessor("canonical_name", {
 				id: "canonical",
-				header: "Normalizar creador",
+				header: "规范创作者",
 				cell: (e) => /* @__PURE__ */ (0, C.jsx)(CU, {
 					sources: P.current.sources,
 					name: e.getValue(),
@@ -64513,7 +64513,7 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 				})
 			}),
 			e.accessor("aliases", {
-				header: "Alias de plataforma",
+				header: "平台别名",
 				sortFn: (e, t) => e.original.aliases.map((e) => e.name).join(" ").localeCompare(t.original.aliases.map((e) => e.name).join(" "), "zh-CN"),
 				cell: (e) => /* @__PURE__ */ (0, C.jsx)("span", {
 					className: "flex flex-wrap items-center gap-1.5",
@@ -64524,7 +64524,7 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 							size: "xs",
 							iconOnly: !0,
 							leadingIcon: Mk,
-							"aria-label": `QuitarAlias ${e.name}`,
+							"aria-label": `移除别名 ${e.name}`,
 							disabled: P.current.readOnly,
 							...Y(P.current.removing),
 							onClick: () => P.current.remove(e.name)
@@ -64584,24 +64584,24 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 		children: [
 			/* @__PURE__ */ (0, C.jsx)("h3", {
 				className: "text-title-2-medium text-text-primary",
-				children: "CreadorAlias"
+				children: "创作者别名"
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-2",
-				children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: "ManualAñadirAlias" }), /* @__PURE__ */ (0, C.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: "手动添加别名" }), /* @__PURE__ */ (0, C.jsxs)("div", {
 					className: "flex flex-wrap items-end gap-2",
 					children: [
 						/* @__PURE__ */ (0, C.jsx)(SP, {
-							"aria-label": "Normalizar nombre de creador",
-							placeholder: "Normalizar nombre de creador",
+							"aria-label": "规范创作者名",
+							placeholder: "规范创作者名",
 							value: T,
 							onChange: E,
 							isDisabled: r,
 							className: "w-56"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(SP, {
-							"aria-label": "Alias de plataforma",
-							placeholder: "Alias de plataforma",
+							"aria-label": "平台别名",
+							placeholder: "平台别名",
 							value: D,
 							onChange: O,
 							isDisabled: r,
@@ -64615,7 +64615,7 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 								canonical: T.trim(),
 								alias: D.trim()
 							}),
-							children: "GuardarAlias"
+							children: "保存别名"
 						})
 					]
 				})]
@@ -64627,10 +64627,10 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 					/* @__PURE__ */ (0, C.jsxs)("div", {
 						className: "flex flex-wrap items-center gap-2",
 						children: [
-							/* @__PURE__ */ (0, C.jsx)(IA, { children: "PendienteFusionar" }),
+							/* @__PURE__ */ (0, C.jsx)(IA, { children: "待合并" }),
 							/* @__PURE__ */ (0, C.jsx)("span", {
 								className: "mr-auto text-body-2-regular text-text-secondary",
-								children: `${t.length} grupo(s)`
+								children: `${t.length} 组`
 							}),
 							/* @__PURE__ */ (0, C.jsx)(q, {
 								variant: "primary",
@@ -64638,23 +64638,23 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 								disabled: r,
 								...re,
 								onClick: () => M(t, !0),
-								children: `TodoFusionar(${t.length})`
+								children: `全部合并（${t.length}）`
 							}),
 							/* @__PURE__ */ (0, C.jsx)(rz, {
-								label: "PendienteFusionarCreadorAlias",
+								label: "待合并创作者别名",
 								sorting: d,
 								options: [
 									{
 										id: "canonical",
-										label: "Normalizar creador"
+										label: "规范创作者"
 									},
 									{
 										id: "alias",
-										label: "Alias de plataforma"
+										label: "平台别名"
 									},
 									{
 										id: "evidence",
-										label: "Criterio"
+										label: "依据"
 									}
 								],
 								onChange: (e) => {
@@ -64667,27 +64667,27 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 						]
 					}),
 					/* @__PURE__ */ (0, C.jsxs)(eE, {
-						label: "PendienteFusionarAliasOperación en lote",
+						label: "待合并别名批量操作",
 						visible: te.length > 0,
-						count: `Ya seleccionados ${te.length} grupo(s)`,
+						count: `已选 ${te.length} 组`,
 						children: [/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
 							size: "small",
 							disabled: r,
 							...re,
 							onClick: () => M(te, !1),
-							children: `Fusionar seleccionados (${te.length})`
+							children: `合并所选（${te.length}）`
 						}), /* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "ghost",
 							size: "small",
 							onClick: () => o({}),
-							children: "Deseleccionar"
+							children: "取消选择"
 						})]
 					}),
 					/* @__PURE__ */ (0, C.jsx)(tz, {
 						follow: !0,
 						children: /* @__PURE__ */ (0, C.jsxs)(ez, {
-							"aria-label": "PendienteFusionarCreadorAlias",
+							"aria-label": "待合并创作者别名",
 							size: "sm",
 							sortDescriptor: d[0] ? {
 								column: d[0].id,
@@ -64714,8 +64714,8 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 						})
 					}),
 					/* @__PURE__ */ (0, C.jsx)(iz, {
-						label: "PendienteFusionarCreadorAlias",
-						unit: "grupo",
+						label: "待合并创作者别名",
+						unit: "组",
 						total: t.length,
 						pagination: y,
 						onChange: g
@@ -64728,20 +64728,20 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 					/* @__PURE__ */ (0, C.jsxs)("div", {
 						className: "flex flex-wrap items-center gap-2",
 						children: [
-							/* @__PURE__ */ (0, C.jsx)(IA, { children: "GuardadoAlias" }),
+							/* @__PURE__ */ (0, C.jsx)(IA, { children: "已保存别名" }),
 							/* @__PURE__ */ (0, C.jsx)("span", {
 								className: "mr-auto text-body-2-regular text-text-secondary",
-								children: `${e.length} grupo(s)`
+								children: `${e.length} 组`
 							}),
 							/* @__PURE__ */ (0, C.jsx)(rz, {
-								label: "GuardadoCreadorAlias",
+								label: "已保存创作者别名",
 								sorting: p,
 								options: [{
 									id: "canonical",
-									label: "Normalizar creador"
+									label: "规范创作者"
 								}, {
 									id: "aliases",
-									label: "Alias de plataforma"
+									label: "平台别名"
 								}],
 								onChange: (e) => {
 									m(e), v((e) => ({
@@ -64753,33 +64753,33 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 						]
 					}),
 					/* @__PURE__ */ (0, C.jsxs)(eE, {
-						label: "GuardadoAliasOperación en lote",
+						label: "已保存别名批量操作",
 						visible: ne.length > 0,
-						count: `Ya seleccionados ${ne.length} alias`,
+						count: `已选 ${ne.length} 个别名`,
 						children: [/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
 							size: "small",
 							disabled: r,
 							...Y(j.isPending),
 							onClick: () => void Rs({
-								title: "QuitarseleccionadosCreadorAlias",
-								body: `Se quitarán ${ne.length} alias, vs restaurar fuente como grupo de creadores independiente. `,
+								title: "移除所选创作者别名",
+								body: `将移除以下 ${ne.length} 个别名，对应来源恢复为独立创作者组。`,
 								items: ne,
-								confirmLabel: "Quitar alias seleccionados",
+								confirmLabel: "移除所选别名",
 								onConfirm: () => j.mutateAsync(ne)
 							}),
-							children: `Quitar alias seleccionados(${ne.length})`
+							children: `移除所选别名（${ne.length}）`
 						}), /* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "ghost",
 							size: "small",
 							onClick: () => c({}),
-							children: "Deseleccionar"
+							children: "取消选择"
 						})]
 					}),
 					e.length ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(tz, {
 						follow: !0,
 						children: /* @__PURE__ */ (0, C.jsxs)(ez, {
-							"aria-label": "GuardadoCreadorAlias",
+							"aria-label": "已保存创作者别名",
 							size: "sm",
 							sortDescriptor: p[0] ? {
 								column: p[0].id,
@@ -64805,16 +64805,16 @@ function Uje({ groups: e, suggestions: t, sources: n = [], readOnly: r, toast: i
 							}, e.id)) })]
 						})
 					}), /* @__PURE__ */ (0, C.jsx)(iz, {
-						label: "GuardadoCreadorAlias",
-						unit: "grupo",
+						label: "已保存创作者别名",
+						unit: "组",
 						total: e.length,
 						pagination: b,
 						onChange: v
 					})] }) : /* @__PURE__ */ (0, C.jsx)(yA, {
 						shell: "plain",
 						icon: $ge,
-						title: "Aún no hayGuardarCreadorAlias",
-						children: "Introduce el nombre normalizado del creador y alias de plataforma para añadir. "
+						title: "还没有保存创作者别名",
+						children: "填写规范创作者名和平台别名以添加。"
 					})
 				]
 			})
@@ -64913,23 +64913,23 @@ function wU({ className: e, children: t, size: n = "md", shape: r = "pill", ref:
 }
 //#endregion
 //#region src/react/components/legacy-avatar.ts
-var TU = "[&_img]:absolute [&_img]:inset-0 [&_img]:size-full [&_img]:max-w-none [&_img]:max-h-none [&_img]:object-cover", Kje = "Introduce el nombre de la actriz; JavDB buscará su página de actriz";
+var TU = "[&_img]:absolute [&_img]:inset-0 [&_img]:size-full [&_img]:max-w-none [&_img]:max-h-none [&_img]:object-cover", Kje = "输入女优名，到 JavDB 找她的演员页";
 function qje(e, t) {
 	let n = /* @__PURE__ */ new Map();
 	for (let r of e.candidates) t.has(r.id) && r.held_by && n.set(r.held_by.id, r.held_by.name);
 	if (n.size > 1) return {
-		text: `todos marcados como pertenecientes a la misma persona en la base de datos: ${[...n.values()].join(", ")}, primero fusionar y luego suscribir`,
+		text: `所勾的卡分属数据库里不同的人：${[...n.values()].join("、")}，先去合并再订`,
 		blocked: !0
 	};
 	let [r] = n.values();
 	return r ? {
-		text: `se registrará bajo el nombre "${r}"`,
+		text: `会登记到「${r}」名下`,
 		blocked: !1
 	} : e.known ? {
-		text: `se registrará en la base de datos bajo el nombre "${e.known.name}"`,
+		text: `会登记到数据库里的「${e.known.name}」名下`,
 		blocked: !1
 	} : {
-		text: `Base de datosdentroAún no hay"${e.q}", creará un nuevo resultado`,
+		text: `数据库里还没有「${e.q}」，会新建一位`,
 		blocked: !1
 	};
 }
@@ -64944,7 +64944,7 @@ function Jje({ card: e, picked: t, onPick: n }) {
 				children: [
 					/* @__PURE__ */ (0, C.jsx)("span", {
 						className: "min-w-0 break-words",
-						children: e.names.join(", ")
+						children: e.names.join("、")
 					}),
 					e.record ? /* @__PURE__ */ (0, C.jsx)(hA, {
 						variant: "caption",
@@ -64953,7 +64953,7 @@ function Jje({ card: e, picked: t, onPick: n }) {
 					}) : null,
 					e.held_by ? /* @__PURE__ */ (0, C.jsx)("small", {
 						className: "text-caption-1-regular text-text-secondary",
-						children: `Ya bajo el nombre "${e.held_by.name}"`
+						children: `已在「${e.held_by.name}」名下`
 					}) : null
 				]
 			})
@@ -64975,7 +64975,7 @@ function Yje({ readOnly: e, toast: t, onAdded: n }) {
 		o(null), c(/* @__PURE__ */ new Set()), l.setError("");
 	}, p = () => {
 		a && l.run("follow", (e) => Rr(a.q, [...s], e), (e) => {
-			t(e.created ? `YaNuevo"${e.entity_name}" y suscrito a sus novedades` : `Suscrito a las novedades de "${e.entity_name}"`), i(""), f(), n();
+			t(e.created ? `已新建「${e.entity_name}」并订阅她的新作` : `已订阅「${e.entity_name}」的新作`), i(""), f(), n();
 		});
 	}, m = a ? qje(a, s) : null;
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -64986,14 +64986,14 @@ function Yje({ readOnly: e, toast: t, onAdded: n }) {
 		children: [
 			/* @__PURE__ */ (0, C.jsx)("h3", {
 				className: "text-title-2-medium text-text-primary",
-				children: "Añadir Suscripción JAV"
+				children: "添加 JAV 订阅"
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-wrap items-end gap-2",
 				children: [/* @__PURE__ */ (0, C.jsx)("div", {
 					className: "min-w-64 grow",
 					children: /* @__PURE__ */ (0, C.jsx)(SP, {
-						"aria-label": "Actriznombre",
+						"aria-label": "女优名",
 						placeholder: Kje,
 						value: r,
 						leadingIcon: Uk,
@@ -65007,18 +65007,18 @@ function Yje({ readOnly: e, toast: t, onAdded: n }) {
 					disabled: e || !r.trim(),
 					...Y(l.busy === "lookup"),
 					onClick: u,
-					children: "Buscar"
+					children: "查找"
 				})]
 			}),
 			l.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
-				title: "No se completó esta vez",
+				title: "这一次没有完成",
 				children: l.error
 			}) : null,
 			a ? /* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-3",
 				children: [
-					/* @__PURE__ */ (0, C.jsx)(IA, { children: "Tarjeta de actor en JavDB" }),
+					/* @__PURE__ */ (0, C.jsx)(IA, { children: "JavDB 上的演员卡" }),
 					a.candidates.length ? a.candidates.map((e) => /* @__PURE__ */ (0, C.jsx)(Jje, {
 						card: e,
 						picked: s.has(e.id),
@@ -65026,10 +65026,10 @@ function Yje({ readOnly: e, toast: t, onAdded: n }) {
 							let r = new Set(n);
 							return t ? r.add(e.id) : r.delete(e.id), r;
 						})
-					}, e.id)) : /* @__PURE__ */ (0, C.jsx)(PA, { children: "Nombre no encontrado en JavDB." }),
+					}, e.id)) : /* @__PURE__ */ (0, C.jsx)(PA, { children: "JavDB 上没有搜到这个名字。" }),
 					a.candidates.length ? /* @__PURE__ */ (0, C.jsx)(PA, {
 						role: "status",
-						children: s.size ? m.text : "Selecciona su tarjeta de actriz; si hay dos registros (con código y sin código) para ella, marca ambas imágenes. "
+						children: s.size ? m.text : "勾选她的演员卡；有碼与無碼两条记录都是她的话，两张都勾。"
 					}) : null,
 					/* @__PURE__ */ (0, C.jsxs)("div", {
 						className: "flex flex-wrap items-center gap-2",
@@ -65039,12 +65039,12 @@ function Yje({ readOnly: e, toast: t, onAdded: n }) {
 							disabled: e || !s.size || m.blocked,
 							...Y(l.busy === "follow"),
 							onClick: p,
-							children: `AñadirSuscribirse(${s.size})`
+							children: `添加订阅（${s.size}）`
 						}) : null, /* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
 							size: "small",
 							onClick: f,
-							children: "Desactivar"
+							children: "关闭"
 						})]
 					})
 				]
@@ -65061,15 +65061,15 @@ var Xje = oR({
 	sortedRowModel: QR(),
 	paginatedRowModel: ZR()
 }), EU = {
-	select: "Seleccionar",
-	name: "Nombre",
-	kind: "Tipo",
-	origin: "Fuente",
-	status: "Estado",
-	interval: "Frecuencia",
-	fetched: "Última extracción",
-	fresh: "Última adición",
-	actions: "Acción"
+	select: "选择",
+	name: "名称",
+	kind: "类型",
+	origin: "来源",
+	status: "状态",
+	interval: "频率",
+	fetched: "上次拉取",
+	fresh: "上次新增",
+	actions: "操作"
 }, Zje = /* @__PURE__ */ new Set(["select", "actions"]), DU = () => W.invalidateQueries({
 	queryKey: qn,
 	exact: !0
@@ -65085,15 +65085,15 @@ function $je({ source: e }) {
 	return e.last_error ? /* @__PURE__ */ (0, C.jsx)(hA, {
 		variant: "caption",
 		color: "rose",
-		children: "ExtraerFallido"
+		children: "拉取失败"
 	}) : e.enabled ? /* @__PURE__ */ (0, C.jsx)(hA, {
 		variant: "caption",
 		color: "lime",
-		children: "Normal"
+		children: "正常"
 	}) : /* @__PURE__ */ (0, C.jsx)(hA, {
 		variant: "caption",
 		color: "neutral",
-		children: "Pausado"
+		children: "已暂停"
 	});
 }
 function eMe({ source: e }) {
@@ -65118,9 +65118,9 @@ function nMe(e) {
 function kU(e, t) {
 	let n = e.length === 1 ? e[0] : null;
 	return Rs({
-		title: n ? "Desuscribirse de la fuente" : `Quitar ${e.length} fuentes suscritas`,
-		body: n ? `Se desuscribirá de la fuente"${OU(n)}", después deNoluegoExtraerelloNovedades; ya jalarNovedadesConservar. ` : "seráQuitarseleccionadosSuscribirsefuente , después deNoluegoExtraerelloNovedades; ya jalarNovedadesConservar. ",
-		confirmLabel: n ? "Desuscribirse de la fuente" : "QuitarseleccionadosSuscribirsefuente ",
+		title: n ? "移除订阅源" : `移除 ${e.length} 条订阅源`,
+		body: n ? `将移除订阅源「${OU(n)}」，之后不再拉取它的新作；已经拉到的新作保留。` : "将移除所选订阅源，之后不再拉取它们的新作；已经拉到的新作保留。",
+		confirmLabel: n ? "移除订阅源" : "移除所选订阅源",
 		danger: !0,
 		onConfirm: t
 	});
@@ -65150,9 +65150,9 @@ function rMe({ readOnly: e, toast: t }) {
 		},
 		onSuccess: (e) => {
 			let n = e.results.filter((e) => !e.ok), i = e.ids.length - n.length;
-			if (s(/* @__PURE__ */ new Set()), DU(), e.action === "remove" && i && t(`Ya quitados ${i} fuentes suscritas`), n.length) {
+			if (s(/* @__PURE__ */ new Set()), DU(), e.action === "remove" && i && t(`已移除 ${i} 条订阅源`), n.length) {
 				let e = n[0];
-				r.setError(`${n.length} Resultadosin escribir: ${e.ok ? "" : V(e.error)}`);
+				r.setError(`${n.length} 条没有写入：${e.ok ? "" : V(e.error)}`);
 			}
 		},
 		onError: (e) => r.setError(V(e))
@@ -65171,7 +65171,7 @@ function rMe({ readOnly: e, toast: t }) {
 		toggle: (e, t) => void r.run(`enabled-${e.id}`, (n) => Pr(e.id, t, n), () => void DU()),
 		fetch: (e) => void r.run(`check-${e.id}`, (t) => Ir(t, [e.id]), () => void DU()),
 		remove: (e) => void kU([e], async () => {
-			await Fr(e.id), t(`YaDesuscribirse de la fuente"${OU(e)}"`), DU();
+			await Fr(e.id), t(`已移除订阅源「${OU(e)}」`), DU();
 		})
 	};
 	let v = (0, S.useMemo)(() => {
@@ -65184,7 +65184,7 @@ function rMe({ readOnly: e, toast: t }) {
 					slot: null,
 					isSelected: e.row.getIsSelected(),
 					onChange: (t) => e.row.toggleSelected(t),
-					"aria-label": `Seleccionar ${OU(e.row.original)}`
+					"aria-label": `选择 ${OU(e.row.original)}`
 				})
 			}),
 			e.accessor(OU, {
@@ -65199,7 +65199,7 @@ function rMe({ readOnly: e, toast: t }) {
 							e.getValue(),
 							t ? /* @__PURE__ */ (0, C.jsx)("span", {
 								className: "text-body-2-regular text-text-secondary",
-								title: `esta página colgada bajo el nombre "${t}"`,
+								title: `站上这一页挂在「${t}」名下`,
 								children: t
 							}) : null
 						]
@@ -65221,12 +65221,12 @@ function rMe({ readOnly: e, toast: t }) {
 					href: e.getValue(),
 					target: "_blank",
 					rel: "noreferrer noopener",
-					title: "Abrir página de fuente",
+					title: "打开来源页面",
 					className: "text-text-primary underline-offset-2 hover:underline",
 					children: Qje(e.getValue())
 				})
 			}),
-			e.accessor((e) => e.last_error ? "ExtraerFallido" : e.enabled ? "Activado" : "Pausado", {
+			e.accessor((e) => e.last_error ? "拉取失败" : e.enabled ? "已启用" : "已暂停", {
 				id: "status",
 				header: t("status"),
 				cell: (e) => /* @__PURE__ */ (0, C.jsx)($je, { source: e.row.original })
@@ -65244,7 +65244,7 @@ function rMe({ readOnly: e, toast: t }) {
 				header: t("fetched"),
 				cell: (e) => /* @__PURE__ */ (0, C.jsx)("span", {
 					className: "whitespace-nowrap tabular-nums",
-					children: e.row.original.last_fetched_at ? Mn(e.row.original.last_fetched_at) : "Nunca extraído"
+					children: e.row.original.last_fetched_at ? Mn(e.row.original.last_fetched_at) : "还没拉过"
 				})
 			}),
 			e.accessor((e) => e.last_new_count, {
@@ -65252,7 +65252,7 @@ function rMe({ readOnly: e, toast: t }) {
 				header: t("fresh"),
 				cell: (e) => /* @__PURE__ */ (0, C.jsx)("span", {
 					className: "whitespace-nowrap tabular-nums",
-					children: `${e.getValue()} Resultado`
+					children: `${e.getValue()} 条`
 				})
 			}),
 			e.display({
@@ -65262,7 +65262,7 @@ function rMe({ readOnly: e, toast: t }) {
 					className: "flex items-center gap-1",
 					children: [
 						/* @__PURE__ */ (0, C.jsx)(wU, {
-							"aria-label": `Activar ${OU(e.row.original)}`,
+							"aria-label": `启用 ${OU(e.row.original)}`,
 							isSelected: e.row.original.enabled,
 							isDisabled: _.current.readOnly,
 							onChange: (t) => _.current.toggle(e.row.original, t)
@@ -65272,7 +65272,7 @@ function rMe({ readOnly: e, toast: t }) {
 							size: "xs",
 							iconOnly: !0,
 							leadingIcon: Hk,
-							"aria-label": `Extraer ${OU(e.row.original)}`,
+							"aria-label": `拉取 ${OU(e.row.original)}`,
 							disabled: _.current.readOnly,
 							...Y(_.current.busy === `check-${e.row.original.id}`),
 							onClick: () => _.current.fetch(e.row.original)
@@ -65282,7 +65282,7 @@ function rMe({ readOnly: e, toast: t }) {
 							size: "xs",
 							iconOnly: !0,
 							leadingIcon: Fk,
-							"aria-label": `Quitar ${OU(e.row.original)}`,
+							"aria-label": `移除 ${OU(e.row.original)}`,
 							disabled: _.current.readOnly,
 							onClick: () => _.current.remove(e.row.original)
 						})
@@ -65314,9 +65314,9 @@ function rMe({ readOnly: e, toast: t }) {
 	});
 	if (!i) return n.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "abrirNoabrirSuscribirsefuente ",
+		title: "打不开订阅源",
 		children: V(n.error)
-	}) : /* @__PURE__ */ (0, C.jsx)(PA, { children: "ProcesandoleerSuscribirsefuente . " });
+	}) : /* @__PURE__ */ (0, C.jsx)(PA, { children: "正在读订阅源。" });
 	let x = () => void r.run("check", (e) => Ir(e), () => void DU()), w = (e) => s((t) => {
 		let n = new Set(t);
 		return n.has(e) ? n.delete(e) : n.add(e), n;
@@ -65328,7 +65328,7 @@ function rMe({ readOnly: e, toast: t }) {
 			toast: t,
 			onAdded: () => void DU()
 		}), /* @__PURE__ */ (0, C.jsxs)("section", {
-			"aria-label": "Lista de suscripciones JAV",
+			"aria-label": "JAV 订阅列表",
 			className: vA({
 				padding: "none",
 				className: "flex flex-col gap-4 px-6 py-5 max-sm:px-4"
@@ -65339,20 +65339,20 @@ function rMe({ readOnly: e, toast: t }) {
 					children: [
 						/* @__PURE__ */ (0, C.jsx)("h3", {
 							className: "mr-auto text-title-2-medium text-text-primary",
-							children: "Fuente de suscripción JAV"
+							children: "JAV 订阅源"
 						}),
 						/* @__PURE__ */ (0, C.jsx)("span", {
 							className: "text-body-2-regular text-text-secondary",
-							children: `${a.length.toLocaleString()}  fuente(s) de suscripción · ${(Number(i.unread) || 0).toLocaleString()} resultado(s) no vistos`
+							children: `${a.length.toLocaleString()} 个订阅源 · ${(Number(i.unread) || 0).toLocaleString()} 条未看`
 						}),
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							onClick: x,
 							disabled: e,
 							...Y(r.busy === "check"),
-							children: "extraer inmediatamente"
+							children: "立即拉取"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(rz, {
-							label: "Fuente de suscripción JAV",
+							label: "JAV 订阅源",
 							sorting: f,
 							onChange: (e) => {
 								p(e), l(1);
@@ -65376,22 +65376,22 @@ function rMe({ readOnly: e, toast: t }) {
 					className: "flex flex-col gap-3",
 					children: [E.length ? /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "error",
-						title: `${E.length.toLocaleString()} fuentes suscritas con extracción fallida`,
+						title: `${E.length.toLocaleString()} 条订阅源拉取失败`,
 						extra: /* @__PURE__ */ (0, C.jsx)("ul", {
 							className: "flex flex-col gap-0.5 text-body-2-regular",
 							children: E.map((e) => /* @__PURE__ */ (0, C.jsx)("li", {
 								className: "min-w-0 truncate",
 								title: e.last_error || "",
-								children: `${OU(e)}: ${ir(e.last_error || "") || "Motivo no especificado"}`
+								children: `${OU(e)}：${ir(e.last_error || "") || "未说明原因"}`
 							}, e.id))
 						}),
-						children: "Estas fuentes suscritas no obtuvieron nuevos resultados en esta ronda. "
+						children: "这些订阅源这一轮没有取到新条目。"
 					}) : null, r.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: r.error }) : null]
 				}) : null,
 				/* @__PURE__ */ (0, C.jsxs)(eE, {
 					visible: T.length > 0,
-					label: "Suscribirsefuente Operación en lote",
-					count: `Ya seleccionados ${T.length} fuentes suscritas`,
+					label: "订阅源批量操作",
+					count: `已选 ${T.length} 条订阅源`,
 					children: [
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
@@ -65402,7 +65402,7 @@ function rMe({ readOnly: e, toast: t }) {
 								ids: T.map((e) => e.id),
 								action: "enabled"
 							}),
-							children: "Activar"
+							children: "启用"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
@@ -65413,7 +65413,7 @@ function rMe({ readOnly: e, toast: t }) {
 								ids: T.map((e) => e.id),
 								action: "paused"
 							}),
-							children: "Pausar"
+							children: "暂停"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "danger",
@@ -65424,13 +65424,13 @@ function rMe({ readOnly: e, toast: t }) {
 								ids: T.map((e) => e.id),
 								action: "remove"
 							})),
-							children: "Quitar"
+							children: "移除"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "ghost",
 							size: "small",
 							onClick: () => s(/* @__PURE__ */ new Set()),
-							children: "Deseleccionar"
+							children: "取消选择"
 						})
 					]
 				}),
@@ -65438,7 +65438,7 @@ function rMe({ readOnly: e, toast: t }) {
 					follow: !0,
 					onRowClick: (e) => w(Number(e)),
 					children: /* @__PURE__ */ (0, C.jsxs)(ez, {
-						"aria-label": "Fuente de suscripción JAV",
+						"aria-label": "JAV 订阅源",
 						size: "sm",
 						sortDescriptor: f[0] ? {
 							column: f[0].id,
@@ -65468,14 +65468,14 @@ function rMe({ readOnly: e, toast: t }) {
 					})
 				}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 					icon: Kge,
-					title: "Aún no haySuscribirsefuente ",
+					title: "还没有订阅源",
 					shell: "plain",
-					children: "arriba buscar por nombre de actriz para añadir, o en la página de Persona hacer clic en "Suscribirse a nuevas obras". "
+					children: "在上面按女优名添加，或在人物页点「订阅新作」。"
 				}),
 				a.length ? /* @__PURE__ */ (0, C.jsx)(iz, {
-					label: "Suscripción JAV",
+					label: "JAV 订阅",
 					total: m.total,
-					unit: " fuente(s) de suscripción",
+					unit: "个订阅源",
 					pagination: {
 						pageIndex: m.page - 1,
 						pageSize: u
@@ -65489,7 +65489,7 @@ function rMe({ readOnly: e, toast: t }) {
 					children: /* @__PURE__ */ (0, C.jsx)("span", {
 						role: "status",
 						className: "mr-auto text-body-2-regular text-text-secondary",
-						children: `No visto ${(Number(i.unread) || 0).toLocaleString()} · Activado ${a.filter((e) => e.enabled).length.toLocaleString()} / ${a.length.toLocaleString()}`
+						children: `未看 ${(Number(i.unread) || 0).toLocaleString()} · 已启用 ${a.filter((e) => e.enabled).length.toLocaleString()} / ${a.length.toLocaleString()}`
 					})
 				})
 			]
@@ -65516,13 +65516,13 @@ function oMe() {
 	return (0, S.useEffect)(() => () => n.current?.disconnect(), []), [r, e];
 }
 var sMe = {
-	select: "Seleccionar",
-	author: "Creador",
-	source: "Fuente",
-	provider: "Sitio",
-	status: "Estado",
-	checked: "Última verificación",
-	actions: "Acción"
+	select: "选择",
+	author: "创作者",
+	source: "来源",
+	provider: "站点",
+	status: "状态",
+	checked: "上次检查",
+	actions: "操作"
 };
 function cMe({ source: e, selected: t, onToggle: n, handlers: r }) {
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -65536,7 +65536,7 @@ function cMe({ source: e, selected: t, onToggle: n, handlers: r }) {
 			/* @__PURE__ */ (0, C.jsx)(XP, {
 				isSelected: t,
 				onChange: n,
-				"aria-label": `Seleccionar ${e.label}`
+				"aria-label": `选择 ${e.label}`
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("span", {
 				className: "flex min-w-0 grow basis-0 flex-col gap-0.5",
@@ -65560,7 +65560,7 @@ function cMe({ source: e, selected: t, onToggle: n, handlers: r }) {
 						children: qr(e)
 					}),
 					/* @__PURE__ */ (0, C.jsx)(wU, {
-						"aria-label": `Activar ${e.label}`,
+						"aria-label": `启用 ${e.label}`,
 						isSelected: e.enabled,
 						isDisabled: r.readOnly,
 						onChange: (t) => r.toggle(e, t)
@@ -65572,7 +65572,7 @@ function cMe({ source: e, selected: t, onToggle: n, handlers: r }) {
 							size: "small",
 							iconOnly: !0,
 							leadingIcon: Hk,
-							"aria-label": `Verificar ${e.label} Actualizar`,
+							"aria-label": `检查 ${e.label} 的更新`,
 							disabled: !e.enabled || r.readOnly,
 							...Y(r.busy),
 							onClick: () => r.check([e.id])
@@ -65581,7 +65581,7 @@ function cMe({ source: e, selected: t, onToggle: n, handlers: r }) {
 							size: "small",
 							iconOnly: !0,
 							leadingIcon: Fk,
-							"aria-label": `Quitar ${e.label}`,
+							"aria-label": `移除 ${e.label}`,
 							disabled: r.readOnly,
 							onClick: () => r.remove(e)
 						})]
@@ -65592,9 +65592,9 @@ function cMe({ source: e, selected: t, onToggle: n, handlers: r }) {
 	});
 }
 function lMe({ group: e, name: t, open: n, selected: r, handlers: i, onOpen: a, onToggleGroup: o, onToggle: s }) {
-	let c = e.map((e) => e.id), l = e.filter((e) => e.enabled).map((e) => e.id), u = e.filter(nr).length, d = [...new Set(e.map((e) => e.provider_label || e.provider))].join(", "), f = `follow-author-${e[0].id}`, p = _r(r, c);
+	let c = e.map((e) => e.id), l = e.filter((e) => e.enabled).map((e) => e.id), u = e.filter(nr).length, d = [...new Set(e.map((e) => e.provider_label || e.provider))].join("、"), f = `follow-author-${e[0].id}`, p = _r(r, c);
 	return /* @__PURE__ */ (0, C.jsxs)("section", {
-		"aria-label": `${t} SeguirFuente`,
+		"aria-label": `${t} 的关注来源`,
 		className: vA({
 			variant: "raised",
 			padding: "none",
@@ -65618,7 +65618,7 @@ function lMe({ group: e, name: t, open: n, selected: r, handlers: i, onOpen: a, 
 					size: "small",
 					iconOnly: !0,
 					leadingIcon: Hk,
-					"aria-label": `Verificar ${t} TodoFuente`,
+					"aria-label": `检查 ${t} 的全部来源`,
 					disabled: !l.length || i.readOnly,
 					...Y(i.busy),
 					onClick: () => i.check(l)
@@ -65630,20 +65630,20 @@ function lMe({ group: e, name: t, open: n, selected: r, handlers: i, onOpen: a, 
 						/* @__PURE__ */ (0, C.jsxs)("span", {
 							className: "flex shrink-0 items-center gap-1 max-sm:mr-auto max-sm:min-w-0 max-sm:shrink max-sm:flex-wrap",
 							title: d,
-							children: [e.map((e) => /* @__PURE__ */ (0, C.jsx)(hU, { provider: e.provider }, e.id)), /* @__PURE__ */ (0, C.jsx)(wx, { children: `Fuente: ${d}` })]
+							children: [e.map((e) => /* @__PURE__ */ (0, C.jsx)(hU, { provider: e.provider }, e.id)), /* @__PURE__ */ (0, C.jsx)(wx, { children: `来源：${d}` })]
 						}),
 						u ? /* @__PURE__ */ (0, C.jsx)("span", {
 							className: "shrink-0 text-body-2-regular text-text-error-primary",
-							children: `${u} Fallido`
+							children: `${u} 个失败`
 						}) : null,
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
 							size: "small",
 							leadingIcon: Sge,
 							"aria-pressed": p.all ? "true" : p.some ? "mixed" : "false",
-							"aria-label": `${p.all ? "Deseleccionar todo" : "Seleccionar todo"} ${t} Fuente`,
+							"aria-label": `${p.all ? "取消全选" : "全选"} ${t} 的来源`,
 							onClick: () => o(!p.all),
-							children: p.all ? "Deseleccionar todo" : "Seleccionar todo"
+							children: p.all ? "取消全选" : "全选"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
@@ -65651,9 +65651,9 @@ function lMe({ group: e, name: t, open: n, selected: r, handlers: i, onOpen: a, 
 							"aria-expanded": n,
 							"aria-controls": f,
 							leadingIcon: n ? jk : Ok,
-							"aria-label": `${n ? "Colapsar" : "Expandir"} ${t} Fuente`,
+							"aria-label": `${n ? "收起" : "展开"} ${t} 的来源`,
 							onClick: () => a(!n),
-							children: n ? "Colapsar" : "Expandir"
+							children: n ? "收起" : "展开"
 						})
 					]
 				})
@@ -65688,14 +65688,14 @@ function uMe(e) {
 		start: (e) => wr(e),
 		onError: (e) => E(V(e)),
 		onFinish: (e) => {
-			Hr(), m(e.status === "failed" ? e.error || "Error de verificación" : Ur(e));
+			Hr(), m(e.status === "failed" ? e.error || "检查失败" : Ur(e));
 		}
 	}), N = (e) => {
 		A || M.isPending || (E(""), M.mutate(e));
 	}, P = (e, t) => p(vr(s, [e], t)), F = (e, t) => p(vr(s, e, t)), I = mt({
 		mutationFn: (e) => Dr(e),
 		onSuccess: (e, t) => {
-			Vr([t]), p(vr(s, [t], !1)), m("YaDejar de seguirFuente");
+			Vr([t]), p(vr(s, [t], !1)), m("已取消关注来源");
 		},
 		onError: (e) => E(V(e))
 	}), ee = mt({
@@ -65705,9 +65705,9 @@ function uMe(e) {
 		},
 		onError: (e) => E(V(e))
 	}), L = (e) => void Rs({
-		title: "Dejar de seguirFuente",
-		body: "Se quitarán estas fuentes y los objetivos de resultado obtenidos; los archivos de medios se conservarán. ",
-		confirmLabel: "Dejar de seguirFuente",
+		title: "取消关注来源",
+		body: "将移除这个来源及已抓取的条目，媒体文件保留。",
+		confirmLabel: "取消关注来源",
 		danger: !0,
 		onConfirm: () => I.mutateAsync(e.id)
 	}), te = mt({
@@ -65727,12 +65727,12 @@ function uMe(e) {
 			p(vr(s, e.done, !1));
 			let t = e.results.filter((e) => !e.ok);
 			if (t.length) {
-				E(`${t.length}/${e.ids.length}  fuente(s)NoActualizar: ${V(t[0]?.error)}`);
+				E(`${t.length}/${e.ids.length} 个来源未更新：${V(t[0]?.error)}`);
 				return;
 			}
 			E("");
-			let n = e.action === "remove" ? "Eliminar" : e.action === "enabled" ? "Activar" : "Pausar";
-			m(`Ya${n} ${e.done.length} SeguirFuente`);
+			let n = e.action === "remove" ? "删除" : e.action === "enabled" ? "启用" : "暂停";
+			m(`已${n} ${e.done.length} 个关注来源`);
 		},
 		onError: (e) => E(V(e))
 	}), ne = mt({
@@ -65748,7 +65748,7 @@ function uMe(e) {
 			};
 		},
 		onSuccess: (e) => {
-			Hr(), e.failed.length ? E(`LoteActualizar ${e.failed.length}/${e.ids.length} elemento(s)NoFinalizar`) : (E(""), m(`YaMarcar en lote ${e.ids.length} elemento(s)`));
+			Hr(), e.failed.length ? E(`批量更新 ${e.failed.length}/${e.ids.length} 项未完成`) : (E(""), m(`已批量标记 ${e.ids.length} 项`));
 		},
 		onError: (e) => E(V(e))
 	}), re = (e, t) => ee.mutate({
@@ -65778,7 +65778,7 @@ function uMe(e) {
 					slot: null,
 					isSelected: e.row.getIsSelected(),
 					onChange: (t) => e.row.toggleSelected(t),
-					"aria-label": `Seleccionar ${e.row.original.source.label}`
+					"aria-label": `选择 ${e.row.original.source.label}`
 				})
 			}),
 			e.accessor((e) => e.author, {
@@ -65828,7 +65828,7 @@ function uMe(e) {
 					className: "flex items-center gap-1",
 					children: [
 						/* @__PURE__ */ (0, C.jsx)(wU, {
-							"aria-label": `Activar ${e.row.original.source.label}`,
+							"aria-label": `启用 ${e.row.original.source.label}`,
 							isSelected: e.row.original.source.enabled,
 							isDisabled: ae.readOnly,
 							onChange: (t) => ie.current.toggle(e.row.original.source, t)
@@ -65838,7 +65838,7 @@ function uMe(e) {
 							size: "small",
 							iconOnly: !0,
 							leadingIcon: Hk,
-							"aria-label": `Verificar ${e.row.original.source.label} Actualizar`,
+							"aria-label": `检查 ${e.row.original.source.label} 的更新`,
 							disabled: !e.row.original.source.enabled || ae.readOnly,
 							...Y(ae.busy),
 							onClick: () => ie.current.check([e.row.original.source.id])
@@ -65848,7 +65848,7 @@ function uMe(e) {
 							size: "small",
 							iconOnly: !0,
 							leadingIcon: Fk,
-							"aria-label": `Quitar ${e.row.original.source.label}`,
+							"aria-label": `移除 ${e.row.original.source.label}`,
 							disabled: ae.readOnly,
 							onClick: () => ie.current.remove(e.row.original.source)
 						})
@@ -65910,28 +65910,28 @@ function uMe(e) {
 						className: "contents max-sm:flex max-sm:min-w-0 max-sm:flex-1 max-sm:flex-col",
 						children: [/* @__PURE__ */ (0, C.jsx)("h3", {
 							className: "mr-auto text-title-2-medium text-text-primary",
-							children: "Lista de seguidos"
+							children: "关注列表"
 						}), /* @__PURE__ */ (0, C.jsx)("span", {
 							className: "text-body-2-regular text-text-secondary",
-							children: `${g.length.toLocaleString()}  fuente(s)${v.new ? ` · ${AU(v.new)} resultado(s) no vistos` : ""}`
+							children: `${g.length.toLocaleString()} 个来源${v.new ? ` · ${AU(v.new)} 条未看` : ""}`
 						})]
 					}),
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "primary",
 						leadingIcon: Hk,
 						disabled: c,
-						"aria-label": "Verificar todo",
+						"aria-label": "检查全部",
 						iconOnly: w,
 						...Y(ae.busy),
 						onClick: () => N([]),
-						children: "Verificar todo"
+						children: "检查全部"
 					}),
 					_e.length ? /* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "secondary",
 						disabled: c,
 						...Y(ae.busy),
 						onClick: () => N(_e),
-						children: "Error de verificaciónelemento(s)"
+						children: "检查失败项"
 					}) : null,
 					/* @__PURE__ */ (0, C.jsxs)("span", {
 						"data-follow-toolbar-controls": "",
@@ -65940,7 +65940,7 @@ function uMe(e) {
 							/* @__PURE__ */ (0, C.jsxs)("span", {
 								"data-button-group": !0,
 								role: "group",
-								"aria-label": "Lista de seguidosformato",
+								"aria-label": "关注列表版式",
 								children: [/* @__PURE__ */ (0, C.jsx)(q, {
 									variant: "ghost",
 									iconOnly: !0,
@@ -65958,7 +65958,7 @@ function uMe(e) {
 								})]
 							}),
 							/* @__PURE__ */ (0, C.jsx)(BF, {
-								"aria-label": "Lista de seguidosOrdenar",
+								"aria-label": "关注列表排序",
 								selectedKey: n,
 								onSelectionChange: (e) => {
 									if (e === null) return;
@@ -65981,9 +65981,9 @@ function uMe(e) {
 								variant: "secondary",
 								iconOnly: w,
 								leadingIcon: ye ? Ok : jk,
-								"aria-label": ye ? "TodoExpandir" : "Colapsar todo",
+								"aria-label": ye ? "全部展开" : "全部收起",
 								onClick: () => b(ye ? /* @__PURE__ */ new Set() : new Set(D.map((e) => String(e[0].author_key || e[0].id)))),
-								children: ye ? "TodoExpandir" : "Colapsar todo"
+								children: ye ? "全部展开" : "全部收起"
 							})
 						]
 					})
@@ -65995,39 +65995,39 @@ function uMe(e) {
 				children: [
 					A ? /* @__PURE__ */ (0, C.jsx)(OF, {
 						embedded: !0,
-						label: k?.message || (k?.total ? `${k.older ? "Historial de búsqueda" : "Comprobar actualizaciones"}: Completado ${k.checked || 0}/${k.total}  fuente(s)` : "Procesandopreparando tarea de verificación"),
+						label: k?.message || (k?.total ? `${k.older ? "抓取历史" : "检查更新"}：已完成 ${k.checked || 0}/${k.total} 个来源` : "正在准备检查任务"),
 						value: k?.checked,
 						total: k?.total
 					}) : null,
 					T ? /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "error",
-						title: "Operación no completada",
+						title: "操作未完成",
 						children: T
 					}) : null,
 					!A && j?.results?.length ? /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "neutral",
-						title: "Resultado de verificación",
+						title: "检查结果",
 						children: Wr(j)
 					}) : null,
 					ge.length ? /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "error",
-						title: `${ge.length}  fuente(s) con error de verificación`,
+						title: `${ge.length} 个来源检查失败`,
 						extra: /* @__PURE__ */ (0, C.jsx)("ul", {
 							className: "flex flex-col gap-0.5 text-body-2-regular",
-							children: ge.map((e, t) => /* @__PURE__ */ (0, C.jsx)("li", { children: `${e.provider_label || e.provider || ""} ${e.author || e.label || e.ref || ""}: ${ir(e.error || "") || "Motivo no especificado"}` }, `${e.provider || ""}-${e.ref || t}`))
+							children: ge.map((e, t) => /* @__PURE__ */ (0, C.jsx)("li", { children: `${e.provider_label || e.provider || ""} ${e.author || e.label || e.ref || ""}：${ir(e.error || "") || "未说明原因"}` }, `${e.provider || ""}-${e.ref || t}`))
 						}),
-						children: "Estas fuentes no obtuvieron actualizaciones en esta ronda. "
+						children: "这些来源这一轮没有取到更新。"
 					}) : null,
 					ve ? /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "warning",
-						children: `Resultado guardado, pero esta vez la fuente original no respondió: ${ve}`
+						children: `条目已保存，但这次未保存来源的原始响应：${ve}`
 					}) : null
 				]
 			}),
 			/* @__PURE__ */ (0, C.jsxs)(eE, {
-				label: "SeguirFuenteOperación en lote",
+				label: "关注来源批量操作",
 				visible: he.length > 0,
-				count: `Ya seleccionados ${he.length}  fuente(s)`,
+				count: `已选 ${he.length} 个来源`,
 				children: [
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "secondary",
@@ -66035,7 +66035,7 @@ function uMe(e) {
 						disabled: c,
 						...Y(ae.busy),
 						onClick: () => N(he),
-						children: "Verificar seleccionados"
+						children: "检查所选"
 					}),
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "secondary",
@@ -66046,7 +66046,7 @@ function uMe(e) {
 							ids: he,
 							action: "enabled"
 						}),
-						children: "Activar"
+						children: "启用"
 					}),
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "secondary",
@@ -66057,7 +66057,7 @@ function uMe(e) {
 							ids: he,
 							action: "paused"
 						}),
-						children: "Pausar"
+						children: "暂停"
 					}),
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "danger",
@@ -66065,22 +66065,22 @@ function uMe(e) {
 						disabled: c,
 						...Y(te.isPending),
 						onClick: () => void Rs({
-							title: `Eliminar ${he.length} SeguirFuente`,
-							body: "Se quitarán las fuentes seguidas seleccionadas y sus objetivos obtenidos; los archivos de medios se conservarán. ",
-							confirmLabel: "Eliminar fuentes seleccionadas",
+							title: `删除 ${he.length} 个关注来源`,
+							body: "将移除所选关注来源及其已抓取条目，媒体文件保留。",
+							confirmLabel: "删除所选来源",
 							danger: !0,
 							onConfirm: () => te.mutateAsync({
 								ids: he,
 								action: "remove"
 							})
 						}),
-						children: "Eliminar"
+						children: "删除"
 					}),
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "ghost",
 						size: "small",
 						onClick: () => p(/* @__PURE__ */ new Set()),
-						children: "Deseleccionar"
+						children: "取消选择"
 					})
 				]
 			}),
@@ -66088,7 +66088,7 @@ function uMe(e) {
 				follow: !0,
 				onRowClick: (e) => P(Number(e), !s.has(Number(e))),
 				children: /* @__PURE__ */ (0, C.jsxs)(ez, {
-					"aria-label": "SeguirFuente",
+					"aria-label": "关注来源",
 					size: "sm",
 					sortDescriptor: se[0] ? {
 						column: se[0].id,
@@ -66114,7 +66114,7 @@ function uMe(e) {
 							}) : /* @__PURE__ */ (0, C.jsx)(wx, { children: n })
 						}, e.id);
 					}) }), /* @__PURE__ */ (0, C.jsx)(tP, {
-						renderEmptyState: () => "esteunpáginaSinFuente",
+						renderEmptyState: () => "这一页没有来源",
 						children: fe.map((e) => /* @__PURE__ */ (0, C.jsx)(iP, {
 							id: e.id,
 							"data-follow-selected": e.getIsSelected() || void 0,
@@ -66126,8 +66126,8 @@ function uMe(e) {
 				isSelected: me.all,
 				isIndeterminate: me.some,
 				onChange: (e) => F(pe, e),
-				"aria-label": "Seleccionar toda la páginaFuente",
-				children: "Seleccionar toda la página"
+				"aria-label": "全选本页来源",
+				children: "全选本页"
 			}), /* @__PURE__ */ (0, C.jsx)("div", {
 				className: "flex flex-col gap-3",
 				children: D.slice(ue.start, ue.end).map((e) => {
@@ -66148,14 +66148,14 @@ function uMe(e) {
 				})
 			})] }),
 			/* @__PURE__ */ (0, C.jsx)(iz, {
-				label: "Lista de seguidos",
+				label: "关注列表",
 				total: ue.total,
 				pagination: {
 					pageIndex: ue.page - 1,
 					pageSize: o
 				},
-				unit: le ? " fuente(s)" : " resultado(s)Creador",
-				pageUnit: le ? "Resultado" : " resultado(s)",
+				unit: le ? "个来源" : "位创作者",
+				pageUnit: le ? "条" : "位",
 				onChange: (e) => {
 					e.pageSize === o ? de.setPageIndex(e.pageIndex) : de.setPageSize(e.pageSize);
 				}
@@ -66165,13 +66165,13 @@ function uMe(e) {
 				children: [
 					/* @__PURE__ */ (0, C.jsx)("span", {
 						className: "mr-auto text-body-2-regular text-text-secondary",
-						children: `No visto ${AU(v.new)} · Ya visto ${AU(v.seen)} · Guardado ${AU(v.saved)} · Ignorado ${AU(v.ignored)}`
+						children: `未看 ${AU(v.new)} · 已看 ${AU(v.seen)} · 已保存 ${AU(v.saved)} · 已忽略 ${AU(v.ignored)}`
 					}),
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "secondary",
 						size: "small",
 						onClick: h,
-						children: "ir a ver la actualización"
+						children: "去看更新"
 					}),
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "secondary",
@@ -66179,12 +66179,12 @@ function uMe(e) {
 						disabled: c,
 						...Y(ne.isPending),
 						onClick: () => void Rs({
-							title: "Marcar como visto",
-							body: "Se marcará la obra actual no vista como ya vista. ",
-							confirmLabel: "Marcar como visto",
+							title: "标记已看",
+							body: "将把当前未看作品标记为已看。",
+							confirmLabel: "标记已看",
 							onConfirm: () => ne.mutateAsync("seen")
 						}),
-						children: "TodoMarcar como visto"
+						children: "全部标记已看"
 					}),
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "secondary",
@@ -66192,12 +66192,12 @@ function uMe(e) {
 						disabled: c,
 						...Y(ne.isPending),
 						onClick: () => void Rs({
-							title: "MarcarIgnorado",
-							body: "Se marcará la obra actual no vista como ignorada. ",
-							confirmLabel: "MarcarIgnorado",
+							title: "标记已忽略",
+							body: "将把当前未看作品标记为已忽略。",
+							confirmLabel: "标记已忽略",
 							onConfirm: () => ne.mutateAsync("ignored")
 						}),
-						children: "TodoIgnorar"
+						children: "全部忽略"
 					})
 				]
 			}) : null
@@ -66205,22 +66205,22 @@ function uMe(e) {
 	}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 		shell: "plain",
 		icon: Kge,
-		title: "Aún no haySeguirFuente",
+		title: "还没有关注来源",
 		actions: /* @__PURE__ */ (0, C.jsx)(_A, {
 			variant: "primary",
 			size: "small",
 			href: "/subscriptions?tab=add",
-			children: "Agregar seguimiento"
+			children: "添加关注"
 		}),
-		children: "El estado de verificación de las fuentes seguidas se mostrará aquí. "
+		children: "关注来源及其检查状态会显示在这里。"
 	});
 }
 //#endregion
 //#region src/react/follow-manage/follow-manage-page.tsx
 var MU = [
-	["list", "Lista de seguidos"],
-	["add", "Agregar seguimiento"],
-	["feeds", "Fuente de suscripción JAV"]
+	["list", "关注列表"],
+	["add", "添加关注"],
+	["feeds", "JAV 订阅源"]
 ], NU = (e) => MU.some(([t]) => t === e);
 function PU({ term: e, figure: t, unit: n }) {
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -66276,50 +66276,50 @@ function dMe(e) {
 	return /* @__PURE__ */ (0, C.jsxs)(xA, { children: [
 		s ? /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: "warning",
-			title: "Solo navegación local",
+			title: "本机只能浏览",
 			extra: l ? /* @__PURE__ */ (0, C.jsx)("p", {
 				className: "text-body-2-regular",
 				children: /* @__PURE__ */ (0, C.jsx)("a", {
 					href: l,
 					className: "text-text-primary underline underline-offset-2",
-					children: "ir al lado del escritor para gestionar seguidos"
+					children: "前往写入端管理关注"
 				})
 			}) : void 0,
 			children: c
 		}) : null,
 		/* @__PURE__ */ (0, C.jsxs)("div", {
 			className: GDe,
-			"aria-label": "Resumen de seguidos",
+			"aria-label": "关注概览",
 			children: [
 				/* @__PURE__ */ (0, C.jsx)(PU, {
-					term: "Seguir creador",
+					term: "关注创作者",
 					figure: N.length,
-					unit: " resultado(s)"
+					unit: "位"
 				}),
 				/* @__PURE__ */ (0, C.jsx)(PU, {
-					term: "Activar fuente",
+					term: "启用来源",
 					figure: F,
 					unit: `/ ${j.length}`
 				}),
 				/* @__PURE__ */ (0, C.jsx)(PU, {
-					term: "Error de verificación",
+					term: "检查失败",
 					figure: P,
-					unit: " fuente(s)"
+					unit: "个来源"
 				}),
 				/* @__PURE__ */ (0, C.jsx)(PU, {
-					term: "Actualizaciones sin ver",
+					term: "未看更新",
 					figure: k.counts?.new || 0,
-					unit: "Resultado"
+					unit: "条"
 				}),
 				/* @__PURE__ */ (0, C.jsx)(PU, {
-					term: "Suscripción JAV",
+					term: "JAV 订阅",
 					figure: ee,
-					unit: " resultado(s)"
+					unit: "位"
 				}),
 				/* @__PURE__ */ (0, C.jsx)(PU, {
-					term: "Nuevas obras sin ver",
+					term: "未看新作",
 					figure: O.data?.unread || 0,
-					unit: "Resultado"
+					unit: "条"
 				})
 			]
 		}),
@@ -66333,7 +66333,7 @@ function dMe(e) {
 			children: [
 				/* @__PURE__ */ (0, C.jsx)(dP, {
 					ref: t,
-					"aria-label": "Área de gestión de seguidos",
+					"aria-label": "关注管理区域",
 					"data-section-nav": !0,
 					"data-section-items": !0,
 					className: "flex max-w-full flex-nowrap overflow-x-auto",
@@ -66406,7 +66406,7 @@ function dMe(e) {
 		/* @__PURE__ */ (0, C.jsx)("div", { children: /* @__PURE__ */ (0, C.jsxs)(q, {
 			variant: "secondary",
 			onClick: o,
-			children: ["Fuentes y suscripcionesConfiguración", I ? `(${I})` : ""]
+			children: ["来源与订阅设置", I ? `（${I}）` : ""]
 		}) })
 	] });
 }
@@ -66554,18 +66554,18 @@ function gMe({ tags: e, actions: t }) {
 }
 var _Me = [[
 	"cloud",
-	"Nube de etiquetas",
+	"标签云",
 	"tags"
 ], [
 	"alphabet",
-	"Alfabeto",
+	"字母表",
 	"text-aa"
 ]];
 function vMe({ categories: e, category: t, online: n, readout: r, letters: i, view: a, onCategory: o, onJump: s, onView: c }) {
 	let l = hj();
 	return /* @__PURE__ */ (0, C.jsx)(_j, {
-		label: "EtiquetaFiltrar",
-		topLabel: "Tipo de etiqueta",
+		label: "标签筛选",
+		topLabel: "标签类型",
 		top: e.map(([e, r]) => /* @__PURE__ */ (0, C.jsxs)(vj, {
 			"data-tag-pill": "",
 			"data-tag-cat": e === "all" ? "all" : VV(n, e),
@@ -66581,7 +66581,7 @@ function vMe({ categories: e, category: t, online: n, readout: r, letters: i, vi
 			}),
 			i.length > 1 ? /* @__PURE__ */ (0, C.jsx)("nav", {
 				ref: l,
-				"aria-label": "Saltar por inicial",
+				"aria-label": "按首字跳转",
 				"data-alpha-jump": "",
 				className: "flex min-w-0 gap-0.5 overflow-x-auto overscroll-x-contain",
 				children: i.map((e, t) => /* @__PURE__ */ (0, C.jsx)("button", {
@@ -66592,7 +66592,7 @@ function vMe({ categories: e, category: t, online: n, readout: r, letters: i, vi
 				}, e))
 			}) : null,
 			/* @__PURE__ */ (0, C.jsx)(PN, {
-				"aria-label": "Vista de etiquetas",
+				"aria-label": "标签视图",
 				orientation: "horizontal",
 				value: a,
 				onChange: (e) => c(e),
@@ -66618,8 +66618,8 @@ function vMe({ categories: e, category: t, online: n, readout: r, letters: i, vi
 function yMe({ count: e, match: t, onMatch: n, onClear: r, onApply: i }) {
 	return /* @__PURE__ */ (0, C.jsxs)(eE, {
 		visible: e > 0,
-		label: "seleccionadosEtiquetaAcción",
-		count: `Ya seleccionados ${e.toLocaleString()} Etiqueta`,
+		label: "所选标签操作",
+		count: `已选 ${e.toLocaleString()} 个标签`,
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(XP, {
 				isSelected: t === "any",
@@ -66628,10 +66628,10 @@ function yMe({ count: e, match: t, onMatch: n, onClear: r, onApply: i }) {
 					className: "flex flex-col",
 					children: [/* @__PURE__ */ (0, C.jsx)("span", {
 						className: "text-body-medium",
-						children: "Coincidencia amplia"
+						children: "广泛匹配"
 					}), /* @__PURE__ */ (0, C.jsx)("span", {
 						className: "text-caption-1-regular text-text-secondary",
-						children: "Al activar, coincide con cualquier etiqueta seleccionada; al desactivar, debe contener todasEtiqueta. "
+						children: "开启后匹配任一所选标签；关闭后必须同时包含全部标签。"
 					})]
 				})
 			}),
@@ -66639,14 +66639,14 @@ function yMe({ count: e, match: t, onMatch: n, onClear: r, onApply: i }) {
 				variant: "secondary",
 				size: "small",
 				onClick: r,
-				children: "Limpiar"
+				children: "清空"
 			}),
 			/* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "primary",
 				size: "small",
 				disabled: !e,
 				onClick: i,
-				children: "MostrarResultado"
+				children: "显示结果"
 			})
 		]
 	});
@@ -66655,59 +66655,59 @@ function yMe({ count: e, match: t, onMatch: n, onClear: r, onApply: i }) {
 //#region src/react/index/index-page.tsx
 var bMe = [{
 	value: "studios",
-	label: "Sello",
+	label: "厂牌",
 	symbol: "clapperboard"
 }, {
 	value: "agencies",
-	label: "Agencia",
+	label: "事务所",
 	symbol: "briefcase"
 }], xMe = [{
 	value: "local",
-	label: "Local",
+	label: "本地",
 	symbol: "hard-drive"
 }, {
 	value: "online",
-	label: "En línea",
+	label: "在线",
 	symbol: "rss"
 }], SMe = [
 	{
 		value: "performers",
-		label: "Actriz",
+		label: "艺人",
 		symbol: "user-round"
 	},
 	{
 		value: "creators",
-		label: "Vendedor",
+		label: "卖家",
 		symbol: "user-round"
 	},
 	{
 		value: "online",
-		label: "En línea",
+		label: "在线",
 		symbol: "rss"
 	}
 ], CMe = {
 	people: [[
 		"big",
-		"Imagen grande · Avatar vertical",
+		"大图 · 竖幅头像",
 		"maximize"
 	], [
 		"compact",
-		"Compacto · Avatar circular",
+		"紧凑 · 圆形头像",
 		"layout-grid"
 	]],
 	company: [[
 		"big",
-		"Imagen grande · Logo completo",
+		"大图 · 完整标识",
 		"maximize"
 	], [
 		"compact",
-		"Compacto · Logo circular",
+		"紧凑 · 圆形标识",
 		"layout-grid"
 	]]
 };
 function wMe({ kind: e, layout: t, onChange: n }) {
 	return /* @__PURE__ */ (0, C.jsx)(KF, {
-		"aria-label": `${AV[e]}formato de índice`,
+		"aria-label": `${AV[e]}索引版式`,
 		orientation: "horizontal",
 		value: t,
 		onChange: (e) => n(e),
@@ -66818,7 +66818,7 @@ function DMe(e) {
 	}, ee = u === "tags" ? /* @__PURE__ */ (0, C.jsx)(IU, {
 		tabs: xMe,
 		value: f,
-		label: "Glosario",
+		label: "词表",
 		onChange: (e) => {
 			o(/* @__PURE__ */ new Set()), b({
 				scope: e,
@@ -66829,7 +66829,7 @@ function DMe(e) {
 	}) : FV(u) ? /* @__PURE__ */ (0, C.jsx)(IU, {
 		tabs: bMe,
 		value: u,
-		label: "Tipo de empresa",
+		label: "公司类型",
 		onChange: (e) => b({ kind: e })
 	}) : null, L = (t) => {
 		g ? e.openFollowTag(t) : e.selectMode ? o((e) => {
@@ -66867,7 +66867,7 @@ function DMe(e) {
 						className: "hidden h-0 basis-full max-board-narrow:order-2 max-board-narrow:block"
 					}),
 					/* @__PURE__ */ (0, C.jsx)(EMe, {
-						label: `Filtrar${h}`,
+						label: `过滤${h}`,
 						value: d,
 						onQuery: (e) => {
 							e !== d && b({ q: e }, !!e);
@@ -66878,7 +66878,7 @@ function DMe(e) {
 			u === "performers" || u === "creators" ? /* @__PURE__ */ (0, C.jsx)(IU, {
 				tabs: SMe,
 				value: _ ? "online" : u,
-				label: "Lista de personas",
+				label: "人物名册",
 				onChange: (t) => {
 					t === "online" && e.exitSelectMode(), b({
 						kind: t === "online" ? "performers" : t,
@@ -66889,7 +66889,7 @@ function DMe(e) {
 			}) : null,
 			ee,
 			u === "performers" && f === "local" ? /* @__PURE__ */ (0, C.jsx)("div", {
-				"aria-label": "Clasificación de identidad",
+				"aria-label": "身份分类",
 				className: kV,
 				children: OV.filter((e) => e[0] === m || N(e)).map(([e, t]) => /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: m === e ? "primary" : "secondary",
@@ -66926,11 +66926,11 @@ function DMe(e) {
 					});
 					if (w.isError) return /* @__PURE__ */ (0, C.jsx)(yA, {
 						icon: EP("alert"),
-						title: `No se pudo leer${h}`,
+						title: `没能读取${h}`,
 						actions: /* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
 							onClick: () => void w.refetch(),
-							children: "Reintentar"
+							children: "重试"
 						}),
 						children: Pt(w.error)
 					});
@@ -66976,8 +66976,8 @@ function DMe(e) {
 					onClick: () => void w.fetchNextPage(),
 					children: w.isFetchingNextPage ? /* @__PURE__ */ (0, C.jsx)(bA, {
 						inline: !0,
-						label: "Cargando más..."
-					}) : "Cargar más"
+						label: "继续载入中…"
+					}) : "载入更多"
 				})
 			}) : null,
 			u === "tags" && !g && e.selectMode ? /* @__PURE__ */ (0, C.jsx)(yMe, {
@@ -66994,55 +66994,55 @@ function DMe(e) {
 	});
 }
 var OMe = {
-	tags: "Etiqueta",
-	performers: "Actriz",
-	creators: "Vendedor",
-	studios: "Sello",
-	agencies: "Agencia"
+	tags: "标签",
+	performers: "艺人",
+	creators: "卖家",
+	studios: "厂牌",
+	agencies: "事务所"
 };
 function kMe({ kind: e, filtered: t, online: n, configurable: r }) {
 	if (t) return /* @__PURE__ */ (0, C.jsx)(yA, {
 		icon: EP("search"),
-		title: "Sin contenido que coincida",
+		title: "没有符合条件的内容",
 		actions: /* @__PURE__ */ (0, C.jsx)(_A, {
 			variant: "primary",
 			href: "/?loc=&thumb=0",
-			children: "Ver todo el contenido"
+			children: "查看全部内容"
 		}),
-		children: "Limpiar filtros o buscarcriterios de resultadodespuésVer todo el contenido. "
+		children: "清除筛选或搜索条件后查看全部内容。"
 	});
-	let i = n && e === "performers" ? "Creador" : OMe[e], a = /* @__PURE__ */ (0, C.jsx)(_A, {
+	let i = n && e === "performers" ? "创作者" : OMe[e], a = /* @__PURE__ */ (0, C.jsx)(_A, {
 		variant: !r || n ? "primary" : "secondary",
 		href: "/subscriptions?tab=add",
-		children: "Agregar seguimiento"
+		children: "添加关注"
 	});
 	return /* @__PURE__ */ (0, C.jsx)(yA, {
 		icon: EP(e === "tags" ? "tags" : "user-round"),
-		title: `Aún no hay${i}`,
+		title: `还没有${i}`,
 		actions: n ? a : /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [r ? /* @__PURE__ */ (0, C.jsx)(q, {
 			variant: "primary",
 			"data-empty-settings": "",
-			children: "Añadir contenido"
+			children: "添加内容"
 		}) : null, a] }),
-		children: n ? `Agregar seguimiento de fuente y obtener contenido, luego, esto mostrará el contenido de ${i}. ` : "Añade contenido y completa los datos para ver la información aquí."
+		children: n ? `添加关注来源并获取内容后，这里会显示来源上的${i}。` : "添加内容并补充资料后，这里会显示对应信息。"
 	});
 }
 var RU = {
-	video: ["Videos", "play"],
-	image: ["Imágenes", "pics"],
-	archive: ["Archivo comprimido", "file-archive"],
-	audio: ["Audio", "file-audio"],
-	url: ["Acceso directo URL", "globe"],
-	other: ["Otros archivos", "hard-drive"]
+	video: ["视频", "play"],
+	image: ["图片", "pics"],
+	archive: ["压缩包", "file-archive"],
+	audio: ["音频", "file-audio"],
+	url: ["网址快捷方式", "globe"],
+	other: ["其它文件", "hard-drive"]
 }, AMe = (e) => RU[e.junk_kind || "other"] || RU.other;
 function jMe(e) {
 	return e === "dismissed" ? {
 		operation: "reconsider-junk",
-		label: "Reclasificar",
+		label: "重新判断",
 		glyph: "rotate-ccw"
 	} : {
 		operation: "dismiss-junk",
-		label: "No es basura",
+		label: "不是垃圾",
 		glyph: "check"
 	};
 }
@@ -67095,12 +67095,12 @@ function FMe({ item: e, view: t, selected: n, selectMode: r, helpers: i, actions
 		"data-middle-truncate": "",
 		title: m,
 		onClick: y,
-		dangerouslySetInnerHTML: { __html: B(m || "Recurso sin nombre") }
+		dangerouslySetInnerHTML: { __html: B(m || "未命名资源") }
 	}) : /* @__PURE__ */ (0, C.jsx)("span", {
 		"data-junk-title": "",
 		"data-middle-truncate": "",
 		title: m,
-		dangerouslySetInnerHTML: { __html: B(m || "Recurso sin nombre") }
+		dangerouslySetInnerHTML: { __html: B(m || "未命名资源") }
 	});
 	return /* @__PURE__ */ (0, C.jsxs)("article", {
 		ref: o,
@@ -67150,7 +67150,7 @@ function FMe({ item: e, view: t, selected: n, selectMode: r, helpers: i, actions
 						}) : null,
 						/* @__PURE__ */ (0, C.jsx)("span", {
 							"data-junk-size": "",
-							children: Number(e.size) > 0 ? cn(Number(e.size)) : "Tamaño desconocido"
+							children: Number(e.size) > 0 ? cn(Number(e.size)) : "大小未知"
 						})
 					]
 				})]
@@ -67161,16 +67161,16 @@ function FMe({ item: e, view: t, selected: n, selectMode: r, helpers: i, actions
 					/* @__PURE__ */ (0, C.jsxs)("button", {
 						type: "button",
 						"data-junk-action": "reveal",
-						title: "Mostrar en explorador",
-						"aria-label": "Mostrar en explorador",
+						title: "在资源管理器中显示",
+						"aria-label": "在资源管理器中显示",
 						...w("reveal"),
 						onClick: b,
 						children: [s === "reveal" ? /* @__PURE__ */ (0, C.jsx)("span", {
 							"data-junk-spinner": "",
-							dangerouslySetInnerHTML: { __html: Ao("Localizando") }
+							dangerouslySetInnerHTML: { __html: Ao("正在定位") }
 						}) : /* @__PURE__ */ (0, C.jsx)(BU, { name: "folder-open" }), /* @__PURE__ */ (0, C.jsx)("span", {
 							"data-junk-label": "",
-							children: "AbrirPosición"
+							children: "打开位置"
 						})]
 					}),
 					/* @__PURE__ */ (0, C.jsxs)("button", {
@@ -67188,13 +67188,13 @@ function FMe({ item: e, view: t, selected: n, selectMode: r, helpers: i, actions
 					/* @__PURE__ */ (0, C.jsxs)("button", {
 						type: "button",
 						"data-junk-action": "dispose",
-						title: "Mover a papelera",
-						"aria-label": "Mover a papelera",
+						title: "移入回收站",
+						"aria-label": "移入回收站",
 						...w("dispose"),
 						onClick: x("dispose"),
 						children: [/* @__PURE__ */ (0, C.jsx)(BU, { name: "trash" }), /* @__PURE__ */ (0, C.jsx)("span", {
 							"data-junk-label": "",
-							children: "Mover a papelera"
+							children: "移入回收站"
 						})]
 					}),
 					/* @__PURE__ */ (0, C.jsx)("span", {
@@ -67210,37 +67210,37 @@ function FMe({ item: e, view: t, selected: n, selectMode: r, helpers: i, actions
 var IMe = (0, S.memo)(FMe), HU = [
 	[
 		"",
-		"Todo",
+		"全部",
 		"layout-grid"
 	],
 	[
 		"video",
-		"Videos",
+		"视频",
 		"play"
 	],
 	[
 		"image",
-		"Imágenes",
+		"图片",
 		"pics"
 	],
 	[
 		"archive",
-		"Archivo comprimido",
+		"压缩包",
 		"file-archive"
 	],
 	[
 		"audio",
-		"Audio",
+		"音频",
 		"file-audio"
 	],
 	[
 		"url",
-		"URL",
+		"网址",
 		"globe"
 	],
 	[
 		"other",
-		"Otros",
+		"其它",
 		"hard-drive"
 	]
 ], LMe = (e) => HU.find(([t]) => t === e)?.[0] ?? "";
@@ -67260,20 +67260,20 @@ function WU(e = "", t = "pending") {
 function GU(e) {
 	return e === "dismissed" ? {
 		view: "pending",
-		label: "Volverpendiente de juicio",
+		label: "返回待判断",
 		glyph: "rotate-ccw",
 		href: WU("", "pending")
 	} : {
 		view: "dismissed",
-		label: "Ya excluido",
+		label: "已排除",
 		glyph: "eye-off",
 		href: WU("", "dismissed")
 	};
 }
-var KU = (e) => e === "dismissed" ? "Ya excluido" : "pendiente de juicio", qU = (e) => `<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${e}"></use></svg>`;
+var KU = (e) => e === "dismissed" ? "已排除" : "待判断", qU = (e) => `<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-${e}"></use></svg>`;
 function RMe({ kind: e, view: t }) {
 	let n = HU.map(([n, r, i]) => `<a href="${WU(n, t)}" data-junk-kind-link="${n}"${n === e ? " aria-current=\"page\"" : ""}>${qU(i)}${B(r)}</a>`).join(""), r = GU(t);
-	return `<div class="peach-react" data-junk-count-skeleton=""><div data-junk-count=""><div data-junk-summary="" aria-live="polite">${Eo(KU(t))}</div><div data-junk-filters-frame="" data-filter-glass="" data-glass-pane=""><span data-view-glide="" aria-hidden="true" hidden></span><nav data-junk-filters="" aria-label="Clasificación de basura">${n}<i data-junk-divider="" aria-hidden="true"></i><a href="${r.href}" data-junk-view-link="${r.view}"${t === "dismissed" ? " aria-current=\"page\"" : ""}>${qU(r.glyph)}${r.label}</a></nav></div></div></div>`;
+	return `<div class="peach-react" data-junk-count-skeleton=""><div data-junk-count=""><div data-junk-summary="" aria-live="polite">${Eo(KU(t))}</div><div data-junk-filters-frame="" data-filter-glass="" data-glass-pane=""><span data-view-glide="" aria-hidden="true" hidden></span><nav data-junk-filters="" aria-label="垃圾文件分类">${n}<i data-junk-divider="" aria-hidden="true"></i><a href="${r.href}" data-junk-view-link="${r.view}"${t === "dismissed" ? " aria-current=\"page\"" : ""}>${qU(r.glyph)}${r.label}</a></nav></div></div></div>`;
 }
 //#endregion
 //#region src/react/junk-queue/junk-count.tsx
@@ -67294,7 +67294,7 @@ function zMe({ route: e, page: t, failed: n, onNavigate: r }) {
 	let i = ZP(), a = (0, S.useRef)(null), { kind: o, view: s } = e, c = Sj(a, i, "[data-junk-kind-link][aria-current=\"page\"]", `${s}:${o}:${t ? HU.map(([e]) => zU(t, e)).join(",") : ""}`), l = GU(s), u = (e) => {
 		let t = e.target.closest("a");
 		!t || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e.preventDefault(), r(t.getAttribute("href") || WU()));
-	}, d = t ? `${Number(t.total || 0).toLocaleString()} ` : n ? "—" : "";
+	}, d = t ? `${Number(t.total || 0).toLocaleString()} 个` : n ? "—" : "";
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		"data-junk-count": "",
 		children: [/* @__PURE__ */ (0, C.jsx)("div", {
@@ -67317,7 +67317,7 @@ function zMe({ route: e, page: t, failed: n, onNavigate: r }) {
 			}), /* @__PURE__ */ (0, C.jsxs)("nav", {
 				ref: i,
 				"data-junk-filters": "",
-				"aria-label": "Clasificación de basura",
+				"aria-label": "垃圾文件分类",
 				onClick: u,
 				onPointerLeave: c.leave,
 				children: [
@@ -67421,8 +67421,8 @@ function WMe({ props: e, data: t, pending: n, error: r, retry: i }) {
 				let t = e.view === "dismissed";
 				return /* @__PURE__ */ (0, C.jsx)(yA, {
 					icon: BMe,
-					title: t ? "SinYa excluidode archivos" : "Sinpendiente de juiciode archivoss basura",
-					children: t ? "clic“No es basura”Recursose conservará aquí, puedeseguircuandoReclasificar. " : "ActualCategoríaSinPendienteVerificar archivos. "
+					title: t ? "没有已排除的文件" : "没有待判断的垃圾文件",
+					children: t ? "点“不是垃圾”的资源会保留在这里，可随时重新判断。" : "当前分类没有待检查文件。"
 				});
 			}
 			return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
@@ -67443,7 +67443,7 @@ function WMe({ props: e, data: t, pending: n, error: r, retry: i }) {
 				u.length >= l.length && Number(t.total || 0) > l.length ? /* @__PURE__ */ (0, C.jsx)("p", {
 					"data-junk-truncated": "",
 					className: "py-6 text-center text-caption-1-regular text-text-secondary",
-					children: `Mostrarprimeros ${l.length.toLocaleString()} Resultado, Total: ${Number(t.total).toLocaleString()} Resultado; Después de procesar estos, otros rellenarán el espacio . `
+					children: `显示前 ${l.length.toLocaleString()} 条，共 ${Number(t.total).toLocaleString()} 条；处理掉这些后，其余的会补上来。`
 				}) : null
 			] });
 		})()]
@@ -67462,13 +67462,13 @@ function GMe({ onMore: e }) {
 		ref: t,
 		"data-load-more": "",
 		onClick: e,
-		dangerouslySetInnerHTML: { __html: jo("Cargando más...") }
+		dangerouslySetInnerHTML: { __html: jo("继续载入中…") }
 	});
 }
 //#endregion
 //#region src/react/jav/discovery-faces.tsx
 function KMe({ item: e }) {
-	let t = e.performer_refs?.length ? e.performer_refs : [...new Set(e.performers.split(/[,, , ;/]/).filter(Boolean))].map((e) => ({ name: e })), n = t.slice(0, 5).map((t) => {
+	let t = e.performer_refs?.length ? e.performer_refs : [...new Set(e.performers.split(/[,，、;/]/).filter(Boolean))].map((e) => ({ name: e })), n = t.slice(0, 5).map((t) => {
 		let n = t.source_avatar && t.source_actor_id && !t.has_image ? { children: /* @__PURE__ */ (0, C.jsx)(RH, {
 			code: e.code,
 			person: t
@@ -67476,7 +67476,7 @@ function KMe({ item: e }) {
 		return t.id ? /* @__PURE__ */ (0, C.jsx)("a", {
 			"data-media-avatar": "",
 			href: Kt("performer", t.name, t.id),
-			"aria-label": `Abrir página de actriz: ${t.name}`,
+			"aria-label": `打开女优页：${t.name}`,
 			...n
 		}, t.name) : /* @__PURE__ */ (0, C.jsx)("span", {
 			"data-media-avatar": "",
@@ -67492,9 +67492,9 @@ function KMe({ item: e }) {
 //#endregion
 //#region src/react/jav/jav-navigation.ts
 var XU = [
-	["library", "Colección"],
-	["discover", "Descubrir"],
-	["wants", "Deseado"]
+	["library", "馆藏"],
+	["discover", "发现"],
+	["wants", "想要"]
 ], ZU = (e) => XU.some(([t]) => t === e) ? e : "library", qMe = (e) => ZU(e) === "library" ? "/?jav=1" : `/jav?tab=${e}`;
 function JMe(e) {
 	let t = new URLSearchParams(e);
@@ -67505,28 +67505,28 @@ function JMe(e) {
 var QU = [
 	[
 		"taste",
-		"Preferencias",
-		"Ordenar según cuota de preferencias"
+		"口味",
+		"按口味匹配排序"
 	],
 	[
 		"release_date",
 		aE[1],
-		"segúnFecha de lanzamientoOrdenar"
+		"按发行日期排序"
 	],
 	[
 		"source_score",
-		"FuentePuntuación",
-		"segúnFuentePuntuaciónOrdenar"
+		"来源评分",
+		"按来源评分排序"
 	],
 	[
 		"duration",
-		"Duración",
-		"Ordenar por duración"
+		"时长",
+		"按时长排序"
 	],
 	[
 		"code",
-		"Código JAV",
-		"segúnCódigo JAVOrdenar"
+		"番号",
+		"按番号排序"
 	]
 ];
 function $U(e) {
@@ -67535,23 +67535,23 @@ function $U(e) {
 function YMe(e) {
 	if (typeof e != "number" || !Number.isFinite(e)) return {
 		score: "—",
-		label: "DetallesNo disponible",
+		label: "资料未取得",
 		color: "neutral"
 	};
 	let t = Math.round(Math.max(0, Math.min(1, e)) * 100);
 	return {
 		score: String(t),
 		...t >= 75 ? {
-			label: "Altamente recomendado",
+			label: "强烈推荐",
 			color: "lime"
 		} : t >= 50 ? {
-			label: "Recomendado",
+			label: "推荐",
 			color: "blue"
 		} : t >= 25 ? {
-			label: "Vale la pena ver",
+			label: "值得看看",
 			color: "yellow"
 		} : {
-			label: "Explorar",
+			label: "探索",
 			color: "neutral"
 		}
 	};
@@ -67589,27 +67589,27 @@ function rW(e, t = TE()) {
   </div>`).join("")}</div>`;
 }
 function ZMe(e) {
-	let t = e === "wants" ? "Filtrar deseados" : "Filtrar recomendados";
+	let t = e === "wants" ? "筛选想要" : "筛选推荐";
 	return `<div class="peach-react"><div class="flex w-full flex-col gap-6">
     <div class="flex w-full flex-col gap-4"><div class="flex flex-wrap items-center justify-between gap-2"><h2 data-page-title class="text-display-4-medium text-text-primary max-board-narrow:text-title-1-medium">JAV</h2>${vo({
 		variant: "primary",
-		label: "Buscar recursos",
+		label: "查找资源",
 		attrs: "disabled data-skeleton-action"
 	})}</div>
     <div class="relative flex flex-none gap-1 overflow-x-auto max-board-narrow:gap-0">${XU.map(([t, n]) => `<span class="relative flex flex-none items-center whitespace-nowrap rounded-md px-3 py-2 text-body-regular max-board-narrow:px-2.25 max-board-narrow:text-body-2-regular ${t === e ? "bg-background-tertiary-default text-text-primary" : "text-text-secondary"}">${n}</span>`).join("")}</div></div>
-    <form aria-label="${t}">${_o("Filtrar por código, actriz o título", "", t)}</form>
-    ${e === "wants" ? `<div class="rounded-2lg bg-background-secondary-default px-6 py-5"><h3 class="mb-4 text-title-2-medium text-text-primary">Añadir por código</h3>${eW("100%")}</div>${rW(e)}` : `<section class="flex min-w-0 flex-col gap-4">${QMe()}${rW(e)}</section>`}</div></div>`;
+    <form aria-label="${t}">${_o("筛选番号、女优或标题", "", t)}</form>
+    ${e === "wants" ? `<div class="rounded-2lg bg-background-secondary-default px-6 py-5"><h3 class="mb-4 text-title-2-medium text-text-primary">按番号添加</h3>${eW("100%")}</div>${rW(e)}` : `<section class="flex min-w-0 flex-col gap-4">${QMe()}${rW(e)}</section>`}</div></div>`;
 }
 function QMe() {
 	let e = (e, t) => `<button type="button" data-entity-tag="${e}" data-entity-press="" aria-pressed="${e === "external"}" class="flex h-7.5 flex-none items-center gap-1.75 rounded-lg border border-dashed border-(--glass-low) bg-transparent px-2.5 text-body-2-regular leading-5 whitespace-nowrap text-inherit">${t}</button>`, t = (e, t) => `<span data-glass-segment="" ${TE() === e ? "data-selected=\"true\"" : ""} class="flex size-7.5 flex-none items-center justify-center rounded-lg text-(--glass-text)/62">${ho(t, "size-4")}</span>`;
 	return `<div data-filter-glass data-glass-pane data-filter-frame data-jav-filter data-catalog-frame class="sticky top-topbar z-10 mb-5.5 flex flex-col">
     <div data-filter-row="top" class="flex h-12 min-w-0 items-center overscroll-x-contain px-3 py-2 gap-1.5 overflow-visible">
-      <div data-catalog-scroll><div data-catalog-views>${e("external", "Descubiertos fuera de la biblioteca")}${e("library", "Explorar colección")}<span data-entity-sep aria-hidden="true"></span></div><div data-catalog-tags>${nW()}</div></div>
+      <div data-catalog-scroll><div data-catalog-views>${e("external", "库外发现")}${e("library", "馆藏探索")}<span data-entity-sep aria-hidden="true"></span></div><div data-catalog-tags>${nW()}</div></div>
     </div>
     <div data-filter-row="bottom" aria-busy="true" class="flex min-h-12 min-w-0 items-center gap-3 px-3 py-2">
       <span data-catalog-readout><span data-skeleton="count" class="relative inline-block h-3.5 w-37.5 rounded-md align-middle skeleton-sheen"></span></span>
       ${go()}
-      <span data-entity-sorts><button type="button" data-entity-batch data-filter-action data-skeleton-action data-jav-metadata-update title="Actualizar datos" aria-label="Actualizar datos" disabled>${ho("refresh-cw", "size-4")}</button><span data-entity-layout class="inline-flex w-max max-w-full flex-none items-center gap-0.5 rounded-lg">${t("big", "maximize")}${t("small", "layout-grid")}</span>
+      <span data-entity-sorts><button type="button" data-entity-batch data-filter-action data-skeleton-action data-jav-metadata-update title="更新资料" aria-label="更新资料" disabled>${ho("refresh-cw", "size-4")}</button><span data-entity-layout class="inline-flex w-max max-w-full flex-none items-center gap-0.5 rounded-lg">${t("big", "maximize")}${t("small", "layout-grid")}</span>
         ${QU.map(([e, t]) => `<button type="button" data-entity-sort="${e}" data-entity-press aria-pressed="${e === "taste"}">${t}${e === "taste" ? ho("arrow-down", "size-3.5") : ""}</button>`).join("")}
       </span>
     </div>
@@ -67628,7 +67628,7 @@ function $Me({ className: e }) {
 	});
 }
 function eNe(e) {
-	return ["Sub. en chino", "Subtítulos en chino"].includes(e?.trim() ?? "") ? "chinese" : ["Sin censura", "Sin censura (desbloqueado)"].includes(e?.trim() ?? "") ? "uncensored" : "quality";
+	return ["中字", "中文字幕"].includes(e?.trim() ?? "") ? "chinese" : ["无码", "无码破解"].includes(e?.trim() ?? "") ? "uncensored" : "quality";
 }
 function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 	let [a, o] = (0, S.useState)(e), [s, c] = (0, S.useState)(() => eNe(t)), [l, u] = (0, S.useState)(""), [d, f] = (0, S.useState)(""), [p, m] = (0, S.useState)(null), [h, g] = (0, S.useState)(""), [_, v] = (0, S.useState)(""), y = wA(), b = (0, S.useRef)(null);
@@ -67651,7 +67651,7 @@ function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 				i(r ? {
 					code: r.code,
 					title: String(r.catalog_title || r.name || ""),
-					performers: r.performers?.join(", "),
+					performers: r.performers?.join("、"),
 					release_date: String(r.release_date || ""),
 					duration: r.duration,
 					studio: r.studio,
@@ -67664,20 +67664,20 @@ function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 		}
 	};
 	return /* @__PURE__ */ (0, C.jsxs)("section", {
-		"aria-label": "Buscar recursos",
+		"aria-label": "查找资源",
 		"aria-busy": !!y.busy,
 		className: "flex min-w-0 flex-col gap-4",
 		children: [
 			t ? /* @__PURE__ */ (0, C.jsxs)(PA, { children: [
-				"Versiónobjetivoetiqueta: ",
+				"版本目标：",
 				t,
-				". puedeensiguiente direcciónajuste completo de Buscaróptimoprimero elemento(s); CompletadoCompletoymarca de aguaNecesariouno por uno Resultadovolver verificar. "
+				"。可在下方调整搜索优先项；完整度与水印需要逐条复核。"
 			] }) : null,
 			/* @__PURE__ */ (0, C.jsx)(SP, {
-				label: "segúnCódigo JAVBuscar recursos",
+				label: "按番号查找资源",
 				value: a,
 				maxLength: 80,
-				placeholder: "Introduce código JAV, presiona Enter para buscar",
+				placeholder: "输入番号，按回车搜索",
 				enterKeyHint: "search",
 				leadingIcon: y.busy ? $Me : Uk,
 				isReadOnly: !!y.busy,
@@ -67689,8 +67689,8 @@ function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-1",
-				children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: "Buscar primero" }), /* @__PURE__ */ (0, C.jsxs)(BF, {
-					"aria-label": "Buscar primero",
+				children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: "优先寻找" }), /* @__PURE__ */ (0, C.jsxs)(BF, {
+					"aria-label": "优先寻找",
 					selectedKey: s,
 					isDisabled: !!y.busy,
 					onSelectionChange: (e) => {
@@ -67699,15 +67699,15 @@ function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 					children: [
 						/* @__PURE__ */ (0, C.jsx)(VF, {
 							id: "quality",
-							children: "HD"
+							children: "高清"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(VF, {
 							id: "chinese",
-							children: "Sub. en chino"
+							children: "中字"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(VF, {
 							id: "uncensored",
-							children: "Sin censura"
+							children: "无码"
 						})
 					]
 				})]
@@ -67715,12 +67715,12 @@ function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex gap-3 max-sm:flex-col",
 				children: [/* @__PURE__ */ (0, C.jsx)(SP, {
-					label: "Más pequeñoTamaño(GiB)",
+					label: "最小体积（GiB）",
 					inputMode: "decimal",
 					value: l,
 					onChange: u
 				}), /* @__PURE__ */ (0, C.jsx)(SP, {
-					label: "Más grandeTamaño(GiB)",
+					label: "最大体积（GiB）",
 					inputMode: "decimal",
 					value: d,
 					onChange: f
@@ -67728,7 +67728,7 @@ function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 			}),
 			y.busy ? /* @__PURE__ */ (0, C.jsx)(PA, {
 				role: "status",
-				children: "BuscandoRecurso"
+				children: "正在搜索资源"
 			}) : null,
 			y.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: y.error }) : null,
 			p?.error ? /* @__PURE__ */ (0, C.jsx)(PA, {
@@ -67737,7 +67737,7 @@ function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 			}) : null,
 			p?.state === "ready" && !p.items.length ? /* @__PURE__ */ (0, C.jsx)(PA, {
 				role: "status",
-				children: "Sinque cumple los criterios de resultado deRecurso. "
+				children: "没有符合条件的资源。"
 			}) : null,
 			p?.warnings.map((e) => /* @__PURE__ */ (0, C.jsx)(PA, { children: e }, e)),
 			p?.items.length ? /* @__PURE__ */ (0, C.jsx)("ul", {
@@ -67750,13 +67750,13 @@ function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 							children: e.name
 						}),
 						/* @__PURE__ */ (0, C.jsx)(PA, { children: [
-							e.size > 0 ? `${(e.size / 1024 ** 3).toFixed(2)} GiB` : "TamañoNo disponible",
-							e.seeders >= 0 ? `${e.seeders} seeders` : "seedersNo disponible",
+							e.size > 0 ? `${(e.size / 1024 ** 3).toFixed(2)} GiB` : "体积未取得",
+							e.seeders >= 0 ? `${e.seeders} 个做种` : "做种未取得",
 							e.resolution ? `${e.resolution}p` : "",
 							e.codec,
-							e.chinese ? "Sub. en chino" : "",
-							e.uncensored ? "Sin censura" : "",
-							e.origins.join(", ")
+							e.chinese ? "中字" : "",
+							e.uncensored ? "无码" : "",
+							e.origins.join("、")
 						].filter(Boolean).join(" · ") }),
 						/* @__PURE__ */ (0, C.jsx)("div", { children: /* @__PURE__ */ (0, C.jsx)(q, {
 							type: "button",
@@ -67764,7 +67764,7 @@ function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 							onClick: () => {
 								n(e.uri, h), v(e.id);
 							},
-							children: _ === e.id ? "Yaenmagnet" : "Usar este recurso"
+							children: _ === e.id ? "已填入磁力" : "选用此资源"
 						}) })
 					]
 				}, e.id))
@@ -67775,9 +67775,9 @@ function tNe({ initialCode: e, reason: t, choose: n, onSearch: r, onWork: i }) {
 //#endregion
 //#region src/react/activity/cloud-download-dialog.tsx
 var nNe = {
-	submitted: "YaEnviarDescarga sin conexión, ProgresoenCentro de tareas",
-	adopted: "Este magnet ya tiene una tarea, sin duplicados para enviar",
-	adopted_remote: "El remoto ya tiene la misma tarea, ya conectado a la gestión"
+	submitted: "已提交离线下载，进度在任务中心",
+	adopted: "这个磁力已有任务，没有重复提交",
+	adopted_remote: "远端已有同一任务，已接管"
 };
 function oW({ prefill: e, close: t, receipt: n, provider: r }) {
 	return /* @__PURE__ */ (0, C.jsx)(CP, {
@@ -67804,12 +67804,12 @@ function rNe({ prefill: e, close: t, receipt: n, provider: r }) {
 		children: [/* @__PURE__ */ (0, C.jsx)(Wj, {
 			slot: "title",
 			className: "text-title-2-semibold text-text-primary",
-			children: "Buscar recursos"
+			children: "查找资源"
 		}), /* @__PURE__ */ (0, C.jsx)(q, {
 			variant: "ghost",
 			iconOnly: !0,
 			leadingIcon: Mk,
-			"aria-label": "Desactivar panel de recursos",
+			"aria-label": "关闭资源面板",
 			onClick: t
 		})]
 	});
@@ -67836,7 +67836,7 @@ function rNe({ prefill: e, close: t, receipt: n, provider: r }) {
 				children: /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					onClick: t,
-					children: "Desactivar"
+					children: "关闭"
 				})
 			})
 		]
@@ -67847,7 +67847,7 @@ function iNe({ header: e, snapshot: t, prefill: n, close: r, receipt: i, provide
 		u(e), g(s.find((t) => t.key === e)?.target ?? "");
 	};
 	return /* @__PURE__ */ (0, C.jsxs)("form", {
-		"aria-label": "EnviarDescargas",
+		"aria-label": "提交下载",
 		noValidate: !0,
 		onSubmit: (e) => {
 			if (e.preventDefault(), !d.trim() || !x) return;
@@ -67867,7 +67867,7 @@ function iNe({ header: e, snapshot: t, prefill: n, close: r, receipt: i, provide
 					return;
 				}
 				let n = aj(e.task);
-				b(e.outcome === "refused" ? "Este recurso se determinó como infracción, ya no se enviará. " : n ? `EnviarSinExitoso: ${n}` : "EnviarSinExitoso. ");
+				b(e.outcome === "refused" ? "这个资源被判为违规，不再提交。" : n ? `提交没有成功：${n}` : "提交没有成功。");
 			});
 		},
 		className: "flex min-h-0 flex-col",
@@ -67889,12 +67889,12 @@ function iNe({ header: e, snapshot: t, prefill: n, close: r, receipt: i, provide
 							className: "flex min-w-0 flex-col gap-2",
 							children: [/* @__PURE__ */ (0, C.jsx)("p", {
 								className: "break-words text-body-medium text-text-primary",
-								children: _ ? [_.code, _.title].filter(Boolean).join(" · ") : "ObraDetallesNo disponible"
+								children: _ ? [_.code, _.title].filter(Boolean).join(" · ") : "作品资料未取得"
 							}), _ ? /* @__PURE__ */ (0, C.jsx)(PA, { children: [
 								_.performers,
 								_.studio,
 								_.release_date,
-								_.duration ? `${Math.round(_.duration / 60)} minuto(s)` : ""
+								_.duration ? `${Math.round(_.duration / 60)} 分钟` : ""
 							].filter(Boolean).join(" · ") }) : null]
 						})]
 					}) : null,
@@ -67915,8 +67915,8 @@ function iNe({ header: e, snapshot: t, prefill: n, close: r, receipt: i, provide
 					}),
 					/* @__PURE__ */ (0, C.jsx)(SP, {
 						ref: E,
-						label: "Enlace magnético",
-						placeholder: "magnet:?xt=urn:btih:...",
+						label: "磁力链接",
+						placeholder: "magnet:?xt=urn:btih:…",
 						autoComplete: "off",
 						maxLength: 4e3,
 						value: d,
@@ -67925,9 +67925,9 @@ function iNe({ header: e, snapshot: t, prefill: n, close: r, receipt: i, provide
 					/* @__PURE__ */ (0, C.jsxs)("div", {
 						className: "flex flex-col gap-1",
 						children: [
-							/* @__PURE__ */ (0, C.jsx)(IA, { children: "Descargar a" }),
+							/* @__PURE__ */ (0, C.jsx)(IA, { children: "下载到" }),
 							/* @__PURE__ */ (0, C.jsx)(BF, {
-								"aria-label": "Descargar a",
+								"aria-label": "下载到",
 								selectedKey: l,
 								isDisabled: !s.length,
 								onSelectionChange: (e) => {
@@ -67942,31 +67942,31 @@ function iNe({ header: e, snapshot: t, prefill: n, close: r, receipt: i, provide
 									})
 								}, e.key))
 							}),
-							l === "115" ? /* @__PURE__ */ (0, C.jsx)(PA, { children: "Cada envío descuenta una cuota sin conexión; reenviar también cuenta. " }) : null
+							l === "115" ? /* @__PURE__ */ (0, C.jsx)(PA, { children: "每提交一次扣一条离线配额，重新提交也算。" }) : null
 						]
 					}),
 					t.available ? null : /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "neutral",
-						children: "Descarga en la nube solo disponible donde se permita escritura en BD."
+						children: "云下载只在允许修改数据库的设备上可用。"
 					}),
 					s.length ? null : /* @__PURE__ */ (0, C.jsxs)(J, {
 						tone: "neutral",
-						children: ["Canal de descarga no configurado.", /* @__PURE__ */ (0, C.jsx)("a", {
+						children: ["尚未配置下载渠道。", /* @__PURE__ */ (0, C.jsx)("a", {
 							href: "/settings/library?section=%E4%B8%8B%E8%BD%BD%E6%B8%A0%E9%81%93",
-							children: "Configuración del canal de descarga"
+							children: "下载渠道设置"
 						})]
 					}),
 					/* @__PURE__ */ (0, C.jsx)(SP, {
-						label: "Directorio destino",
-						placeholder: "/Descarga en la nube",
+						label: "目标目录",
+						placeholder: "/云下载",
 						autoComplete: "off",
 						maxLength: 300,
 						value: h,
 						onChange: g
 					}),
 					n.code ? null : /* @__PURE__ */ (0, C.jsx)(SP, {
-						label: "Código JAV",
-						placeholder: "Opcional",
+						label: "番号",
+						placeholder: "可不填",
 						autoComplete: "off",
 						maxLength: 60,
 						value: p,
@@ -67982,12 +67982,12 @@ function iNe({ header: e, snapshot: t, prefill: n, close: r, receipt: i, provide
 				children: [/* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					onClick: r,
-					children: "Cancelar"
+					children: "取消"
 				}), /* @__PURE__ */ (0, C.jsx)(q, {
 					type: "submit",
 					disabled: !d.trim() || !x,
 					...Y(w.busy === "submit"),
-					children: "EnviarDescargas"
+					children: "提交下载"
 				})]
 			})
 		]
@@ -68000,10 +68000,10 @@ var sW = "/api/wants", cW = ["wants"], aNe = (e) => [
 	"follow",
 	e
 ], oNe = [
-	["searching", "pendiente de búsqueda"],
-	["unreleased", "NoPublicado"],
-	["given_up", "Abandonar temporalmente"],
-	["acquired", "Catalogado"]
+	["searching", "待找"],
+	["unreleased", "未发售"],
+	["given_up", "暂时放弃"],
+	["acquired", "已入库"]
 ], lW = (e) => H(sW, e);
 function sNe(e, t) {
 	W.setQueryData(cW, (n) => n?.items.some((n) => n.id === e && n.has_magnets !== t) ? {
@@ -68023,9 +68023,9 @@ var cNe = (e, t) => H(`${sW}?follow=${encodeURIComponent(e)}`, t), uW = (e, t) =
 }, "POST", t), lNe = (e, t) => U(sW, {
 	action: "reset",
 	ids: e
-}, "POST", t), fW = () => W.invalidateQueries({ queryKey: cW }), pW = (e) => e.code || e.title || `SeguirResultadoobjetivo ${e.follow_item_id ?? e.id}`;
+}, "POST", t), fW = () => W.invalidateQueries({ queryKey: cW }), pW = (e) => e.code || e.title || `关注条目 ${e.follow_item_id ?? e.id}`;
 function uNe(e) {
-	return e.phase === "acquired" ? e.acquired_at ? `Archivado el ${e.acquired_at.slice(0, 10)}` : "Catalogado" : e.phase === "unreleased" ? e.release_date ? `${e.release_date} publicado` : "Aún no lanzado" : e.phase === "given_up" ? `Buscado ${e.search_count} veces, no encontrado` : e.fresh ? "nuevo video: no buscado, mantener directamente en pendiente de búsqueda" : e.search_count ? `Buscado ${e.search_count} veces` : "Nunca verificado";
+	return e.phase === "acquired" ? e.acquired_at ? `入库于 ${e.acquired_at.slice(0, 10)}` : "已入库" : e.phase === "unreleased" ? e.release_date ? `${e.release_date} 发售` : "还没发售" : e.phase === "given_up" ? `查过 ${e.search_count} 次都没找到` : e.fresh ? "新片：查不到也一直留在待找" : e.search_count ? `查过 ${e.search_count} 次` : "还没查过";
 }
 //#endregion
 //#region src/react/publication-cache.ts
@@ -68096,10 +68096,10 @@ function mNe(e, t) {
 //#region src/react/wants/resource-display.ts
 function hNe(e) {
 	let t = /^([\d,]+)\s*B$/i.exec(e.trim());
-	return /^[\d,.]+$/.test(e.trim()) ? "Tamaño desconocido" : t ? cn(Number(t[1].replaceAll(",", ""))) : e || "Tamaño desconocido";
+	return /^[\d,.]+$/.test(e.trim()) ? "大小未知" : t ? cn(Number(t[1].replaceAll(",", ""))) : e || "大小未知";
 }
 function gNe(e) {
-	return /^Másreseñas.*(?:VIP|Oficial App)/.test(e) ? "La fuente solo devolvió reseñas parciales; el enlace al recurso puede no estar completo. " : e;
+	return /^更多评论.*(?:VIP|官方 App)/.test(e) ? "来源只返回了部分评论，资源链接可能不完整。" : e;
 }
 //#endregion
 //#region src/react/wants/want-magnets.tsx
@@ -68165,13 +68165,13 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 				title: e.title,
 				origin: o ? `work:${e.code}` : `wishlist:${e.id}`
 			}, "POST", t);
-			if (!n.ok) throw Error(n.task.failure_detail || n.task.failure_label || "AñadirError de descarga");
+			if (!n.ok) throw Error(n.task.failure_detail || n.task.failure_label || "添加下载失败");
 			return n;
 		}, (e) => {
-			d((e) => [...e, r.id]), i(e.outcome === "submitted" ? `YaAñadirDescargas: ${r.name}` : `Ya vinculado con Descargas: ${r.name}`), p.invalidateQueries({ queryKey: rj });
+			d((e) => [...e, r.id]), i(e.outcome === "submitted" ? `已添加下载：${r.name}` : `已关联现有下载：${r.name}`), p.invalidateQueries({ queryKey: rj });
 		});
 	}, b = (e) => {
-		f.run(`copy:${e.id}`, () => navigator.clipboard.writeText(e.uri), () => i("Copiadoenlaceconectar"));
+		f.run(`copy:${e.id}`, () => navigator.clipboard.writeText(e.uri), () => i("已复制链接"));
 	}, x = _.isFetching || _.data?.state === "busy", w = _.error ? V(_.error) : _.data?.error;
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		ref: s,
@@ -68182,7 +68182,7 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 				className: "flex flex-wrap items-center justify-between gap-2",
 				children: [/* @__PURE__ */ (0, C.jsxs)("h4", {
 					className: "text-body-medium text-text-primary",
-					children: ["Recursoenlaceconectar", _.data?.items.length ? ` · ${_.data.items.length}` : ""]
+					children: ["资源链接", _.data?.items.length ? ` · ${_.data.items.length}` : ""]
 				}), /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					size: "small",
@@ -68191,13 +68191,13 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 					onClick: () => {
 						x || (m.current = !0, _.refetch());
 					},
-					children: "Consultar de nuevo"
+					children: "重新查询"
 				})]
 			}),
-			x ? /* @__PURE__ */ (0, C.jsx)(bA, { label: "ProcesandoBuscar recursosenlaceconectar..." }) : null,
+			x ? /* @__PURE__ */ (0, C.jsx)(bA, { label: "正在查找资源链接…" }) : null,
 			w ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
-				title: "RecursoenlaceconectarNo disponible",
+				title: "资源链接未取得",
 				children: w
 			}) : null,
 			_.data?.warnings?.map((e) => /* @__PURE__ */ (0, C.jsx)(J, {
@@ -68212,15 +68212,15 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 				href: _.data.source_url,
 				target: "_blank",
 				rel: "noopener noreferrer",
-				children: "ver página de la fuente"
+				children: "查看来源页"
 			}) : null,
 			_.data?.state === "ready" && !_.data.items.length && !_.data.warnings?.length ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "neutral",
-				children: "Aún no se encontró enlace de recurso conectado. "
+				children: "暂未找到资源链接。"
 			}) : null,
 			f.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
-				title: "Operación no completada",
+				title: "操作未完成",
 				children: f.error
 			}) : null,
 			_.data?.items.length ? (() => {
@@ -68236,7 +68236,7 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 								children: [/* @__PURE__ */ (0, C.jsx)(hA, {
 									variant: "caption",
 									color: e.protocol === "magnet" ? "blue" : e.protocol === "ed2k" ? "purple" : "neutral",
-									children: e.protocol === "magnet" ? "Enlace magnético" : e.protocol === "ed2k" ? "ED2K" : "Enlace web"
+									children: e.protocol === "magnet" ? "磁链" : e.protocol === "ed2k" ? "ED2K" : "网页链接"
 								}), /* @__PURE__ */ (0, C.jsx)("p", {
 									"data-resource-title": "",
 									title: e.name,
@@ -68253,19 +68253,19 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 									}),
 									/* @__PURE__ */ (0, C.jsx)(SW, {
 										icon: Rk,
-										title: `FuenteTamaño: ${e.size}`,
+										title: `来源大小：${e.size}`,
 										children: hNe(e.size)
 									}),
 									e.files ? /* @__PURE__ */ (0, C.jsx)(SW, {
 										icon: Mge,
-										children: e.files.replaceAll("个", "")
+										children: e.files.replaceAll("個", "个")
 									}) : null,
 									/* @__PURE__ */ (0, C.jsx)(SW, {
 										icon: bge,
-										title: e.source === "Comentarios de JavDB" ? "reseñasFecha" : "CatalogarFecha",
-										children: e.date ? e.date.slice(0, 10) : "FechaDesconocido"
+										title: e.source === "JavDB 评论" ? "评论日期" : "收录日期",
+										children: e.date ? e.date.slice(0, 10) : "日期未知"
 									}),
-									e.attributes.filter((e) => e !== "HD").map((e) => /* @__PURE__ */ (0, C.jsx)(SW, {
+									e.attributes.filter((e) => e !== "高清").map((e) => /* @__PURE__ */ (0, C.jsx)(SW, {
 										icon: Vk,
 										children: e
 									}, e))
@@ -68279,11 +68279,11 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 									variant: "primary",
 									size: "small",
 									leadingIcon: v ? ej[v.key] : Dge,
-									title: v ? `Descargar a ${v.label}` : void 0,
+									title: v ? `下载到 ${v.label}` : void 0,
 									disabled: t || !n?.available || !v || r,
 									...Y(f.busy === e.id),
 									onClick: () => y(e),
-									children: r ? "YaAñadir" : "AñadirDescargas"
+									children: r ? "已添加" : "添加下载"
 								}) : null,
 								/* @__PURE__ */ (0, C.jsx)(q, {
 									variant: e.protocol === "magnet" ? "secondary" : "primary",
@@ -68291,7 +68291,7 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 									leadingIcon: Age,
 									...Y(f.busy === `copy:${e.id}`),
 									onClick: () => b(e),
-									children: "Copiarenlaceconectar"
+									children: "复制链接"
 								}),
 								/* @__PURE__ */ (0, C.jsx)(_A, {
 									"data-button-link": "",
@@ -68301,7 +68301,7 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 									href: e.source_url,
 									target: "_blank",
 									rel: "noopener noreferrer",
-									children: "enlaceconectarFuente"
+									children: "链接来源"
 								})
 							]
 						})]
@@ -68311,7 +68311,7 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 					className: "flex min-w-0 flex-col gap-4",
 					children: e.slice(0, 3)
 				}), e.length > 3 ? /* @__PURE__ */ (0, C.jsx)(BA, {
-					summary: `MásRecurso(${e.length - 3} Resultado)`,
+					summary: `更多资源（${e.length - 3} 条）`,
 					children: /* @__PURE__ */ (0, C.jsx)("ul", {
 						className: "flex min-w-0 flex-col gap-4",
 						children: e.slice(3)
@@ -68324,13 +68324,13 @@ function CW({ want: e, readOnly: t, downloads: n, provider: r, toast: i, onSourc
 //#endregion
 //#region src/react/wants/want-list.tsx
 var _Ne = {
-	code: "ManualAñadir",
-	feed: "Suscribirse a nuevas obras",
-	follow: "Seguir"
+	code: "手动添加",
+	feed: "订阅新作",
+	follow: "关注"
 }, vNe = [
-	["all", "Todo"],
-	["available", "Con enlace magnético"],
-	["missing", "Sin enlace magnético"]
+	["all", "全部"],
+	["available", "有磁链"],
+	["missing", "没磁链"]
 ], wW = (e) => [
 	e.release_date,
 	e.studio,
@@ -68342,7 +68342,7 @@ function yNe({ want: e }) {
 		className: "relative inline-grid w-card-cover shrink-0 aspect-card-cover place-items-center overflow-hidden rounded-2lg bg-background-tertiary-default max-sm:w-24",
 		children: [/* @__PURE__ */ (0, C.jsx)("span", {
 			className: "text-caption-1-regular text-text-secondary",
-			children: "Sin portada"
+			children: "无封面"
 		}), e.cover ? /* @__PURE__ */ (0, C.jsx)("img", {
 			src: e.cover,
 			alt: "",
@@ -68387,7 +68387,7 @@ function bNe({ want: e, readOnly: t, busy: n, onReset: r, onRemove: i, onCloudDo
 					}) : null,
 					e.scrape_error ? /* @__PURE__ */ (0, C.jsx)(yU, {
 						text: e.scrape_error,
-						prefix: "DetallesNo disponible: ",
+						prefix: "资料未取得：",
 						tone: "muted"
 					}) : null,
 					/* @__PURE__ */ (0, C.jsxs)("div", {
@@ -68397,7 +68397,7 @@ function bNe({ want: e, readOnly: t, busy: n, onReset: r, onRemove: i, onCloudDo
 								variant: "secondary",
 								size: "small",
 								onClick: a,
-								children: "Buscar recursos"
+								children: "查找资源"
 							}) : null,
 							e.phase === "given_up" ? /* @__PURE__ */ (0, C.jsx)(q, {
 								variant: "secondary",
@@ -68405,7 +68405,7 @@ function bNe({ want: e, readOnly: t, busy: n, onReset: r, onRemove: i, onCloudDo
 								disabled: t,
 								...Y(n === `reset:${e.id}`),
 								onClick: r,
-								children: "de nuevoBuscar"
+								children: "重新查找"
 							}) : null,
 							/* @__PURE__ */ (0, C.jsx)(q, {
 								variant: "secondary",
@@ -68414,7 +68414,7 @@ function bNe({ want: e, readOnly: t, busy: n, onReset: r, onRemove: i, onCloudDo
 								disabled: t,
 								...Y(n === `remove:${e.id}`),
 								onClick: i,
-								children: "Quitar"
+								children: "移除"
 							}),
 							d ? /* @__PURE__ */ (0, C.jsx)(_A, {
 								"data-button-link": "",
@@ -68424,7 +68424,7 @@ function bNe({ want: e, readOnly: t, busy: n, onReset: r, onRemove: i, onCloudDo
 								href: d,
 								target: "_blank",
 								rel: "noopener noreferrer",
-								children: "página de la fuente"
+								children: "来源页"
 							}) : null
 						]
 					})
@@ -68457,7 +68457,7 @@ function xNe({ phase: e, label: t, rows: n, row: r }) {
 					})]
 				}), e === "searching" ? /* @__PURE__ */ (0, C.jsx)(KF, {
 					name: "want-magnet-filter",
-					"aria-label": "Filtrar enlaces magnéticos pendientes de búsqueda",
+					"aria-label": "待找磁链筛选",
 					orientation: "horizontal",
 					value: o,
 					className: qF,
@@ -68478,7 +68478,7 @@ function xNe({ phase: e, label: t, rows: n, row: r }) {
 			d.length ? null : /* @__PURE__ */ (0, C.jsx)(yA, {
 				shell: "plain",
 				icon: Jge,
-				title: "sin que cumple los criterios de resultado deObra",
+				title: "暂无符合条件的作品",
 				children: null
 			}),
 			/* @__PURE__ */ (0, C.jsx)("ul", {
@@ -68490,9 +68490,9 @@ function xNe({ phase: e, label: t, rows: n, row: r }) {
 				className: "flex flex-wrap items-center justify-between gap-3",
 				children: [/* @__PURE__ */ (0, C.jsx)("span", {
 					className: "text-body-2-regular tabular-nums text-text-secondary",
-					children: `${(f.start + 1).toLocaleString()}–${f.end.toLocaleString()} / ${f.total.toLocaleString()} Resultado`
+					children: `${(f.start + 1).toLocaleString()}–${f.end.toLocaleString()} / ${f.total.toLocaleString()} 条`
 				}), /* @__PURE__ */ (0, C.jsx)(nz, {
-					label: `${t}Paginación`,
+					label: `${t}分页`,
 					page: f.page,
 					pages: f.pages,
 					onPage: a
@@ -68510,17 +68510,17 @@ function SNe({ readOnly: e, toast: t, query: n = "" }) {
 	}), l = () => {
 		let n = r.trim();
 		n && !e && s.run("add", (e) => uW({ code: n }, e), (e) => {
-			t(e.created ? `Añadido a deseados: ${pW(e.want)}` : `${pW(e.want)} ya enDeseadodentro`), i(""), fW();
+			t(e.created ? `已加入想要：${pW(e.want)}` : `${pW(e.want)} 已经在想要里`), i(""), fW();
 		});
 	}, u = (e) => {
 		e.key === "Enter" && !e.nativeEvent.isComposing && (e.preventDefault(), l());
 	}, d = (e) => {
 		s.run(`remove:${e.id}`, (t) => dW([e.id], t), () => {
-			t(`YaQuitar: ${pW(e)}`), fW();
+			t(`已移除：${pW(e)}`), fW();
 		});
 	}, f = (e) => {
 		s.run(`reset:${e.id}`, (t) => lNe([e.id], t), () => {
-			t(`${pW(e)} volver pendiente de búsqueda`), fW();
+			t(`${pW(e)} 回到待找`), fW();
 		});
 	}, p = c.data, m = (p?.items || []).filter((e) => !n || [
 		e.code,
@@ -68543,15 +68543,15 @@ function SNe({ readOnly: e, toast: t, query: n = "" }) {
 				children: [
 					/* @__PURE__ */ (0, C.jsx)("h3", {
 						className: "text-title-2-medium text-text-primary",
-						children: "Añadir por código"
+						children: "按番号添加"
 					}),
 					/* @__PURE__ */ (0, C.jsxs)("div", {
 						className: "flex flex-wrap items-end gap-2",
 						children: [/* @__PURE__ */ (0, C.jsx)("div", {
 							className: "min-w-64 grow max-sm:min-w-0",
 							children: /* @__PURE__ */ (0, C.jsx)(SP, {
-								"aria-label": "Código JAV",
-								placeholder: "Introduce código JAV, p.ej. SSIS-950",
+								"aria-label": "番号",
+								placeholder: "输入番号，例如 SSIS-950",
 								value: r,
 								isDisabled: e,
 								onChange: i,
@@ -68562,51 +68562,51 @@ function SNe({ readOnly: e, toast: t, query: n = "" }) {
 							disabled: e || !r.trim(),
 							...Y(s.busy === "add"),
 							onClick: l,
-							children: "Añadir"
+							children: "添加"
 						})]
 					}),
 					s.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "error",
-						title: "No se completó esta vez",
+						title: "这一次没有完成",
 						children: s.error
 					}) : null
 				]
 			}),
 			c.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
-				title: "Deseadolista de verificaciónleerFallido",
+				title: "想要清单读取失败",
 				children: V(c.error)
 			}) : null,
 			c.isPending ? /* @__PURE__ */ (0, C.jsx)("div", {
 				role: "status",
-				"aria-label": "CargandoDeseado",
+				"aria-label": "正在读取想要",
 				dangerouslySetInnerHTML: { __html: rW("wants") }
 			}) : null,
 			p?.scraping ? /* @__PURE__ */ (0, C.jsx)(PA, {
 				role: "status",
-				children: "Procesando, obteniendo detalles y portada para los códigos JAV recién añadidos. "
+				children: "正在给刚加入的番号取资料与封面。"
 			}) : null,
 			h.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
-				title: "Configuración de descarga no disponible",
+				title: "下载配置未取得",
 				children: V(h.error)
 			}) : null,
 			h.data && !g.length ? /* @__PURE__ */ (0, C.jsxs)(J, {
 				tone: "neutral",
-				children: ["Canal de descarga no configurado.", /* @__PURE__ */ (0, C.jsx)("a", {
+				children: ["尚未配置下载渠道。", /* @__PURE__ */ (0, C.jsx)("a", {
 					href: "/settings/library?section=%E4%B8%8B%E8%BD%BD%E6%B8%A0%E9%81%93",
-					children: "Configuración del canal de descarga"
+					children: "下载渠道设置"
 				})]
 			}) : null,
 			h.data && !h.data.available ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "neutral",
-				children: "Descarga en la nube solo disponible donde se permita escritura en BD."
+				children: "云下载只在允许修改数据库的设备上可用。"
 			}) : null,
 			p && !m.length ? /* @__PURE__ */ (0, C.jsx)(yA, {
 				shell: "plain",
 				icon: Jge,
-				title: n ? "Sinque cumple los criterios de resultado deObra" : "Aún no hayDeseadoObra",
-				children: n ? "Prueba otro código JAV, actriz o título. " : "IntroducirCódigo JAV, AñadirQuiero verObra. "
+				title: n ? "没有符合条件的作品" : "还没有想要的作品",
+				children: n ? "试试其他番号、女优或标题。" : "输入番号，添加想看的作品。"
 			}) : null,
 			oNe.map(([n, r]) => {
 				let i = m.filter((e) => e.phase === n);
@@ -68695,7 +68695,7 @@ function OW({ tab: e, navigate: t, find: n }) {
 			}), /* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "primary",
 				onClick: n,
-				children: "Buscar recursos"
+				children: "查找资源"
 			})]
 		}), /* @__PURE__ */ (0, C.jsx)(IU, {
 			tabs: XU.map(([e, t]) => ({
@@ -68703,7 +68703,7 @@ function OW({ tab: e, navigate: t, find: n }) {
 				label: t
 			})),
 			value: e,
-			label: "Sección JAV",
+			label: "JAV 分区",
 			className: "",
 			onChange: (e) => t(qMe(e))
 		})]
@@ -68745,14 +68745,14 @@ function ONe({ tab: e, readOnly: t, navigate: n, receipt: r }) {
 				find: () => a({})
 			}),
 			/* @__PURE__ */ (0, C.jsx)("form", {
-				"aria-label": e === "discover" ? "Filtrar recomendados" : "Filtrar deseados",
+				"aria-label": e === "discover" ? "筛选推荐" : "筛选想要",
 				onSubmit: (e) => {
 					e.preventDefault();
 				},
 				children: /* @__PURE__ */ (0, C.jsx)(SP, {
 					type: "search",
-					"aria-label": e === "discover" ? "Filtrar recomendados" : "Filtrar deseados",
-					placeholder: "Filtrar por código, actriz o título",
+					"aria-label": e === "discover" ? "筛选推荐" : "筛选想要",
+					placeholder: "筛选番号、女优或标题",
 					leadingIcon: TNe,
 					value: o,
 					onChange: c,
@@ -68833,13 +68833,13 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 	].join(" ").toLocaleLowerCase().includes(r.toLocaleLowerCase()))), ee = k.isPending;
 	return /* @__PURE__ */ (0, C.jsxs)("section", {
 		ref: y,
-		"aria-label": "Recomendado para ti",
+		"aria-label": "为你推荐",
 		"aria-busy": ee,
 		className: "flex min-w-0 flex-col gap-4",
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(_j, {
-				label: "DescubrirFiltrar y ordenar",
-				topLabel: "Ámbito de descubrimiento y etiqueta",
+				label: "发现筛选与排序",
+				topLabel: "发现范围与标签",
 				attrs: {
 					"data-filter-frame": "",
 					"data-jav-filter": "",
@@ -68852,7 +68852,7 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 					"data-catalog-scroll": "",
 					children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 						"data-catalog-views": "",
-						children: [[["external", "Descubiertos fuera de la biblioteca"], ["library", "Explorar colección"]].map(([e, t]) => /* @__PURE__ */ (0, C.jsx)(vj, {
+						children: [[["external", "库外发现"], ["library", "馆藏探索"]].map(([e, t]) => /* @__PURE__ */ (0, C.jsx)(vj, {
 							"data-entity-tag": e,
 							"data-entity-press": "",
 							pressed: s === e,
@@ -68886,14 +68886,14 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 							"data-skeleton": "count",
 							"aria-hidden": !0,
 							className: "relative inline-block h-3.5 w-37.5 rounded-md align-middle skeleton-sheen"
-						}) : `${I.length}  título(s)`
+						}) : `${I.length} 部`
 					}),
 					/* @__PURE__ */ (0, C.jsx)(zP, { currentHref: () => location.pathname + location.search }),
 					r || l ? /* @__PURE__ */ (0, C.jsx)(yj, {
 						onPress: () => {
 							g(""), a();
 						},
-						children: "Limpiar filtros"
+						children: "清除筛选"
 					}) : null,
 					/* @__PURE__ */ (0, C.jsxs)("span", {
 						"data-entity-sorts": "",
@@ -68901,7 +68901,7 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 							s === "external" ? /* @__PURE__ */ (0, C.jsx)(gj, {
 								"data-entity-batch": "",
 								"data-jav-metadata-update": "",
-								label: A?.status === "running" ? "Detener lectura" : "Actualizar datos",
+								label: A?.status === "running" ? "停止读取" : "更新资料",
 								disabled: ee,
 								"data-skeleton-action": ee ? "" : void 0,
 								busy: !!M.busy,
@@ -68909,7 +68909,7 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 								onPress: () => N(A?.status === "running" ? "stop" : "update")
 							}) : null,
 							/* @__PURE__ */ (0, C.jsx)(vI, {
-								label: "Diseño de tarjeta JAV",
+								label: "JAV 卡片版式",
 								value: x,
 								options: SE,
 								onChange: _ue
@@ -68932,12 +68932,12 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 			}),
 			ee ? /* @__PURE__ */ (0, C.jsx)("div", {
 				role: "status",
-				"aria-label": "Cargando recomendaciones",
+				"aria-label": "正在读取推荐",
 				dangerouslySetInnerHTML: { __html: rW("discover", x) }
 			}) : null,
 			k.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
-				title: "RecomendadoNo disponible",
+				title: "推荐未取得",
 				children: V(k.error)
 			}) : null,
 			s === "external" && A?.status === "running" ? /* @__PURE__ */ (0, C.jsx)("div", {
@@ -68945,7 +68945,7 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 				className: "min-w-0",
 				children: /* @__PURE__ */ (0, C.jsx)(OF, {
 					embedded: !0,
-					label: `CargandoObraDetalles · ${A.completed} / ${A.total}  título(s)`,
+					label: `正在读取作品资料 · ${A.completed} / ${A.total} 部`,
 					value: A.completed,
 					total: A.total
 				})
@@ -68956,9 +68956,9 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 					variant: "secondary",
 					...Y(M.busy === "retry"),
 					onClick: () => N("retry"),
-					children: "de nuevoleerDetalles"
+					children: "重新读取资料"
 				}),
-				children: A.message || `ObraDetalles ${A.completed} / ${A.total}  título(s)`
+				children: A.message || `作品资料 ${A.completed} / ${A.total} 部`
 			}) : null,
 			M.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
@@ -68967,13 +68967,13 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 			!ee && !k.error && !I.length ? /* @__PURE__ */ (0, C.jsx)(yA, {
 				shell: "plain",
 				icon: Nk,
-				title: r || l ? "Sinque cumple los criterios de resultado deRecomendado" : "Sin obras que coincidan con las preferencias aún",
+				title: r || l ? "没有符合条件的推荐" : "暂无匹配口味的作品",
 				actions: /* @__PURE__ */ (0, C.jsx)(_A, {
 					href: "/taste",
 					variant: "secondary",
-					children: "buscarverPreferencias"
+					children: "查看口味"
 				}),
-				children: r || l ? "Limpiar filtrosdespuésbuscarverOtroObra. " : s === "library" ? "VeroMarcarObradespués, puedeconExplorarpocoverColección. " : "puedeconBuscarCódigo JAV, oActualizarSeguirFuente. "
+				children: r || l ? "清除筛选后查看其他作品。" : s === "library" ? "观看或标记作品后，可以探索少看的馆藏。" : "可以查找番号，或更新关注来源。"
 			}) : null,
 			j.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
@@ -68984,11 +68984,11 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 				className: tW,
 				style: { "--card-ratio": w },
 				children: I.map((r) => {
-					let a = r.performer_refs?.length ? r.performer_refs.map((e) => e.name).join(", ") : r.performers, o = DW(r, x, b.value.javImage), s = YMe(r.taste_score ?? r.score), c = [
+					let a = r.performer_refs?.length ? r.performer_refs.map((e) => e.name).join("、") : r.performers, o = DW(r, x, b.value.javImage), s = YMe(r.taste_score ?? r.score), c = [
 						s.label,
-						`Preferencias ${$U(r.taste_score ?? r.score)}`,
-						k.data?.ranking_method === "mmr" && r.ranking_score != null ? `Ordenar ${$U(r.ranking_score)}` : "",
-						r.source_score == null ? "" : `FuentePuntuación ${r.source_score.toFixed(1)} / 5`,
+						`口味 ${$U(r.taste_score ?? r.score)}`,
+						k.data?.ranking_method === "mmr" && r.ranking_score != null ? `排序 ${$U(r.ranking_score)}` : "",
+						r.source_score == null ? "" : `来源评分 ${r.source_score.toFixed(1)} / 5`,
 						...r.reasons || []
 					].filter(Boolean).join(" · ");
 					return /* @__PURE__ */ (0, C.jsxs)("article", {
@@ -69000,7 +69000,7 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 						children: [
 							/* @__PURE__ */ (0, C.jsx)("a", {
 								href: r.asset_id ? `/assets/${r.asset_id}` : `/works/${encodeURIComponent(r.code)}`,
-								"aria-label": `buscarver ${r.code} Detalles`,
+								"aria-label": `查看 ${r.code} 详情`,
 								onClick: (e) => {
 									!e.ctrlKey && !e.metaKey && !e.shiftKey && e.button === 0 && (e.preventDefault(), i(e.currentTarget.getAttribute("href")));
 								},
@@ -69016,7 +69016,7 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 									relayout: (e) => gc(e, x)
 								}) : /* @__PURE__ */ (0, C.jsx)("span", {
 									"data-media-nopic": "",
-									children: "Sin portada"
+									children: "无封面"
 								})
 							}),
 							/* @__PURE__ */ (0, C.jsxs)("div", {
@@ -69027,11 +69027,11 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 										/* @__PURE__ */ (0, C.jsxs)("h3", {
 											"data-jav-title": "",
 											"data-media-title": "",
-											title: `${r.code} · ${r.title || "TítuloNo disponible"}`,
+											title: `${r.code} · ${r.title || "标题未取得"}`,
 											children: [
 												/* @__PURE__ */ (0, C.jsx)("b", { children: r.code }),
 												" ",
-												r.title || "TítuloNo disponible"
+												r.title || "标题未取得"
 											]
 										}),
 										/* @__PURE__ */ (0, C.jsxs)("div", {
@@ -69058,9 +69058,9 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 												(r.performer_refs?.length || 0) > 1 ? /* @__PURE__ */ (0, C.jsxs)("span", {
 													"data-media-who-more": "",
 													children: [
-														"etc. ",
+														"等 ",
 														r.performer_refs.length,
-														" persona(s)"
+														" 人"
 													]
 												}) : null,
 												r.release_date ? /* @__PURE__ */ (0, C.jsxs)("time", {
@@ -69081,7 +69081,7 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 												"data-jav-taste-score": "",
 												type: "button",
 												title: c,
-												"aria-label": `Recomendadosección ${s.score}, ${s.label}`,
+												"aria-label": `推荐分 ${s.score}，${s.label}`,
 												className: "rounded-md outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring",
 												children: /* @__PURE__ */ (0, C.jsx)(hA, {
 													color: s.color,
@@ -69109,7 +69109,7 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 											cover: r.has_cover ? ua(r, !0) : r.cover_url,
 											origin: `${r.asset_id ? "asset" : "feed"}:${r.id}`
 										}),
-										children: "Buscar recursos"
+										children: "查找资源"
 									}),
 									/* @__PURE__ */ (0, C.jsx)(q, {
 										variant: "ghost",
@@ -69117,10 +69117,10 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 										...Y(j.busy === String(r.id)),
 										onClick: () => {
 											j.run(String(r.id), (e) => uW({ code: r.code }, e), () => {
-												t("Añadido a deseados"), fW(), k.refetch();
+												t("已加入想要"), fW(), k.refetch();
 											});
 										},
-										children: r.asset_id ? "Catalogado" : r.wanted ? "Añadido a deseados" : "Deseado"
+										children: r.asset_id ? "已入库" : r.wanted ? "已加入想要" : "想要"
 									}),
 									r.link ? /* @__PURE__ */ (0, C.jsx)(_A, {
 										"data-button-link": "",
@@ -69129,7 +69129,7 @@ function kNe({ readOnly: e, receipt: t, resource: n, query: r, navigate: i, clea
 										href: r.link,
 										target: "_blank",
 										rel: "noopener noreferrer",
-										children: "Fuente de obra"
+										children: "作品来源"
 									}) : null
 								]
 							})
@@ -69177,7 +69177,7 @@ function FNe(e) {
 }
 //#endregion
 //#region src/react/playlists/playlists-page.tsx
-var INe = EP("ellipsis"), LNe = EP("pencil"), RNe = EP("trash"), zNe = EP("playlist"), LW = fA(WP, GP, "text-body-2-medium"), RW = "Lista de reproducciónNombreNopuedecomoVacío", zW = (e) => async () => {
+var INe = EP("ellipsis"), LNe = EP("pencil"), RNe = EP("trash"), zNe = EP("playlist"), LW = fA(WP, GP, "text-body-2-medium"), RW = "播放列表名称不能为空", zW = (e) => async () => {
 	try {
 		await e();
 	} finally {
@@ -69188,13 +69188,13 @@ function BNe({ toast: e }) {
 	let [t, n] = (0, S.useState)(""), [r, i] = (0, S.useState)(""), a = mt({
 		mutationFn: (e) => NNe(e),
 		onSuccess: (t) => {
-			n(""), i(""), NW(), e("YaNuevoLista de reproducción", { undo: zW(() => IW(t.playlist.id)) });
+			n(""), i(""), NW(), e("已新建播放列表", { undo: zW(() => IW(t.playlist.id)) });
 		},
-		onError: (e) => i(V(e) || "NuevoFallido")
+		onError: (e) => i(V(e) || "新建失败")
 	});
 	return /* @__PURE__ */ (0, C.jsxs)("form", {
 		"data-playlist-create": "",
-		"aria-label": "NuevoLista de reproducción",
+		"aria-label": "新建播放列表",
 		onSubmit: (e) => {
 			e.preventDefault(), !a.isPending && (t.trim() ? a.mutate(t) : i(RW));
 		},
@@ -69202,8 +69202,8 @@ function BNe({ toast: e }) {
 		children: [/* @__PURE__ */ (0, C.jsx)("div", {
 			className: "min-w-50 max-w-80 flex-1 basis-50 max-board-narrow:min-w-0 max-board-narrow:max-w-none",
 			children: /* @__PURE__ */ (0, C.jsx)(SP, {
-				label: "Nueva lista de reproducción",
-				placeholder: "Introducir nombre",
+				label: "新播放列表",
+				placeholder: "输入名称",
 				maxLength: 80,
 				value: t,
 				onChange: (e) => {
@@ -69216,7 +69216,7 @@ function BNe({ toast: e }) {
 		}), /* @__PURE__ */ (0, C.jsx)(q, {
 			type: "submit",
 			...Y(a.isPending),
-			children: "Nuevo"
+			children: "新建"
 		})]
 	});
 }
@@ -69233,7 +69233,7 @@ function VNe({ target: e, close: t, toast: n }) {
 	let c = mt({
 		mutationFn: ({ row: e, value: t }) => FW(e.id, t),
 		onSuccess: (e, { row: r }) => {
-			t(), NW(), n("YaRenombrarLista de reproducción", { undo: zW(() => FW(r.id, r.name)) });
+			t(), NW(), n("已重命名播放列表", { undo: zW(() => FW(r.id, r.name)) });
 		},
 		onError: (e) => o(V(e))
 	});
@@ -69259,11 +69259,11 @@ function VNe({ target: e, close: t, toast: n }) {
 				children: [/* @__PURE__ */ (0, C.jsx)(Wj, {
 					slot: "title",
 					className: "text-title-2-semibold text-text-primary",
-					children: "EditarNombre"
+					children: "编辑名称"
 				}), /* @__PURE__ */ (0, C.jsx)(SP, {
 					ref: s,
-					label: "Nombre",
-					placeholder: "Introducir nombre",
+					label: "名称",
+					placeholder: "输入名称",
 					maxLength: 80,
 					value: r,
 					onChange: (e) => {
@@ -69278,11 +69278,11 @@ function VNe({ target: e, close: t, toast: n }) {
 				children: [/* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					onClick: t,
-					children: "Cancelar"
+					children: "取消"
 				}), /* @__PURE__ */ (0, C.jsx)(q, {
 					type: "submit",
 					...Y(c.isPending),
-					children: "GuardarNombre"
+					children: "保存名称"
 				})]
 			})]
 		})
@@ -69295,8 +69295,8 @@ function HNe({ name: e, onRename: t, onDelete: n }) {
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("button", {
 		ref: r,
 		type: "button",
-		title: "Más acciones",
-		"aria-label": `Lista de reproducciónAcción: ${e}`,
+		title: "更多操作",
+		"aria-label": `播放列表操作：${e}`,
 		"aria-haspopup": "dialog",
 		"aria-expanded": i,
 		"data-playlist-menu": "",
@@ -69314,7 +69314,7 @@ function HNe({ name: e, onRename: t, onDelete: n }) {
 		offset: 4,
 		className: UP,
 		children: /* @__PURE__ */ (0, C.jsxs)(bF, {
-			"aria-label": `Lista de reproducciónAcción: ${e}`,
+			"aria-label": `播放列表操作：${e}`,
 			className: "flex w-37.5 flex-col gap-0.5 outline-none",
 			children: [/* @__PURE__ */ (0, C.jsxs)("button", {
 				type: "button",
@@ -69323,7 +69323,7 @@ function HNe({ name: e, onRename: t, onDelete: n }) {
 				children: [/* @__PURE__ */ (0, C.jsx)(LNe, {
 					"aria-hidden": !0,
 					className: "size-4 shrink-0"
-				}), "EditarNombre"]
+				}), "编辑名称"]
 			}), /* @__PURE__ */ (0, C.jsxs)("button", {
 				type: "button",
 				className: LW,
@@ -69331,7 +69331,7 @@ function HNe({ name: e, onRename: t, onDelete: n }) {
 				children: [/* @__PURE__ */ (0, C.jsx)(RNe, {
 					"aria-hidden": !0,
 					className: "size-4 shrink-0"
-				}), "EliminarLista de reproducción"]
+				}), "删除播放列表"]
 			})]
 		})
 	})] });
@@ -69346,13 +69346,13 @@ function UNe({ openPlaylist: e, openEntity: t, canFlip: n, toast: r, revision: i
 	}, [i]);
 	let l = a.data, u = l?.items ?? [], d = (e) => {
 		Rs({
-			title: "EliminarLista de reproducción",
-			body: "Esta lista de reproducción será eliminada; los videos y archivos se conservarán. ",
-			confirmLabel: "EliminarLista de reproducción",
+			title: "删除播放列表",
+			body: "这个播放列表将被删除，视频文件保留。",
+			confirmLabel: "删除播放列表",
 			danger: !0,
 			onConfirm: async () => {
 				let t = await PNe(e.id);
-				await IW(e.id), NW(), r("YaEliminarLista de reproducción", t ? { undo: zW(() => FNe(t)) } : void 0);
+				await IW(e.id), NW(), r("已删除播放列表", t ? { undo: zW(() => FNe(t)) } : void 0);
 			}
 		});
 	};
@@ -69363,10 +69363,10 @@ function UNe({ openPlaylist: e, openEntity: t, canFlip: n, toast: r, revision: i
 				className: "mb-4 flex items-start justify-between gap-4.5 max-board-narrow:flex-col max-board-narrow:items-stretch",
 				children: [/* @__PURE__ */ (0, C.jsxs)("div", { children: [/* @__PURE__ */ (0, C.jsx)("h2", {
 					className: "mb-1 text-display-4-medium! text-text-primary",
-					children: "Lista de reproducción"
+					children: "播放列表"
 				}), /* @__PURE__ */ (0, C.jsx)("p", {
 					className: "text-body-2-regular text-text-secondary",
-					children: "Guardar Mix y continuar en tu orden."
+					children: "保存 Mix，按自己的顺序继续播放。"
 				})] }), /* @__PURE__ */ (0, C.jsx)(BNe, { toast: r })]
 			}),
 			/* @__PURE__ */ (0, C.jsx)("div", {
@@ -69375,11 +69375,11 @@ function UNe({ openPlaylist: e, openEntity: t, canFlip: n, toast: r, revision: i
 					"data-playlist-grid": "",
 					className: "card-grid-cover gap-4.5",
 					children: u.map((r) => {
-						let i = MNe(r), a = r.name.trim() || "NonombrarnombreLista de reproducción";
+						let i = MNe(r), a = r.name.trim() || "未命名播放列表";
 						return /* @__PURE__ */ (0, C.jsx)(zI, {
 							"data-playlist-card": String(r.id),
 							name: a,
-							caption: r.source_kind === "mix" ? " Mix Guardar" : "ManualLista de reproducción",
+							caption: r.source_kind === "mix" ? "由 Mix 保存" : "手动播放列表",
 							count: r.item_count,
 							poster: r.preview_asset_id ? PW(r.preview_asset_id) : null,
 							flipImages: async () => (r.preview_ids || []).map(PW),
@@ -69387,7 +69387,7 @@ function UNe({ openPlaylist: e, openEntity: t, canFlip: n, toast: r, revision: i
 							faces: r.faces || [],
 							onOpenEntity: t,
 							...i ? { onOpen: () => e(r.id, i) } : {},
-							openLabel: `AbrirLista de reproducción ${a}`,
+							openLabel: `打开播放列表 ${a}`,
 							menu: /* @__PURE__ */ (0, C.jsx)(HNe, {
 								name: a,
 								onRename: () => s(r),
@@ -69397,10 +69397,10 @@ function UNe({ openPlaylist: e, openEntity: t, canFlip: n, toast: r, revision: i
 					})
 				}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 					icon: zNe,
-					title: "Aún no hayLista de reproducción",
-					children: "Guardar Mix oNuevoListadespués, continuará reproduciéndose aquí en su propio orden. "
+					title: "还没有播放列表",
+					children: "保存 Mix 或新建列表后，会在这里按自己的顺序继续播放。"
 				}) : a.isError ? /* @__PURE__ */ (0, C.jsx)(TI, {
-					message: V(a.error) || "Lista de reproducciónleerFallido",
+					message: V(a.error) || "播放列表读取失败",
 					onRetry: () => void a.refetch()
 				}) : null
 			}),
@@ -69428,11 +69428,11 @@ function WNe({ item: e, openItem: t, searchResources: n, javTitleHtml: r, javDis
 			children: [/* @__PURE__ */ (0, C.jsxs)("button", {
 				type: "button",
 				onClick: o,
-				"aria-label": `Abrir ${i(e)}`,
+				"aria-label": `打开 ${i(e)}`,
 				className: "relative inline-grid w-card-cover shrink-0 self-start aspect-card-cover cursor-pointer place-items-center overflow-hidden rounded-2lg bg-background-tertiary-default",
 				children: [/* @__PURE__ */ (0, C.jsx)("span", {
 					className: "text-caption-1-regular text-text-secondary",
-					children: "sin vista previa aún"
+					children: "暂无预览"
 				}), /* @__PURE__ */ (0, C.jsx)("img", {
 					src: wz(e),
 					alt: "",
@@ -69462,7 +69462,7 @@ function WNe({ item: e, openItem: t, searchResources: n, javTitleHtml: r, javDis
 							}),
 							/* @__PURE__ */ (0, C.jsx)("span", { children: pn[e.location] ?? e.location }),
 							/* @__PURE__ */ (0, C.jsx)("span", { children: on(e.duration) }),
-							/* @__PURE__ */ (0, C.jsx)("span", { children: Number(e.size) > 0 ? cn(Number(e.size)) : "Tamaño desconocido" })
+							/* @__PURE__ */ (0, C.jsx)("span", { children: Number(e.size) > 0 ? cn(Number(e.size)) : "大小未知" })
 						]
 					}),
 					e.reason ? /* @__PURE__ */ (0, C.jsx)("p", {
@@ -69484,12 +69484,12 @@ function WNe({ item: e, openItem: t, searchResources: n, javTitleHtml: r, javDis
 					duration: e.duration,
 					cover: wz(e)
 				}),
-				children: "Buscar recursos"
+				children: "查找资源"
 			}) : null, /* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
 				size: "small",
 				onClick: o,
-				children: "Ver versión"
+				children: "查看版本"
 			})]
 		})]
 	});
@@ -69501,14 +69501,14 @@ function GNe({ toast: e, ...t }) {
 	}), a = i.data;
 	if (!a) return /* @__PURE__ */ (0, C.jsx)(xA, { children: /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "Versión HDobjetivoetiquetaleerFallido",
-		children: i.error ? V(i.error) : "No disponibleVersión HDobjetivoetiqueta, Por favor actualiza la páginaReintentar. "
+		title: "高清版目标读取失败",
+		children: i.error ? V(i.error) : "未取得高清版目标，请刷新页面重试。"
 	}) });
 	let o = a.items || [];
 	return o.length ? /* @__PURE__ */ (0, C.jsxs)(xA, { children: [
 		/* @__PURE__ */ (0, C.jsx)(tU, {
-			label: "Pendiente de actualización",
-			figure: `${Number(a.total || 0).toLocaleString()}  obra(s)`,
+			label: "待升级",
+			figure: `${Number(a.total || 0).toLocaleString()} 部作品`,
 			flush: !0
 		}),
 		/* @__PURE__ */ (0, C.jsx)("ul", {
@@ -69521,7 +69521,7 @@ function GNe({ toast: e, ...t }) {
 		}),
 		Number(a.total || 0) > o.length ? /* @__PURE__ */ (0, C.jsx)("p", {
 			className: "mt-6 text-center text-caption-1-regular text-text-secondary",
-			children: `Mostrarprimeros  ${o.length.toLocaleString()}  título(s), Total: ${Number(a.total).toLocaleString()}  título(s). `
+			children: `显示前 ${o.length.toLocaleString()} 部，共 ${Number(a.total).toLocaleString()} 部。`
 		}) : null,
 		/* @__PURE__ */ (0, C.jsx)(oW, {
 			prefill: n,
@@ -69531,23 +69531,23 @@ function GNe({ toast: e, ...t }) {
 	] }) : /* @__PURE__ */ (0, C.jsx)(xA, { children: /* @__PURE__ */ (0, C.jsx)(yA, {
 		shell: "plain",
 		icon: t_e,
-		title: "SinMarcarEn procesoVersión HDobjetivoetiqueta",
-		children: "La versión actual ya cumple todos los criterios de resultado, o aún no se ha añadido seguimiento. "
+		title: "没有标记中的高清版目标",
+		children: "现有版本都已满足条件，或还没有加入追踪。"
 	}) });
 }
 //#endregion
 //#region src/react/review/bulk-toolbar.tsx
 function KNe(e) {
-	let { groupOptions: t, groupBy: n, onGroupBy: r, groups: i, filter: a, onFilter: o, pageKeys: s, selected: c, onSelected: l, selectedRows: u, metadata: d, approvable: f, busy: p, feedback: m, onUnifySource: h, onRun: g } = e, _ = s.filter((e) => c.has(e)), v = _.length > 0 && _.length === s.length, y = YEe(u), b = d && u.some((e) => (e.candidates?.length || 0) > 1), x = y.length ? "Selección unificada de fuente" : "todos OpcionesobjetivoNingunototalmismoFuente";
+	let { groupOptions: t, groupBy: n, onGroupBy: r, groups: i, filter: a, onFilter: o, pageKeys: s, selected: c, onSelected: l, selectedRows: u, metadata: d, approvable: f, busy: p, feedback: m, onUnifySource: h, onRun: g } = e, _ = s.filter((e) => c.has(e)), v = _.length > 0 && _.length === s.length, y = YEe(u), b = d && u.some((e) => (e.candidates?.length || 0) > 1), x = y.length ? "统一选择来源" : "所选项目无共同来源";
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 		role: "group",
-		"aria-label": "Filtrar re-verificación",
+		"aria-label": "复核筛选",
 		"data-review-filter": !0,
 		"data-glass-pane": "",
 		className: "sticky top-topbar z-10 flex flex-wrap items-center gap-2 p-3",
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(BF, {
-				"aria-label": "Modo de filtrado por grupo",
+				"aria-label": "筛选分组方式",
 				size: "sm",
 				selectedKey: n,
 				onSelectionChange: (e) => {
@@ -69559,7 +69559,7 @@ function KNe(e) {
 				}, e))
 			}),
 			i.length > 1 ? /* @__PURE__ */ (0, C.jsxs)(BF, {
-				"aria-label": n === "field" ? "FiltrarcampoCategoría" : "FiltrarActualCategoría",
+				"aria-label": n === "field" ? "筛选字段分类" : "筛选当前分类",
 				size: "sm",
 				selectedKey: a || "*",
 				onSelectionChange: (e) => {
@@ -69567,7 +69567,7 @@ function KNe(e) {
 				},
 				children: [/* @__PURE__ */ (0, C.jsx)(VF, {
 					id: "*",
-					children: "TodoCategoría"
+					children: "全部分类"
 				}), i.map((e) => /* @__PURE__ */ (0, C.jsx)(VF, {
 					id: e.key,
 					children: `${e.title} · ${e.rows.length}`
@@ -69584,16 +69584,16 @@ function KNe(e) {
 					for (let t of s) v ? e.delete(t) : e.add(t);
 					l(e);
 				},
-				children: v ? "LimpiarActualSeleccionar" : a ? "Seleccionar todoActualCategoría" : "Seleccionar toda la página"
+				children: v ? "清空当前选择" : a ? "全选当前分类" : "全选本页"
 			})
 		]
 	}), /* @__PURE__ */ (0, C.jsxs)(eE, {
-		label: "Revisar elementos seleccionados",
+		label: "复核所选项目",
 		visible: c.size > 0,
-		count: `Ya seleccionados ${c.size} elemento(s)`,
+		count: `已选 ${c.size} 项`,
 		children: [
 			b ? /* @__PURE__ */ (0, C.jsxs)(BF, {
-				"aria-label": "Selección unificada de fuente",
+				"aria-label": "统一选择来源",
 				size: "sm",
 				selectedKey: "",
 				isDisabled: p || !y.length,
@@ -69613,21 +69613,21 @@ function KNe(e) {
 				size: "small",
 				disabled: p || !c.size || !f,
 				onClick: () => g("approved"),
-				children: "Aceptarseleccionados"
+				children: "通过所选"
 			}),
 			/* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "danger",
 				size: "small",
 				disabled: p || !c.size,
 				onClick: () => g("rejected"),
-				children: "Rechazarseleccionados"
+				children: "拒绝所选"
 			}),
 			/* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "ghost",
 				size: "small",
 				disabled: p,
 				onClick: () => l(/* @__PURE__ */ new Set()),
-				children: "Deseleccionar"
+				children: "取消选择"
 			}),
 			m ? /* @__PURE__ */ (0, C.jsx)("p", {
 				role: "status",
@@ -69640,15 +69640,15 @@ function KNe(e) {
 //#endregion
 //#region src/react/review/candidate-form.tsx
 var qNe = {
-	title: "Título",
-	original_title: "OriginalTítulo",
-	runtime: "FuenteDuración",
-	director: "Director",
+	title: "标题",
+	original_title: "原标题",
+	runtime: "来源时长",
+	director: "导演",
 	label: "Label",
-	poster_url: "Póster",
-	cover_url: "Portada",
-	screenshot_urls: "Captura de pantalla",
-	trailer_url: "Tráiler"
+	poster_url: "海报",
+	cover_url: "封面",
+	screenshot_urls: "截图",
+	trailer_url: "预告片"
 }, BW = "reviewgenretags";
 function JNe({ tags: e }) {
 	return e.length ? /* @__PURE__ */ (0, C.jsx)("datalist", {
@@ -69667,7 +69667,7 @@ function VW({ candidate: e, selectable: t = !1 }) {
 					className: "text-body-2-medium text-text-secondary",
 					children: [
 						e.source,
-						e.official ? " · oficial tiene prioridad" : "",
+						e.official ? " · 官方优先" : "",
 						r ? ` · ID ${r}` : ""
 					]
 				}),
@@ -69714,7 +69714,7 @@ function YNe({ row: e, fieldName: t, value: n, onChange: r, locked: i }) {
 		className: "flex overflow-hidden rounded-surface border border-separator-border bg-background-secondary-default",
 		children: /* @__PURE__ */ (0, C.jsx)(VW, { candidate: a[0] })
 	}) : /* @__PURE__ */ (0, C.jsx)(PN, {
-		"aria-label": `${t || "Detalles"}Fuente`,
+		"aria-label": `${t || "资料"}的来源`,
 		value: n,
 		isDisabled: i,
 		onChange: r,
@@ -69733,12 +69733,12 @@ function XNe({ genre: e, tags: t, locked: n, toast: r }) {
 	let [i, a] = (0, S.useState)(""), [o, s] = (0, S.useState)(""), c = mt({
 		mutationFn: (t) => rDe(e, t),
 		onSuccess: async (t, n) => {
-			t.ok ? (r(n ? `Ya se catalogó "${e}" como etiqueta "${n}"` : `Ya se determinó que "${e}" no es una etiqueta de contenido`), await aDe()) : s(t.error || "servicioextremoRechazar estevezCatalogar");
+			t.ok ? (r(n ? `已把「${e}」收录为标签「${n}」` : `已把「${e}」判为非内容标签`), await aDe()) : s(t.error || "服务端拒绝了这次收录");
 		},
 		onError: (e) => s(V(e))
 	}), l = () => {
 		let e = i.trim();
-		e ? (s(""), c.mutate(e)) : s("primero dale una etiqueta en chino");
+		e ? (s(""), c.mutate(e)) : s("先给它一个中文标签");
 	};
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		className: "flex flex-wrap items-center gap-2",
@@ -69749,7 +69749,7 @@ function XNe({ genre: e, tags: t, locked: n, toast: r }) {
 				children: e
 			}),
 			/* @__PURE__ */ (0, C.jsx)(yP, {
-				"aria-label": `"${e}"etiquetas en chino del catálogo`,
+				"aria-label": `「${e}」收录成的中文标签`,
 				value: i,
 				onChange: a,
 				maxLength: 40,
@@ -69759,7 +69759,7 @@ function XNe({ genre: e, tags: t, locked: n, toast: r }) {
 					size: "small",
 					list: t.length ? BW : void 0,
 					autoComplete: "off",
-					placeholder: "Etiquetas en chino",
+					placeholder: "中文标签",
 					onKeyDown: (e) => {
 						e.key !== "Enter" || e.nativeEvent.isComposing || (e.preventDefault(), l());
 					}
@@ -69770,7 +69770,7 @@ function XNe({ genre: e, tags: t, locked: n, toast: r }) {
 				size: "small",
 				disabled: n || c.isPending,
 				onClick: l,
-				children: "Catalogar"
+				children: "收录"
 			}),
 			/* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
@@ -69779,7 +69779,7 @@ function XNe({ genre: e, tags: t, locked: n, toast: r }) {
 				onClick: () => {
 					s(""), c.mutate("");
 				},
-				children: "No es contenido"
+				children: "不是内容"
 			}),
 			o ? /* @__PURE__ */ (0, C.jsx)("p", {
 				role: "status",
@@ -69793,11 +69793,11 @@ function ZNe({ row: e, tags: t, locked: n, toast: r }) {
 	let i = eDe(e);
 	return i.length ? /* @__PURE__ */ (0, C.jsxs)("div", {
 		role: "group",
-		"aria-label": "NoCatalogar genre",
+		"aria-label": "未收录 genre",
 		className: "flex flex-col gap-2 rounded-surface border border-separator-border bg-background-primary-default px-4 py-3",
 		children: [/* @__PURE__ */ (0, C.jsx)("h5", {
 			className: "text-body-2-medium text-text-secondary",
-			children: `NoCatalogar genre · ${i.length}`
+			children: `未收录 genre · ${i.length}`
 		}), i.map((e) => /* @__PURE__ */ (0, C.jsx)(XNe, {
 			genre: e,
 			tags: t,
@@ -69824,10 +69824,10 @@ function $Ne({ source: e }) {
 		children: [t === "loading" ? /* @__PURE__ */ (0, C.jsxs)("span", {
 			role: "status",
 			className: "absolute flex items-center gap-2 text-body-2-regular text-text-secondary",
-			children: [/* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao("CargandoImágenes") } }), "CargandoImágenes"]
+			children: [/* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao("正在加载图片") } }), "正在加载图片"]
 		}) : null, e && (t === "loading" || t === "ready") ? /* @__PURE__ */ (0, C.jsx)("img", {
 			src: e,
-			alt: "FuenteproporcionarproveerreservaseleccionarImágenes",
+			alt: "来源提供的备选图片",
 			referrerPolicy: "no-referrer",
 			decoding: "async",
 			className: `size-full object-contain ${t === "loading" ? "invisible" : ""}`,
@@ -69837,16 +69837,16 @@ function $Ne({ source: e }) {
 			className: "flex flex-col items-center gap-2",
 			children: [t === "failed" ? /* @__PURE__ */ (0, C.jsx)("span", {
 				className: "text-body-2-regular text-text-secondary",
-				children: "No disponibleFuenteImágenes"
+				children: "未取得来源图片"
 			}) : null, /* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
 				size: "small",
 				onClick: () => n("loading"),
-				children: t === "failed" ? "de nuevoCargarImágenes" : "buscarverFuenteImágenes"
+				children: t === "failed" ? "重新加载图片" : "查看来源图片"
 			})]
 		}) : /* @__PURE__ */ (0, C.jsx)("span", {
 			className: "text-body-2-regular text-text-secondary",
-			children: "No disponibleFuenteImágenes"
+			children: "未取得来源图片"
 		})]
 	});
 }
@@ -69865,20 +69865,20 @@ function WW({ asset: e, openItem: t }) {
 				className: "size-full object-cover"
 			}) : /* @__PURE__ */ (0, C.jsx)("span", {
 				className: "text-caption-1-regular text-text-secondary",
-				children: "Sin portada"
-			}), /* @__PURE__ */ (0, C.jsx)(wx, { children: `Abrir videos originales ${n}` })]
+				children: "无封面"
+			}), /* @__PURE__ */ (0, C.jsx)(wx, { children: `打开原视频 ${n}` })]
 		}), /* @__PURE__ */ (0, C.jsxs)("div", {
 			className: "flex min-w-0 flex-col items-start gap-1",
 			children: [/* @__PURE__ */ (0, C.jsx)("b", {
 				title: n,
 				className: "w-full truncate text-body-medium text-text-primary",
-				children: e.code || n || "OriginalVideos"
+				children: e.code || n || "原视频"
 			}), /* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
 				size: "small",
 				leadingIcon: Bk,
 				onClick: () => t(e.id),
-				children: "AbrirOriginalVideos"
+				children: "打开原视频"
 			})]
 		})]
 	});
@@ -69888,7 +69888,7 @@ function ePe({ kind: e, name: t, works: n, avatar: r, openEntity: i }) {
 		className: "flex min-w-0 items-center gap-3",
 		children: [/* @__PURE__ */ (0, C.jsx)("button", {
 			type: "button",
-			"aria-label": `Abrir página de creador: ${t}`,
+			"aria-label": `打开创作者页：${t}`,
 			onClick: () => i(e, t),
 			className: `relative inline-grid size-11 shrink-0 cursor-pointer place-items-center overflow-hidden rounded-full bg-background-secondary-default text-caption-1-medium text-text-secondary outline-none focus-visible:ring-2 focus-visible:ring-border-focus-ring ${TU}`,
 			dangerouslySetInnerHTML: { __html: r }
@@ -69901,7 +69901,7 @@ function ePe({ kind: e, name: t, works: n, avatar: r, openEntity: i }) {
 				children: t
 			}), n ? /* @__PURE__ */ (0, C.jsx)("small", {
 				className: "tabular-nums text-body-2-regular text-text-secondary",
-				children: `${n.toLocaleString()}  obra(s)`
+				children: `${n.toLocaleString()} 部作品`
 			}) : null]
 		})]
 	});
@@ -69913,7 +69913,7 @@ function tPe({ row: e, openItem: t, openEntity: n, onReveal: r, revealing: i, no
 		children: [
 			/* @__PURE__ */ (0, C.jsx)("h5", {
 				className: "text-body-medium text-text-primary",
-				children: `Persona pendiente de confirmación: ${e.babepedia_name || "Sin etiqueta"}`
+				children: `待确认人物：${e.babepedia_name || "未标注"}`
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-wrap items-center gap-2",
@@ -69924,22 +69924,22 @@ function tPe({ row: e, openItem: t, openEntity: n, onReveal: r, revealing: i, no
 					href: o,
 					target: "_blank",
 					rel: "noopener noreferrer",
-					children: "FuenteDetalles"
+					children: "来源资料"
 				}) : null, /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					size: "small",
 					onClick: () => n("creator", e.creator || ""),
-					children: `buscarverTodo ${c.toLocaleString()}  obra(s)`
+					children: `查看全部 ${c.toLocaleString()} 部作品`
 				})]
 			}),
 			/* @__PURE__ */ (0, C.jsx)(UW, { url: e.preview_url }),
 			/* @__PURE__ */ (0, C.jsx)("p", {
 				className: "text-body-2-regular text-text-secondary",
-				children: "Después de aceptar, los registros existentes interrumpirán la determinación. "
+				children: "通过后记录身份判断。"
 			}),
 			s.length ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("h5", {
 				className: "text-body-medium text-text-primary",
-				children: "LocalObramuestra"
+				children: "本地作品样本"
 			}), /* @__PURE__ */ (0, C.jsx)("ul", {
 				className: "flex flex-col gap-1",
 				children: s.map((e) => /* @__PURE__ */ (0, C.jsxs)("li", {
@@ -69957,15 +69957,15 @@ function tPe({ row: e, openItem: t, openEntity: n, onReveal: r, revealing: i, no
 					}), /* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "ghost",
 						size: "small",
-						"aria-label": `Abrir ${e.name} de archivosPosición`,
+						"aria-label": `打开 ${e.name} 的文件位置`,
 						...Y(i === e.id),
 						onClick: () => r(e.id),
-						children: "ArchivoPosición"
+						children: "文件位置"
 					})]
 				}, e.id))
 			})] }) : /* @__PURE__ */ (0, C.jsx)("p", {
 				className: "text-body-2-regular text-text-secondary",
-				children: "Aún sin muestra de obras locales; abre todas las obras para verificar. "
+				children: "暂无本地作品样本，打开全部作品核对。"
 			}),
 			a ? /* @__PURE__ */ (0, C.jsx)("p", {
 				role: "status",
@@ -69995,21 +69995,21 @@ function nPe({ assets: e, picked: t, onPicked: n, locked: r }) {
 			children: [
 				/* @__PURE__ */ (0, C.jsx)("span", {
 					className: "tabular-nums text-body-2-regular text-text-secondary",
-					children: `Ya seleccionados ${o.size} / ${e.length}`
+					children: `已选 ${o.size} / ${e.length}`
 				}),
 				/* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "ghost",
 					size: "small",
 					disabled: r,
 					onClick: () => n(e.map((e) => e.id)),
-					children: "Seleccionar todo"
+					children: "全选"
 				}),
 				/* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "ghost",
 					size: "small",
 					disabled: r,
 					onClick: () => n([]),
-					children: "Limpiar"
+					children: "清空"
 				})
 			]
 		}), /* @__PURE__ */ (0, C.jsx)("div", {
@@ -70042,7 +70042,7 @@ function nPe({ assets: e, picked: t, onPicked: n, locked: r }) {
 								}
 							})
 						}),
-						/* @__PURE__ */ (0, C.jsx)(wx, { children: `${n ? "Yaseleccionar" : "Noseleccionar"} ${e.name || e.id}` })
+						/* @__PURE__ */ (0, C.jsx)(wx, { children: `${n ? "已选" : "未选"} ${e.name || e.id}` })
 					]
 				}, e.id);
 			})
@@ -70064,7 +70064,7 @@ function aPe(e) {
 			openItem: f.openItem
 		}, e.id)), O.length > KW ? /* @__PURE__ */ (0, C.jsx)("p", {
 			className: "text-body-2-regular text-text-secondary",
-			children: `otros ${(O.length - KW).toLocaleString()} título(s) vs obra`
+			children: `另有 ${(O.length - KW).toLocaleString()} 部对照作品`
 		}) : null]
 	}) : y ? /* @__PURE__ */ (0, C.jsx)(ePe, {
 		kind: _,
@@ -70104,8 +70104,8 @@ function aPe(e) {
 	}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 		shell: "inset",
 		icon: Rge,
-		title: "Este lote de obras aún sin extracción de fotogramas",
-		children: `${n.video_count || ""} ResultadoObraAún no hayDisponibleVista previa; después de aprobar, las etiquetas se escribirán según los detalles seleccionados. `
+		title: "这批作品尚未抽帧",
+		children: `${n.video_count || ""} 条作品还没有可用预览；批准后仍会按所选资料写入标签。`
 	}) : t === "fc2_similarity" ? null : t === "western_identity" ? /* @__PURE__ */ (0, C.jsx)(tPe, {
 		row: n,
 		openItem: f.openItem,
@@ -70154,7 +70154,7 @@ function aPe(e) {
 						},
 						children: /* @__PURE__ */ (0, C.jsx)(XP, {
 							isSelected: a,
-							"aria-label": `Seleccionar ${b}`,
+							"aria-label": `选择 ${b}`,
 							onChange: (e) => o(p.current, e)
 						})
 					}),
@@ -70177,11 +70177,11 @@ function aPe(e) {
 					children: [
 						n.source_name ? /* @__PURE__ */ (0, C.jsx)("p", {
 							className: "text-body-2-regular text-text-secondary",
-							children: `Formato de fuente: ${n.source_name}`
+							children: `来源写法：${n.source_name}`
 						}) : null,
 						!y && (n.board || n.assets) ? /* @__PURE__ */ (0, C.jsx)("p", {
 							className: "text-body-2-regular text-text-secondary",
-							children: `vs archivos: ${Number(n.video_count || n.assets || 0).toLocaleString()}`
+							children: `对照文件：${Number(n.video_count || n.assets || 0).toLocaleString()}`
 						}) : null,
 						!y && j ? j : null,
 						E.length || t === "creator_tags" ? /* @__PURE__ */ (0, C.jsx)("div", {
@@ -70192,7 +70192,7 @@ function aPe(e) {
 								children: e
 							}, e)) : /* @__PURE__ */ (0, C.jsx)("small", {
 								className: "text-body-2-regular text-text-secondary",
-								children: "Sin etiquetas pendientes de confirmar aún"
+								children: "暂无待确认标签"
 							})
 						}) : null,
 						M,
@@ -70214,7 +70214,7 @@ function aPe(e) {
 				children: /* @__PURE__ */ (0, C.jsx)("p", {
 					ref: h,
 					role: "region",
-					"aria-label": "ActualInformación",
+					"aria-label": "当前信息",
 					className: "max-h-22 overflow-y-auto border-t border-separator-border px-5 py-2.5 text-body-2-regular text-text-secondary wrap-anywhere",
 					children: T
 				})
@@ -70228,7 +70228,7 @@ function aPe(e) {
 						disabled: s,
 						...Y(c),
 						onClick: () => d("rejected"),
-						children: "Rechazar"
+						children: "拒绝"
 					}),
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "secondary",
@@ -70236,16 +70236,16 @@ function aPe(e) {
 						disabled: s,
 						...Y(c),
 						onClick: () => d("skipped"),
-						children: "Omitir"
+						children: "跳过"
 					}),
 					/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "primary",
 						size: "small",
 						disabled: s || !D,
 						...Y(c),
-						title: D ? void 0 : "Sin detalles disponibles, solo se puede rechazar u omitir",
+						title: D ? void 0 : "没有可采用的资料，只能拒绝或跳过",
 						onClick: () => d("approved"),
-						children: D ? "Aceptar" : "No puede pasar"
+						children: D ? "通过" : "不可通过"
 					}),
 					l ? /* @__PURE__ */ (0, C.jsx)("p", {
 						role: "status",
@@ -70262,7 +70262,7 @@ function aPe(e) {
 var oPe = "flex cursor-pointer items-center justify-between gap-2";
 function sPe({ page: e, pages: t, onPage: n }) {
 	return t <= 1 ? null : /* @__PURE__ */ (0, C.jsxs)("nav", {
-		"aria-label": "Paginación de re-verificación",
+		"aria-label": "复核分页",
 		className: "flex w-full flex-wrap items-center justify-between gap-2",
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(q, {
@@ -70270,29 +70270,29 @@ function sPe({ page: e, pages: t, onPage: n }) {
 				size: "small",
 				disabled: e <= 1,
 				onClick: () => n(e - 1),
-				children: "Página anterior"
+				children: "上一页"
 			}),
 			/* @__PURE__ */ (0, C.jsx)("ul", {
 				className: "flex flex-wrap items-center gap-1",
-				children: Tn(e, t).map((t, r) => /* @__PURE__ */ (0, C.jsx)("li", { children: t === "..." ? /* @__PURE__ */ (0, C.jsx)("span", {
+				children: Tn(e, t).map((t, r) => /* @__PURE__ */ (0, C.jsx)("li", { children: t === "…" ? /* @__PURE__ */ (0, C.jsx)("span", {
 					"aria-hidden": !0,
 					className: "px-1 text-body-2-regular text-text-tertiary",
-					children: "..."
+					children: "…"
 				}) : /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: t === e ? "secondary" : "ghost",
 					size: "small",
-					"aria-label": `Página ${t}`,
+					"aria-label": `第 ${t} 页`,
 					"aria-current": t === e ? "page" : void 0,
 					onClick: () => n(Number(t)),
 					children: t
-				}) }, t === "..." ? `dots-${r}` : t))
+				}) }, t === "…" ? `dots-${r}` : t))
 			}),
 			/* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
 				size: "small",
 				disabled: e >= t,
 				onClick: () => n(e + 1),
-				children: "Página siguiente"
+				children: "下一页"
 			})
 		]
 	});
@@ -70324,7 +70324,7 @@ function cPe(e) {
 	}, ge = mt({
 		mutationFn: ({ row: e, status: t }) => Fz(Nz(f, Iz(f, e), t, de(e))),
 		onSuccess: (e, { row: t, status: n }) => {
-			e.ok ? (Lz(f, [t.item_key]), pe([t.item_key]), c(nDe(n))) : me(t.item_key, e.error || "servicio remoto rechazó este resultado");
+			e.ok ? (Lz(f, [t.item_key]), pe([t.item_key]), c(nDe(n))) : me(t.item_key, e.error || "服务端拒绝了这次判定");
 		},
 		onError: (e, { row: t }) => me(t.item_key, V(e))
 	}), _e = mt({
@@ -70332,10 +70332,10 @@ function cPe(e) {
 			let t = fe, n = [], r = [];
 			for (let [i, a] of t.entries()) {
 				if (!F.current) break;
-				k(`Procesando ${i} / ${t.length}`);
+				k(`正在处理 ${i} / ${t.length}`);
 				try {
 					let t = await Fz(Nz(f, Iz(f, a), e, de(a)));
-					if (!t.ok) throw Error(t.error || "servicio remoto no pudo usar este elemento");
+					if (!t.ok) throw Error(t.error || "服务端未采用该项");
 					n.push(a.item_key);
 				} catch (e) {
 					r.push([a.item_key, V(e)]);
@@ -70348,13 +70348,13 @@ function cPe(e) {
 			};
 		},
 		onSuccess: ({ status: e, done: t, failures: n }) => {
-			Lz(f, t), pe(t), n.forEach(([e, t]) => me(e, t)), k(""), c(`Ya${e === "approved" ? "Aceptar" : "Rechazar"} ${t.length} elemento(s)` + (n.length ? `, ${n.length} elemento(s)NoFinalizar` : ""));
+			Lz(f, t), pe(t), n.forEach(([e, t]) => me(e, t)), k(""), c(`已${e === "approved" ? "通过" : "拒绝"} ${t.length} 项` + (n.length ? `，${n.length} 项未完成` : ""));
 		},
 		onError: (e) => {
 			k(V(e));
 		}
 	}), ve = (e) => {
-		!_e.isPending && fe.length && (e === "approved" && te && fe.some((e) => !de(e).candidateKey) ? k("Por favor, primero selecciona la fuente a usar como detalles seleccionados. ") : (k(""), _e.mutate(e)));
+		!_e.isPending && fe.length && (e === "approved" && te && fe.some((e) => !de(e).candidateKey) ? k("请先为所选资料选择要采用的来源。") : (k(""), _e.mutate(e)));
 	}, ye = (e) => {
 		T((t) => {
 			let n = new Map(t);
@@ -70366,7 +70366,7 @@ function cPe(e) {
 				});
 			}
 			return n;
-		}), k(`Ya seleccionados ${e}; haz clic en Aceptar para usar los seleccionados. `);
+		}), k(`已选择 ${e}，点击通过所选采用。`);
 	}, be = async (e) => {
 		if (j) return;
 		M(e), P("");
@@ -70385,13 +70385,13 @@ function cPe(e) {
 		children: [
 			ne ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "warning",
-				title: "Solo navegación local",
+				title: "本机只能浏览",
 				extra: d ? /* @__PURE__ */ (0, C.jsx)("p", {
 					className: "text-body-2-regular",
 					children: /* @__PURE__ */ (0, C.jsx)("a", {
 						href: d,
 						className: "text-text-primary underline underline-offset-2",
-						children: "ir al lado del escritor para re-verificar"
+						children: "前往写入端复核"
 					})
 				}) : void 0,
 				children: xe
@@ -70410,7 +70410,7 @@ function cPe(e) {
 					className: "w-full min-w-0 review-split:sticky review-split:top-topbar review-split:w-review-tabs review-split:shrink-0",
 					children: [/* @__PURE__ */ (0, C.jsx)("h2", {
 						id: "reviewcategories",
-						children: "Clasificación de revisión"
+						children: "复核分类"
 					}), /* @__PURE__ */ (0, C.jsx)(dP, {
 						ref: r,
 						"aria-labelledby": "reviewcategories",
@@ -70469,7 +70469,7 @@ function cPe(e) {
 										for (let e of t) n ? r.delete(e) : r.add(e);
 										x(r);
 									},
-									children: e.rows.every((e) => b.has(e.item_key)) ? "Limpiar este grupo" : "Seleccionar todo el grupo"
+									children: e.rows.every((e) => b.has(e.item_key)) ? "清空本组" : "全选本组"
 								})]
 							}) : null, /* @__PURE__ */ (0, C.jsx)("div", {
 								className: "review-grid gap-5",
@@ -70498,19 +70498,19 @@ function cPe(e) {
 							})]
 						}, e.key)) : I.isError && !I.data ? /* @__PURE__ */ (0, C.jsx)(J, {
 							tone: "error",
-							title: "cola de re-verificaciónleerFallido",
+							title: "复核队列读取失败",
 							action: /* @__PURE__ */ (0, C.jsx)(q, {
 								variant: "secondary",
 								size: "small",
 								disabled: I.isFetching,
 								onClick: () => void I.refetch(),
-								children: "Reintentar"
+								children: "重试"
 							}),
 							children: V(I.error)
 						}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 							icon: Ege,
-							title: "Esta categoría no tiene elementos objetivo pendientes de re-verificación",
-							children: "puedeCambiarCategoríabuscarverOtropendiente de confirmarDetalles. "
+							title: "此分类没有待复核项目",
+							children: "可切换分类查看其他待确认资料。"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(sPe, {
 							page: se.page,
@@ -70547,7 +70547,7 @@ async function hPe(e) {
 	]);
 }
 function gPe(e, t) {
-	return `${t}${e.label === "Fuentepágina" ? "" : " HDImágenes"}: ${e.ok ? "puedeConectar" : "No puede conectar"}` + (e.width ? ` · ${e.width} × ${e.height}` : "") + (e.elapsed_s === void 0 ? "" : ` · ${e.elapsed_s.toFixed(2)} segundo(s)`) + (e.message ? `. ${e.message}` : "");
+	return `${t}${e.label === "来源页面" ? "" : " 高清图片"}：${e.ok ? "可连接" : "不能连接"}` + (e.width ? ` · ${e.width} × ${e.height}` : "") + (e.elapsed_s === void 0 ? "" : ` · ${e.elapsed_s.toFixed(2)} 秒`) + (e.message ? `。${e.message}` : "");
 }
 //#endregion
 //#region src/react/components/code-block.tsx
@@ -70558,9 +70558,9 @@ function rG({ code: e, language: t, label: n, maxCharacters: r, bounded: i = !0,
 	}, [e]);
 	let f = r !== void 0 && e.length > r, p = async () => {
 		try {
-			await navigator.clipboard.writeText(e), d(!1), l("Copiado"), o?.();
+			await navigator.clipboard.writeText(e), d(!1), l("已复制"), o?.();
 		} catch {
-			d(!0), l("Error al copiar. Por favor selecciona el texto manualmente.");
+			d(!0), l("复制失败，请选中文本复制。");
 		}
 	};
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -70580,7 +70580,7 @@ function rG({ code: e, language: t, label: n, maxCharacters: r, bounded: i = !0,
 					variant: "secondary",
 					size: "small",
 					onClick: () => void p(),
-					children: a || (f ? "Copiar contenido completo" : "Copiar código")
+					children: a || (f ? "复制完整内容" : "复制代码")
 				})]
 			}),
 			/* @__PURE__ */ (0, C.jsx)("div", {
@@ -70685,22 +70685,22 @@ function _Pe({ field: e, label: t, max: n, value: r, hidden: i, onStep: a, onSet
 //#endregion
 //#region src/react/scraping/custom-sources.tsx
 var vPe = [
-	["code", "Código JAV"],
-	["title", "Título"],
-	["studio", "Sello"],
-	["series", "Serie"],
-	["release_date", "Fecha de lanzamiento"],
-	["performers", "Actores (array de texto)"],
-	["tags", "Etiqueta (grupo texto/número)"]
+	["code", "番号"],
+	["title", "标题"],
+	["studio", "厂牌"],
+	["series", "系列"],
+	["release_date", "发行日期"],
+	["performers", "演员（文本数组）"],
+	["tags", "标签（文本数组）"]
 ], yPe = [
-	["censored", "Con censura"],
-	["amateur", "Amateur"],
-	["uncensored", "Sin censura"],
+	["censored", "有码"],
+	["amateur", "素人"],
+	["uncensored", "无码"],
 	["fc2", "FC2"],
-	["kmib", "Korea MIB"],
-	["other", "Otro"],
-	["unsure", "PendienteverificarCódigo JAV"],
-	["unknown", "Desconocido"]
+	["kmib", "韩国 MIB"],
+	["other", "其他"],
+	["unsure", "待核番号"],
+	["unknown", "未知"]
 ], bPe = () => ({
 	name: "",
 	endpoint: "",
@@ -70718,16 +70718,16 @@ function xPe({ receipt: e }) {
 	}), i = wA(), a = (e) => W.setQueryData(JW, e), o = !!(r.isPending || r.error || r.data?.items.length || i.error), s = /* @__PURE__ */ (0, C.jsx)(q, {
 		variant: "secondary",
 		onClick: () => n(bPe()),
-		children: "AñadirFuente"
+		children: "添加来源"
 	});
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "PersonalizadoMetadatosFuente",
+		title: "自定义元数据来源",
 		children: [
 			o ? /* @__PURE__ */ (0, C.jsxs)(MA, { children: [
 				r.isPending ? /* @__PURE__ */ (0, C.jsx)("div", {
 					"aria-busy": "true",
 					"data-skeleton": "",
-					"aria-label": "leerPersonalizadoFuente"
+					"aria-label": "读取自定义来源"
 				}) : null,
 				r.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: V(r.error) }) : null,
 				r.data?.items.map((t) => /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -70738,13 +70738,13 @@ function xPe({ receipt: e }) {
 							children: [
 								t.name,
 								" · ",
-								t.enabled ? "Activado" : "YaDesactivar"
+								t.enabled ? "已启用" : "已停用"
 							]
 						}),
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
 							onClick: () => n(t),
-							children: "Editar"
+							children: "编辑"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "secondary",
@@ -70753,24 +70753,24 @@ function xPe({ receipt: e }) {
 								...t,
 								enabled: !t.enabled
 							}, "POST", e), (n) => {
-								a(n), e(t.enabled ? "YaDesactivarFuente" : "YaActivar fuente");
+								a(n), e(t.enabled ? "已停用来源" : "已启用来源");
 							}),
-							children: t.enabled ? "Desactivar" : "Activar"
+							children: t.enabled ? "停用" : "启用"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "danger",
 							onClick: () => Rs({
-								title: "EliminarPersonalizadoFuente",
-								body: `Después de eliminar "${B(t.name)}", la recopilación ya no buscará en esta fuente. `,
-								confirmLabel: "EliminarFuente",
+								title: "删除自定义来源",
+								body: `删除「${B(t.name)}」后，采集将不再查询这个来源。`,
+								confirmLabel: "删除来源",
 								onConfirm: async () => {
 									a(await U(qW, {
 										action: "delete",
 										id: t.id
-									})), n(null), e("YaEliminarFuente");
+									})), n(null), e("已删除来源");
 								}
 							}),
-							children: "Eliminar"
+							children: "删除"
 						})
 					]
 				}, t.id)),
@@ -70784,7 +70784,7 @@ function xPe({ receipt: e }) {
 				initial: t,
 				cancel: () => n(null),
 				saved: (t) => {
-					a(t), n(null), e("GuardadoFuente");
+					a(t), n(null), e("已保存来源");
 				}
 			}, t.id || "new") : null
 		]
@@ -70798,20 +70798,20 @@ function SPe({ initial: e, cancel: t, saved: n }) {
 		})), c("");
 	};
 	return /* @__PURE__ */ (0, C.jsxs)("form", {
-		"aria-label": "MetadatosFuenteConfiguración",
+		"aria-label": "元数据来源配置",
 		"aria-busy": u.busy === "preview",
 		onSubmit: (e) => {
 			e.preventDefault(), u.run("save", (e) => U(qW, r, "POST", e), n);
 		},
 		children: [/* @__PURE__ */ (0, C.jsxs)(MA, { children: [
 			/* @__PURE__ */ (0, C.jsx)(SP, {
-				label: "Nombre de fuente",
+				label: "来源名称",
 				value: r.name,
 				maxLength: 80,
 				onChange: (e) => d({ name: e })
 			}),
 			/* @__PURE__ */ (0, C.jsx)(SP, {
-				label: "Dirección de interfaz JSON",
+				label: "JSON 接口地址",
 				value: r.endpoint,
 				maxLength: 2048,
 				placeholder: "https://example.com/api/movies/{code}",
@@ -70819,34 +70819,34 @@ function SPe({ initial: e, cancel: t, saved: n }) {
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-2",
-				children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: "FuenteMétodo de conexión" }), /* @__PURE__ */ (0, C.jsx)(oG, {
+				children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: "来源连接方式" }), /* @__PURE__ */ (0, C.jsx)(oG, {
 					id: "custom-source-network",
-					label: "FuenteMétodo de conexión",
+					label: "来源连接方式",
 					epoch: 0,
 					value: r.network || "direct",
-					options: [["direct", "Conexión directa"], ["peach_proxy", "Proxy de Peach"]],
+					options: [["direct", "直连"], ["peach_proxy", "Peach 代理"]],
 					onPick: (e) => d({ network: e })
 				})]
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-2",
-				children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: "Formato de código JAV de la interfaz" }), /* @__PURE__ */ (0, C.jsx)(oG, {
+				children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: "接口番号格式" }), /* @__PURE__ */ (0, C.jsx)(oG, {
 					id: "custom-source-code-format",
-					label: "Formato de código JAV de la interfaz",
+					label: "接口番号格式",
 					epoch: 0,
 					value: r.code_format || "original",
 					options: [
-						["original", "Sin cambios"],
-						["lowercase", "Minúsculas"],
-						["compact", "Eliminar guiones"],
-						["underscore", "Convertir guión a guión bajo"]
+						["original", "原样"],
+						["lowercase", "小写"],
+						["compact", "去掉连字符"],
+						["underscore", "连字符转下划线"]
 					],
 					onPick: (e) => d({ code_format: e })
 				})]
 			}),
-			/* @__PURE__ */ (0, C.jsx)(PA, { children: "introducirPúblico JSON Interfaz y respuestaruta de campo, p.ej. data.title. Código JAVcampousado para verificar la entidad de la obra. " }),
+			/* @__PURE__ */ (0, C.jsx)(PA, { children: "填写公开 JSON 接口和响应字段路径，例如 data.title。番号字段用于核对作品身份。" }),
 			vPe.map(([e, t]) => /* @__PURE__ */ (0, C.jsx)(SP, {
-				label: `${t}ruta de campo`,
+				label: `${t}字段路径`,
 				value: r.fields[e] || "",
 				onChange: (t) => {
 					let n = { ...r.fields };
@@ -70856,7 +70856,7 @@ function SPe({ initial: e, cancel: t, saved: n }) {
 			/* @__PURE__ */ (0, C.jsx)("div", {
 				className: "flex flex-wrap gap-3",
 				role: "group",
-				"aria-label": "tipo de contenido interno compatible",
+				"aria-label": "适用内容类型",
 				children: yPe.map(([e, t]) => /* @__PURE__ */ (0, C.jsx)(XP, {
 					isSelected: r.content_types.includes(e),
 					onChange: (t) => d({ content_types: t ? [...r.content_types, e] : r.content_types.filter((t) => t !== e) }),
@@ -70866,10 +70866,10 @@ function SPe({ initial: e, cancel: t, saved: n }) {
 			/* @__PURE__ */ (0, C.jsx)(XP, {
 				isSelected: r.enabled,
 				onChange: (e) => d({ enabled: e }),
-				children: "Activar fuente"
+				children: "启用来源"
 			}),
 			/* @__PURE__ */ (0, C.jsx)(SP, {
-				label: "Buscar código JAV (presiona Enter para buscar)",
+				label: "试查番号（回车查询）",
 				value: a,
 				onChange: (e) => {
 					l.current++, o(e), c("");
@@ -70891,29 +70891,29 @@ function SPe({ initial: e, cancel: t, saved: n }) {
 			}),
 			u.busy === "preview" ? /* @__PURE__ */ (0, C.jsxs)(PA, {
 				role: "status",
-				children: [/* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao("Buscando fuentes") } }), "Buscando fuentes..."]
+				children: [/* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: Ao("正在试查来源") } }), "正在试查来源…"]
 			}) : null,
 			s ? /* @__PURE__ */ (0, C.jsx)(rG, {
 				code: s,
 				language: "json",
-				label: "MetadatosInterfazVolver"
+				label: "元数据接口返回"
 			}) : null,
 			u.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: u.error }) : null
 		] }), /* @__PURE__ */ (0, C.jsxs)(NA, { children: [/* @__PURE__ */ (0, C.jsx)(q, {
 			variant: "secondary",
 			type: "button",
 			onClick: t,
-			children: "Cancelar"
+			children: "取消"
 		}), /* @__PURE__ */ (0, C.jsx)(q, {
 			type: "submit",
 			...Y(u.busy === "save"),
-			children: "GuardarFuente"
+			children: "保存来源"
 		})] })]
 	});
 }
 //#endregion
 //#region src/react/scraping/scraping-page.tsx
-var sG = [["peach", "Proxy de Peach"], ["direct", "conexión directaConectar"]];
+var sG = [["peach", "Peach 代理"], ["direct", "直接连接"]];
 function CPe(e) {
 	return sG.some(([t]) => t === e) || !e ? [...sG] : [...sG, [e, e]];
 }
@@ -70924,7 +70924,7 @@ function wPe(e) {
 		return e;
 	}
 }
-var cG = [["paste", "Pegar Cookie"], ["file", "ImportarArchivo"]];
+var cG = [["paste", "粘贴 Cookie"], ["file", "导入文件"]];
 function TPe() {
 	return /* @__PURE__ */ (0, C.jsx)(lU, { source: "github" });
 }
@@ -70945,7 +70945,7 @@ function EPe({ source: e, toast: t }) {
 			W.setQueryData(ZW, (t) => t && {
 				...t,
 				sources: t.sources.map((t) => t.source === e.saved.source ? e.saved : t)
-			}), h(), t(n ? "Cookie revocada" : "FuenteConfiguraciónGuardado");
+			}), h(), t(n ? "Cookie 已撤销" : "来源设置已保存");
 		}
 	}), _ = mt({ mutationFn: () => U(dPe, { source: e.source }) }), v = g.isPending || _.isPending, y = (e) => {
 		e.preventDefault(), !v && (_.reset(), g.mutate(!1));
@@ -70957,12 +70957,12 @@ function EPe({ source: e, toast: t }) {
 	async function w(e) {
 		let t = e.currentTarget, n = t.files?.[0];
 		if (s(""), p(""), !n) d("");
-		else if (n.size > 262144) t.value = "", d(""), p("El texto de cookie supera 256 KiB");
+		else if (n.size > 262144) t.value = "", d(""), p("Cookie 文本超过 256 KiB");
 		else try {
 			let e = await n.text();
 			s(e), d(n.name);
 		} catch {
-			p("Archivo de cookie no leído, por favor selecciónalo nuevamente");
+			p("Cookie 文件未读取，请重新选择");
 		}
 	}
 	let T = f || (g.error ? V(g.error) : "") || (_.error ? V(_.error) : ""), E = _.data?.results ?? [], D = n === "peach" || e.accepts_cookie || e.browser || !!T || E.length > 0;
@@ -70978,9 +70978,9 @@ function EPe({ source: e, toast: t }) {
 		}),
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(jA, { children: /* @__PURE__ */ (0, C.jsx)(DA, {
-				label: "Método de conexión",
+				label: "连接方式",
 				children: /* @__PURE__ */ (0, C.jsx)(BF, {
-					"aria-label": "Método de conexión",
+					"aria-label": "连接方式",
 					className: "w-44 min-w-0",
 					selectedKey: n,
 					onSelectionChange: (e) => {
@@ -70994,7 +70994,7 @@ function EPe({ source: e, toast: t }) {
 			}) }),
 			e.cooldown_until && e.cooldown_until > Date.now() / 1e3 ? /* @__PURE__ */ (0, C.jsxs)(J, {
 				tone: "warning",
-				children: ["FuenteProcesandoen enfriamiento hasta ", (/* @__PURE__ */ new Date(e.cooldown_until * 1e3)).toLocaleString("zh-CN")]
+				children: ["来源正在冷却，截止 ", (/* @__PURE__ */ new Date(e.cooldown_until * 1e3)).toLocaleString("zh-CN")]
 			}) : null,
 			D ? /* @__PURE__ */ (0, C.jsxs)(MA, {
 				divided: !0,
@@ -71005,20 +71005,20 @@ function EPe({ source: e, toast: t }) {
 							href: "/settings/library#peachProxy",
 							size: "small",
 							trailingIcon: kk,
-							children: "Configuración Proxy de Peach"
+							children: "配置 Peach 代理"
 						})
 					}) : null,
 					e.browser ? /* @__PURE__ */ (0, C.jsx)("p", {
 						className: "text-body-2-regular text-text-secondary",
-						children: "Verificación CAPTCHAEsta máquinaExplorar dispositivoAutomáticoFinalizar; Necesarioclic encuandoventanaaparecerá. este dispositivoDispositivosuperiorNo se necesita Cookie. "
+						children: "人机验证由本机浏览器自动完成；需要点击时窗口会弹出。这台机器上不需要 Cookie。"
 					}) : null,
 					e.accepts_cookie && !e.browser ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 						/* @__PURE__ */ (0, C.jsx)("p", {
 							className: "text-body-2-regular text-text-secondary",
-							children: e.cookie_saved ? "Cookie guardada. La validez se comprueba al recuperar datos." : "Inicio de sesión requeridocuando, elige cualquier método para proporcionar Cookie. "
+							children: e.cookie_saved ? "Cookie 已保存；登录是否有效要到抓取时才知道。" : "需要登录时，任选一种方式提供 Cookie。"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(KF, {
-							"aria-label": "Método de proporcionar Cookie (elegir uno)",
+							"aria-label": "提供 Cookie 的方式（二选一）",
 							value: c,
 							onChange: (e) => {
 								l(e), h();
@@ -71039,16 +71039,16 @@ function EPe({ source: e, toast: t }) {
 						}) : /* @__PURE__ */ (0, C.jsxs)("div", {
 							className: "flex flex-col gap-2",
 							children: [
-								/* @__PURE__ */ (0, C.jsx)(IA, { children: "Archivo Cookie de Netscape (.txt)" }),
+								/* @__PURE__ */ (0, C.jsx)(IA, { children: "Netscape Cookie 文件（.txt）" }),
 								/* @__PURE__ */ (0, C.jsxs)("div", {
 									className: "flex flex-wrap items-center gap-3",
 									children: [/* @__PURE__ */ (0, C.jsx)(q, {
 										variant: "secondary",
 										onClick: () => m.current?.click(),
-										children: "SeleccionarArchivo"
+										children: "选择文件"
 									}), /* @__PURE__ */ (0, C.jsx)("span", {
 										className: "min-w-0 text-body-2-regular break-all text-text-secondary",
-										children: u || "NoSeleccionarArchivo"
+										children: u || "未选择文件"
 									})]
 								}),
 								/* @__PURE__ */ (0, C.jsx)("input", {
@@ -71077,18 +71077,18 @@ function EPe({ source: e, toast: t }) {
 					variant: "secondary",
 					onClick: b,
 					...Y(v),
-					children: "Deshacer Cookie"
+					children: "撤销 Cookie"
 				}) : null,
 				/* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					onClick: x,
 					...Y(v),
-					children: "Verificar conexión"
+					children: "检查连接"
 				}),
 				/* @__PURE__ */ (0, C.jsx)(q, {
 					type: "submit",
 					...Y(v),
-					children: "Guardar"
+					children: "保存"
 				})
 			] })
 		]
@@ -71100,13 +71100,13 @@ function DPe({ toast: e }) {
 		queryFn: ({ signal: e }) => tG(e),
 		start: () => U(XW, { code: t }),
 		onFinish: (t) => {
-			t.status === "complete" && e(t.result || "Finalizar recolección de portada");
+			t.status === "complete" && e(t.result || "封面采集完成");
 		}
 	}), o = (e) => {
 		e.preventDefault(), !(r || a.isPending || !t.trim()) && a.mutate();
-	}, s = a.error ? V(a.error) : i?.status === "failed" ? i.error || "RecolectarNo disponible" : "";
+	}, s = a.error ? V(a.error) : i?.status === "failed" ? i.error || "采集未取得" : "";
 	return /* @__PURE__ */ (0, C.jsx)(AA, {
-		title: "HDPortada",
+		title: "高清封面",
 		onSubmit: o,
 		children: /* @__PURE__ */ (0, C.jsxs)(MA, { children: [
 			/* @__PURE__ */ (0, C.jsxs)("div", {
@@ -71114,28 +71114,28 @@ function DPe({ toast: e }) {
 				children: [/* @__PURE__ */ (0, C.jsx)("div", {
 					className: "min-w-0 flex-1",
 					children: /* @__PURE__ */ (0, C.jsx)(SP, {
-						"aria-label": "ColecciónCódigo JAV",
+						"aria-label": "馆藏番号",
 						isRequired: !0,
 						isDisabled: r,
 						value: t,
 						onChange: n,
-						placeholder: "Introduce código JAV de colección, p.ej. ABW-232"
+						placeholder: "输入馆藏番号，如 ABW-232"
 					})
 				}), /* @__PURE__ */ (0, C.jsx)(q, {
 					type: "submit",
 					disabled: !t.trim(),
 					...Y(r || a.isPending),
-					children: "Obtener portada"
+					children: "抓取封面"
 				})]
 			}),
-			r ? /* @__PURE__ */ (0, C.jsx)(bA, { label: "ProcesandoObtener portada" }) : null,
+			r ? /* @__PURE__ */ (0, C.jsx)(bA, { label: "正在抓取封面" }) : null,
 			s ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
 				children: s
 			}) : null,
 			i?.status === "complete" ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "success",
-				children: i.result || "Finalizar recolección de portada"
+				children: i.result || "封面采集完成"
 			}) : null
 		] })
 	});
@@ -71151,7 +71151,7 @@ function OPe({ toast: e }) {
 			job: t
 		},
 		onFinish: (t) => {
-			t.status === "complete" && e(t.result || "Puente amane reconstruido");
+			t.status === "complete" && e(t.result || "amane 桥已重建");
 		}
 	}), a = mt({ mutationFn: () => U(pPe, {}) }), o = t.data;
 	if (!o) return t.error ? /* @__PURE__ */ (0, C.jsx)(AA, {
@@ -71161,7 +71161,7 @@ function OPe({ toast: e }) {
 			children: V(t.error)
 		}) })
 	}) : null;
-	let s = n || i.isPending || a.isPending, c = i.error ? V(i.error) : a.error ? V(a.error) : r?.status === "failed" ? r.error || "recrearNoFinalizar" : "";
+	let s = n || i.isPending || a.isPending, c = i.error ? V(i.error) : a.error ? V(a.error) : r?.status === "failed" ? r.error || "重建未完成" : "";
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
 		title: "amane",
 		aside: /* @__PURE__ */ (0, C.jsx)(LA, {
@@ -71172,49 +71172,49 @@ function OPe({ toast: e }) {
 		children: [
 			/* @__PURE__ */ (0, C.jsxs)(RA, { children: [
 				/* @__PURE__ */ (0, C.jsx)(zA, {
-					term: "InstaladoVersión",
-					children: o.installed_version || "No instalado"
+					term: "已安装版本",
+					children: o.installed_version || "未安装"
 				}),
 				/* @__PURE__ */ (0, C.jsx)(zA, {
-					term: "Última versión upstream",
-					children: a.data?.latest ?? "Sin verificar"
+					term: "上游最新版本",
+					children: a.data?.latest ?? "尚未检查"
 				}),
 				/* @__PURE__ */ (0, C.jsx)(zA, {
-					term: "Entorno de ejecución",
-					children: o.installed ? "Instalado" : "No instalado"
+					term: "运行环境",
+					children: o.installed ? "已安装" : "未安装"
 				}),
 				/* @__PURE__ */ (0, C.jsxs)(zA, {
-					term: "integradoSitio",
-					children: [o.sites.length.toLocaleString(), " "]
+					term: "内置站点",
+					children: [o.sites.length.toLocaleString(), " 个"]
 				})
 			] }),
 			/* @__PURE__ */ (0, C.jsxs)(MA, {
 				divided: !0,
 				children: [
 					o.sites.length ? /* @__PURE__ */ (0, C.jsx)(BA, {
-						summary: "buscarverintegradoSitio",
+						summary: "查看内置站点",
 						children: /* @__PURE__ */ (0, C.jsx)("p", {
 							className: "text-body-2-regular text-text-secondary",
-							children: o.sites.map((e) => e.label).join(", ")
+							children: o.sites.map((e) => e.label).join("、")
 						})
 					}) : null,
 					/* @__PURE__ */ (0, C.jsxs)(PA, { children: [
-						"InstaladoVersión: ",
-						o.installed_version || "No instalado",
-						". amane(",
+						"已安装版本：",
+						o.installed_version || "未安装",
+						"。amane（",
 						o.license,
-						")proporciona las capacidades de análisis de estos sitios integrados. Reinstalar usará Peach integrado ",
+						"）提供这些内置站点的解析能力。 重新安装会使用 Peach 内置的 ",
 						o.version,
-						" versión, no se actualiza automáticamente con el upstream. "
+						" 版本，不随上游自动升级。"
 					] }),
-					n ? /* @__PURE__ */ (0, C.jsx)(bA, { label: "ProcesandorecrearEntorno de ejecución" }) : null,
+					n ? /* @__PURE__ */ (0, C.jsx)(bA, { label: "正在重建运行环境" }) : null,
 					c ? /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "error",
 						children: c
 					}) : null,
 					r?.status === "complete" ? /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "success",
-						children: r.result || "Puente amane reconstruido"
+						children: r.result || "amane 桥已重建"
 					}) : null
 				]
 			}),
@@ -71224,13 +71224,13 @@ function OPe({ toast: e }) {
 					s || a.mutate();
 				},
 				...Y(a.isPending),
-				children: "Verificar versión de la fuente"
+				children: "检查上游版本"
 			}), /* @__PURE__ */ (0, C.jsx)(q, {
 				onClick: () => {
 					s || i.mutate();
 				},
 				...Y(n || i.isPending),
-				children: o.installed ? "Reinstalar" : "Instalar"
+				children: o.installed ? "重新安装" : "安装"
 			})] })
 		]
 	});
@@ -71243,7 +71243,7 @@ function kPe({ toast: e }) {
 	return n ? /* @__PURE__ */ (0, C.jsxs)(xA, { children: [
 		/* @__PURE__ */ (0, C.jsx)("p", {
 			className: "text-body-2-regular text-text-secondary",
-			children: "Las imágenes HD pueden requerir proxy. Verifica la conexión primero."
+			children: "高清图片可能要经代理才能下载，先检查连接。"
 		}),
 		/* @__PURE__ */ (0, C.jsx)(DPe, { toast: e }),
 		/* @__PURE__ */ (0, C.jsx)(xPe, { receipt: e }),
@@ -71254,8 +71254,8 @@ function kPe({ toast: e }) {
 		/* @__PURE__ */ (0, C.jsx)(OPe, { toast: e })
 	] }) : /* @__PURE__ */ (0, C.jsx)(xA, { children: /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "RecolectarFuenteleerFallido",
-		children: t.error ? V(t.error) : "leerRecolectarFuenteFallido"
+		title: "采集来源读取失败",
+		children: t.error ? V(t.error) : "读取采集来源失败"
 	}) });
 }
 //#endregion
@@ -71295,7 +71295,7 @@ function APe({ query: e, history: t, picks: n, suggestFor: r, groups: i, tabs: a
 			return {
 				tabs: null,
 				recent: d.length ? {
-					label: "Historial de búsqueda",
+					label: "搜索记录",
 					options: d.map((e) => u({
 						type: "history",
 						value: e
@@ -71308,13 +71308,13 @@ function APe({ query: e, history: t, picks: n, suggestFor: r, groups: i, tabs: a
 			};
 		}
 		let e = d.length ? {
-			label: "Historial de búsqueda",
+			label: "搜索记录",
 			options: d.map((e) => u({
 				type: "history",
 				value: e
 			}))
 		} : null, t = n.length ? {
-			label: "Recomendado",
+			label: "推荐",
 			options: n.map((e) => u({
 				type: "pick",
 				value: e
@@ -71330,7 +71330,7 @@ function APe({ query: e, history: t, picks: n, suggestFor: r, groups: i, tabs: a
 		};
 	}
 	let f = r === e, p = !o && d.length ? {
-		label: "Historial de búsqueda",
+		label: "搜索记录",
 		options: d.map((e) => u({
 			type: "history",
 			value: e
@@ -71440,7 +71440,7 @@ function PPe(e) {
 				onClick: (t) => {
 					t.ctrlKey || t.metaKey || t.shiftKey || t.altKey || (t.preventDefault(), s.openPath(e.href));
 				},
-				children: e.action || "buscarverTodo"
+				children: e.action || "查看全部"
 			}) : null] }),
 			e.kind ? /* @__PURE__ */ (0, C.jsx)("div", {
 				"data-search-items": "",
@@ -71477,7 +71477,7 @@ function PPe(e) {
 			c.empty ? /* @__PURE__ */ (0, C.jsx)("p", {
 				"data-search-empty": "",
 				role: "status",
-				children: "No encontrado"
+				children: "没有找到"
 			}) : null
 		]
 	});
@@ -71498,13 +71498,13 @@ function FPe(e, t, n, r) {
 		let n = ++t.poolRequest;
 		t.pool = [];
 		let r = i();
-		r.dataset.suggestion = "", r.placeholder = "BuscarColección";
+		r.dataset.suggestion = "", r.placeholder = "搜索馆藏";
 		try {
 			let i = await e().helpers.pool();
 			if (n !== t.poolRequest) return;
 			t.pool = i;
 			let a = i[Math.floor(Math.random() * i.length)] || "";
-			r.dataset.suggestion = a, r.placeholder = a || "BuscarColección";
+			r.dataset.suggestion = a, r.placeholder = a || "搜索馆藏";
 		} catch {}
 	}, d = async () => {
 		if (!e().helpers.recommendations) return;
@@ -71632,8 +71632,8 @@ function IPe({ tabs: e, kind: t, onPick: n, wire: r }) {
 		ref: i,
 		"data-search-tabs": "",
 		role: "tablist",
-		"aria-label": "Ver completado por tipo",
-		children: [a("", "Todo"), e.map((e) => a(e.kind, e.label, e.total))]
+		"aria-label": "按种类看补全",
+		children: [a("", "全部"), e.map((e) => a(e.kind, e.label, e.total))]
 	});
 }
 var mG = (e) => e.preventDefault();
@@ -71651,9 +71651,9 @@ function LPe({ entry: e, active: t, helpers: n, onPick: r, onPeek: i, onRemove: 
 		...o,
 		onMouseDown: mG,
 		children: [
-			"buscarverTodo ",
+			"查看全部 ",
 			e.total.toLocaleString(),
-			"  video(s)",
+			" 个视频",
 			/* @__PURE__ */ (0, C.jsx)(pG, { name: "chevron-right" })
 		]
 	});
@@ -71666,7 +71666,7 @@ function LPe({ entry: e, active: t, helpers: n, onPick: r, onPeek: i, onRemove: 
 			e.type === "history" ? /* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
 				"data-remove-history": e.value,
-				"aria-label": `EliminarHistorial ${e.value}`,
+				"aria-label": `删除历史 ${e.value}`,
 				onMouseDown: mG,
 				onClick: (t) => {
 					t.stopPropagation(), a(e.value);
@@ -71710,7 +71710,7 @@ function LPe({ entry: e, active: t, helpers: n, onPick: r, onPeek: i, onRemove: 
 		children: s.matched
 	}) : null;
 	if (c === "performer" || c === "creator" || c === "author") {
-		let e = s.works ?? [], t = s.subtitle || [`${(s.n ?? 0).toLocaleString()}  video(s)`, s.agency].filter(Boolean).join(" · ");
+		let e = s.works ?? [], t = s.subtitle || [`${(s.n ?? 0).toLocaleString()} 个视频`, s.agency].filter(Boolean).join(" · ");
 		return /* @__PURE__ */ (0, C.jsxs)("div", {
 			"data-search-option": "person",
 			"data-open-entity": l,
@@ -71725,7 +71725,7 @@ function LPe({ entry: e, active: t, helpers: n, onPick: r, onPeek: i, onRemove: 
 					type: "button",
 					"data-search-person": "",
 					"data-search-meta": "",
-					"aria-label": `buscarver ${s.value}`,
+					"aria-label": `查看 ${s.value}`,
 					children: [/* @__PURE__ */ (0, C.jsxs)("span", {
 						"data-search-name": "",
 						children: [/* @__PURE__ */ (0, C.jsx)("span", { children: s.value }), u]
@@ -71739,7 +71739,7 @@ function LPe({ entry: e, active: t, helpers: n, onPick: r, onPeek: i, onRemove: 
 					children: e.map((e) => /* @__PURE__ */ (0, C.jsx)("button", {
 						type: "button",
 						"data-open-work": e.id,
-						"aria-label": `Abrir ${e.code || s.value}`,
+						"aria-label": `打开 ${e.code || s.value}`,
 						onMouseDown: mG,
 						onClick: (t) => {
 							t.stopPropagation(), i(e);
@@ -71825,7 +71825,7 @@ function BPe({ receipt: e, refreshKey: t }) {
 		queryFn: ({ signal: e }) => H(SG, e),
 		refetchOnMount: "always"
 	});
-	return n.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: V(n.error) }) : n.isFetching ? /* @__PURE__ */ (0, C.jsx)(bA, { label: "CargandoExplorar dispositivoAñadirConfiguración" }) : n.data ? /* @__PURE__ */ (0, C.jsx)(VPe, {
+	return n.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: V(n.error) }) : n.isFetching ? /* @__PURE__ */ (0, C.jsx)(bA, { label: "正在读取浏览器添加设置" }) : n.data ? /* @__PURE__ */ (0, C.jsx)(VPe, {
 		initial: n.data,
 		receipt: e
 	}) : null;
@@ -71837,20 +71837,20 @@ function VPe({ initial: e, receipt: t }) {
 			provider: i
 		}, "POST", t), (n) => {
 			let { token: i = "", ...a } = n;
-			r(a), s(i), t(e === "disable" ? "YaDesactivarExplorar dispositivoAñadir" : "Yagenerartoken de uso exclusivo");
+			r(a), s(i), t(e === "disable" ? "已关闭浏览器添加" : "已生成专用令牌");
 		});
 	}, u = n.providers.some((e) => e.key === i && e.configured && e.target);
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Explorar dispositivoAñadir JAV",
+		title: "浏览器添加 JAV",
 		children: [/* @__PURE__ */ (0, C.jsxs)(MA, { children: [
 			/* @__PURE__ */ (0, C.jsx)("div", { children: /* @__PURE__ */ (0, C.jsx)(LA, {
 				href: "https://sleazyfork.org/zh-CN/scripts/600821",
-				children: "Instalar userscript de Peach"
+				children: "安装 Peach 用户脚本"
 			}) }),
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-1",
-				children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: "Agregar canal de descarga del dispositivo de exploración" }), /* @__PURE__ */ (0, C.jsx)(BF, {
-					"aria-label": "Agregar canal de descarga del dispositivo de exploración",
+				children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: "浏览器添加的下载渠道" }), /* @__PURE__ */ (0, C.jsx)(BF, {
+					"aria-label": "浏览器添加的下载渠道",
 					selectedKey: i,
 					onSelectionChange: (e) => a(String(e)),
 					isDisabled: !!c.busy,
@@ -71864,15 +71864,15 @@ function VPe({ initial: e, receipt: t }) {
 					}, e.key))
 				})]
 			}),
-			u ? null : /* @__PURE__ */ (0, C.jsx)(PA, { children: "Por favor, primero guarda el almacenamiento en la nube seleccionadoCuenta y Directorio destino. " }),
+			u ? null : /* @__PURE__ */ (0, C.jsx)(PA, { children: "请先保存所选网盘的账号和目标目录。" }),
 			/* @__PURE__ */ (0, C.jsx)(SP, {
-				label: "Dirección de Peach",
+				label: "Peach 地址",
 				value: window.location.origin,
 				isReadOnly: !0,
 				autoComplete: "off"
 			}),
 			o ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(SP, {
-				label: "Explorar dispositivoAñadirtoken de uso exclusivo",
+				label: "浏览器添加专用令牌",
 				type: "password",
 				value: o,
 				isReadOnly: !0,
@@ -71881,10 +71881,10 @@ function VPe({ initial: e, receipt: t }) {
 				variant: "secondary",
 				type: "button",
 				onClick: () => {
-					c.run("copy", async () => navigator.clipboard.writeText(o), () => t("Token de uso exclusivo copiado"));
+					c.run("copy", async () => navigator.clipboard.writeText(o), () => t("已复制专用令牌"));
 				},
 				...Y(c.busy === "copy"),
-				children: "Copiar token de uso exclusivo"
+				children: "复制专用令牌"
 			}) })] }) : null,
 			c.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: c.error }) : null
 		] }), /* @__PURE__ */ (0, C.jsxs)(NA, {
@@ -71895,20 +71895,20 @@ function VPe({ initial: e, receipt: t }) {
 					"aria-hidden": "true",
 					className: "inline-flex size-3 items-center justify-center",
 					children: /* @__PURE__ */ (0, C.jsx)(wge, { className: n.enabled ? "size-2 text-notification-success-foreground" : "size-2 text-text-tertiary" })
-				}), n.enabled ? "Activado" : "NoActivar"]
+				}), n.enabled ? "已启用" : "未启用"]
 			}),
 			children: [n.enabled ? /* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
 				type: "button",
 				disabled: !!c.busy,
 				onClick: () => l("disable"),
-				children: "DesactivarExplorar dispositivoAñadir"
+				children: "关闭浏览器添加"
 			}) : null, /* @__PURE__ */ (0, C.jsx)(q, {
 				type: "button",
 				disabled: !n.available || !u || !!c.busy,
 				onClick: () => l(n.enabled ? "rotate" : "enable"),
 				...Y(c.busy === "enable" || c.busy === "rotate"),
-				children: n.enabled ? "ActualizarcanalcanalyToken" : "Activar y generarToken"
+				children: n.enabled ? "更新渠道与令牌" : "启用并生成令牌"
 			})]
 		})]
 	});
@@ -71983,7 +71983,7 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 		};
 		b.run("auto", (e) => H(CG, e), (e) => E(e, t), (e) => _(V(e)));
 	}, []), /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Descarga en la nube",
+		title: "云下载",
 		onSubmit: (e) => {
 			if (e.preventDefault(), T) {
 				y(!0);
@@ -72001,14 +72001,14 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 					address: !i.config.clouddrive_address,
 					target: u,
 					root: !i.config.pikpak_root
-				}, i.config.targets[115] ?? "") : (d(null), p(""), h(EG), y(!1), _("")), n("Configuración guardada");
+				}, i.config.targets[115] ?? "") : (d(null), p(""), h(EG), y(!1), _("")), n("已保存配置");
 			}, (e) => _(V(e)));
 		},
 		children: [
 			/* @__PURE__ */ (0, C.jsxs)(MA, { children: [
 				/* @__PURE__ */ (0, C.jsx)(SP, {
-					label: "Dirección de CloudDrive2",
-					placeholder: "Deja vacíoAutomáticoBuscar",
+					label: "CloudDrive2 地址",
+					placeholder: "留空自动查找",
 					autoComplete: "off",
 					maxLength: 200,
 					value: i.clouddrive_address,
@@ -72019,12 +72019,12 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 					})
 				}),
 				/* @__PURE__ */ (0, C.jsx)(SP, {
-					label: "Token API de CloudDrive2",
+					label: "CloudDrive2 API 令牌",
 					type: "password",
 					autoComplete: "off",
 					maxLength: 400,
-					placeholder: e.token_set ? "Guardado. Dejar vacío para no cambiar." : "en CloudDrive2"Configuración → API Token"En procesogenerar",
-					hint: "NecesarioSin conexiónpermiso de tarea. ",
+					placeholder: e.token_set ? "已保存，留空不改" : "在 CloudDrive2「设置 → API 令牌」中生成",
+					hint: "需要离线任务权限。",
 					value: o,
 					isDisabled: !e.available,
 					onChange: s
@@ -72032,14 +72032,14 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 				/* @__PURE__ */ (0, C.jsx)(SP, {
 					label: /* @__PURE__ */ (0, C.jsx)(tj, {
 						source: "115",
-						label: "Directorio destino de 115"
+						label: "115 目标目录"
 					}),
-					placeholder: "Deja vacíocuandoseleccionar desde notificaciones pushAutomáticointroducir",
+					placeholder: "留空时按推送发现自动填写",
 					autoComplete: "off",
 					maxLength: 300,
 					validationBehavior: "aria",
 					isInvalid: T,
-					hint: T ? v ? "Primero crea este directorio, o introduce uno que ya exista. " : "esteEl directorio no existe. " : "correspondiente resultado(s)enAutomáticoenbibliotecaPrefijo de ruta en la nubecontenido interno. ",
+					hint: T ? v ? "先新建这个目录，或填写已有目录。" : "这个目录不存在。" : "应位于自动入库的云端路径前缀内。",
 					value: x("115"),
 					isDisabled: !e.available,
 					onChange: (e) => w("115", e)
@@ -72047,12 +72047,12 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 				/* @__PURE__ */ (0, C.jsx)(SP, {
 					label: /* @__PURE__ */ (0, C.jsx)(tj, {
 						source: "pikpak",
-						label: "Directorio destino de PikPak"
+						label: "PikPak 目标目录"
 					}),
-					placeholder: "con / que empieza con / para almacenamiento en la nubeRuta",
+					placeholder: "以 / 开头的网盘路径",
 					autoComplete: "off",
 					maxLength: 300,
-					hint: "El directorio debe ya existir. ",
+					hint: "目录要已经存在。",
 					value: x("pikpak"),
 					isDisabled: !e.available,
 					onChange: (e) => w("pikpak", e)
@@ -72061,12 +72061,12 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 					className: "flex flex-col gap-1",
 					children: [/* @__PURE__ */ (0, C.jsx)(IA, { children: /* @__PURE__ */ (0, C.jsx)(tj, {
 						source: "pikpak",
-						label: "Directorio de medios correspondiente al directorio raíz de PikPak"
+						label: "PikPak 根目录对应的媒体目录"
 					}) }), e.pikpak_roots.length ? /* @__PURE__ */ (0, C.jsx)(BF, {
-						"aria-label": "Directorio de medios correspondiente al directorio raíz de PikPak",
+						"aria-label": "PikPak 根目录对应的媒体目录",
 						selectedKey: i.pikpak_root || null,
 						isDisabled: !e.available,
-						placeholder: "Al verificar, seleccionar desde notificaciones push",
+						placeholder: "检查时按推送发现选",
 						onSelectionChange: (e) => a({
 							...i,
 							pikpak_root: e === null ? "" : String(e)
@@ -72075,14 +72075,14 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 							id: e,
 							children: e
 						}, e))
-					}) : /* @__PURE__ */ (0, C.jsx)(PA, { children: "Primero añade la carpeta montada de PikPak en "Biblioteca y catalogación". " })]
+					}) : /* @__PURE__ */ (0, C.jsx)(PA, { children: "先在「媒体库与入库」添加 PikPak 挂载文件夹。" })]
 				}),
 				/* @__PURE__ */ (0, C.jsx)(SP, {
-					label: "Límite máximo de pendientes (horas)",
+					label: "等待上限（小时）",
 					type: "number",
 					inputMode: "numeric",
 					autoComplete: "off",
-					hint: `tiempo agotado, se etiquetará como estancado; puedeintroduce de 1 a ${e.max_wait_hours} hora(s). `,
+					hint: `超时标为停滞；可填 1–${e.max_wait_hours} 小时。`,
 					value: c,
 					isDisabled: !e.available,
 					onChange: l
@@ -72090,7 +72090,7 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 			] }),
 			b.busy === "auto" ? /* @__PURE__ */ (0, C.jsx)(MA, {
 				divided: !0,
-				children: /* @__PURE__ */ (0, C.jsx)(bA, { label: "ProcesandoVerificar CloudDrive2" })
+				children: /* @__PURE__ */ (0, C.jsx)(bA, { label: "正在检查 CloudDrive2" })
 			}) : null,
 			u ? /* @__PURE__ */ (0, C.jsx)(YPe, {
 				report: u,
@@ -72111,7 +72111,7 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 								path: e,
 								exists: !0
 							}
-						})), y(!1), _(""), n("YaNuevoDirectorio");
+						})), y(!1), _(""), n("已新建目录");
 					}, (e) => _(V(e)));
 				} : void 0,
 				creating: b.busy === "folder"
@@ -72121,7 +72121,7 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 				children: /* @__PURE__ */ (0, C.jsx)(FA, { children: g || b.error })
 			}) : null,
 			/* @__PURE__ */ (0, C.jsxs)(NA, {
-				status: e.available ? void 0 : "Descarga en la nube solo disponible donde se permita escritura en BD.",
+				status: e.available ? void 0 : "云下载只在允许修改数据库的设备上可用。",
 				children: [/* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					onClick: () => {
@@ -72140,12 +72140,12 @@ function JPe({ state: e, settle: t, receipt: n, pikpakAccount: r }) {
 					},
 					disabled: !e.available,
 					...Y(b.busy === "check"),
-					children: "Verificar conexión"
+					children: "检查连接"
 				}), /* @__PURE__ */ (0, C.jsx)(q, {
 					type: "submit",
 					disabled: !e.available,
 					...Y(b.busy === "save"),
-					children: "Guardar configuración"
+					children: "保存配置"
 				})]
 			})
 		]
@@ -72162,54 +72162,54 @@ function YPe({ report: e, detected: t, suggested: n, create: r, creating: i }) {
 		divided: !0,
 		children: [/* @__PURE__ */ (0, C.jsxs)(RA, { children: [
 			t ? /* @__PURE__ */ (0, C.jsx)(zA, {
-				term: "Dirección de CloudDrive2",
-				children: `Detectar ${t}, efectivo tras guardar la configuración`
+				term: "CloudDrive2 地址",
+				children: `探测到 ${t}，保存配置后生效`
 			}) : null,
 			a?.exists ? /* @__PURE__ */ (0, C.jsx)(zA, {
 				term: /* @__PURE__ */ (0, C.jsx)(tj, {
 					source: "115",
-					label: "Directorio destino de 115"
+					label: "115 目标目录"
 				}),
-				children: n.saved ? `YaIntroduce desde notificación ${a.path}` : `Introduce desde notificación ${a.path}, efectivo tras guardar la configuración`
+				children: n.saved ? `已按推送发现填入 ${a.path}` : `按推送发现填入 ${a.path}，保存配置后生效`
 			}) : null,
 			a && !a.exists ? /* @__PURE__ */ (0, C.jsxs)(zA, {
 				term: /* @__PURE__ */ (0, C.jsx)(tj, {
 					source: "115",
-					label: "Directorio destino de 115"
+					label: "115 目标目录"
 				}),
-				children: [`${a.path} no existe`, r ? /* @__PURE__ */ (0, C.jsx)(q, {
+				children: [`${a.path} 不存在`, r ? /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					size: "small",
 					onClick: () => r(a.path),
 					...Y(i),
-					children: "NuevoesteDirectorio"
+					children: "新建这个目录"
 				}) : null]
 			}) : null,
 			n.root ? /* @__PURE__ */ (0, C.jsx)(zA, {
 				term: /* @__PURE__ */ (0, C.jsx)(tj, {
 					source: "pikpak",
-					label: "Directorio raíz de PikPak"
+					label: "PikPak 根目录"
 				}),
-				children: `Introduce desde notificación ${n.root}, efectivo tras guardar la configuración`
+				children: `按推送发现填入 ${n.root}，保存配置后生效`
 			}) : null,
 			e.permissions.length ? /* @__PURE__ */ (0, C.jsx)(zA, {
-				term: "Sin conexiónPermiso",
+				term: "离线权限",
 				children: /* @__PURE__ */ (0, C.jsx)(hA, {
 					variant: "caption",
 					color: e.missing.length ? "yellow" : "lime",
-					children: e.missing.length ? `Faltan: ${e.missing.join(", ")}` : "Completo"
+					children: e.missing.length ? `缺少：${e.missing.join("、")}` : "齐全"
 				})
 			}) : null,
 			e.folder ? /* @__PURE__ */ (0, C.jsx)(zA, {
-				term: "Directorio destino",
-				children: e.folder.can_offline ? `${e.folder.path} admite descarga sin conexión` : `${e.folder.path} no admite descarga sin conexión`
+				term: "目标目录",
+				children: e.folder.can_offline ? `${e.folder.path} 可以离线下载` : `${e.folder.path} 不支持离线下载`
 			}) : null,
 			e.quota ? /* @__PURE__ */ (0, C.jsx)(zA, {
 				term: /* @__PURE__ */ (0, C.jsx)(tj, {
 					source: "115",
-					label: "Cuota sin conexión de 115"
+					label: "115 离线配额"
 				}),
-				children: `Este mes quedan ${e.quota.left} Resultado, Total: ${e.quota.total} Resultado`
+				children: `本月还剩 ${e.quota.left} 条，共 ${e.quota.total} 条`
 			}) : null
 		] }), e.problems.map((e) => /* @__PURE__ */ (0, C.jsx)(FA, { children: e }, e))]
 	});
@@ -72221,7 +72221,7 @@ function XPe({ state: e, settle: t, receipt: n, username: r, setUsername: i }) {
 		let e = new AbortController(), r, i = async () => {
 			try {
 				let r = await H(wG, e.signal);
-				if (e.signal.aborted || (t(r), r.pikpak_browser.state === "done" ? n("YaIniciar sesión PikPak") : r.pikpak_browser.state !== "waiting" && m(r.pikpak_browser.message), r.pikpak_browser.state !== "waiting")) return;
+				if (e.signal.aborted || (t(r), r.pikpak_browser.state === "done" ? n("已登录 PikPak") : r.pikpak_browser.state !== "waiting" && m(r.pikpak_browser.message), r.pikpak_browser.state !== "waiting")) return;
 			} catch (t) {
 				if (e.signal.aborted) return;
 				f(V(t));
@@ -72248,16 +72248,16 @@ function XPe({ state: e, settle: t, receipt: n, username: r, setUsername: i }) {
 			remember: s
 		};
 		h.run("login", (e) => U(WPe, i, "POST", e), (e) => {
-			t(e.settings), f(""), e.ok ? (u(""), o(""), n("YaIniciar sesión PikPak")) : u(e.captcha_url ?? "");
+			t(e.settings), f(""), e.ok ? (u(""), o(""), n("已登录 PikPak")) : u(e.captcha_url ?? "");
 		}, (e) => f(V(e)));
 	}, w = () => {
 		h.run("logout", (e) => U(GPe, {}, "POST", e), (e) => {
-			t(e), f(""), n("YaCerrar sesión PikPak");
+			t(e), f(""), n("已登出 PikPak");
 		}, (e) => f(V(e)));
 	}, T = /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 		/* @__PURE__ */ (0, C.jsx)(SP, {
-			label: "Cuenta",
-			placeholder: "Correo electrónico o número de teléfono",
+			label: "账号",
+			placeholder: "邮箱或手机号",
 			autoComplete: "username",
 			maxLength: 200,
 			value: r,
@@ -72265,7 +72265,7 @@ function XPe({ state: e, settle: t, receipt: n, username: r, setUsername: i }) {
 			onChange: i
 		}),
 		/* @__PURE__ */ (0, C.jsx)(SP, {
-			label: "Contraseña",
+			label: "密码",
 			type: "password",
 			autoComplete: "current-password",
 			maxLength: 200,
@@ -72277,40 +72277,40 @@ function XPe({ state: e, settle: t, receipt: n, username: r, setUsername: i }) {
 			isSelected: s,
 			isDisabled: !e.available,
 			onChange: c,
-			children: "GuardarContraseña, Iniciar sesión períodocuandoAutomáticovuelve a iniciar sesión"
+			children: "保存密码，登录过期时自动重新登录"
 		}),
 		l ? /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: "warning",
-			title: "NecesarioVerificación CAPTCHA",
+			title: "需要人机验证",
 			extra: /* @__PURE__ */ (0, C.jsx)("div", {
 				className: "pt-2",
 				children: /* @__PURE__ */ (0, C.jsx)(LA, {
 					href: l,
-					children: "Abrir página de verificación PikPak"
+					children: "打开 PikPak 验证页"
 				})
 			}),
-			children: "Al terminar la verificación en el explorador de dispositivos, regresa aquí y haz clic en "Iniciar sesión". "
+			children: "在浏览器里完成验证后，回到这里再点一次「登录」。"
 		}) : null
 	] }), E = /* @__PURE__ */ (0, C.jsx)(q, {
 		type: "submit",
 		disabled: !e.available || v,
 		...Y(h.busy === "login"),
-		children: "Iniciar sesión"
+		children: "登录"
 	}), D = _.state === "timeout" || _.state === "failed";
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Cuenta de PikPak",
+		title: "PikPak 账号",
 		icon: /* @__PURE__ */ (0, C.jsx)(ej.pikpak, {}),
 		onSubmit: x,
 		children: [
 			g.logged_in ? /* @__PURE__ */ (0, C.jsxs)(RA, { children: [/* @__PURE__ */ (0, C.jsx)(zA, {
-				term: "Cuenta",
-				children: g.username || "YaIniciar sesión"
+				term: "账号",
+				children: g.username || "已登录"
 			}), g.method === "browser" ? /* @__PURE__ */ (0, C.jsx)(zA, {
-				term: "Iniciar sesióndirecciónformato",
-				children: "Iniciar sesión en explorador de dispositivos, renovar Peach"
+				term: "登录方式",
+				children: "浏览器登录，由 Peach 续期"
 			}) : /* @__PURE__ */ (0, C.jsx)(zA, {
-				term: "Contraseña",
-				children: g.remember ? "Guardado; al expirar la sesión vuelve a iniciar sesión automáticamente" : "Sin guardar; al expirar la sesión necesitas volver aquí para volver a iniciar sesión"
+				term: "密码",
+				children: g.remember ? "已保存，登录过期时自动重新登录" : "未保存，登录过期后需要回到这里重新登录"
 			})] }) : /* @__PURE__ */ (0, C.jsxs)(MA, { children: [p ? D ? /* @__PURE__ */ (0, C.jsx)(FA, { children: p }) : /* @__PURE__ */ (0, C.jsx)(PA, {
 				role: "status",
 				children: p
@@ -72320,25 +72320,25 @@ function XPe({ state: e, settle: t, receipt: n, username: r, setUsername: i }) {
 				children: /* @__PURE__ */ (0, C.jsx)(FA, { children: d || h.error })
 			}) : null,
 			/* @__PURE__ */ (0, C.jsx)(NA, {
-				status: !g.logged_in && v ? /* @__PURE__ */ (0, C.jsx)(bA, { label: _.message || "etc. en la ventana del explorador de dispositivos para iniciar sesión en PikPak" }) : null,
+				status: !g.logged_in && v ? /* @__PURE__ */ (0, C.jsx)(bA, { label: _.message || "等你在浏览器窗口里登录 PikPak" }) : null,
 				children: g.logged_in ? /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					onClick: w,
 					disabled: !e.available,
 					...Y(h.busy === "logout"),
-					children: "Cerrar sesión"
+					children: "登出"
 				}) : /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [E, _.available ? v ? /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					type: "button",
 					onClick: b,
 					...Y(h.busy === "cancel"),
-					children: "Cancelar"
+					children: "取消"
 				}) : /* @__PURE__ */ (0, C.jsx)(q, {
 					type: "button",
 					onClick: y,
 					disabled: !e.available,
 					...Y(h.busy === "browser"),
-					children: "usarExplorar dispositivoIniciar sesión"
+					children: "用浏览器登录"
 				}) : null] })
 			})
 		]
@@ -72347,9 +72347,9 @@ function XPe({ state: e, settle: t, receipt: n, username: r, setUsername: i }) {
 //#endregion
 //#region src/react/settings/maintenance-settings.tsx
 var ZPe = [
-	["6", "Cada 6 horas"],
-	["24", "Diario"],
-	["168", "Semanal"]
+	["6", "每 6 小时"],
+	["24", "每天"],
+	["168", "每周"]
 ];
 function QPe({ data: e, receipt: t, reopenTutorial: n, panel: r }) {
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -72370,15 +72370,15 @@ function QPe({ data: e, receipt: t, reopenTutorial: n, panel: r }) {
 function $Pe({ receipt: e, reopenTutorial: t }) {
 	let n = wA();
 	return /* @__PURE__ */ (0, C.jsx)("section", {
-		"aria-label": "Tutorial de instalación",
+		"aria-label": "安装教程",
 		className: "w-full",
 		children: /* @__PURE__ */ (0, C.jsxs)(TA, { children: [/* @__PURE__ */ (0, C.jsx)(jA, { children: /* @__PURE__ */ (0, C.jsx)(DA, {
-			label: "Tutorial de instalación",
+			label: "安装教程",
 			children: /* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
-				onClick: () => void n.run("reopen", () => t(), () => e("Yade nuevoAbrirTutorial de instalación")),
+				onClick: () => void n.run("reopen", () => t(), () => e("已重新打开安装教程")),
 				...Y(n.busy === "reopen"),
-				children: "Reabrir tutorial"
+				children: "重新打开教程"
 			})
 		}) }), n.error ? /* @__PURE__ */ (0, C.jsx)(MA, { children: /* @__PURE__ */ (0, C.jsx)(FA, { children: n.error }) }) : null] })
 	});
@@ -72388,36 +72388,36 @@ function eFe({ initial: e, receipt: t }) {
 		r.preventDefault(), e.available && o.run("save", (e) => U("/api/configuration/automatic-updates", {
 			mode: n,
 			interval_hours: i
-		}, "POST", e), () => t("Configuración guardada"));
-	}, c = e.available ? e.download_available ? "Confirma el reinicio e instalación aquí cuando la descarga esté completa." : void 0 : "AutomáticoActualizarNecesarioBandeja del sistemaGestionarservicio. ";
+		}, "POST", e), () => t("已保存配置"));
+	}, c = e.available ? e.download_available ? "下载完成后在这里确认重启安装。" : void 0 : "自动更新需要由托盘管理的服务。";
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "AutomáticoActualizar",
+		title: "自动更新",
 		onSubmit: s,
 		children: [
 			/* @__PURE__ */ (0, C.jsxs)(jA, { children: [
 				/* @__PURE__ */ (0, C.jsx)(DA, {
-					label: "Verificar automáticamente nueva versión",
+					label: "自动检查新版本",
 					children: /* @__PURE__ */ (0, C.jsx)(wU, {
-						"aria-label": "Verificar automáticamente nueva versión",
+						"aria-label": "自动检查新版本",
 						isSelected: n !== "off",
 						isDisabled: !e.available,
 						onChange: (e) => r(e ? "check" : "off")
 					})
 				}),
 				/* @__PURE__ */ (0, C.jsx)(DA, {
-					label: "AutomáticoDescargasActualizar",
+					label: "自动下载更新",
 					children: /* @__PURE__ */ (0, C.jsx)(wU, {
-						"aria-label": "AutomáticoDescargasActualizar",
+						"aria-label": "自动下载更新",
 						isSelected: n === "download",
 						isDisabled: !e.available || !e.download_available || n === "off",
 						onChange: (e) => r(e ? "download" : "check")
 					})
 				}),
 				/* @__PURE__ */ (0, C.jsx)(DA, {
-					label: "Frecuencia de verificación",
+					label: "检查频率",
 					description: c,
 					children: /* @__PURE__ */ (0, C.jsx)(BF, {
-						"aria-label": "Frecuencia de verificación",
+						"aria-label": "检查频率",
 						selectedKey: String(i),
 						isDisabled: !e.available,
 						onSelectionChange: (e) => {
@@ -72438,14 +72438,14 @@ function eFe({ initial: e, receipt: t }) {
 				type: "submit",
 				disabled: !e.available,
 				...Y(o.busy === "save"),
-				children: "Guardar configuración"
+				children: "保存配置"
 			}) })
 		]
 	});
 }
 function tFe({ facts: e }) {
 	return /* @__PURE__ */ (0, C.jsx)(AA, {
-		title: "Información de ejecución",
+		title: "运行信息",
 		children: /* @__PURE__ */ (0, C.jsx)(RA, { children: e.map((e) => /* @__PURE__ */ (0, C.jsxs)(zA, {
 			term: e.term,
 			children: [e.value, e.download_url ? /* @__PURE__ */ (0, C.jsx)(LA, {
@@ -72457,28 +72457,28 @@ function tFe({ facts: e }) {
 }
 function nFe({ uninstall: e, receipt: t }) {
 	let [n, r] = (0, S.useState)(!1), [i, a] = (0, S.useState)(""), o = () => void Rs({
-		title: "Desmontar Peach",
+		title: "卸载 Peach",
 		danger: !0,
-		body: n ? "Se saldrá de Peach y se quitarán: programa, inicio automático, etiqueta de escritorio, configuración, base de datos local, registros de visualización, credenciales y caché. Los archivos de medios originales se conservarán. " : "se saldrá de Peach y se quitará el enlace de secuencia, Inicio automático y EscritorioImagenetiqueta. Configuración, LocalBase de datos, VerRegistroyCachéConservar. ",
-		confirmLabel: "Desmontar Peach",
+		body: n ? "将退出 Peach，移除程序、开机自启、桌面图标、设置、本地数据库、观看记录、凭据和缓存。原始媒体文件保留。" : "将退出 Peach 并移除程序、开机自启和桌面图标。设置、本地数据库、观看记录与缓存保留。",
+		confirmLabel: "卸载 Peach",
 		onConfirm: async () => {
 			let e = await U("/api/configuration/uninstall", {
 				delete_data: n,
-				confirmation: "Desmontar Peach"
+				confirmation: "卸载 Peach"
 			});
 			a(e.message);
 		}
 	}), s = i || e.message, c = [.../* @__PURE__ */ new Set([e.data_root, ...e.directories])];
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
 		id: "uninstallPeach",
-		title: "Desmontar Peach",
+		title: "卸载 Peach",
 		children: [
-			e.available ? /* @__PURE__ */ (0, C.jsx)(MA, { children: /* @__PURE__ */ (0, C.jsx)(PA, { children: "Desinstalar el programa Peach; los archivos de medios originales se conservarán. " }) }) : null,
+			e.available ? /* @__PURE__ */ (0, C.jsx)(MA, { children: /* @__PURE__ */ (0, C.jsx)(PA, { children: "卸载移除 Peach 程序本身，原始媒体文件保留。" }) }) : null,
 			/* @__PURE__ */ (0, C.jsx)(jA, { children: /* @__PURE__ */ (0, C.jsx)(DA, {
-				label: "Desmontar todo completamente",
-				description: "eliminar configuración al mismo tiempo, LocalBase de datos, VerRegistro, Credenciales y Caché",
+				label: "完全卸载",
+				description: "同时删除设置、本地数据库、观看记录、凭据和缓存",
 				children: /* @__PURE__ */ (0, C.jsx)(wU, {
-					"aria-label": "Desmontar todo completamente",
+					"aria-label": "完全卸载",
 					isSelected: n,
 					isDisabled: !e.full_available || !!i,
 					onChange: r
@@ -72487,7 +72487,7 @@ function nFe({ uninstall: e, receipt: t }) {
 			/* @__PURE__ */ (0, C.jsx)(MA, {
 				divided: !0,
 				children: /* @__PURE__ */ (0, C.jsx)(BA, {
-					summary: "datos numéricosDirectorio",
+					summary: "数据目录",
 					children: c.map((e) => /* @__PURE__ */ (0, C.jsx)(GB, {
 						path: e,
 						className: "text-body-2-regular text-text-secondary",
@@ -72504,7 +72504,7 @@ function nFe({ uninstall: e, receipt: t }) {
 					variant: "danger",
 					disabled: !e.available || !!i,
 					onClick: o,
-					children: "Desmontar Peach"
+					children: "卸载 Peach"
 				})
 			})
 		]
@@ -72536,10 +72536,10 @@ function iFe({ initial: e, initialJob: t }) {
 		let e = await U("/api/configuration/update-restart", {});
 		u.current && a(e);
 	}, p = () => void Rs({
-		title: "Actualización preparada con reserva",
-		body: `Peach ${i.version || ""} seráenReiniciardespuésInstalar. `,
-		confirmLabel: "Reiniciar ahora",
-		cancelLabel: "Más tarde",
+		title: "更新已准备好",
+		body: `Peach ${i.version || ""} 将在重启后安装。`,
+		confirmLabel: "立即重启",
+		cancelLabel: "稍后",
 		onConfirm: f
 	});
 	(0, S.useEffect)(() => {
@@ -72553,12 +72553,12 @@ function iFe({ initial: e, initialJob: t }) {
 					...e,
 					current_version: t.version || e.current_version,
 					state: "current",
-					message: "Ya está actualizadoProbarversión. "
+					message: "已是最新测试版。"
 				}));
 				let n = await H("/api/configuration/automatic-updates", e.signal);
 				!e.signal.aborted && n.result && r(n.result);
 			} catch {
-				o += 1, o >= OG && !e.signal.aborted && s("sin conexión a Peach aún, Por favorVerificarBandeja del sistemadespuésActualizarpágina. ");
+				o += 1, o >= OG && !e.signal.aborted && s("尚未连接到 Peach，请检查托盘后刷新页面。");
 			}
 			!e.signal.aborted && o < OG && (n = setTimeout(c, t));
 		};
@@ -72575,38 +72575,38 @@ function iFe({ initial: e, initialJob: t }) {
 		}), c.setError(V(t));
 	}), g = c.error || o, _ = i.state === "downloading" && i.total ? `${((i.downloaded || 0) / 1048576).toFixed(1)} / ${(i.total / 1048576).toFixed(1)} MB` : `${i.progress}%`;
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Comprobar actualizaciones",
+		title: "检查更新",
 		children: [
 			/* @__PURE__ */ (0, C.jsxs)(RA, { children: [
 				/* @__PURE__ */ (0, C.jsx)(zA, {
-					term: "Versión actual",
+					term: "当前版本",
 					children: n.current_version
 				}),
 				/* @__PURE__ */ (0, C.jsx)(zA, {
-					term: "Método de instalación",
+					term: "安装方式",
 					children: n.installation
 				}),
 				/* @__PURE__ */ (0, C.jsx)(zA, {
-					term: "Actualizarcomunicarcanal",
+					term: "更新通道",
 					children: n.channel
 				}),
 				/* @__PURE__ */ (0, C.jsx)(zA, {
-					term: "Versión más reciente",
-					children: n.latest_version || (n.state === "unchecked" ? "Sin verificar" : "No disponible")
+					term: "最新版本",
+					children: n.latest_version || (n.state === "unchecked" ? "尚未检查" : "未取得")
 				}),
 				n.package_kind ? /* @__PURE__ */ (0, C.jsxs)(zA, {
-					term: "Descargar contenido",
-					children: [n.package_kind === "update" ? "Aplicar actualización" : "Apps y herramientas", n.asset_size ? ` · ${(n.asset_size / 1048576).toFixed(1)} MB` : ""]
+					term: "下载内容",
+					children: [n.package_kind === "update" ? "应用更新包" : "应用与工具", n.asset_size ? ` · ${(n.asset_size / 1048576).toFixed(1)} MB` : ""]
 				}) : null
 			] }),
-			n.package_kind === "update" ? /* @__PURE__ */ (0, C.jsx)(PA, { children: "Aplicar la actualización reutilizará las herramientas instaladas; si faltan herramientas, están dañadas o cambia la versión, se descargará el paquete necesario por separado. " }) : n.package_kind === "full" ? /* @__PURE__ */ (0, C.jsx)(PA, { children: "Esta vez actualizar incluye herramientas de medios. " }) : null,
+			n.package_kind === "update" ? /* @__PURE__ */ (0, C.jsx)(PA, { children: "应用更新包复用已安装工具；工具缺失、损坏或版本变化时会另行下载所需工具包。" }) : n.package_kind === "full" ? /* @__PURE__ */ (0, C.jsx)(PA, { children: "本次更新包含媒体工具。" }) : null,
 			n.state === "unchecked" && !n.checked_at && !g && i.state === "idle" ? null : /* @__PURE__ */ (0, C.jsxs)(MA, {
 				divided: !0,
 				children: [
-					n.checked_at ? /* @__PURE__ */ (0, C.jsxs)(PA, { children: ["Verificaren ", (/* @__PURE__ */ new Date(n.checked_at * 1e3)).toLocaleString()] }) : null,
+					n.checked_at ? /* @__PURE__ */ (0, C.jsxs)(PA, { children: ["检查于 ", (/* @__PURE__ */ new Date(n.checked_at * 1e3)).toLocaleString()] }) : null,
 					n.state === "available" && !g ? /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "info",
-						title: "conDisponibleActualizar",
+						title: "有可用更新",
 						children: n.message
 					}) : g || n.state === "error" ? /* @__PURE__ */ (0, C.jsx)(FA, { children: g || n.message }) : n.state === "unchecked" ? null : /* @__PURE__ */ (0, C.jsx)(PA, {
 						role: "status",
@@ -72618,11 +72618,11 @@ function iFe({ initial: e, initialJob: t }) {
 						className: "flex flex-col gap-2",
 						children: [
 							/* @__PURE__ */ (0, C.jsx)(CA, {
-								label: "Progreso de preparación de actualización",
+								label: "更新准备进度",
 								value: i.progress,
 								stops: rFe
 							}),
-							/* @__PURE__ */ (0, C.jsxs)(PA, { children: ["Descargas → Verificar → Resolver presionando → Preparar e instalar reserva · ", i.message] }),
+							/* @__PURE__ */ (0, C.jsxs)(PA, { children: ["下载 → 校验 → 解压 → 准备安装 · ", i.message] }),
 							/* @__PURE__ */ (0, C.jsx)(PA, { children: _ })
 						]
 					}) : null
@@ -72631,24 +72631,24 @@ function iFe({ initial: e, initialJob: t }) {
 			/* @__PURE__ */ (0, C.jsxs)(NA, {
 				status: /* @__PURE__ */ (0, C.jsx)(LA, {
 					href: n.release_url,
-					children: "Ver página de lanzamiento"
+					children: "查看发布页"
 				}),
 				children: [
 					i.state === "ready" ? /* @__PURE__ */ (0, C.jsx)(q, {
 						onClick: p,
-						children: "ReiniciarInstalar"
+						children: "重启安装"
 					}) : null,
-					n.state === "available" && n.installation === "Paquete de prueba independiente" && i.state !== "ready" ? /* @__PURE__ */ (0, C.jsx)(q, {
+					n.state === "available" && n.installation === "独立测试包" && i.state !== "ready" ? /* @__PURE__ */ (0, C.jsx)(q, {
 						onClick: m,
 						...Y(d || c.busy === "download"),
-						children: "Descargar e instalar"
+						children: "下载并安装"
 					}) : null,
 					/* @__PURE__ */ (0, C.jsx)(q, {
-						variant: i.state === "ready" || n.state === "available" && n.installation === "Paquete de prueba independiente" ? "secondary" : "primary",
+						variant: i.state === "ready" || n.state === "available" && n.installation === "独立测试包" ? "secondary" : "primary",
 						disabled: d,
 						onClick: h,
 						...Y(c.busy === "check"),
-						children: "Comprobar actualizaciones"
+						children: "检查更新"
 					})
 				]
 			})
@@ -72659,10 +72659,10 @@ function iFe({ initial: e, initialJob: t }) {
 //#region src/react/settings/remote-reporting-settings.tsx
 function aFe({ value: e, onChange: t, busy: n = !1 }) {
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(jA, { children: /* @__PURE__ */ (0, C.jsx)(DA, {
-		label: "Enviar estadísticas de versión y diagnóstico de errores (Recomendado)",
-		description: "Envía versión, info del sistema, tipo de error, ubicación en código y frecuencia.",
+		label: "发送版本统计与错误诊断（推荐）",
+		description: "上传版本、系统信息、故障类型、代码位置与发生次数。",
 		children: /* @__PURE__ */ (0, C.jsx)(wU, {
-			"aria-label": "Enviar estadísticas de versión y diagnóstico de errores (Recomendado)",
+			"aria-label": "发送版本统计与错误诊断（推荐）",
 			isSelected: e.usage && e.errors,
 			onChange: (n) => t({
 				...e,
@@ -72673,7 +72673,7 @@ function aFe({ value: e, onChange: t, busy: n = !1 }) {
 		})
 	}) }), e.available ? null : /* @__PURE__ */ (0, C.jsx)(MA, {
 		divided: !0,
-		children: /* @__PURE__ */ (0, C.jsx)(PA, { children: "Servicio de subida no configurado." })
+		children: /* @__PURE__ */ (0, C.jsx)(PA, { children: "上传服务未配置。" })
 	})] });
 }
 function oFe({ initial: e, receipt: t }) {
@@ -72686,7 +72686,7 @@ function oFe({ initial: e, receipt: t }) {
 				usage: e.usage,
 				errors: e.errors
 			}, "POST", t), (e) => {
-				r(e), t("GuardadodiagnósticoOpciones");
+				r(e), t("已保存诊断选项");
 			});
 		}
 	}), i.error ? /* @__PURE__ */ (0, C.jsx)(MA, {
@@ -72703,7 +72703,7 @@ function sFe({ initial: e, receipt: t }) {
 		consent: c,
 		preview_token: i?.token
 	}, "POST", t), (e) => {
-		r(e), a(null), l(!1), s(!1), t("GuardadoColecciónyPreferenciasSubirOpciones");
+		r(e), a(null), l(!1), s(!1), t("已保存馆藏与口味上传选项");
 	}), p = () => {
 		let e = URL.createObjectURL(new Blob([u], { type: "application/json" })), t = document.createElement("a");
 		t.href = e, t.download = "peach-library-taste-preview.json", document.body.append(t);
@@ -72715,10 +72715,10 @@ function sFe({ initial: e, receipt: t }) {
 	};
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 		/* @__PURE__ */ (0, C.jsx)(jA, { children: /* @__PURE__ */ (0, C.jsx)(DA, {
-			label: "Subir detalles de colección y preferencias",
+			label: "上传馆藏与口味明细",
 			description: n.notice,
 			children: /* @__PURE__ */ (0, C.jsx)(wU, {
-				"aria-label": "Subir detalles de colección y preferencias",
+				"aria-label": "上传馆藏与口味明细",
 				isSelected: n.enabled,
 				onChange: (e) => e ? s(!0) : f(!1),
 				...Y(d.busy === "save")
@@ -72726,44 +72726,44 @@ function sFe({ initial: e, receipt: t }) {
 		}) }),
 		n.available ? null : /* @__PURE__ */ (0, C.jsx)(MA, {
 			divided: !0,
-			children: /* @__PURE__ */ (0, C.jsx)(PA, { children: "Servicio de subida no configurado." })
+			children: /* @__PURE__ */ (0, C.jsx)(PA, { children: "上传服务未配置。" })
 		}),
 		n.enabled && n.last_attempt?.status === "failed" ? /* @__PURE__ */ (0, C.jsx)(MA, {
 			divided: !0,
-			children: /* @__PURE__ */ (0, C.jsx)(FA, { children: "ColecciónyPreferenciasError de subida, AutomáticoReintentar. " })
+			children: /* @__PURE__ */ (0, C.jsx)(FA, { children: "馆藏与口味上传失败，自动重试。" })
 		}) : null,
 		i ? /* @__PURE__ */ (0, C.jsxs)(MA, {
 			divided: !0,
 			children: [
 				/* @__PURE__ */ (0, C.jsxs)(PA, { children: [
-					"Vista previa actual incluye ",
+					"当前预览包含 ",
 					i.data.library.length,
-					"  título(s)connúmero de obra, ",
+					" 部有编号作品、",
 					i.data.coverage.uncoded_items,
-					" sin número de colección, total aproximado. ",
+					" 条无编号馆藏的汇总，约 ",
 					(i.bytes / 1024).toFixed(1),
-					" KiB. sin incluirCuenta, Dispositivo, ArchivoRuta y Explorar dispositivoHistorialRegistroetc.ni datos personales. "
+					" KiB。不含账号、设备、文件路径和浏览器历史记录等个人数据。"
 				] }),
 				/* @__PURE__ */ (0, C.jsx)(BA, {
-					summary: "Vista previa de datos a subir",
+					summary: "上传数据预览",
 					defaultOpen: !0,
 					children: /* @__PURE__ */ (0, C.jsx)(rG, {
 						code: u,
 						language: "json",
-						label: "ColecciónyPreferenciasSubirVista previa",
+						label: "馆藏与口味上传预览",
 						maxCharacters: 24e3
 					})
 				}),
-				u.length > 24e3 ? /* @__PURE__ */ (0, C.jsx)(PA, { children: "Se muestran los primeros 24,000 caracteres; puedes descargar para ver el contenido completo. " }) : null,
+				u.length > 24e3 ? /* @__PURE__ */ (0, C.jsx)(PA, { children: "显示前 24,000 个字符，下载可查看完整内容。" }) : null,
 				/* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					onClick: p,
-					children: "Descargar vista previa completa"
+					children: "下载完整预览"
 				}),
 				n.enabled ? null : /* @__PURE__ */ (0, C.jsx)(XP, {
 					isSelected: c,
 					onChange: l,
-					children: "Ya revisé la vista previa de subida, acepto subir detalles de colección y preferencias"
+					children: "我已查看上传预览，同意上传馆藏与口味明细"
 				})
 			]
 		}) : null,
@@ -72780,20 +72780,20 @@ function sFe({ initial: e, receipt: t }) {
 					});
 				},
 				...Y(d.busy === "preview"),
-				children: "Vista previaSubircontenido interno"
+				children: "预览上传内容"
 			}),
 			!n.enabled && i ? /* @__PURE__ */ (0, C.jsx)(q, {
 				disabled: !c,
 				onClick: () => f(!0),
 				...Y(d.busy === "save"),
-				children: "Aceptar y activar subida"
+				children: "同意并开启上传"
 			}) : null,
 			o && !n.enabled ? /* @__PURE__ */ (0, C.jsx)(q, {
 				variant: "secondary",
 				onClick: () => {
 					s(!1), a(null), l(!1);
 				},
-				children: "Cancelar"
+				children: "取消"
 			}) : null
 		] })
 	] });
@@ -72805,7 +72805,7 @@ function cFe({ data: e, receipt: t, panel: n }) {
 		...xG(n),
 		children: [
 			e.remote_reporting || e.library_sharing ? /* @__PURE__ */ (0, C.jsxs)(AA, {
-				title: "datos numéricosSubir",
+				title: "数据上传",
 				children: [e.remote_reporting ? /* @__PURE__ */ (0, C.jsx)(oFe, {
 					initial: e.remote_reporting,
 					receipt: t
@@ -72835,39 +72835,39 @@ function cFe({ data: e, receipt: t, panel: n }) {
 function lFe({ startup: e, receipt: t }) {
 	let [n, r] = (0, S.useState)(e.enabled), [i, a] = (0, S.useState)(e.silent), [o, s] = (0, S.useState)(e.desktop), c = wA(), l = e.available && !e.desktop_message;
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Inicio automático",
+		title: "开机自启",
 		onSubmit: (r) => {
 			r.preventDefault(), e.available && c.run("save", (e) => U("/api/configuration/startup", {
 				enabled: n,
 				silent: i,
 				desktop: o
-			}, "POST", e), () => t("Configuración guardada"));
+			}, "POST", e), () => t("已保存配置"));
 		},
 		children: [
 			/* @__PURE__ */ (0, C.jsxs)(jA, { children: [
 				/* @__PURE__ */ (0, C.jsx)(DA, {
-					label: "Iniciar Peach al arrancar",
+					label: "开机后启动 Peach",
 					children: /* @__PURE__ */ (0, C.jsx)(wU, {
-						"aria-label": "Iniciar Peach al arrancar",
+						"aria-label": "开机后启动 Peach",
 						isSelected: n,
 						isDisabled: !e.available,
 						onChange: r
 					})
 				}),
 				/* @__PURE__ */ (0, C.jsx)(DA, {
-					label: "Solo iniciar en la bandeja del sistema, sin abrir la página web",
+					label: "只启动托盘，不打开网页",
 					children: /* @__PURE__ */ (0, C.jsx)(wU, {
-						"aria-label": "Solo iniciar en la bandeja del sistema, sin abrir la página web",
+						"aria-label": "只启动托盘，不打开网页",
 						isSelected: i,
 						isDisabled: !e.available || !n,
 						onChange: a
 					})
 				}),
 				/* @__PURE__ */ (0, C.jsx)(DA, {
-					label: "Crear acceso directo en el escritorio",
+					label: "在桌面创建快捷方式",
 					description: e.desktop_message || void 0,
 					children: /* @__PURE__ */ (0, C.jsx)(wU, {
-						"aria-label": "Crear acceso directo en el escritorio",
+						"aria-label": "在桌面创建快捷方式",
 						isSelected: o,
 						isDisabled: !l,
 						onChange: s
@@ -72882,7 +72882,7 @@ function lFe({ startup: e, receipt: t }) {
 				type: "submit",
 				disabled: !e.available,
 				...Y(c.busy === "save"),
-				children: "Guardar configuración"
+				children: "保存配置"
 			}) })
 		]
 	});
@@ -72917,49 +72917,49 @@ function dFe({ online: e }) {
 	return /* @__PURE__ */ (0, C.jsxs)("span", {
 		"data-mount": e === !0 ? "online" : e === !1 ? "offline" : "unknown",
 		className: fA("inline-flex items-center gap-1.5 whitespace-nowrap text-body-2-medium", e === !0 ? "text-notification-success-foreground" : e === !1 ? "text-text-error-primary" : "text-text-secondary"),
-		children: [/* @__PURE__ */ (0, C.jsx)(uFe, { color: e === void 0 ? "indigo" : "green" }), e === !0 ? "En línea" : e === !1 ? "Sin conexión" : "Nodetectardetectar"]
+		children: [/* @__PURE__ */ (0, C.jsx)(uFe, { color: e === void 0 ? "indigo" : "green" }), e === !0 ? "在线" : e === !1 ? "离线" : "未检测"]
 	});
 }
 //#endregion
 //#region src/react/restart-redirect.ts
 var AG = 8e3, fFe = [
 	{
-		name: "Disco duro del dispositivo o RAM de 8 GB con contenido",
+		name: "机械硬盘，或内存 8 GB 以内",
 		cache: "10–20 GiB",
 		read: "256 / 128 KB",
-		task: "1"
+		task: "1 个"
 	},
 	{
-		name: "SATA SSD, 8–16 GB de RAM",
+		name: "SATA SSD，内存 8–16 GB",
 		cache: "20–50 GiB",
 		read: "256 / 128 KB",
-		task: "1–2"
+		task: "1–2 个"
 	},
 	{
-		name: "NVMe SSD, 16 GB o más de RAM",
+		name: "NVMe SSD，内存 16 GB 以上",
 		cache: "50–100 GiB",
 		read: "256 / 128 KB",
-		task: "2 o más"
+		task: "2 个起步"
 	}
 ], pFe = [
-	["cache", "Cachésuperiorlímite"],
-	["read", "longitud de lectura(Predeterminado / Más pequeño)"],
-	["task", "procesar videos al mismo tiempo"]
+	["cache", "缓存上限"],
+	["read", "读取长度（默认 / 最小）"],
+	["task", "同时处理视频"]
 ];
 function mFe() {
 	return /* @__PURE__ */ (0, C.jsx)("div", {
 		className: "@container flex flex-col gap-3",
 		children: /* @__PURE__ */ (0, C.jsxs)(BA, {
-			summary: "Ayuda de configuración de CloudDrive",
+			summary: "CloudDrive 设置帮助",
 			children: [
-				/* @__PURE__ */ (0, C.jsxs)(PA, { children: ["Primero monta el almacenamiento en la nube con CloudDrive2 o OpenListcomoEsta máquinaCarpeta, luegoenestedentroSeleccionar. ", /* @__PURE__ */ (0, C.jsx)(LA, {
+				/* @__PURE__ */ (0, C.jsxs)(PA, { children: ["先将 CloudDrive2 或 OpenList 中的网盘挂载为本机文件夹，再在这里选择。", /* @__PURE__ */ (0, C.jsx)(LA, {
 					href: "https://www.clouddrive2.com/help.html",
-					children: "MontarAyuda"
+					children: "挂载帮助"
 				})] }),
-				/* @__PURE__ */ (0, C.jsx)(PA, { children: "Cachésegúntodos enDisco duro y DisponibleMemoria RAMseleccionar valor inicial, luegosegúnReproducirtablaactualajuste completo de . " }),
-				/* @__PURE__ */ (0, C.jsx)(PA, { children: "Para usar herramientas de archivos de acción necesarias y la cuenta de almacenamiento en la nubepermiso de escritura. para Luz Pato Cloud: Subir, crearCarpeta, renombrar y MoverNecesario CloudDrive2 v1.1.0 o superior, Eliminar y Copiar aún no soportados. " }),
+				/* @__PURE__ */ (0, C.jsx)(PA, { children: "缓存按所在硬盘和可用内存选起步值，再根据播放表现调整。" }),
+				/* @__PURE__ */ (0, C.jsx)(PA, { children: "文件操作需要挂载工具和网盘账号授予写入权限。光鸭云盘的上传、建文件夹、改名和移动需要 CloudDrive2 v1.1.0 或更高版本，删除和复制暂不支持。" }),
 				/* @__PURE__ */ (0, C.jsx)("ul", {
-					"aria-label": "Caché en disco duro por categoría",
+					"aria-label": "按缓存所在硬盘分档",
 					className: "flex flex-col gap-2",
 					children: fFe.map((e) => /* @__PURE__ */ (0, C.jsxs)("li", {
 						className: "flex flex-col gap-2 rounded-2lg border border-separator-border bg-background-primary-default p-3",
@@ -72984,14 +72984,14 @@ function mFe() {
 				/* @__PURE__ */ (0, C.jsxs)("ul", {
 					className: "flex list-disc flex-col gap-1 pl-5 text-body-2-regular text-text-secondary",
 					children: [
-						/* @__PURE__ */ (0, C.jsx)("li", { children: "Cachésuperiorlímite y Limpiardirecciónformatoen CloudDrive"Configuración"dentro, Limpiardirecciónformatoseleccionar LRU. superiorlímiteNonecesario introducir  0, mantener al menos 40 GiB en el disco del sistema; introducir CompletadoreabrirConfiguraciónpáginaConfirmarguardar. " }),
-						/* @__PURE__ */ (0, C.jsx)("li", { children: "configuración de longitud de lectura y subprocesos de descarga en cada almacenamiento en la nubedentro, líneaenlace de todos desde 2 Iniciar. " }),
-						/* @__PURE__ */ (0, C.jsx)("li", { children: "Buffer Cache usa RAM; caché de disco/carpetas usa almacenamiento. Son independientes." })
+						/* @__PURE__ */ (0, C.jsx)("li", { children: "缓存上限和清理方式填在 CloudDrive「设置」里，清理方式选 LRU。上限不要填 0，系统盘至少留 40 GiB；填完重开设置页确认存住了。" }),
+						/* @__PURE__ */ (0, C.jsx)("li", { children: "读取长度和下载线程填在每个网盘各自的下载设置里，线程都从 2 开始。" }),
+						/* @__PURE__ */ (0, C.jsx)("li", { children: "Buffer Cache 占内存，磁盘缓存和文件夹缓存占硬盘，改一个管不住另外两个。" })
 					]
 				}),
 				/* @__PURE__ */ (0, C.jsx)(PA, { children: /* @__PURE__ */ (0, C.jsx)(LA, {
 					href: "https://github.com/peach-mitao/peach/blob/master/docs/CLOUDDRIVE.md",
-					children: "CompletadoCompletoConfiguraciónyinstrucciones de ajuste fino"
+					children: "完整配置与调优说明"
 				}) })
 			]
 		})
@@ -73018,8 +73018,8 @@ function _Fe({ index: e, cost: t, error: n, onChange: r }) {
 		"data-media-read-policy": e,
 		className: "flex w-full flex-col gap-1.5 @lg:w-48",
 		children: [/* @__PURE__ */ (0, C.jsxs)(BF, {
-			"aria-label": `MediosleerPolítica ${e + 1}`,
-			placeholder: "SeleccionarleerPolítica",
+			"aria-label": `媒体读取策略 ${e + 1}`,
+			placeholder: "选择读取策略",
 			isRequired: !0,
 			validationBehavior: "aria",
 			isInvalid: !!n,
@@ -73029,16 +73029,16 @@ function _Fe({ index: e, cost: t, error: n, onChange: r }) {
 			},
 			children: [/* @__PURE__ */ (0, C.jsx)(VF, {
 				id: "free",
-				children: "Normalleer"
+				children: "正常读取"
 			}), /* @__PURE__ */ (0, C.jsx)(VF, {
 				id: "metered",
-				children: "Proxy de protección de tráfico"
+				children: "代理流量保护"
 			})]
 		}), n ? /* @__PURE__ */ (0, C.jsx)(FA, { children: n }) : null]
 	});
 }
 function vFe() {
-	return /* @__PURE__ */ (0, C.jsx)(PA, { children: "Seleccionar según la configuración real de las herramientas de montaje; Proxy de protección de tráficolimitará la lectura automática de medios. " });
+	return /* @__PURE__ */ (0, C.jsx)(PA, { children: "按挂载工具实际配置选择；代理流量保护会限制自动媒体读取。" });
 }
 function yFe({ initial: e, blank: t, pickFolder: n, describe: r, focusAfterPick: i = !1 }) {
 	let [a, o] = (0, S.useState)(e), [s, c] = (0, S.useState)([]), [l, u] = (0, S.useState)(null), [d, f] = (0, S.useState)(null), p = (0, S.useRef)(!1), m = (0, S.useRef)([]);
@@ -73099,7 +73099,7 @@ function bFe({ label: e, path: t, onPath: n, error: r, inputRef: i, picking: a, 
 				/* @__PURE__ */ (0, C.jsx)(SP, {
 					className: "min-w-0 flex-1",
 					"aria-label": e,
-					placeholder: "Directorio de mediosRuta",
+					placeholder: "媒体目录路径",
 					value: t,
 					onChange: n,
 					ref: (e) => {
@@ -73116,7 +73116,7 @@ function bFe({ label: e, path: t, onPath: n, error: r, inputRef: i, picking: a, 
 				}) : null,
 				/* @__PURE__ */ (0, C.jsx)(pj, {
 					icon: hFe,
-					"aria-label": "SeleccionarCarpeta",
+					"aria-label": "选择文件夹",
 					onClick: o,
 					...Y(a)
 				}),
@@ -73124,7 +73124,7 @@ function bFe({ label: e, path: t, onPath: n, error: r, inputRef: i, picking: a, 
 					variant: "danger",
 					iconOnly: !0,
 					leadingIcon: Fk,
-					"aria-label": "QuitaresteCarpeta",
+					"aria-label": "移除这个文件夹",
 					onClick: s
 				}) : null
 			]
@@ -73137,7 +73137,7 @@ function bFe({ label: e, path: t, onPath: n, error: r, inputRef: i, picking: a, 
 function xFe({ index: e, value: t, onChange: n, options: r = jG }) {
 	return /* @__PURE__ */ (0, C.jsx)(BF, {
 		className: "w-full @lg:w-60",
-		"aria-label": `Fuente de medios ${e + 1}`,
+		"aria-label": `媒体来源 ${e + 1}`,
 		selectedKey: t,
 		onSelectionChange: (e) => {
 			e !== null && n(String(e));
@@ -73152,52 +73152,52 @@ function xFe({ index: e, value: t, onChange: n, options: r = jG }) {
 //#endregion
 //#region src/react/settings/library-icon-picker.tsx
 var NG = [
-	["", "Reconocimiento automático"],
-	["hard-drive", "Disco"],
-	["database", "Base de datos"],
-	["heart", "Enamorado"],
-	["heart-hand", "Íntimo"],
-	["flame", "Apasionado"],
-	["cherry", "Rojo cereza"],
-	["lollipop", "Cariño"],
-	["candy", "Caramelo"],
-	["banana", "Plátano"],
-	["droplets", "Húmedo"],
-	["venus", "Femenino"],
-	["mars", "Masculino"],
-	["venus-and-mars", "Pareja"],
-	["gem", "Selección especial"],
-	["crown", "Dominatrix"],
-	["ribbon", "Cinta"],
-	["shirt", "Uniforme"],
-	["graduation-cap", "Estudiante"],
-	["stethoscope", "Enfermera"],
-	["glasses", "Gafas"],
-	["footprints", "Historial de visitas"],
-	["hand", "Manos"],
-	["flower", "Flor"],
-	["venetian-mask", "Juego de roles"],
-	["rabbit", "Conejita"],
-	["paw-print", "Orejas de animal"],
-	["dumbbell", "Fitness"],
-	["bed-double", "Dormitorio"],
-	["bath", "Baño"],
-	["key-round", "Privado"],
-	["wine", "Levemente ebrio"],
-	["cigarette", "Gris humo"],
-	["moon", "Noche"],
-	["sparkles", "Fantasía"],
-	["camera", "Fotobook"],
-	["video", "Película"],
-	["film", "Cine"],
-	["image", "Álbum de imágenes"],
-	["gamepad-2", "Juego"],
-	["star", "Añadir a favoritos"],
-	["tags", "Tema"]
+	["", "自动识别"],
+	["hard-drive", "磁盘"],
+	["database", "资料库"],
+	["heart", "心动"],
+	["heart-hand", "亲密"],
+	["flame", "热情"],
+	["cherry", "樱桃"],
+	["lollipop", "甜心"],
+	["candy", "糖果"],
+	["banana", "香蕉"],
+	["droplets", "湿润"],
+	["venus", "女性"],
+	["mars", "男性"],
+	["venus-and-mars", "情侣"],
+	["gem", "精选"],
+	["crown", "女王"],
+	["ribbon", "丝带"],
+	["shirt", "制服"],
+	["graduation-cap", "学生"],
+	["stethoscope", "护士"],
+	["glasses", "眼镜"],
+	["footprints", "足迹"],
+	["hand", "手部"],
+	["flower", "花朵"],
+	["venetian-mask", "角色扮演"],
+	["rabbit", "兔女郎"],
+	["paw-print", "兽耳"],
+	["dumbbell", "健身"],
+	["bed-double", "卧室"],
+	["bath", "浴室"],
+	["key-round", "私密"],
+	["wine", "微醺"],
+	["cigarette", "烟"],
+	["moon", "夜色"],
+	["sparkles", "幻想"],
+	["camera", "写真"],
+	["video", "影片"],
+	["film", "电影"],
+	["image", "图集"],
+	["gamepad-2", "游戏"],
+	["star", "收藏"],
+	["tags", "主题"]
 ];
 function SFe(e) {
 	let t = e === "local" ? "" : so[e];
-	return t ? [t, "Reconocimiento automático"] : ["hard-drive", "Predeterminado"];
+	return t ? [t, "自动识别"] : ["hard-drive", "默认"];
 }
 var PG = "auto";
 function CFe({ value: e, label: t, kind: n = "local", onChange: r }) {
@@ -73225,16 +73225,16 @@ function CFe({ value: e, label: t, kind: n = "local", onChange: r }) {
 		offset: 4,
 		className: UP,
 		children: /* @__PURE__ */ (0, C.jsxs)(DN, {
-			"aria-label": `${t}OpcionalImagenetiqueta`,
+			"aria-label": `${t}可选图标`,
 			className: "flex w-72 flex-col gap-3 outline-none",
 			children: [
 				/* @__PURE__ */ (0, C.jsx)(Wj, {
 					slot: "title",
 					className: "px-1 text-body-medium text-text-primary",
-					children: "SeleccionarBiblioteca de mediosImagenetiqueta"
+					children: "选择媒体库图标"
 				}),
 				/* @__PURE__ */ (0, C.jsx)(PN, {
-					"aria-label": "OpcionalImagenetiqueta",
+					"aria-label": "可选图标",
 					value: s || PG,
 					onChange: (e) => c(e === PG ? "" : e),
 					className: "inline-grid grid-cols-7 gap-1",
@@ -73250,13 +73250,13 @@ function CFe({ value: e, label: t, kind: n = "local", onChange: r }) {
 					children: [/* @__PURE__ */ (0, C.jsx)(q, {
 						variant: "secondary",
 						onClick: () => o(!1),
-						children: "Cancelar"
+						children: "取消"
 					}), /* @__PURE__ */ (0, C.jsx)(q, {
 						disabled: s === e,
 						onClick: () => {
 							r(s), o(!1);
 						},
-						children: "Aplicar"
+						children: "应用"
 					})]
 				})
 			]
@@ -73280,20 +73280,20 @@ function EFe({ initial: e, receipt: t }) {
 			cloud: n.cloud,
 			prefixes: i
 		};
-		c.run("save", (e) => U(wFe, t, "POST", e), (e) => f(e, "Configuración guardada"), (e) => s(V(e)));
+		c.run("save", (e) => U(wFe, t, "POST", e), (e) => f(e, "已保存配置"), (e) => s(V(e)));
 	}, h = () => {
-		c.run("secret", (e) => U(TFe, {}, "POST", e), (e) => f(e, "Yaclave compartida actualizada"), (e) => s(V(e)));
-	}, g = `Catalogado ${u.queue.ingested} Archivo` + (u.queue.pending ? `, quedan ${u.queue.pending} resultados en la cola` : ""), _ = u.local_running ? `Monitoreando ${u.local_roots.join(", ")}` : u.local_message || "No está ejecutándose";
+		c.run("secret", (e) => U(TFe, {}, "POST", e), (e) => f(e, "已更换共享密钥"), (e) => s(V(e)));
+	}, g = `已入库 ${u.queue.ingested} 个文件` + (u.queue.pending ? `，队列里还有 ${u.queue.pending} 条` : ""), _ = u.local_running ? `正在监视 ${u.local_roots.join("、")}` : u.local_message || "没有运行";
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Enviar para descubrir",
+		title: "推送发现",
 		onSubmit: m,
 		children: [
 			/* @__PURE__ */ (0, C.jsxs)(jA, { children: [
 				/* @__PURE__ */ (0, C.jsx)(DA, {
-					label: "Nuevo archivo ya en biblioteca",
+					label: "新文件落地就入库",
 					description: u.enabled ? g : void 0,
 					children: /* @__PURE__ */ (0, C.jsx)(wU, {
-						"aria-label": "Nuevo archivo ya en biblioteca",
+						"aria-label": "新文件落地就入库",
 						isSelected: n.enabled,
 						isDisabled: !n.available,
 						onChange: (e) => r({
@@ -73303,10 +73303,10 @@ function EFe({ initial: e, receipt: t }) {
 					})
 				}),
 				/* @__PURE__ */ (0, C.jsx)(DA, {
-					label: "Monitorear esta máquinaCarpeta",
+					label: "监视本机文件夹",
 					description: u.enabled && u.watch_local ? _ : void 0,
 					children: /* @__PURE__ */ (0, C.jsx)(wU, {
-						"aria-label": "Monitorear esta máquinaCarpeta",
+						"aria-label": "监视本机文件夹",
 						isSelected: n.watch_local,
 						isDisabled: !n.available || !n.enabled,
 						onChange: (e) => r({
@@ -73316,9 +73316,9 @@ function EFe({ initial: e, receipt: t }) {
 					})
 				}),
 				/* @__PURE__ */ (0, C.jsx)(DA, {
-					label: "Recibir notificaciones de CloudDrive2",
+					label: "接收 CloudDrive2 通知",
 					children: /* @__PURE__ */ (0, C.jsx)(wU, {
-						"aria-label": "Recibir notificaciones de CloudDrive2",
+						"aria-label": "接收 CloudDrive2 通知",
 						isSelected: n.cloud,
 						isDisabled: !n.available || !n.enabled,
 						onChange: (e) => r({
@@ -73328,8 +73328,8 @@ function EFe({ initial: e, receipt: t }) {
 					})
 				}),
 				u.enabled && u.cloud ? /* @__PURE__ */ (0, C.jsx)(DA, {
-					label: "Configuración de Webhook",
-					description: u.config_toml ? "Pegar para avanzar en CloudDrive2" Configuración → Webhooks", requiere ir al área de miembros; cambiar clavedespuéshay que volver a pegar. " : u.origin ? "Aún no hay clave total compartida; se generará después de guardar la configuración. " : "necesario primero con CloudDrive2 puedeAcceso HTTPS Direcciónpara poder generar. "
+					label: "Webhook 配置",
+					description: u.config_toml ? "贴进 CloudDrive2「设置 → Webhooks」，需要会员；更换密钥后要重贴。" : u.origin ? "还没有共享密钥，保存配置后生成。" : "要先有 CloudDrive2 能访问的 HTTPS 地址才能生成。"
 				}) : null
 			] }),
 			u.enabled && u.cloud && u.config_toml ? /* @__PURE__ */ (0, C.jsx)(MA, {
@@ -73337,15 +73337,15 @@ function EFe({ initial: e, receipt: t }) {
 				children: /* @__PURE__ */ (0, C.jsx)("div", {
 					className: "flex flex-col gap-3",
 					children: /* @__PURE__ */ (0, C.jsxs)(BA, {
-						summary: "Ver configuración",
+						summary: "查看配置",
 						children: [/* @__PURE__ */ (0, C.jsx)(rG, {
 							code: u.config_toml,
 							language: "toml",
-							label: "Configuración de CloudDrive2",
+							label: "CloudDrive2 配置",
 							bounded: !1,
-							copyLabel: "CopiarConfiguración",
-							onCopy: () => t("Copiado Configuración de CloudDrive2")
-						}), /* @__PURE__ */ (0, C.jsx)(PA, { children: "Windows EscritorioversiónPegardespuésMostrar"Sin efecto" cuando, guarda este fragmento como archivo .toml, colocaravanzar %LOCALAPPDATA%\\CloudDrive.WinUI\\webhooks\\ Directorio. " })]
+							copyLabel: "复制配置",
+							onCopy: () => t("已复制 CloudDrive2 配置")
+						}), /* @__PURE__ */ (0, C.jsx)(PA, { children: "Windows 桌面版粘贴后显示「无效」时，把这段存成 .toml 文件，放进 %LOCALAPPDATA%\\CloudDrive.WinUI\\webhooks\\ 目录。" })]
 					})
 				})
 			}) : null,
@@ -73354,17 +73354,17 @@ function EFe({ initial: e, receipt: t }) {
 				children: /* @__PURE__ */ (0, C.jsxs)("div", {
 					className: "flex flex-col gap-3",
 					children: [
-						/* @__PURE__ */ (0, C.jsx)(IA, { children: "Prefijo de ruta en la nube" }),
+						/* @__PURE__ */ (0, C.jsx)(IA, { children: "云端路径前缀" }),
 						/* @__PURE__ */ (0, C.jsx)("div", {
 							role: "group",
-							"aria-label": "Prefijo de ruta en la nube",
+							"aria-label": "云端路径前缀",
 							className: "flex flex-col gap-3",
 							children: i.map((e, t) => /* @__PURE__ */ (0, C.jsxs)("div", {
 								className: "flex items-start gap-2",
 								children: [
 									/* @__PURE__ */ (0, C.jsx)(SP, {
 										className: "min-w-0 flex-1",
-										"aria-label": `Prefijo de ruta en la nube ${t + 1}`,
+										"aria-label": `云端路径前缀 ${t + 1}`,
 										placeholder: "/115",
 										autoComplete: "off",
 										maxLength: 200,
@@ -73372,7 +73372,7 @@ function EFe({ initial: e, receipt: t }) {
 										onChange: (e) => p(t, { prefix: e })
 									}),
 									/* @__PURE__ */ (0, C.jsx)(BF, {
-										"aria-label": `Prefijo ${t + 1} para el directorio raíz de medios`,
+										"aria-label": `前缀 ${t + 1} 对应的媒体根`,
 										selectedKey: e.root,
 										onSelectionChange: (e) => {
 											e !== null && p(t, { root: String(e) });
@@ -73386,7 +73386,7 @@ function EFe({ initial: e, receipt: t }) {
 										variant: "danger",
 										iconOnly: !0,
 										leadingIcon: Fk,
-										"aria-label": "Quitar este resultado",
+										"aria-label": "移除这一条",
 										onClick: () => a((e) => e.filter((e, n) => n !== t))
 									})
 								]
@@ -73399,7 +73399,7 @@ function EFe({ initial: e, receipt: t }) {
 								prefix: "",
 								root: l[0] ?? ""
 							}]),
-							children: "Añadirprefijo"
+							children: "添加前缀"
 						}) })
 					]
 				})
@@ -73413,12 +73413,12 @@ function EFe({ initial: e, receipt: t }) {
 				onClick: h,
 				disabled: !n.available,
 				...Y(c.busy === "secret"),
-				children: "cambiar clave"
+				children: "更换密钥"
 			}) : null, /* @__PURE__ */ (0, C.jsx)(q, {
 				type: "submit",
 				disabled: !n.available,
 				...Y(c.busy === "save"),
-				children: "Guardar configuración"
+				children: "保存配置"
 			})] })
 		]
 	});
@@ -73454,7 +73454,7 @@ function jFe({ data: e, receipt: t, panel: n }) {
 				receipt: t
 			}) : /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "neutral",
-				title: "Solo lectura",
+				title: "只读",
 				children: e.notice
 			}),
 			e.editable ? null : /* @__PURE__ */ (0, C.jsx)(NFe, { data: e }),
@@ -73491,43 +73491,43 @@ function MFe({ data: e, receipt: t }) {
 			port: String(e.port),
 			scan_now: d
 		}, "POST", t), (e) => {
-			y.current = e.revision, s([]), t("Configuración guardada"), v(e);
+			y.current = e.revision, s([]), t("已保存配置"), v(e);
 		}, (e) => {
 			let t = AFe(e);
 			s(t?.media_dirs ?? []), (!t || t.port) && g(t?.port || V(e));
 		});
 	};
 	if (_) return /* @__PURE__ */ (0, C.jsx)(AA, {
-		title: "Directorio de medios",
+		title: "媒体目录",
 		children: /* @__PURE__ */ (0, C.jsx)(MA, { children: /* @__PURE__ */ (0, C.jsxs)(J, {
 			tone: "success",
-			title: "Configuración guardada",
+			title: "配置已保存",
 			children: [
-				"Peach se está reiniciando. Se redirigirá automáticamente más tarde, o haz clic en",
+				"Peach 正在重新启动。稍后自动跳转，或点击",
 				/* @__PURE__ */ (0, C.jsx)(kA, {
 					href: _.url,
 					size: "small",
-					children: "Ir a la colección"
+					children: "进入馆藏"
 				}),
-				". "
+				"。"
 			]
 		}) })
 	});
 	let w = (t) => t ? e.media_sources?.find((e) => e.path === t) : void 0, T = n.some((e) => gFe(e.location)), E = T ? (e.mount_dependencies ?? []).filter((e) => !e.available) : [];
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Directorio de medios",
+		title: "媒体目录",
 		onSubmit: x,
 		children: [/* @__PURE__ */ (0, C.jsxs)(MA, { children: [
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-3",
 				children: [
-					/* @__PURE__ */ (0, C.jsx)(IA, { children: "Directorio de medios" }),
+					/* @__PURE__ */ (0, C.jsx)(IA, { children: "媒体目录" }),
 					/* @__PURE__ */ (0, C.jsx)("div", {
 						role: "group",
-						"aria-label": "Directorio de medios",
+						"aria-label": "媒体目录",
 						className: "flex flex-col gap-3",
 						children: n.map((e, t) => /* @__PURE__ */ (0, C.jsxs)(bFe, {
-							label: `Directorio de medios ${t + 1}`,
+							label: `媒体目录 ${t + 1}`,
 							path: e.path,
 							onPath: (e) => r(t, { path: e }),
 							error: o[t],
@@ -73549,18 +73549,18 @@ function MFe({ data: e, receipt: t }) {
 									index: t,
 									cost: e.cost,
 									onChange: (e) => r(t, { cost: e }),
-									error: p && !e.cost ? "Por favor selecciona la estrategia de lectura de medios" : void 0
+									error: p && !e.cost ? "请选择媒体读取策略" : void 0
 								}),
 								/* @__PURE__ */ (0, C.jsx)(SP, {
 									className: "min-w-40 flex-1",
-									"aria-label": `Nombre de la biblioteca ${t + 1}`,
+									"aria-label": `媒体库名称 ${t + 1}`,
 									maxLength: 80,
-									placeholder: "Nombre de la biblioteca",
+									placeholder: "媒体库名称",
 									value: e.library,
 									onChange: (e) => r(t, { library: e })
 								}),
 								/* @__PURE__ */ (0, C.jsx)(CFe, {
-									label: `Biblioteca de mediosImagenetiqueta ${t + 1}`,
+									label: `媒体库图标 ${t + 1}`,
 									value: e.library_icon,
 									kind: e.location,
 									onChange: (e) => r(t, { library_icon: e })
@@ -73572,36 +73572,36 @@ function MFe({ data: e, receipt: t }) {
 						variant: "secondary",
 						className: "self-start",
 						onClick: i,
-						children: "AñadirCarpeta"
+						children: "添加文件夹"
 					})
 				]
 			}),
 			T ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(vFe, {}), /* @__PURE__ */ (0, C.jsx)(mFe, {})] }) : null,
 			E.map((e) => /* @__PURE__ */ (0, C.jsxs)(PA, { children: [
-				"Sin detección ",
+				"未检测到 ",
 				e.name,
-				". ",
+				"。",
 				/* @__PURE__ */ (0, C.jsxs)(LA, {
 					href: e.download_url,
-					children: ["Descargas ", e.name]
+					children: ["下载 ", e.name]
 				})
 			] }, e.name)),
 			/* @__PURE__ */ (0, C.jsx)(XP, {
 				isSelected: d,
 				onChange: f,
-				children: "GuardardespuésEscaneary completar detalles"
+				children: "保存后扫描并补全资料"
 			}),
 			h ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
-				title: "Sin guardar",
+				title: "没有保存",
 				children: h
 			}) : null
 		] }), /* @__PURE__ */ (0, C.jsx)(NA, {
-			status: "Guardardespués Peach se reiniciará de nuevo. ",
+			status: "保存后 Peach 会重新启动。",
 			children: /* @__PURE__ */ (0, C.jsx)(q, {
 				type: "submit",
 				...Y(b.busy === "save"),
-				children: "Guardar configuración"
+				children: "保存配置"
 			})
 		})]
 	});
@@ -73612,11 +73612,11 @@ function IG({ online: e }) {
 function NFe({ data: e }) {
 	let t = e.media_sources, n = wA();
 	return t ? /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "MontarEstado",
+		title: "挂载状态",
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(RA, { children: t.map((e, t) => /* @__PURE__ */ (0, C.jsxs)(zA, {
 				term: /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(VA, { mark: MG(e.location) }), DFe(e.location)] }),
-				children: [e.path || "NoConfiguraciónMontarclic", /* @__PURE__ */ (0, C.jsx)(IG, { online: e.online })]
+				children: [e.path || "未配置挂载点", /* @__PURE__ */ (0, C.jsx)(IG, { online: e.online })]
 			}, t)) }),
 			n.error ? /* @__PURE__ */ (0, C.jsx)(MA, {
 				divided: !0,
@@ -73626,7 +73626,7 @@ function NFe({ data: e }) {
 				variant: "secondary",
 				onClick: () => void n.run("refresh", (e) => yG(e), (e) => W.setQueryData(vG, e)),
 				...Y(n.busy === "refresh"),
-				children: "ActualizarMontarEstado"
+				children: "刷新挂载状态"
 			}) })
 		]
 	}) : null;
@@ -73634,14 +73634,14 @@ function NFe({ data: e }) {
 //#endregion
 //#region src/application/initial-follow-ranges.ts
 var LG = [
-	["0", "Sin límite de tiempo"],
-	["7", "Últimos 7 días"],
-	["30", "Últimos 30 días"],
-	["90", "Últimos 90 días"]
+	["0", "不限时间"],
+	["7", "最近 7 天"],
+	["30", "最近 30 天"],
+	["90", "最近 90 天"]
 ], PFe = [
-	["off", "Desactivar"],
-	["precise", "cada 10 segundos una imagen"],
-	["coarse", "cada 30 segundos una imagen"]
+	["off", "关闭"],
+	["precise", "每 10 秒一张"],
+	["coarse", "每 30 秒一张"]
 ];
 function FFe({ epoch: e = 0, disabled: t = !1 }) {
 	let n = pt({
@@ -73655,12 +73655,12 @@ function FFe({ epoch: e = 0, disabled: t = !1 }) {
 	let a = n.data, o = r.error || n.error;
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 		/* @__PURE__ */ (0, C.jsx)(jA, { children: /* @__PURE__ */ (0, C.jsx)(DA, {
-			label: "Vista previa del eje de tiempo",
-			description: "Extraer fotogramas en intervalos seleccionados; solo procesar videos en disco local. ",
+			label: "时间轴预览",
+			description: "按所选间隔抽帧，仅处理本机磁盘上的视频。",
 			children: /* @__PURE__ */ (0, C.jsx)("div", {
 				id: "videoThumbnailSetting",
 				children: /* @__PURE__ */ (0, C.jsx)(BF, {
-					"aria-label": "Intervalo de captura de miniaturas",
+					"aria-label": "缩略图采集间隔",
 					selectedKey: a?.mode || "off",
 					isDisabled: t || !a || n.isFetching || r.isPending,
 					onSelectionChange: (e) => {
@@ -73677,7 +73677,7 @@ function FFe({ epoch: e = 0, disabled: t = !1 }) {
 			divided: !0,
 			children: /* @__PURE__ */ (0, C.jsx)(PA, {
 				role: "status",
-				children: r.isPending ? "ProcesandoGuardar..." : "ProcesandoRecolectar, Progresover en la página de actividad. "
+				children: r.isPending ? "正在保存…" : "正在采集，进度在活动页查看。"
 			})
 		}) : null,
 		o ? /* @__PURE__ */ (0, C.jsx)(MA, {
@@ -73695,20 +73695,20 @@ function IFe({ receipt: e }) {
 		refetchOnMount: "always"
 	}), r = rB(), i = n.data?.followInitialDays ?? t.value.followInitialDays, a = r.error || n.error;
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "SeguirRecolectar",
+		title: "关注采集",
 		children: [/* @__PURE__ */ (0, C.jsxs)(jA, { children: [
 			/* @__PURE__ */ (0, C.jsx)(LFe, {}),
 			/* @__PURE__ */ (0, C.jsx)(DA, {
-				label: "rango de primera recopilación",
+				label: "首次采集范围",
 				children: /* @__PURE__ */ (0, C.jsx)("div", {
 					id: "followInitialDaysSetting",
 					children: /* @__PURE__ */ (0, C.jsx)(BF, {
-						"aria-label": "rango de primera recopilación",
+						"aria-label": "首次采集范围",
 						selectedKey: String(i),
 						isDisabled: n.isFetching || r.isPending,
 						onSelectionChange: (n) => {
 							n !== null && r.mutate({ followInitialDays: Number(n) }, { onSuccess: (n) => {
-								typeof n.followInitialDays == "number" && (t.value.followInitialDays = n.followInitialDays), t.save(), e("Guardadorango de primera recopilación");
+								typeof n.followInitialDays == "number" && (t.value.followInitialDays = n.followInitialDays), t.save(), e("已保存首次采集范围");
 							} });
 						},
 						children: LG.map(([e, t]) => /* @__PURE__ */ (0, C.jsx)(VF, {
@@ -73719,12 +73719,12 @@ function IFe({ receipt: e }) {
 				})
 			}),
 			/* @__PURE__ */ (0, C.jsx)(DA, {
-				label: "avatarActualizar",
-				children: "cada 3 meses"
+				label: "头像刷新",
+				children: "每 3 个月"
 			}),
 			/* @__PURE__ */ (0, C.jsx)(DA, {
-				label: "Favicon actualizado",
-				children: "cada año"
+				label: "favicon 刷新",
+				children: "每年"
 			})
 		] }), a ? /* @__PURE__ */ (0, C.jsx)(MA, {
 			divided: !0,
@@ -73747,12 +73747,12 @@ function LFe() {
 	}, u = t.error || e.error;
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 		/* @__PURE__ */ (0, C.jsx)(DA, {
-			label: "AutomáticoComprobar actualizaciones",
+			label: "自动检查更新",
 			children: /* @__PURE__ */ (0, C.jsxs)("div", {
 				id: "followScheduleSetting",
 				className: "flex min-w-0 flex-wrap items-center justify-end gap-2",
 				children: [/* @__PURE__ */ (0, C.jsx)(wU, {
-					"aria-label": "AutomáticoComprobar actualizaciones",
+					"aria-label": "自动检查更新",
 					isSelected: n?.enabled === !0,
 					isDisabled: c,
 					onChange: (e) => {
@@ -73765,7 +73765,7 @@ function LFe() {
 						inputMode: "numeric",
 						name: "follow-interval",
 						autoComplete: "off",
-						"aria-label": "Intervalo de verificación automática",
+						"aria-label": "自动检查间隔",
 						size: "small",
 						className: "w-24",
 						value: i,
@@ -73780,15 +73780,15 @@ function LFe() {
 						isInvalid: o
 					}), /* @__PURE__ */ (0, C.jsx)("span", {
 						className: "text-body-2-regular text-text-secondary",
-						children: "minuto(s)"
+						children: "分钟"
 					})]
 				}) : null]
 			})
 		}),
-		o ? /* @__PURE__ */ (0, C.jsx)(MA, { children: /* @__PURE__ */ (0, C.jsx)(FA, { children: "Por favor introduce 15–10080 número completo(minuto(s)). " }) }) : null,
+		o ? /* @__PURE__ */ (0, C.jsx)(MA, { children: /* @__PURE__ */ (0, C.jsx)(FA, { children: "请输入 15–10080 的整数（分钟）。" }) }) : null,
 		t.isPending || n?.running ? /* @__PURE__ */ (0, C.jsx)(MA, { children: /* @__PURE__ */ (0, C.jsx)(PA, {
 			role: "status",
-			children: t.isPending ? "ProcesandoGuardar..." : "ProcesandoVerificarFuenteActualizar..."
+			children: t.isPending ? "正在保存…" : "正在检查来源更新…"
 		}) }) : null,
 		u ? /* @__PURE__ */ (0, C.jsx)(MA, { children: /* @__PURE__ */ (0, C.jsx)(FA, { children: V(u) }) }) : null
 	] });
@@ -73802,17 +73802,17 @@ function RFe({ receipt: e }) {
 		queryFn: ({ signal: e }) => H("/api/media-processing", e)
 	}), n = wA(), r = n.error || (t.error ? V(t.error) : "");
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Vista previa de video",
+		title: "视频预览",
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(jA, { children: /* @__PURE__ */ (0, C.jsx)(DA, {
-				label: "Generar vista previa de video",
-				description: "Genera miniaturas y línea de tiempo para videos locales. Si está desactivado, sigue detectando duración y resolución.",
+				label: "生成视频预览",
+				description: "为本地视频生成九宫格与时间轴预览；关闭后仍按入库规则探测时长与分辨率。",
 				children: /* @__PURE__ */ (0, C.jsx)(wU, {
-					"aria-label": "Generar vista previa de video",
+					"aria-label": "生成视频预览",
 					isSelected: !!t.data && !t.data.metadata_only,
 					isDisabled: !t.data || t.isFetching || !!n.busy,
 					onChange: (t) => void n.run("save", (e) => U("/api/media-processing", { metadata_only: !t }, "POST", e), (t) => {
-						W.setQueryData(RG, t), W.invalidateQueries({ queryKey: tB }), W.invalidateQueries({ queryKey: lF }), e(t.metadata_only ? "YaDesactivarVista previa de videogenerar" : "YaActivarVista previa de videogenerar");
+						W.setQueryData(RG, t), W.invalidateQueries({ queryKey: tB }), W.invalidateQueries({ queryKey: lF }), e(t.metadata_only ? "已关闭视频预览生成" : "已开启视频预览生成");
 					})
 				})
 			}) }),
@@ -73821,7 +73821,7 @@ function RFe({ receipt: e }) {
 				divided: !0,
 				children: /* @__PURE__ */ (0, C.jsx)(PA, {
 					role: "status",
-					children: "ProcesandoGuardar..."
+					children: "正在保存…"
 				})
 			}) : null,
 			r ? /* @__PURE__ */ (0, C.jsx)(MA, {
@@ -73850,7 +73850,7 @@ function zFe({ label: e, password: t, confirmation: n, onPassword: r, onConfirma
 	}), /* @__PURE__ */ (0, C.jsx)(SP, {
 		id: "access-confirm",
 		type: "password",
-		label: "ConfirmarContraseña de acceso",
+		label: "确认访问密码",
 		autoComplete: "new-password",
 		maxLength: 256,
 		value: n,
@@ -73865,15 +73865,15 @@ function zFe({ label: e, password: t, confirmation: n, onPassword: r, onConfirma
 //#endregion
 //#region src/react/settings/access-settings.tsx
 var BFe = {
-	legacy: "Usar el sistema actual para generar código de acceso. establecer tu propia contraseña, oDesactivarIniciar sesiónnecesario solicitar. ",
-	locked: "AccesoConfiguraciónSin capacidad deleer, Por favorenEsta máquinaVerificarArchivo de configuración. ",
-	password: "YaConfiguraciónContraseña. nuevoDispositivoInicio de sesión requerido, Al iniciar sesión marcando "Mantener sesión" puede mantenerse 30 días. "
+	legacy: "当前使用系统生成的访问口令。改设自己的密码，或关闭登录要求。",
+	locked: "访问设置无法读取，请在本机检查配置文件。",
+	password: "已设置密码。新设备需要登录，登录时勾选「保持登录」可保持 30 天。"
 };
 function VFe({ initial: e, receipt: t }) {
 	let [n, r] = (0, S.useState)(e), [i, a] = (0, S.useState)(""), [o, s] = (0, S.useState)(""), [c, l] = (0, S.useState)(""), [u, d] = (0, S.useState)(!1), [f, p] = (0, S.useState)({}), m = (0, S.useRef)(null), h = wA(), g = (e) => {
 		e.preventDefault();
 		let f = {};
-		n.mode === "password" && !i && (f.current_password = "Por favorIntroducirActualContraseña de acceso"), u || ((o.length < 8 || o.length > 256) && (f.password = "la contraseña de acceso debe tener 8-256 caracteres"), o !== c && (f.confirmation = "Las contraseñas no coinciden")), p(f), Object.keys(f).length ? requestAnimationFrame(() => m.current?.querySelector("input[aria-invalid=\"true\"]")?.focus()) : h.run("save", (e) => U("/api/configuration/access", {
+		n.mode === "password" && !i && (f.current_password = "请输入当前访问密码"), u || ((o.length < 8 || o.length > 256) && (f.password = "访问密码需为 8–256 个字符"), o !== c && (f.confirmation = "两次输入的密码不一致")), p(f), Object.keys(f).length ? requestAnimationFrame(() => m.current?.querySelector("input[aria-invalid=\"true\"]")?.focus()) : h.run("save", (e) => U("/api/configuration/access", {
 			revision: n.revision,
 			action: u ? "disable" : "set",
 			confirm_disable: u,
@@ -73881,14 +73881,14 @@ function VFe({ initial: e, receipt: t }) {
 			password: u ? "" : o,
 			confirmation: u ? "" : c
 		}, "POST", e), (e) => {
-			r(e), a(""), s(""), l(""), d(!1), p({}), t(e.mode === "open" ? "YaDesactivarContraseña de acceso" : "Configuración guardada");
+			r(e), a(""), s(""), l(""), d(!1), p({}), t(e.mode === "open" ? "已关闭访问密码" : "已保存配置");
 		}, (e) => {
 			let t = e instanceof vn ? e.body : null, n = t?.errors || t?.detail?.errors;
 			n ? p(n) : h.setError(V(e));
 		});
 	}, _ = BFe[n.mode], v = n.mode !== "locked";
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Contraseña de acceso",
+		title: "访问密码",
 		onSubmit: g,
 		children: [/* @__PURE__ */ (0, C.jsx)("div", {
 			ref: m,
@@ -73896,18 +73896,18 @@ function VFe({ initial: e, receipt: t }) {
 				_ ? /* @__PURE__ */ (0, C.jsx)(PA, { children: _ }) : null,
 				n.mode === "open" ? /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "warning",
-					title: "NoConfiguraciónContraseña de acceso",
-					children: "Al conectar dispositivos Peach abriendo la dirección se puede ver la colección sin iniciar sesión. "
+					title: "未设置访问密码",
+					children: "能连接到 Peach 的设备打开地址就能看馆藏，不需要登录。"
 				}) : null,
 				n.mode === "password" || n.mode === "legacy" ? /* @__PURE__ */ (0, C.jsx)(XP, {
 					isSelected: u,
 					onChange: d,
-					children: "DesactivarContraseña de acceso"
+					children: "关闭访问密码"
 				}) : null,
 				n.mode === "password" ? /* @__PURE__ */ (0, C.jsx)(SP, {
 					id: "access-current",
 					type: "password",
-					label: "ActualContraseña de acceso",
+					label: "当前访问密码",
 					autoComplete: "current-password",
 					maxLength: 256,
 					value: i,
@@ -73918,7 +73918,7 @@ function VFe({ initial: e, receipt: t }) {
 					hint: f.current_password
 				}) : null,
 				v ? /* @__PURE__ */ (0, C.jsx)(zFe, {
-					label: n.mode === "password" ? "nuevoContraseña de acceso" : "ConfiguraciónContraseña de acceso",
+					label: n.mode === "password" ? "新访问密码" : "设置访问密码",
 					password: o,
 					confirmation: c,
 					onPassword: s,
@@ -73926,19 +73926,19 @@ function VFe({ initial: e, receipt: t }) {
 					disabled: u,
 					passwordError: f.password,
 					confirmationError: f.confirmation,
-					passwordHint: u ? "desactivar la contraseña de acceso cuando no es necesario introducir. " : "al menos 8 caracteres. GuardardespuésOtroDispositivoNecesariovuelve a iniciar sesión. "
+					passwordHint: u ? "关闭访问密码时无需填写。" : "至少 8 个字符。保存后其他设备需要重新登录。"
 				}) : null,
 				u ? /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "warning",
-					title: "Alcance de acceso",
-					children: "Después de guardar, los dispositivos Peach conectados podrán acceder directamente a la colección. "
+					title: "访问范围",
+					children: "保存后，能连接到 Peach 的设备将直接访问馆藏。"
 				}) : null,
 				h.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: h.error }) : null
 			] })
 		}), v ? /* @__PURE__ */ (0, C.jsx)(NA, { children: /* @__PURE__ */ (0, C.jsx)(q, {
 			type: "submit",
 			...Y(h.busy === "save"),
-			children: "Guardar configuración"
+			children: "保存配置"
 		}) }) : null]
 	});
 }
@@ -73951,18 +73951,18 @@ function HFe({ data: e, receipt: t }) {
 		let e = setTimeout(() => location.assign(o.url), AG);
 		return () => clearTimeout(e);
 	}, [o]), o ? /* @__PURE__ */ (0, C.jsx)(AA, {
-		title: "Esta máquinaAccesoPuerto",
+		title: "本机访问端口",
 		children: /* @__PURE__ */ (0, C.jsx)(MA, { children: /* @__PURE__ */ (0, C.jsxs)(J, {
 			tone: "success",
-			title: "Configuración guardada",
-			children: ["Peach Procesandode nuevoIniciar. ", /* @__PURE__ */ (0, C.jsx)(kA, {
+			title: "配置已保存",
+			children: ["Peach 正在重新启动。", /* @__PURE__ */ (0, C.jsx)(kA, {
 				href: o.url,
 				size: "small",
-				children: "Ir a la colección"
+				children: "进入馆藏"
 			})]
 		}) })
 	}) : /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Esta máquinaAccesoPuerto",
+		title: "本机访问端口",
 		onSubmit: (r) => {
 			r.preventDefault(), a(""), c.run("save", (t) => U(_G, {
 				revision: e.revision,
@@ -73971,7 +73971,7 @@ function HFe({ data: e, receipt: t }) {
 				port: n,
 				scan_now: !1
 			}, "POST", t), (e) => {
-				s(e), t("Configuración guardada");
+				s(e), t("已保存配置");
 			}, (e) => {
 				let t = e instanceof vn && e.status === 400 ? e.body?.errors : null;
 				t?.port ? a(t.port) : c.setError(V(e));
@@ -73979,7 +73979,7 @@ function HFe({ data: e, receipt: t }) {
 		},
 		children: [/* @__PURE__ */ (0, C.jsxs)(MA, { children: [/* @__PURE__ */ (0, C.jsx)(SP, {
 			id: "configPort",
-			label: "Puerto",
+			label: "端口",
 			inputMode: "numeric",
 			value: n,
 			onChange: r,
@@ -73988,23 +73988,23 @@ function HFe({ data: e, receipt: t }) {
 			hint: i || void 0
 		}), c.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: "error",
-			title: "Sin guardar",
+			title: "没有保存",
 			children: c.error
 		}) : null] }), /* @__PURE__ */ (0, C.jsx)(NA, {
-			status: "Guardardespués Peach se reiniciará, y redirigirnuevoDirección. ",
+			status: "保存后 Peach 会重启，并跳转到新地址。",
 			children: /* @__PURE__ */ (0, C.jsx)(q, {
 				type: "submit",
 				...Y(c.busy === "save"),
-				children: "Guardar configuración"
+				children: "保存配置"
 			})
 		})]
 	});
 }
 //#endregion
 //#region src/react/settings/tunnel-settings.tsx
-var UFe = 2e3, WFe = [["quick", "Enlace temporal"], ["named", "Túnel con nombre"]], GFe = {
-	quick: "Solo para vista previa temporal. La dirección cambia al reiniciar. Configura la contraseña antes de iniciar.",
-	named: "usa un nombre de dominio fijo vinculado a Cloudflare. Iniciarprimeros necesario primero ConfiguraciónContraseña de acceso. "
+var UFe = 2e3, WFe = [["quick", "临时链接"], ["named", "命名隧道"]], GFe = {
+	quick: "临时预览用，地址随机，重启后会变。启动前要先设置访问密码。",
+	named: "使用你在 Cloudflare 绑定的固定域名。启动前要先设置访问密码。"
 };
 function KFe({ revision: e, initial: t, receipt: n }) {
 	let [r, i] = (0, S.useState)(t), [a, o] = (0, S.useState)(e), [s, c] = (0, S.useState)(t.mode), [l, u] = (0, S.useState)(t.hostname), [d, f] = (0, S.useState)(""), [p, m] = (0, S.useState)({}), h = wA(), g = r.state === "starting" || r.state === "running", _ = r.named_available && s === "named";
@@ -74034,13 +74034,13 @@ function KFe({ revision: e, initial: t, receipt: n }) {
 		});
 	};
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Entrada pública de Cloudflare",
+		title: "Cloudflare 公网入口",
 		onSubmit: (e) => {
-			e.preventDefault(), v("save", g, () => n("Configuración guardada"));
+			e.preventDefault(), v("save", g, () => n("已保存配置"));
 		},
 		children: [/* @__PURE__ */ (0, C.jsxs)(MA, { children: [
 			r.named_available ? /* @__PURE__ */ (0, C.jsx)(KF, {
-				"aria-label": "Forma del acceso público (elegir uno)",
+				"aria-label": "公网入口的形态（二选一）",
 				value: s,
 				isDisabled: g,
 				onChange: (e) => c(e),
@@ -74054,7 +74054,7 @@ function KFe({ revision: e, initial: t, receipt: n }) {
 			/* @__PURE__ */ (0, C.jsx)(PA, { children: GFe[_ ? "named" : "quick"] }),
 			_ ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(SP, {
 				id: "tunnel-hostname",
-				label: "PúblicoNombre de host",
+				label: "公开主机名",
 				autoComplete: "off",
 				maxLength: 253,
 				value: l,
@@ -74062,27 +74062,27 @@ function KFe({ revision: e, initial: t, receipt: n }) {
 				isDisabled: g,
 				validationBehavior: "aria",
 				isInvalid: !!p.hostname,
-				hint: p.hostname || "Hostname en Cloudflare Zero Trust que apunta a esta computadora."
+				hint: p.hostname || "Cloudflare Zero Trust 里指向这台电脑的主机名。"
 			}), /* @__PURE__ */ (0, C.jsx)(SP, {
 				id: "tunnel-token",
 				type: "password",
-				label: "Token de túnel",
+				label: "隧道令牌",
 				autoComplete: "off",
 				maxLength: 2048,
 				value: d,
 				onChange: f,
 				isDisabled: g,
 				validationBehavior: "aria",
-				hint: r.token_set ? "Guardado. Dejar vacío para no cambiar.. " : "en Cloudflare Zero Trust Copiar en la página de detalles del túnel. "
+				hint: r.token_set ? "已保存，留空不改。" : "在 Cloudflare Zero Trust 的隧道详情页复制。"
 			})] }) : null,
 			r.available ? null : /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "warning",
-				title: "No encontrado cloudflared",
-				children: "Instala el cloudflared oficial o usa el archivo de configuración tunnel.binary y PEACH_CLOUDFLARED para especificar la ruta. "
+				title: "找不到 cloudflared",
+				children: "安装官方 cloudflared，或用设置文件的 tunnel.binary 与 PEACH_CLOUDFLARED 指定路径。"
 			}),
 			r.state === "running" && r.url ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "info",
-				title: "Dirección web pública",
+				title: "公网地址",
 				children: /* @__PURE__ */ (0, C.jsx)(LA, {
 					href: r.url,
 					children: r.url
@@ -74090,22 +74090,22 @@ function KFe({ revision: e, initial: t, receipt: n }) {
 			}) : null,
 			r.state === "starting" ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "info",
-				title: "Conectando",
-				children: "Esperando que cloudflared se conecte al perímetro de Cloudflare. "
+				title: "正在连接",
+				children: "正在等待 cloudflared 连上 Cloudflare 边缘。"
 			}) : null,
 			r.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: r.error }) : null,
 			h.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: h.error }) : null
 		] }), /* @__PURE__ */ (0, C.jsxs)(NA, {
-			status: r.enabled ? "Se recupera automáticamente al reiniciar Peach." : void 0,
+			status: r.enabled ? "Peach 重启后自动恢复。" : void 0,
 			children: [/* @__PURE__ */ (0, C.jsx)(q, {
 				variant: r.named_available ? "secondary" : "primary",
-				onClick: () => v("toggle", !g, (e) => n(e.enabled ? "acceso público ya iniciado" : "acceso público ya detenido")),
+				onClick: () => v("toggle", !g, (e) => n(e.enabled ? "公网入口已启动" : "公网入口已停止")),
 				...Y(h.busy === "toggle"),
-				children: g ? "detener acceso público" : "iniciar acceso público"
+				children: g ? "停止公网入口" : "启动公网入口"
 			}), r.named_available ? /* @__PURE__ */ (0, C.jsx)(q, {
 				type: "submit",
 				...Y(h.busy === "save"),
-				children: "Guardar configuración"
+				children: "保存配置"
 			}) : null]
 		})]
 	});
@@ -74113,9 +74113,9 @@ function KFe({ revision: e, initial: t, receipt: n }) {
 //#endregion
 //#region src/react/settings/network-settings.tsx
 var qFe = [
-	["environment", "Proxy del sistema"],
-	["direct", "Conexión directa"],
-	["proxy", "Personalizado"]
+	["environment", "系统代理"],
+	["direct", "直连"],
+	["proxy", "自定义"]
 ];
 function JFe({ data: e, receipt: t, panel: n }) {
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -74145,20 +74145,20 @@ function YFe({ initial: e, receipt: t }) {
 	let [n, r] = (0, S.useState)(e), [i, a] = (0, S.useState)(e.mode), [o, s] = (0, S.useState)(""), c = wA();
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
 		id: "peachProxy",
-		title: "Proxy de Peach",
+		title: "Peach 代理",
 		onSubmit: (e) => {
 			e.preventDefault(), c.run("save", (e) => U("/api/configuration/peach-proxy", {
 				mode: i,
 				proxy: o
 			}, "POST", e), (e) => {
-				r(e), s(""), t("Configuración guardada");
+				r(e), s(""), t("已保存配置");
 			});
 		},
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(jA, { children: /* @__PURE__ */ (0, C.jsx)(DA, {
-				label: "Método de conexión",
+				label: "连接方式",
 				children: /* @__PURE__ */ (0, C.jsx)(BF, {
-					"aria-label": "Método de conexión",
+					"aria-label": "连接方式",
 					selectedKey: i,
 					onSelectionChange: (e) => {
 						e !== null && a(String(e));
@@ -74175,16 +74175,16 @@ function YFe({ initial: e, receipt: t }) {
 					i === "proxy" ? /* @__PURE__ */ (0, C.jsx)(SP, {
 						id: "peachProxyAddress",
 						type: "password",
-						label: "Dirección del proxy",
+						label: "代理地址",
 						autoComplete: "off",
 						value: o,
 						onChange: s,
-						placeholder: n.proxy_saved ? "Guardado, Deja vacíoConservar" : "http://127.0.0.1:7890"
+						placeholder: n.proxy_saved ? "已保存，留空保留" : "http://127.0.0.1:7890"
 					}) : null,
 					n.needs_selection ? /* @__PURE__ */ (0, C.jsx)(J, {
 						tone: "warning",
-						title: "NecesarioSeleccionarMétodo de conexión",
-						children: "YaconFuenteDirección del proxyNomismo, Por favorSeleccionarmétodo de conexión general. "
+						title: "需要选择连接方式",
+						children: "已有来源的代理地址不同，请选择公共连接方式。"
 					}) : null,
 					c.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: c.error }) : null
 				]
@@ -74192,22 +74192,22 @@ function YFe({ initial: e, receipt: t }) {
 			/* @__PURE__ */ (0, C.jsx)(NA, { children: /* @__PURE__ */ (0, C.jsx)(q, {
 				type: "submit",
 				...Y(c.busy === "save"),
-				children: "Guardar configuración"
+				children: "保存配置"
 			}) })
 		]
 	});
 }
 //#endregion
 //#region src/react/follow-manage/credentials.tsx
-var XFe = "Se limpiarán estas fuentes en esta máquina y las credenciales de inicio de sesión de las copias compartidas. ", ZFe = "ArchivoPermiso ancho. en el host POSIX donde se ejecuta Peach, restringe a 0600. ";
+var XFe = "将清除这个来源在本机和共享副本中的登录凭据。", ZFe = "文件权限过宽。在运行 Peach 的 POSIX 主机上收紧为 0600。";
 function QFe(e, t) {
-	return (e.shared_fields || []).includes(t) ? "Compartido en total; dejar vacío no cambia la tabla mostrada" : e.fields.includes(t) ? "Guardado; dejar vacío para no cambiar la tabla mostrada " : "Nointroducir";
+	return (e.shared_fields || []).includes(t) ? "来自共享，留空表示不改" : e.fields.includes(t) ? "已保存，留空表示不改" : "未填写";
 }
 function $Fe({ row: e }) {
 	if (Zr(e)) return /* @__PURE__ */ (0, C.jsx)(hA, {
 		variant: "caption",
 		color: "lime",
-		children: "YaConfiguración"
+		children: "已配置"
 	});
 	let t = e.requirement === "required" ? "yellow" : e.requirement === "blocked" ? "rose" : "neutral";
 	return /* @__PURE__ */ (0, C.jsx)(hA, {
@@ -74223,19 +74223,19 @@ function eIe({ row: e, readOnly: t, toast: n }) {
 			e.note ? o(e.note) : (o(""), i({}), W.invalidateQueries({
 				queryKey: Wn,
 				exact: !0
-			}), n(Object.keys(t).length ? "GuardadoCredenciales de fuente" : "YaLimpiar credenciales de fuente"));
+			}), n(Object.keys(t).length ? "已保存来源凭据" : "已清除来源凭据"));
 		},
 		onError: (e) => o(V(e))
 	}), l = () => {
 		let e = Object.fromEntries(Object.entries(r).map(([e, t]) => [e, t.trim()]).filter(([, e]) => e));
-		Object.keys(e).length ? c.mutate(e) : o("Sin contenido ingresado");
+		Object.keys(e).length ? c.mutate(e) : o("没有填写内容");
 	};
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		className: "flex flex-col gap-3",
 		children: [
 			/* @__PURE__ */ (0, C.jsxs)(PA, { children: [e.why, e.where ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [" ", /* @__PURE__ */ (0, C.jsx)(LA, {
 				href: e.where,
-				children: "Obtener credenciales"
+				children: "获取凭据"
 			})] }) : null] }),
 			e.howto ? /* @__PURE__ */ (0, C.jsx)(PA, { children: e.howto }) : null,
 			/* @__PURE__ */ (0, C.jsx)("div", {
@@ -74263,26 +74263,26 @@ function eIe({ row: e, readOnly: t, toast: n }) {
 					disabled: t,
 					...Y(c.isPending),
 					onClick: l,
-					children: "Guardar configuración"
+					children: "保存配置"
 				}), s ? /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "danger",
 					size: "small",
 					disabled: t,
 					...Y(c.isPending),
 					onClick: () => void Rs({
-						title: "Limpiar credenciales de fuente",
+						title: "清除来源凭据",
 						body: XFe,
-						confirmLabel: "Limpiar credenciales de fuente",
+						confirmLabel: "清除来源凭据",
 						danger: !0,
 						onConfirm: () => c.mutateAsync({})
 					}),
-					children: "Limpiar"
+					children: "清除"
 				}) : null]
 			}),
 			a ? /* @__PURE__ */ (0, C.jsx)(FA, { children: a }) : null,
-			(e.shared_fields || []).length ? /* @__PURE__ */ (0, C.jsx)(PA, { children: `${e.shared_fields.join(", ")} ya rellenado desde copia compartida, sin almacenamiento independiente en esta máquina. Limpiar eliminará ambas partes. ` }) : null,
+			(e.shared_fields || []).length ? /* @__PURE__ */ (0, C.jsx)(PA, { children: `${e.shared_fields.join("、")} 是从共享副本回填的，本机没有单独存。清除会把两边一起删。` }) : null,
 			e.path ? /* @__PURE__ */ (0, C.jsx)(BA, {
-				summary: "CredencialesArchivo",
+				summary: "凭据文件",
 				children: /* @__PURE__ */ (0, C.jsx)(GB, {
 					path: e.path,
 					className: "font-mono text-caption-1-regular text-text-tertiary",
@@ -74308,7 +74308,7 @@ function tIe({ row: e, readOnly: t, toast: n }) {
 			e.missing.length ? /* @__PURE__ */ (0, C.jsx)(hA, {
 				variant: "caption",
 				color: "rose",
-				children: `Faltan ${e.missing.join(", ")}`
+				children: `缺 ${e.missing.join("、")}`
 			}) : null
 		]
 	});
@@ -74320,7 +74320,7 @@ function tIe({ row: e, readOnly: t, toast: n }) {
 		children: [
 			r,
 			/* @__PURE__ */ (0, C.jsx)(BA, {
-				summary: Zr(e) ? "Modificar credenciales" : "Rellenar credenciales",
+				summary: Zr(e) ? "修改凭据" : "填写凭据",
 				defaultOpen: e.requirement === "required" && !Zr(e),
 				children: /* @__PURE__ */ (0, C.jsx)(eIe, {
 					row: e,
@@ -74330,7 +74330,7 @@ function tIe({ row: e, readOnly: t, toast: n }) {
 			}),
 			e.world_readable ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
-				title: "CredencialesArchivoPermiso ancho",
+				title: "凭据文件权限过宽",
 				children: ZFe
 			}) : null
 		]
@@ -74341,23 +74341,23 @@ function nIe({ data: e, readOnly: t, toast: n, embedded: r = !1 }) {
 	if (!i.length) return /* @__PURE__ */ (0, C.jsx)(yA, {
 		shell: "plain",
 		icon: Vge,
-		title: "SinpuedeConfiguraciónFuente",
-		children: "El estado de conexión al sitio y sus credenciales se mostrará aquí. "
+		title: "没有可配置的来源",
+		children: "已接入的站点及其凭据状态会显示在这里。"
 	});
 	let o = a.length ? /* @__PURE__ */ (0, C.jsx)("span", {
 		className: "text-body-2-regular text-text-error-primary",
-		children: `${a.length} PendienteConfiguración`
+		children: `${a.length} 个待配置`
 	}) : null, s = /* @__PURE__ */ (0, C.jsx)(C.Fragment, { children: [
 		{
-			title: "Credenciales configurables",
+			title: "可配置凭据",
 			rows: i.filter((e) => e.requirement !== "none" && e.requirement !== "blocked")
 		},
 		{
-			title: "No se necesitan credenciales",
+			title: "不需要凭据",
 			rows: i.filter((e) => e.requirement === "none")
 		},
 		{
-			title: "No soportado por ahora",
+			title: "暂不支持",
 			rows: i.filter((e) => e.requirement === "blocked")
 		}
 	].filter((e) => e.rows.length).map((e) => /* @__PURE__ */ (0, C.jsxs)("section", {
@@ -74380,7 +74380,7 @@ function nIe({ data: e, readOnly: t, toast: n, embedded: r = !1 }) {
 		})]
 	}, e.title)) });
 	return r ? /* @__PURE__ */ (0, C.jsx)(AA, {
-		title: "Credenciales de fuente",
+		title: "来源凭据",
 		aside: o || void 0,
 		children: /* @__PURE__ */ (0, C.jsx)(MA, { children: s })
 	}) : /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -74392,14 +74392,14 @@ function nIe({ data: e, readOnly: t, toast: n, embedded: r = !1 }) {
 			className: "flex flex-wrap items-center gap-2",
 			children: [/* @__PURE__ */ (0, C.jsx)("h3", {
 				className: "mr-auto text-title-2-medium text-text-primary",
-				children: "Credenciales de fuente"
+				children: "来源凭据"
 			}), o]
 		}), s]
 	});
 }
 //#endregion
 //#region src/configuration-copy.ts
-var rIe = "Si JavDB/MISSAV no abren, ingresa un dominio espejo alternativo.", iIe = "Solo introduce el nombre de dominio, Deja vacío para usar la dirección predeterminada";
+var rIe = "JavDB 或 MISSAV 打不开时，填一个能打开的镜像域名。", iIe = "只填域名，留空用默认地址";
 //#endregion
 //#region src/react/settings/entry-links-settings.tsx
 function aIe({ initial: e, receipt: t }) {
@@ -74408,12 +74408,12 @@ function aIe({ initial: e, receipt: t }) {
 		host: t
 	} : n));
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "Sitio de información de obrasclic",
+		title: "作品资料站点",
 		onSubmit: (e) => {
 			e.preventDefault();
 			let a = { sites: Object.fromEntries(n.map((e) => [e.key, { host: e.host }])) };
 			i.run("save", (e) => U("/api/configuration/entry-links", a, "POST", e), (e) => {
-				r(e.sites), t("Configuración guardada");
+				r(e.sites), t("已保存配置");
 			});
 		},
 		children: [/* @__PURE__ */ (0, C.jsxs)(MA, { children: [
@@ -74422,7 +74422,7 @@ function aIe({ initial: e, receipt: t }) {
 				id: `entry-link-${e.key}`,
 				label: /* @__PURE__ */ (0, C.jsx)(Bve, {
 					site: e.key,
-					label: `${e.label} Dirección`
+					label: `${e.label} 地址`
 				}),
 				autoComplete: "off",
 				maxLength: 100,
@@ -74436,7 +74436,7 @@ function aIe({ initial: e, receipt: t }) {
 		] }), /* @__PURE__ */ (0, C.jsx)(NA, { children: /* @__PURE__ */ (0, C.jsx)(q, {
 			type: "submit",
 			...Y(i.busy === "save"),
-			children: "Guardar configuración"
+			children: "保存配置"
 		}) })]
 	});
 }
@@ -74449,7 +74449,7 @@ function oIe({ receipt: e }) {
 		queryFn: ({ signal: e }) => H(zG, e),
 		refetchOnMount: "always"
 	});
-	return t.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: V(t.error) }) : t.isFetching ? /* @__PURE__ */ (0, C.jsx)(bA, { label: "CargandoRecursoBuscarConfiguración" }) : t.data ? /* @__PURE__ */ (0, C.jsx)(sIe, {
+	return t.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: V(t.error) }) : t.isFetching ? /* @__PURE__ */ (0, C.jsx)(bA, { label: "正在读取资源搜索设置" }) : t.data ? /* @__PURE__ */ (0, C.jsx)(sIe, {
 		initial: t.data,
 		receipt: e
 	}) : null;
@@ -74460,45 +74460,45 @@ function sIe({ initial: e, receipt: t }) {
 		...t
 	} : n));
 	return /* @__PURE__ */ (0, C.jsxs)(AA, {
-		title: "RecursoBuscar",
+		title: "资源搜索",
 		onSubmit: (e) => {
 			e.preventDefault(), i.run("save", (e) => U(zG, { indexers: n }, "POST", e), (e) => {
-				r(e.indexers), t("GuardadoIndexarDispositivo");
+				r(e.indexers), t("已保存索引器");
 			});
 		},
 		children: [/* @__PURE__ */ (0, C.jsxs)(MA, { children: [
 			/* @__PURE__ */ (0, C.jsxs)(BA, {
-				summary: "IndexarDispositivoConectarAyuda",
-				children: [/* @__PURE__ */ (0, C.jsx)(PA, { children: "Introduce la dirección Torznab y la API key de Prowlarr o Jackett. " }), /* @__PURE__ */ (0, C.jsx)(LA, {
+				summary: "索引器连接帮助",
+				children: [/* @__PURE__ */ (0, C.jsx)(PA, { children: "填写 Prowlarr 或 Jackett 提供的 Torznab 地址和 API key。" }), /* @__PURE__ */ (0, C.jsx)(LA, {
 					href: "https://github.com/peach-mitao/peach/blob/master/docs/RESOURCE_SEARCH.md",
-					children: "Configuración detallada explicada"
+					children: "详细配置说明"
 				})]
 			}),
 			n.map((e, t) => /* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex min-w-0 flex-col gap-4 border-t border-separator-border pt-4",
 				children: [
 					/* @__PURE__ */ (0, C.jsx)(SP, {
-						label: `IndexarDispositivo ${t + 1} Nombre`,
+						label: `索引器 ${t + 1} 名称`,
 						value: e.name,
 						maxLength: 80,
 						isDisabled: !!i.busy,
 						onChange: (t) => a(e.key, { name: t })
 					}),
 					/* @__PURE__ */ (0, C.jsx)(SP, {
-						label: `IndexarDispositivo ${t + 1} Torznab Dirección`,
+						label: `索引器 ${t + 1} Torznab 地址`,
 						value: e.url,
 						type: "url",
 						autoComplete: "off",
-						placeholder: "IndexarDispositivoproporcionarproveer API Dirección",
+						placeholder: "索引器提供的 API 地址",
 						isDisabled: !!i.busy,
 						onChange: (t) => a(e.key, { url: t })
 					}),
 					/* @__PURE__ */ (0, C.jsx)(SP, {
-						label: `IndexarDispositivo ${t + 1} API key`,
+						label: `索引器 ${t + 1} API key`,
 						type: "password",
 						autoComplete: "new-password",
 						value: e.api_key || "",
-						placeholder: e.api_key_set ? "Guardado. Dejar vacío para no cambiar." : void 0,
+						placeholder: e.api_key_set ? "已保存，留空不改" : void 0,
 						isDisabled: !!i.busy,
 						onChange: (t) => a(e.key, { api_key: t })
 					}),
@@ -74506,20 +74506,20 @@ function sIe({ initial: e, receipt: t }) {
 						isSelected: e.enabled,
 						isDisabled: !!i.busy,
 						onChange: (t) => a(e.key, { enabled: t }),
-						children: "Activar"
+						children: "启用"
 					}),
 					e.api_key_set ? /* @__PURE__ */ (0, C.jsx)(XP, {
 						isSelected: !!e.clear_api_key,
 						isDisabled: !!i.busy,
 						onChange: (t) => a(e.key, { clear_api_key: t }),
-						children: "LimpiarGuardado API key"
+						children: "清除已保存的 API key"
 					}) : null,
 					/* @__PURE__ */ (0, C.jsx)("div", { children: /* @__PURE__ */ (0, C.jsxs)(q, {
 						variant: "danger",
 						type: "button",
 						disabled: !!i.busy,
 						onClick: () => r(n.filter((t) => t.key !== e.key)),
-						children: ["QuitarIndexarDispositivo ", t + 1]
+						children: ["移除索引器 ", t + 1]
 					}) })
 				]
 			}, e.key)),
@@ -74535,11 +74535,11 @@ function sIe({ initial: e, receipt: t }) {
 				enabled: !0,
 				api_key_set: !1
 			}]),
-			children: "AñadirIndexarDispositivo"
+			children: "添加索引器"
 		}), /* @__PURE__ */ (0, C.jsx)(q, {
 			type: "submit",
 			...Y(i.busy === "save"),
-			children: "Guardar configuración"
+			children: "保存配置"
 		})] })]
 	});
 }
@@ -74558,7 +74558,7 @@ function cIe({ data: e, receipt: t, panel: n }) {
 			/* @__PURE__ */ (0, C.jsx)("div", { children: /* @__PURE__ */ (0, C.jsx)(_A, {
 				href: "/sources",
 				variant: "secondary",
-				children: "RecolectarFuenteyIniciar sesiónEstado"
+				children: "采集来源与登录状态"
 			}) }),
 			r.data ? /* @__PURE__ */ (0, C.jsx)(nIe, {
 				data: r.data,
@@ -74567,9 +74567,9 @@ function cIe({ data: e, receipt: t, panel: n }) {
 				embedded: !0
 			}) : r.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 				tone: "error",
-				title: "Credenciales de fuenteNo disponible",
+				title: "来源凭据未取得",
 				children: V(r.error)
-			}) : n?.active === !1 ? null : /* @__PURE__ */ (0, C.jsx)(bA, { label: "CargandoCredenciales de fuente" }),
+			}) : n?.active === !1 ? null : /* @__PURE__ */ (0, C.jsx)(bA, { label: "正在读取来源凭据" }),
 			e.entry_links ? /* @__PURE__ */ (0, C.jsx)(aIe, {
 				initial: e.entry_links,
 				receipt: t
@@ -74596,8 +74596,8 @@ function lIe({ receipt: e, reopenTutorial: t, section: n = "", diagnostics: r })
 		className: "ui-configpage",
 		children: /* @__PURE__ */ (0, C.jsx)(J, {
 			tone: "error",
-			title: "ConfiguraciónleerFallido",
-			children: i.error ? V(i.error) : "No disponibleConfiguración, Por favor actualiza la páginaReintentar. "
+			title: "配置读取失败",
+			children: i.error ? V(i.error) : "未取得配置，请刷新页面重试。"
 		})
 	});
 }
@@ -74631,21 +74631,21 @@ function dIe({ data: e, receipt: t, reopenTutorial: n, section: r, diagnostics: 
 		receipt: t
 	}, h = !!(e.peach_proxy || e.access || e.tunnel || e.editable && e.port_editable !== !1), g = e.downloads, _ = [
 		{
-			title: "Biblioteca y catalogación",
+			title: "媒体库与入库",
 			body: (e) => /* @__PURE__ */ (0, C.jsxs)("div", {
 				...xG(e),
 				children: [/* @__PURE__ */ (0, C.jsx)(jFe, { ...m }), /* @__PURE__ */ (0, C.jsx)(RFe, { receipt: t })]
 			})
 		},
 		{
-			title: "Fuentes y suscripciones",
+			title: "来源与订阅",
 			body: (e) => /* @__PURE__ */ (0, C.jsx)(cIe, {
 				...m,
 				panel: e
 			})
 		},
 		...g ? [{
-			title: "Canal de descarga",
+			title: "下载渠道",
 			body: (e) => /* @__PURE__ */ (0, C.jsx)(KPe, {
 				initial: g,
 				receipt: t,
@@ -74653,14 +74653,14 @@ function dIe({ data: e, receipt: t, reopenTutorial: n, section: r, diagnostics: 
 			})
 		}] : [],
 		...h ? [{
-			title: "Red y acceso",
+			title: "网络与访问",
 			body: (e) => /* @__PURE__ */ (0, C.jsx)(JFe, {
 				...m,
 				panel: e
 			})
 		}] : [],
 		{
-			title: "App y mantenimiento",
+			title: "应用与维护",
 			body: (e) => /* @__PURE__ */ (0, C.jsxs)("div", {
 				...xG(e),
 				children: [/* @__PURE__ */ (0, C.jsx)(cFe, { ...m }), /* @__PURE__ */ (0, C.jsx)(QPe, {
@@ -74670,7 +74670,7 @@ function dIe({ data: e, receipt: t, reopenTutorial: n, section: r, diagnostics: 
 			})
 		},
 		{
-			title: "Diagnóstico del sistema",
+			title: "系统诊断",
 			body: (e) => /* @__PURE__ */ (0, C.jsx)("div", {
 				...xG(e),
 				children: e.active ? i : null
@@ -74691,7 +74691,7 @@ function dIe({ data: e, receipt: t, reopenTutorial: n, section: r, diagnostics: 
 		children: [/* @__PURE__ */ (0, C.jsx)("div", {
 			className: "ui-board-local-nav",
 			role: "tablist",
-			"aria-label": "Partición de configuración",
+			"aria-label": "配置分区",
 			"data-section-nav": "",
 			"data-section-items": "",
 			"aria-orientation": d ? "horizontal" : "vertical",
@@ -74725,27 +74725,27 @@ function dIe({ data: e, receipt: t, reopenTutorial: n, section: r, diagnostics: 
 var fIe = [
 	[
 		"strength",
-		"Intensidad",
+		"强度",
 		100
 	],
 	[
 		"noise",
-		"Grano",
+		"颗粒",
 		60
 	],
 	[
 		"speed",
-		"velocidad de deriva",
+		"漂移速度",
 		300
 	],
 	[
 		"soften",
-		"Suavizar",
+		"柔化",
 		100
 	],
 	[
 		"size",
-		"Tamaño",
+		"大小",
 		100
 	]
 ];
@@ -74799,7 +74799,7 @@ function pIe({ host: e, spot: t, index: n, glow: r }) {
 			children: [/* @__PURE__ */ (0, C.jsx)("div", {
 				"data-glow-pills": "",
 				role: "group",
-				"aria-label": "Paleta de colores",
+				"aria-label": "色系",
 				children: Lle.map(([e, t]) => /* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
 					"data-glow-pill": e,
@@ -74810,7 +74810,7 @@ function pIe({ host: e, spot: t, index: n, glow: r }) {
 			}), /* @__PURE__ */ (0, C.jsx)("div", {
 				"data-glow-palette": "",
 				role: "radiogroup",
-				"aria-label": `${i}Color`,
+				"aria-label": `${i}颜色`,
 				children: Rle.map(([e, t, n]) => /* @__PURE__ */ (0, C.jsx)("button", {
 					type: "button",
 					role: "radio",
@@ -74832,28 +74832,28 @@ function mIe({ host: e }) {
 	return /* @__PURE__ */ (0, C.jsxs)("section", {
 		"data-glow-setting": "",
 		id: "homeGlowControls",
-		"aria-label": "Parámetros de resplandor de barra lateral",
+		"aria-label": "侧栏光晕参数",
 		hidden: !t.on,
 		children: [
 			/* @__PURE__ */ (0, C.jsxs)("section", {
 				"data-glow-group": "",
 				children: [
-					/* @__PURE__ */ (0, C.jsx)("h4", { children: "Esquema de color" }),
+					/* @__PURE__ */ (0, C.jsx)("h4", { children: "配色" }),
 					/* @__PURE__ */ (0, C.jsxs)("p", {
 						"data-glow-current": "",
-						children: ["ActualEsquema de color", /* @__PURE__ */ (0, C.jsx)("b", {
+						children: ["当前配色", /* @__PURE__ */ (0, C.jsx)("b", {
 							"data-glow-preset-name": "",
 							children: Nle(t.preset)
 						})]
 					}),
 					/* @__PURE__ */ (0, C.jsx)(Rue, {
 						store: e.store,
-						label: "Colores de resplandor"
+						label: "光晕配色"
 					}),
 					/* @__PURE__ */ (0, C.jsx)("p", {
 						"data-glow-native-note": "",
 						hidden: !n,
-						children: "Este documento usa paneles de vidrio con reflejo propio; el color sigue el tema claro/oscuro. "
+						children: "这一档用每块玻璃自带的反光，颜色跟着明暗主题走。"
 					}),
 					/* @__PURE__ */ (0, C.jsx)("div", {
 						"data-glow-fields": "",
@@ -74877,7 +74877,7 @@ function mIe({ host: e }) {
 				"data-glow-group": "",
 				"data-glow-colours": "",
 				hidden: n,
-				children: [/* @__PURE__ */ (0, C.jsx)("h4", { children: "Color" }), /* @__PURE__ */ (0, C.jsx)("div", {
+				children: [/* @__PURE__ */ (0, C.jsx)("h4", { children: "颜色" }), /* @__PURE__ */ (0, C.jsx)("div", {
 					"data-glow-stops": "",
 					children: dE.map((n, r) => /* @__PURE__ */ (0, C.jsx)(pIe, {
 						host: e,
@@ -74896,7 +74896,7 @@ function mIe({ host: e }) {
 					onClick: () => {
 						e.store.value.homeGlow = Wle(null), e.store.save(), e.changed("glow");
 					},
-					children: "Restaurar predeterminado"
+					children: "恢复默认"
 				})
 			})
 		]
@@ -74908,48 +74908,48 @@ var hIe = {
 	batchSizeSetting: {
 		min: 1,
 		max: 200,
-		unit: "",
+		unit: "个",
 		fallback: 60
 	},
 	hoverDelaySetting: {
 		min: 1,
 		max: 60,
-		unit: "segundo(s)",
+		unit: "秒",
 		optional: !0,
 		fallback: 5
 	},
 	seekSecondsSetting: {
 		min: 1,
 		max: 300,
-		unit: "segundo(s)",
+		unit: "秒",
 		fallback: 10
 	},
 	relatedLimitSetting: {
 		min: 1,
 		max: 60,
-		unit: "",
+		unit: "个",
 		optional: !0,
 		fallback: 20
 	},
 	searchHistoryLimitSetting: {
 		min: 1,
 		max: 50,
-		unit: "Resultado",
+		unit: "条",
 		optional: !0,
 		fallback: 10
 	},
 	followScheduleSetting: {
 		min: 15,
 		max: 10080,
-		unit: "minuto(s)",
+		unit: "分钟",
 		optional: !0,
 		fallback: 60
 	}
 }, BG = (e) => `peach.number.${e}`;
 function VG(e, t) {
-	if (t !== "minuto(s)" || !Number.isInteger(e) || e < 1440) return "";
+	if (t !== "分钟" || !Number.isInteger(e) || e < 1440) return "";
 	let n = e / 1440;
-	return Number.isInteger(n) ? `${n.toLocaleString()} día(s)` : `Aprox. ${n.toFixed(1)} día(s)`;
+	return Number.isInteger(n) ? `${n.toLocaleString()} 天` : `约 ${n.toFixed(1)} 天`;
 }
 function HG({ id: e, label: t, value: n, disabled: r = !1, onApply: i }) {
 	let a = hIe[e], { min: o, max: s, unit: c, fallback: l } = a, u = a.optional === !0, d = (0, S.useRef)(0);
@@ -74960,7 +74960,7 @@ function HG({ id: e, label: t, value: n, disabled: r = !1, onApply: i }) {
 	}, [n]);
 	let b = () => {
 		let t = v.current;
-		t && (!t.value || !t.checkValidity() ? (t.setAttribute("aria-invalid", "true"), _(`Por favor introduce ${o}–${s} número completo(${c})`)) : (t.removeAttribute("aria-invalid"), _(""), d.current = Number(t.value), localStorage.setItem(BG(e), String(d.current)), y.current(d.current)));
+		t && (!t.value || !t.checkValidity() ? (t.setAttribute("aria-invalid", "true"), _(`请输入 ${o}–${s} 的整数（${c}）`)) : (t.removeAttribute("aria-invalid"), _(""), d.current = Number(t.value), localStorage.setItem(BG(e), String(d.current)), y.current(d.current)));
 	}, x = (0, S.useRef)(b);
 	x.current = b, (0, S.useEffect)(() => {
 		let e = v.current;
@@ -74978,7 +74978,7 @@ function HG({ id: e, label: t, value: n, disabled: r = !1, onApply: i }) {
 			type: "checkbox",
 			"data-toggle": "",
 			role: "switch",
-			"aria-label": `Activar${t}`,
+			"aria-label": `启用${t}`,
 			checked: w,
 			disabled: E,
 			onChange: T
@@ -75112,8 +75112,8 @@ function _Ie({ host: e }) {
 						type: "button",
 						"data-sidebar-key": e,
 						"data-sidebar-move": "-1",
-						"aria-label": `Mover arriba ${r}`,
-						title: "Mover arriba",
+						"aria-label": `上移 ${r}`,
+						title: "上移",
 						disabled: o === 0,
 						onClick: () => _(e, -1),
 						children: /* @__PURE__ */ (0, C.jsx)(pO, { name: "chevron-up" })
@@ -75122,8 +75122,8 @@ function _Ie({ host: e }) {
 						type: "button",
 						"data-sidebar-key": e,
 						"data-sidebar-move": "1",
-						"aria-label": `Mover abajo ${r}`,
-						title: "Mover abajo",
+						"aria-label": `下移 ${r}`,
+						title: "下移",
 						disabled: o === i.length - 1,
 						onClick: () => _(e, 1),
 						children: /* @__PURE__ */ (0, C.jsx)(pO, { name: "chevron-down" })
@@ -75132,8 +75132,8 @@ function _Ie({ host: e }) {
 						type: "button",
 						"data-sidebar-key": e,
 						"data-sidebar-hide": "",
-						"aria-label": `Ocultar ${r}`,
-						title: "Ocultar",
+						"aria-label": `隐藏 ${r}`,
+						title: "隐藏",
 						disabled: i.length === 1,
 						onClick: () => {
 							n.length > 1 && t(n.filter((t) => t !== e));
@@ -75164,12 +75164,12 @@ function _Ie({ host: e }) {
 							children: v[1]
 						}),
 						/* @__PURE__ */ (0, C.jsx)(pO, { name: "chevron-down" })
-					] }) : /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(pO, { name: "check" }), /* @__PURE__ */ (0, C.jsx)("span", { children: "TodopáginatodosYaMostrar" })] })
+					] }) : /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(pO, { name: "check" }), /* @__PURE__ */ (0, C.jsx)("span", { children: "全部页面都已显示" })] })
 				}), a.length ? /* @__PURE__ */ (0, C.jsx)("div", {
 					className: "popmenu",
 					"data-sidebar-add-menu": "",
 					role: "listbox",
-					"aria-label": "Página para añadir a seleccionar",
+					"aria-label": "选择要添加的页面",
 					hidden: !0,
 					ref: h,
 					children: a.map(([e, t, n]) => /* @__PURE__ */ (0, C.jsxs)("button", {
@@ -75193,7 +75193,7 @@ function _Ie({ host: e }) {
 				onClick: () => {
 					v && !n.includes(v[0]) && t([...n, v[0]]);
 				},
-				children: "Añadir"
+				children: "添加"
 			})]
 		})]
 	});
@@ -75201,46 +75201,46 @@ function _Ie({ host: e }) {
 //#endregion
 //#region src/react/settings-panel/settings-panel.tsx
 var KG = [
-	["Apariencia y navegación", "ri-palette-line"],
-	["Explorar y reproducir", "ri-play-circle-line"],
-	["JAV y nuevos lanzamientos", "jav"],
-	["Búsqueda y recomendaciones", "ri-search-line"],
-	["Visualización de contenido", "ri-shield-check-line"]
+	["外观与导航", "ri-palette-line"],
+	["浏览与播放", "ri-play-circle-line"],
+	["JAV 与新作", "jav"],
+	["搜索与推荐", "ri-search-line"],
+	["内容显示", "ri-shield-check-line"]
 ], vIe = [
-	["seed", "Aleatorio"],
-	["rating", "Puntuación"],
-	["o", "Contador de orgasmos"],
-	["plays", "Reproducciones"],
-	["dur", "Duración"],
-	["size", "Tamaño"],
-	["new", "Fecha de catalogación"],
-	["played", "Tiempo de reproducción"]
-], yIe = [["desc", "Descendente"], ["asc", "Ascendente"]], bIe = [[
+	["seed", "随机"],
+	["rating", "评分"],
+	["o", "高潮计数"],
+	["plays", "观看次数"],
+	["dur", "时长"],
+	["size", "体积"],
+	["new", "入库时间"],
+	["played", "观看时间"]
+], yIe = [["desc", "降序"], ["asc", "升序"]], bIe = [[
 	"cover",
-	"OficialPortada",
+	"官方封面",
 	""
 ], [
 	"thumbnail",
-	"Vista previaImagen",
+	"预览图",
 	""
 ]], xIe = [
 	[
 		"feedHideGroupSetting",
 		"feedHideGroupCompilations",
-		"Colección grande",
-		"OcultarColección grande"
+		"大合集",
+		"隐藏大合集"
 	],
 	[
 		"feedHideSoloSetting",
 		"feedHideSoloCompilations",
-		"Colección individual",
-		"OcultarColección individual"
+		"单人合集",
+		"隐藏单人合集"
 	],
 	[
 		"feedHideExcerptSetting",
 		"feedHideExcerpts",
-		"Segmento",
-		"OcultarSegmento"
+		"切片",
+		"隐藏切片"
 	]
 ], SIe = "button:not([disabled]),input:not([disabled]),textarea:not([disabled]),a[href]", qG = null, JG = {
 	open: !1,
@@ -75363,7 +75363,7 @@ function jIe({ tab: e, epoch: t, configurable: n, openConfiguration: r, onSelect
 		"data-settings-nav": "",
 		"data-glass-pane": "",
 		role: "tablist",
-		"aria-label": "Sección de configuración",
+		"aria-label": "设置分区",
 		ref: a,
 		onPointerLeave: (e) => {
 			e.pointerType !== "touch" && u(l.current[c.current], !0);
@@ -75378,7 +75378,7 @@ function jIe({ tab: e, epoch: t, configurable: n, openConfiguration: r, onSelect
 			/* @__PURE__ */ (0, C.jsx)("p", {
 				"data-settings-nav-caption": "",
 				role: "presentation",
-				children: "Configuración"
+				children: "设置"
 			}),
 			KG.map(([t, n], r) => /* @__PURE__ */ (0, C.jsxs)("button", {
 				type: "button",
@@ -75404,10 +75404,10 @@ function jIe({ tab: e, epoch: t, configurable: n, openConfiguration: r, onSelect
 					type: "button",
 					disabled: n !== !0,
 					onClick: r,
-					title: n === !1 ? "Por favor abre Configuración de Peach en el dispositivo donde se ejecuta Peach" : void 0,
+					title: n === !1 ? "请在运行 Peach 的设备上打开 Peach 配置" : void 0,
 					children: [
 						/* @__PURE__ */ (0, C.jsx)(pO, { name: "folder-cog" }),
-						"Configuración de Peach",
+						"Peach 配置",
 						/* @__PURE__ */ (0, C.jsx)(pO, { name: "chevron-right" })
 					]
 				})
@@ -75498,7 +75498,7 @@ function MIe({ host: e, view: t }) {
 						children: KG[t.tab][0]
 					}), /* @__PURE__ */ (0, C.jsx)(DP, {
 						id: "settingsClose",
-						label: "DesactivarConfiguración",
+						label: "关闭设置",
 						onPress: () => $G()
 					})]
 				}),
@@ -75520,11 +75520,11 @@ function MIe({ host: e, view: t }) {
 							tab: t.tab,
 							children: [
 								/* @__PURE__ */ (0, C.jsx)(iK, {
-									title: "Tema",
+									title: "主题",
 									children: /* @__PURE__ */ (0, C.jsx)(aG, {
 										id: "themeSetting",
 										name: "theme",
-										legend: "Tema",
+										legend: "主题",
 										options: e.themeOptions,
 										value: n.theme,
 										attr: "data-theme-choice",
@@ -75539,7 +75539,7 @@ function MIe({ host: e, view: t }) {
 									"data-setting-row": "",
 									children: [/* @__PURE__ */ (0, C.jsx)("label", {
 										htmlFor: "glassContrastSetting",
-										children: /* @__PURE__ */ (0, C.jsx)("b", { children: "aumentar contraste" })
+										children: /* @__PURE__ */ (0, C.jsx)("b", { children: "增加对比度" })
 									}), /* @__PURE__ */ (0, C.jsx)("input", {
 										type: "checkbox",
 										id: "glassContrastSetting",
@@ -75551,7 +75551,7 @@ function MIe({ host: e, view: t }) {
 								}),
 								/* @__PURE__ */ (0, C.jsx)(rK, {
 									id: "uiSoundsSetting",
-									title: "Sonidos de interfaz",
+									title: "界面音效",
 									checked: n.uiSounds,
 									onToggle: (t) => {
 										n.uiSounds = t, p(), e.changed("uiSounds");
@@ -75559,7 +75559,7 @@ function MIe({ host: e, view: t }) {
 								}),
 								/* @__PURE__ */ (0, C.jsx)(rK, {
 									id: "homeGlowSetting",
-									title: "Resplandor de barra lateral",
+									title: "侧栏光晕",
 									checked: n.homeGlow.on,
 									onToggle: (t) => {
 										n.homeGlow.on = t, p(), e.changed("glow");
@@ -75571,7 +75571,7 @@ function MIe({ host: e, view: t }) {
 									"aria-labelledby": "sidebarOrderTitle",
 									children: [/* @__PURE__ */ (0, C.jsx)("span", { children: /* @__PURE__ */ (0, C.jsx)("b", {
 										id: "sidebarOrderTitle",
-										children: "Entradas de navegación y orden"
+										children: "导航入口与顺序"
 									}) }), /* @__PURE__ */ (0, C.jsx)(_Ie, { host: e })]
 								})
 							]
@@ -75595,12 +75595,12 @@ function MIe({ host: e, view: t }) {
 									epoch: d
 								}),
 								/* @__PURE__ */ (0, C.jsx)(iK, {
-									title: "Cantidad de recomendaciones relacionadas",
+									title: "相关推荐数量",
 									children: /* @__PURE__ */ (0, C.jsx)("div", {
 										id: "relatedLimitSetting",
 										children: /* @__PURE__ */ (0, C.jsx)(HG, {
 											id: "relatedLimitSetting",
-											label: "Cantidad de recomendaciones relacionadas",
+											label: "相关推荐数量",
 											value: n.relatedLimit,
 											onApply: (e) => {
 												n.relatedLimit = e, p();
@@ -75609,14 +75609,14 @@ function MIe({ host: e, view: t }) {
 									})
 								}),
 								/* @__PURE__ */ (0, C.jsx)(iK, {
-									title: "PreferenciasyRegistro",
+									title: "口味与记录",
 									children: /* @__PURE__ */ (0, C.jsx)("div", {
 										className: "peach-react",
 										children: /* @__PURE__ */ (0, C.jsx)(_A, {
 											variant: "secondary",
 											href: "/taste",
 											onClick: () => $G(!1),
-											children: "AbrirPreferenciasyRegistro"
+											children: "打开口味与记录"
 										})
 									})
 								})
@@ -75627,10 +75627,10 @@ function MIe({ host: e, view: t }) {
 							tab: t.tab,
 							children: /* @__PURE__ */ (0, C.jsx)(rK, {
 								id: "censorSetting",
-								title: "Modo SFW",
+								title: "SFW 模式",
 								describedBy: "sfwDescription",
 								checked: e.censored(),
-								description: "Ocultar contenido sensible, pausar vista previa al pasar el ratón. ",
+								description: "隐藏敏感画面，停止悬停预览。",
 								onToggle: (t) => e.setCensored(t)
 							})
 						})
@@ -75648,7 +75648,7 @@ function NIe(e, t) {
 		iconClass: "gselectmark"
 	}) + "<span data-sort-direction-label></span>"), Io(n, t ? "a" : "b");
 	let r = n.querySelector("[data-sort-direction-label]");
-	r && (r.textContent = t ? "Ascendente" : "Descendente");
+	r && (r.textContent = t ? "升序" : "降序");
 }
 function PIe({ host: e, tab: t, epoch: n }) {
 	let r = e.store.value, i = () => e.store.save(), a = r.defaultSort === "seed", o = r.defaultSortDirection === "asc";
@@ -75657,12 +75657,12 @@ function PIe({ host: e, tab: t, epoch: n }) {
 		tab: t,
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(iK, {
-				title: "cargar obras por lote",
+				title: "每批加载作品",
 				children: /* @__PURE__ */ (0, C.jsx)("div", {
 					id: "batchSizeSetting",
 					children: /* @__PURE__ */ (0, C.jsx)(HG, {
 						id: "batchSizeSetting",
-						label: "obras por lote",
+						label: "每批作品",
 						value: r.batchSize,
 						onApply: (t) => {
 							r.batchSize = t || 60, i(), e.changed("batchSize");
@@ -75671,13 +75671,13 @@ function PIe({ host: e, tab: t, epoch: n }) {
 				})
 			}),
 			/* @__PURE__ */ (0, C.jsx)(iK, {
-				title: "PredeterminadoOrdenar",
+				title: "默认排序",
 				kind: "sort",
 				children: /* @__PURE__ */ (0, C.jsxs)("div", {
 					"data-setting-sort-controls": "",
 					children: [/* @__PURE__ */ (0, C.jsx)(oG, {
 						id: "defaultSortSetting",
-						label: "PredeterminadoOrdenar",
+						label: "默认排序",
 						options: vIe,
 						value: r.defaultSort,
 						epoch: n,
@@ -75686,7 +75686,7 @@ function PIe({ host: e, tab: t, epoch: n }) {
 						}
 					}), /* @__PURE__ */ (0, C.jsx)(oG, {
 						id: "defaultSortDirectionSetting",
-						label: "PredeterminadoOrdenardirección",
+						label: "默认排序方向",
 						options: yIe,
 						value: o ? "asc" : "desc",
 						hidden: a,
@@ -75700,11 +75700,11 @@ function PIe({ host: e, tab: t, epoch: n }) {
 				})
 			}),
 			/* @__PURE__ */ (0, C.jsx)(iK, {
-				title: "VideosTarjetaTamaño",
+				title: "视频卡片大小",
 				children: /* @__PURE__ */ (0, C.jsx)(aG, {
 					id: "javSizeSetting",
 					name: "video-size",
-					legend: "VideosTarjetaTamaño",
+					legend: "视频卡片大小",
 					options: e.videoLayouts,
 					value: e.videoLayout(),
 					attr: "data-video-layout",
@@ -75729,14 +75729,14 @@ function FIe({ host: e, tab: t, epoch: n }) {
 		children: [
 			/* @__PURE__ */ (0, C.jsx)("h4", {
 				"data-settings-subheading": "",
-				children: "ObraMostrar"
+				children: "作品显示"
 			}),
 			/* @__PURE__ */ (0, C.jsx)(iK, {
-				title: "PredeterminadoImágenes",
+				title: "默认图片",
 				children: /* @__PURE__ */ (0, C.jsx)(aG, {
 					id: "javImageSetting",
 					name: "jav-image",
-					legend: "PredeterminadoImágenes",
+					legend: "默认图片",
 					options: bIe,
 					value: r.javImage,
 					attr: "data-jav-image-choice",
@@ -75750,7 +75750,7 @@ function FIe({ host: e, tab: t, epoch: n }) {
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("label", {
 				"data-setting-row": "",
-				children: [/* @__PURE__ */ (0, C.jsx)("span", { children: /* @__PURE__ */ (0, C.jsx)("b", { children: "FusionarVolumenyVersión" }) }), /* @__PURE__ */ (0, C.jsx)("input", {
+				children: [/* @__PURE__ */ (0, C.jsx)("span", { children: /* @__PURE__ */ (0, C.jsx)("b", { children: "合并分卷与版本" }) }), /* @__PURE__ */ (0, C.jsx)("input", {
 					type: "checkbox",
 					id: "groupCollapseSetting",
 					"data-toggle": "",
@@ -75763,11 +75763,11 @@ function FIe({ host: e, tab: t, epoch: n }) {
 			}),
 			/* @__PURE__ */ (0, C.jsx)("h4", {
 				"data-settings-subheading": "",
-				children: "NovedadesMostrar"
+				children: "新作显示"
 			}),
 			/* @__PURE__ */ (0, C.jsx)(rK, {
 				id: "feedAutoScrollSetting",
-				title: "Desplazar automáticamente a novedades",
+				title: "新作自动滚动",
 				checked: r.feedAutoScroll,
 				onToggle: (t) => {
 					r.feedAutoScroll = t, i(), e.changed("feedAutoScroll");
@@ -75787,9 +75787,9 @@ function IIe({ host: e, id: t, settingKey: n, label: r, title: i }) {
 	let a = rB(), [o, s] = (0, S.useState)(null), c = (0, S.useRef)(null), l = e.store.value, u = (t) => {
 		s(t), Ts(c.current), a.mutate({ [n]: t }, {
 			onSuccess: (i) => {
-				l[n] = i[n] === !0, e.store.save(), e.changed("feedCompilations"), e.receipt(t ? `Novedades ya contraídas: ${r}` : `Novedades ya listadas: ${r}`);
+				l[n] = i[n] === !0, e.store.save(), e.changed("feedCompilations"), e.receipt(t ? `新作已收起${r}` : `新作已列出${r}`);
 			},
-			onError: (t) => e.failure(`Guardar${r}abrircerrar`, t),
+			onError: (t) => e.failure(`保存${r}开关`, t),
 			onSettled: () => {
 				s(null), Ts(c.current, !1);
 			}
@@ -75812,12 +75812,12 @@ function LIe({ host: e, epoch: t }) {
 	let n = e.store.value, r = () => e.store.save();
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 		/* @__PURE__ */ (0, C.jsx)(iK, {
-			title: "Latencia de vista previa al pasar el ratón",
+			title: "悬停预览延迟",
 			children: /* @__PURE__ */ (0, C.jsx)("div", {
 				id: "hoverDelaySetting",
 				children: /* @__PURE__ */ (0, C.jsx)(HG, {
 					id: "hoverDelaySetting",
-					label: "Latencia de vista previa al pasar el ratón",
+					label: "悬停预览延迟",
 					value: n.hoverDelaySeconds,
 					onApply: (t) => {
 						n.hoverDelaySeconds = iE(t, 0, 60, 5), r(), e.changed("hoverDelay");
@@ -75827,7 +75827,7 @@ function LIe({ host: e, epoch: t }) {
 		}),
 		/* @__PURE__ */ (0, C.jsx)(rK, {
 			id: "detailAutoplaySetting",
-			title: "Abrir detallesReproducción automática",
+			title: "打开详情自动播放",
 			checked: n.detailAutoplay,
 			onToggle: (e) => {
 				n.detailAutoplay = e, r();
@@ -75835,19 +75835,19 @@ function LIe({ host: e, epoch: t }) {
 		}),
 		/* @__PURE__ */ (0, C.jsx)(rK, {
 			id: "miniplayerSetting",
-			title: "Reproducir en ventana flotante después de abrir detalles",
+			title: "离开详情后小窗播放",
 			checked: n.miniplayer,
 			onToggle: (t) => {
 				n.miniplayer = t, r(), e.changed("miniplayer");
 			}
 		}),
 		/* @__PURE__ */ (0, C.jsx)(iK, {
-			title: "Avance rápido / Retroceso rápidopasolargo",
+			title: "快进 / 快退步长",
 			children: /* @__PURE__ */ (0, C.jsx)("div", {
 				id: "seekSecondsSetting",
 				children: /* @__PURE__ */ (0, C.jsx)(HG, {
 					id: "seekSecondsSetting",
-					label: "Avance rápido / Retroceso rápido",
+					label: "快进 / 快退",
 					value: n.seekSeconds,
 					onApply: (t) => {
 						n.seekSeconds = t || 10, r(), e.changed("seekSeconds");
@@ -75860,12 +75860,12 @@ function LIe({ host: e, epoch: t }) {
 function RIe({ host: e, epoch: t }) {
 	let n = e.store.value, r = rB();
 	return /* @__PURE__ */ (0, C.jsx)(iK, {
-		title: "Historial de búsquedaCantidad",
+		title: "搜索记录数量",
 		children: /* @__PURE__ */ (0, C.jsx)("div", {
 			id: "searchHistoryLimitSetting",
 			children: /* @__PURE__ */ (0, C.jsx)(HG, {
 				id: "searchHistoryLimitSetting",
-				label: "Historial de búsqueda",
+				label: "搜索记录",
 				value: n.searchHistoryLimit,
 				onApply: (t) => {
 					n.searchHistoryLimit = iE(t, 0, 50, 10), e.store.save(), e.changed("searchHistoryLimit"), r.mutate({ searchHistoryLimit: n.searchHistoryLimit }, { onError: () => {} });
@@ -76084,9 +76084,9 @@ function JIe(e, t, n, r, i) {
 		};
 	};
 	return [
-		s("Fuente", "src", t.locations, "loc", !0),
+		s("来源", "src", t.locations, "loc", !0),
 		t.duration ? {
-			title: "Duración",
+			title: "时长",
 			kind: "meta",
 			active: !1,
 			body: /* @__PURE__ */ (0, C.jsx)(_K, {
@@ -76094,13 +76094,13 @@ function JIe(e, t, n, r, i) {
 				filters: n
 			})
 		} : null,
-		s("Origen", "general", t.regions, "region", !0),
-		s("Formato de imagen", "meta", t.orientations, "orient", !1),
-		s("Creador", "artist", t.creators, "creator", !1, "creator"),
-		s("Etiquetas de contenido", "general", t.tags, "tag", !1, "tag"),
-		s("Propiedades del video", "meta", t.tech, "tag", !1, "tech"),
+		s("产地", "general", t.regions, "region", !0),
+		s("画幅", "meta", t.orientations, "orient", !1),
+		s("创作者", "artist", t.creators, "creator", !1, "creator"),
+		s("内容标签", "general", t.tags, "tag", !1, "tag"),
+		s("影片属性", "meta", t.tech, "tag", !1, "tech"),
 		t.followTags.length ? {
-			title: "SeguirEtiqueta",
+			title: "关注标签",
 			kind: "online",
 			active: !1,
 			body: /* @__PURE__ */ (0, C.jsx)(hK, {
@@ -76116,7 +76116,7 @@ function YIe(e, t, n) {
 	let r = t.providers || [], i = dK(n, "provider"), a = new Set(t.selected);
 	return [
 		r.length ? {
-			title: "Fuente",
+			title: "来源",
 			kind: "src",
 			active: r.some((e) => i.includes(e.value)),
 			body: /* @__PURE__ */ (0, C.jsx)(mK, {
@@ -76130,7 +76130,7 @@ function YIe(e, t, n) {
 			})
 		} : null,
 		t.duration ? {
-			title: "Duración",
+			title: "时长",
 			kind: "meta",
 			active: !1,
 			body: /* @__PURE__ */ (0, C.jsx)(_K, {
@@ -76140,7 +76140,7 @@ function YIe(e, t, n) {
 			})
 		} : null,
 		t.tags.length ? {
-			title: "Etiquetas de contenido",
+			title: "内容标签",
 			kind: "online",
 			active: t.tags.some((e) => a.has(e.value)),
 			body: /* @__PURE__ */ (0, C.jsx)(hK, {
@@ -76273,7 +76273,7 @@ function QIe({ epoch: e, title: t, rows: n, latest: r, limit: i, filterKey: a, s
 		ref: g,
 		"data-sidebar-more": a,
 		"aria-expanded": _,
-		"aria-label": `${_ ? "Colapsar" : "ExpandirTodo"}${t}`,
+		"aria-label": `${_ ? "收起" : "展开全部"}${t}`,
 		onClick: () => {
 			let e = g.current, t = e?.closest("[data-sidebar-collapse]"), i = c.scroll;
 			e && t && (h.current = {
@@ -76341,7 +76341,7 @@ function _K({ host: e, filters: t, commit: n = e.setDuration }) {
 		"data-range-end": e,
 		"data-range-active": c === e ? "" : void 0,
 		"aria-hidden": "true",
-		children: e === "max" && t >= oK ? "Sin límite" : `${t} minuto(s)`
+		children: e === "max" && t >= oK ? "不限" : `${t} 分钟`
 	});
 	return /* @__PURE__ */ (0, C.jsx)("div", {
 		"data-sidebar-duration": "",
@@ -76359,7 +76359,7 @@ function _K({ host: e, filters: t, commit: n = e.setDuration }) {
 					max: oK,
 					step: "5",
 					value: u,
-					"aria-label": "Duración mínima (minutos)",
+					"aria-label": "最短时长（分钟）",
 					ref: p,
 					onChange: (e) => g("min", Number(e.currentTarget.value))
 				}),
@@ -76370,7 +76370,7 @@ function _K({ host: e, filters: t, commit: n = e.setDuration }) {
 					max: oK,
 					step: "5",
 					value: d,
-					"aria-label": "El más largoDuración(minuto(s))",
+					"aria-label": "最长时长（分钟）",
 					ref: m,
 					onChange: (e) => g("max", Number(e.currentTarget.value))
 				}),
@@ -76383,29 +76383,29 @@ function _K({ host: e, filters: t, commit: n = e.setDuration }) {
 //#endregion
 //#region src/configuration-skeleton.ts
 var $Ie = (e, t) => `<section aria-label="${e}" class="flex w-full flex-col gap-2"><p class="w-full px-3 text-body-2-medium text-text-secondary">${e}</p><div class="flex w-full flex-col rounded-2xl bg-background-secondary-default pl-3">${t}<div class="-ml-3 flex flex-wrap items-center justify-end gap-3 rounded-b-2xl border-t border-separator-border bg-card-footer px-3 py-3">${vo({
-	label: "Guardar configuración",
+	label: "保存配置",
 	attrs: "disabled data-skeleton-action"
 })}</div></div></section>`, vK = (e, t = "", n = "ui-configuration-skeleton-toggle") => `<div class="flex min-h-[52px] w-full items-center justify-between gap-4 py-2.5 pr-2.5 border-b border-separator-border last:border-b-0"><div class="flex min-w-0 flex-col"><p class="text-body-regular text-text-primary">${e}</p>${t ? `<p class="text-body-2-regular text-text-secondary">${t}</p>` : ""}</div><span class="skeleton ${n}"></span></div>`;
-function eLe(e = "Biblioteca y catalogación") {
-	let t = `<div class="ui-board-local-nav" data-section-nav data-section-items>${Object.values(HO).map((t) => `<button type="button" tabindex="-1" aria-selected="${t === e}">${t}</button>`).join("")}</div>`, n = $Ie("Directorio de medios", `<div class="flex flex-col gap-3 py-4 pr-3">${vK("Directorio de medios", "", "ui-configuration-skeleton-select")}${vK("Nombre de la biblioteca", "", "ui-configuration-skeleton-select")}</div>`);
-	return `<div class="peach-react"><div class="ui-configpage">${t}<div class="flex min-w-0 flex-col gap-6">${e === "Diagnóstico del sistema" ? cU() : n}</div></div></div>`;
+function eLe(e = "媒体库与入库") {
+	let t = `<div class="ui-board-local-nav" data-section-nav data-section-items>${Object.values(HO).map((t) => `<button type="button" tabindex="-1" aria-selected="${t === e}">${t}</button>`).join("")}</div>`, n = $Ie("媒体目录", `<div class="flex flex-col gap-3 py-4 pr-3">${vK("媒体目录", "", "ui-configuration-skeleton-select")}${vK("媒体库名称", "", "ui-configuration-skeleton-select")}</div>`);
+	return `<div class="peach-react"><div class="ui-configpage">${t}<div class="flex min-w-0 flex-col gap-6">${e === "系统诊断" ? cU() : n}</div></div></div>`;
 }
 //#endregion
 //#region src/management-skeletons.ts
 var yK = "relative overflow-hidden skeleton-sheen bg-background-tertiary-default rounded-lg", bK = (e = "60%") => `<span class="${yK} inline-block max-w-full align-middle" style="width:${e};height:1em"></span>`, xK = "disabled data-skeleton-action", SK = "min-w-0 rounded-2-5xl bg-background-secondary-default p-5 flex flex-col gap-4 max-sm:p-4";
 function tLe() {
 	let e = [
-		"Videos de la colección",
-		"Visto",
-		"Etiquetas de contenido",
-		"Espacio usado"
+		"馆藏视频",
+		"看过",
+		"内容标签",
+		"使用空间"
 	].map((e, t) => `
     <div class="min-w-0 rounded-2xl shadow-card flex flex-col overflow-hidden pt-4 text-left ${t === 0 ? "ring-2 ring-border-focus-ring bg-background-primary-default" : "bg-background-secondary-default"}">
       <span class="flex min-w-0 items-center gap-2 px-4 text-body-regular text-text-secondary max-sm:gap-1.5 max-sm:px-3"><i class="${yK} size-7 max-sm:size-6"></i>${e}</span>
       <b class="px-4 pt-3 pb-4 text-title-1-medium max-sm:px-3 max-sm:pb-3 max-sm:text-title-3-medium">${bK("4em")}</b>
       <small class="mt-auto block min-h-9.5 bg-card-footer px-4 py-2.5 text-caption-1-regular max-sm:px-3 max-sm:py-2">${bK("6em")}</small>
     </div>`).join(""), t = (e) => `<section class="${SK}" data-stats-chart>
-    <header class="flex flex-wrap items-end justify-between gap-x-4 gap-y-1"><span class="flex min-w-0 flex-col gap-1"><h3 class="text-title-2-medium text-text-primary">${e}</h3><b class="text-display-4-medium">${bK("4em")}</b></span><small class="text-caption-1-regular text-text-secondary"> video(s)</small></header>
+    <header class="flex flex-wrap items-end justify-between gap-x-4 gap-y-1"><span class="flex min-w-0 flex-col gap-1"><h3 class="text-title-2-medium text-text-primary">${e}</h3><b class="text-display-4-medium">${bK("4em")}</b></span><small class="text-caption-1-regular text-text-secondary">个视频</small></header>
     <svg class="h-75 w-full max-sm:h-65 text-background-tertiary-default" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="12">${[
 		76,
 		54,
@@ -76414,21 +76414,21 @@ function tLe() {
     <div class="inline-grid w-full grid-cols-3 gap-2 max-sm:grid-cols-2">${Array.from({ length: 3 }, () => `<div class="flex min-w-0 flex-col gap-1 rounded-xl bg-background-tertiary-default p-2.5"><span class="text-caption-1-regular">${bK()}</span><b class="text-title-2-medium">${bK("3em")}</b><small class="text-caption-1-regular">${bK()}</small></div>`).join("")}</div>
   </section>`;
 	return `<div class="peach-react"><div class="mx-auto flex w-full max-w-board flex-col gap-8">
-    <p class="text-caption-1-regular text-text-secondary">Base de datosEn procesoActualEstadísticas · ${bK("12em")}</p>
+    <p class="text-caption-1-regular text-text-secondary">数据库中的当前统计 · ${bK("12em")}</p>
     <div class="flex flex-col gap-4"><div class="inline-grid w-full grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" data-stats-metrics>${e}</div>
-      <div class="flex flex-col gap-5"><div class="inline-grid w-full gap-5 md:grid-cols-2">${t("Nube y local")}${t("Biblioteca de medios")}</div>
+      <div class="flex flex-col gap-5"><div class="inline-grid w-full gap-5 md:grid-cols-2">${t("网盘与本地")}${t("媒体库")}</div>
         <div class="inline-grid w-full gap-5 md:grid-cols-2 xl:grid-cols-3">${[
-		"Duración",
-		"Calidad de imagen",
-		"Tipo de archivo"
+		"时长",
+		"画质",
+		"文件类型"
 	].map((e) => `<section class="${SK}"><h3 class="text-title-2-medium">${e}</h3><div class="${yK} h-64"></div></section>`).join("")}</div>
       </div>
     </div>
     <section class="rounded-surface bg-background-secondary-default dark:bg-background-primary-default">
       <div class="flex flex-wrap gap-3 px-4 pt-3 text-body-regular">${[
-		"Etiquetas de contenido",
-		"Visto recientemente",
-		"Fuente de etiqueta"
+		"内容标签",
+		"最近看过",
+		"标签来源"
 	].map((e) => `<span>${e}</span>`).join("")}</div>
       <div class="flex flex-col gap-3 px-4 pt-3.5 pb-4">${Array.from({ length: 5 }, () => `<div class="${yK} h-7"></div>`).join("")}</div>
     </section>
@@ -76436,10 +76436,10 @@ function tLe() {
 }
 function nLe() {
 	let e = (e) => `<div class="inline-flex w-max max-w-full items-center gap-0.5 overflow-x-auto rounded-2lg bg-background-tertiary-default p-1" data-taste-segments>${e.map((e, t) => `<span class="flex min-h-7 flex-none items-center gap-1.5 rounded-md px-2.5 py-1 text-body-medium whitespace-nowrap text-text-secondary data-selected:bg-background-primary-default data-selected:text-text-primary data-selected:shadow-card dark:data-selected:bg-background-primary-hover"${t === 0 ? " data-selected=\"true\"" : ""}>${e}</span>`).join("")}</div>`, t = [
-		"Historial de navegación",
-		"Dimensión de preferencias",
-		"Pistas de navegación",
-		"Exportación privada"
+		"浏览记录",
+		"口味维度",
+		"浏览线索",
+		"私有导出"
 	].map((e) => `
     <div class="min-w-0 rounded-2xl shadow-card bg-background-secondary-default flex flex-col overflow-hidden pt-4 text-left">
       <span class="flex min-w-0 items-center gap-2 px-4 text-body-regular text-text-secondary max-sm:gap-1.5 max-sm:px-3"><i class="${yK} size-7 max-sm:size-6"></i>${e}</span>
@@ -76448,10 +76448,10 @@ function nLe() {
     </div>`).join(""), n = Array.from({ length: 6 }, () => `<div class="${yK} h-6"></div>`).join(""), r = (e) => `<section class="${SK}"><h3 class="text-title-2-medium text-text-primary">${e}</h3><div class="${yK} h-40"></div></section>`;
 	return `<div class="peach-react"><div class="mx-auto flex w-full max-w-board flex-col gap-8">
     <div class="flex flex-col gap-5">
-      <div class="flex flex-wrap items-center justify-between gap-3">${e(["Historial del navegador", "Interno de Peach"])}
-        <div class="flex flex-wrap items-center gap-2">${bo("Todo el tiempo")}<span data-button-group data-split-button data-variant="primary">${vo({
+      <div class="flex flex-wrap items-center justify-between gap-3">${e(["浏览器记录", "Peach 内部"])}
+        <div class="flex flex-wrap items-center gap-2">${bo("全部时间")}<span data-button-group data-split-button data-variant="primary">${vo({
 		glyph: "compass",
-		label: "leerExplorar dispositivoHistorial",
+		label: "读取浏览器历史",
 		attrs: xK
 	})}${vo({
 		glyph: "chevron-down",
@@ -76460,7 +76460,7 @@ function nLe() {
       </div>
       <div class="inline-grid w-full grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" data-taste-metrics>${t}</div>
       <section class="min-w-0 bg-background-secondary-default rounded-2xl shadow-card p-5 flex flex-col gap-4 md:flex-row md:gap-6" data-taste-portrait>
-        <div class="flex shrink-0 flex-col gap-2 pb-5 md:w-80 md:pr-6 md:pb-0"><span class="text-caption-1-regular text-text-secondary">Perfil del navegador</span>
+        <div class="flex shrink-0 flex-col gap-2 pb-5 md:w-80 md:pr-6 md:pb-0"><span class="text-caption-1-regular text-text-secondary">浏览器画像</span>
           <svg class="h-70 w-full text-background-tertiary-default" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="2">${[
 		70,
 		47,
@@ -76476,14 +76476,14 @@ function nLe() {
           <small class="text-caption-1-regular">${bK("8em")}</small></div>
         <div class="flex min-w-0 grow flex-col justify-around gap-3">${n}</div>
       </section>
-      <div class="inline-grid w-full items-start gap-5 lg:grid-cols-2">${r("Tiempo de actividad de navegación")}${r("Actividad diaria")}</div>
-      <section class="${SK}"><h3 class="text-title-2-medium text-text-primary">Fuentes de pistas de creador</h3><div class="${yK} h-72 max-sm:h-48"></div></section>
+      <div class="inline-grid w-full items-start gap-5 lg:grid-cols-2">${r("浏览活跃时间")}${r("每日活跃")}</div>
+      <section class="${SK}"><h3 class="text-title-2-medium text-text-primary">创作者线索来源</h3><div class="${yK} h-72 max-sm:h-48"></div></section>
       <section class="min-w-0 bg-background-secondary-default rounded-2xl shadow-card flex flex-col">
         <div class="px-4 pt-3">${e([
-		"Etiqueta",
-		"Creador",
-		"Sitios más visitados",
-		"Pistas de navegación"
+		"标签",
+		"创作者",
+		"常访问网站",
+		"浏览线索"
 	])}</div>
         <div class="flex flex-col gap-3 px-4 pt-3.5 pb-4">${Array.from({ length: 5 }, () => `<div class="${yK} h-7"></div>`).join("")}</div>
       </section>
@@ -76500,9 +76500,9 @@ function rLe() {
     <div class="flex flex-wrap items-center gap-3 bg-background-tertiary-default p-5 max-compact:p-4 dark:bg-background-secondary-default">
       <b class="text-title-2-medium">${bK("5em")}</b><span class="font-mono text-caption-1-regular leading-5">${bK("8em")}</span>
       <span class="ml-auto flex flex-wrap gap-2 max-compact:ml-0 max-compact:w-full">${[
-		"Mantener el más grande",
-		"Mantener el más largo",
-		"Reciclar grupo completo"
+		"留最大",
+		"留最长",
+		"整组回收"
 	].map((e) => vo({
 		variant: "secondary",
 		size: "small",
@@ -76512,9 +76512,9 @@ function rLe() {
     </div>${e.repeat(2)}</section>`;
 	return `<div class="peach-react"><div class="mx-auto w-full max-w-board pb-10.5">
     <div data-collection-summary class="mb-5 flex items-end justify-between gap-4 rounded-surface bg-background-secondary-default px-6 py-5 max-compact:flex-col max-compact:items-start max-compact:gap-3 max-compact:p-4 dark:bg-background-primary-default">
-      <div class="flex min-w-0 flex-col gap-2"><span class="text-body-regular text-text-secondary">Contenido duplicado</span><strong class="text-display-4-medium">${bK("4em")}</strong></div><p class="text-body-regular text-text-secondary">${bK("12em")}</p>
+      <div class="flex min-w-0 flex-col gap-2"><span class="text-body-regular text-text-secondary">重复内容</span><strong class="text-display-4-medium">${bK("4em")}</strong></div><p class="text-body-regular text-text-secondary">${bK("12em")}</p>
     </div>
-    <div data-filter-glass data-glass-pane class="mb-5.5 flex flex-wrap items-center gap-x-2.5 gap-y-2 px-4 py-2.5"><h3 class="mr-1 text-body-medium">Conservar en lote</h3>${["Conservar todo: mantener el más grande", "Conservar todo: mantener el más largo"].map((e) => `<button ${xK} class="h-7.5 rounded-full border border-separator-border px-3 text-body-2-medium">${e}</button>`).join("")}</div>
+    <div data-filter-glass data-glass-pane class="mb-5.5 flex flex-wrap items-center gap-x-2.5 gap-y-2 px-4 py-2.5"><h3 class="mr-1 text-body-medium">批量保留</h3>${["全部保留最大", "全部保留最长"].map((e) => `<button ${xK} class="h-7.5 rounded-full border border-separator-border px-3 text-body-2-medium">${e}</button>`).join("")}</div>
     ${t.repeat(2)}
   </div></div>`;
 }
@@ -76526,33 +76526,33 @@ function iLe() {
     <footer class="flex justify-end">${vo({
 		variant: "secondary",
 		size: "small",
-		label: "Ver versión",
+		label: "查看版本",
 		attrs: xK
 	})}</footer>
   </li>`;
 	return `<div class="peach-react"><div class="mx-auto flex w-full max-w-board flex-col gap-8">
-    ${Eo("Pendiente de actualización")}
+    ${Eo("待升级")}
     <ul class="card-grid-cover gap-5">${e.repeat(6)}</ul>
   </div></div>`;
 }
 //#endregion
 //#region src/board-skeleton.ts
 var CK = (e = "60%") => `<span class="skeleton" style="width:${e}"></span>`, wK = () => `${CK("80%")}${CK("48%")}`, TK = (e, t) => e.repeat(t), EK = "disabled data-skeleton-action", DK = (e) => `<span class="skeleton skeleton-text" style="width:${e}"></span>`, OK = (e, t, n = !1) => `<span class="skeleton" style="width:${e}px;height:${t}px;flex:none${n ? ";border-radius:50%" : ""}"></span>`, aLe = "min-w-0 bg-background-secondary-default rounded-2xl shadow-card flex flex-col gap-3 px-6 py-5 max-sm:gap-2 max-sm:p-4", kK = () => `<div class="inline-grid w-full grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-6">${[
-	"Seguir creador",
-	"Activar fuente",
-	"Error de verificación",
-	"Actualizaciones sin ver",
-	"Suscripción JAV",
-	"Nuevas obras sin ver"
+	"关注创作者",
+	"启用来源",
+	"检查失败",
+	"未看更新",
+	"JAV 订阅",
+	"未看新作"
 ].map((e) => `<div class="${aLe}"><span class="text-body-medium text-text-secondary">${e}</span><b class="text-title-1-medium tabular-nums text-text-primary">${DK("3em")}</b></div>`).join("")}</div>`, AK = [
-	["list", "Lista de seguidos"],
-	["add", "Agregar seguimiento"],
-	["feeds", "Fuente de suscripción JAV"]
+	["list", "关注列表"],
+	["add", "添加关注"],
+	["feeds", "JAV 订阅源"]
 ], oLe = (e = "") => AK.some(([t]) => t === e) ? e : "list", jK = (e) => `<div data-section-nav data-section-items class="flex max-w-full flex-nowrap overflow-x-auto">${AK.map(([t, n]) => `<span class="whitespace-nowrap" aria-selected="${t === e}">${n}</span>`).join("")}</div>`, MK = (e = "") => `<span class="group inline-flex items-center select-none gap-2"><span class="flex shrink-0 items-center justify-center rounded-sm size-4 border bg-background-primary-default shadow-xs border-border-checkbox-default"></span>${e ? `<span class="text-body-medium text-text-primary">${e}</span>` : ""}</span>`, sLe = ({ table: e, sort: t, dir: n }) => {
 	let r = bn.find(([e]) => e === t)[1];
-	return `<div class="flex flex-wrap items-center gap-2 ui-follow-skeleton-toolbar"><span class="contents max-sm:flex max-sm:min-w-0 max-sm:flex-1 max-sm:flex-col"><h3 class="mr-auto text-title-2-medium text-text-primary">Lista de seguidos</h3><span class="text-body-2-regular text-text-secondary">${DK("132px")}</span></span>${vo({
+	return `<div class="flex flex-wrap items-center gap-2 ui-follow-skeleton-toolbar"><span class="contents max-sm:flex max-sm:min-w-0 max-sm:flex-1 max-sm:flex-col"><h3 class="mr-auto text-title-2-medium text-text-primary">关注列表</h3><span class="text-body-2-regular text-text-secondary">${DK("132px")}</span></span>${vo({
 		glyph: "refresh-cw",
-		label: "Verificar todo",
+		label: "检查全部",
 		compact: !0,
 		attrs: EK
 	})}<span data-follow-toolbar-controls class="contents max-sm:flex max-sm:w-full max-sm:items-center max-sm:gap-2"><span data-button-group role="group">${vo({
@@ -76569,7 +76569,7 @@ var CK = (e = "60%") => `<span class="skeleton" style="width:${e}"></span>`, wK 
 	})}${e ? "" : vo({
 		variant: "secondary",
 		glyph: "chevron-up",
-		label: "Colapsar todo",
+		label: "全部收起",
 		compact: !0,
 		attrs: EK
 	})}</span></div>`;
@@ -76592,13 +76592,13 @@ var CK = (e = "60%") => `<span class="skeleton" style="width:${e}"></span>`, wK 
 	variant: "secondary",
 	size: "small",
 	glyph: "check-check",
-	label: "Seleccionar todo",
+	label: "全选",
 	attrs: EK
 })}${vo({
 	variant: "secondary",
 	size: "small",
 	glyph: "chevron-up",
-	label: "Colapsar",
+	label: "收起",
 	attrs: EK
 })}</span></div><div data-source-divider>${TK(cLe(), e)}</div></section>`, lLe = () => {
 	try {
@@ -76608,11 +76608,11 @@ var CK = (e = "60%") => `<span class="skeleton" style="width:${e}"></span>`, wK 
 	}
 }, uLe = [
 	["select", ""],
-	["author", "Creador"],
-	["source", "Fuente"],
-	["provider", "Sitio"],
-	["status", "Estado"],
-	["checked", "Última verificación"],
+	["author", "创作者"],
+	["source", "来源"],
+	["provider", "站点"],
+	["status", "状态"],
+	["checked", "上次检查"],
 	["actions", ""]
 ], dLe = {
 	name: "author",
@@ -76628,7 +76628,7 @@ var CK = (e = "60%") => `<span class="skeleton" style="width:${e}"></span>`, wK 
 	OK(48, 24),
 	DK("113px"),
 	NK()
-].map((e) => `<td>${e}</td>`).join("")}</tr>`, e)}</tbody></table></div></div>`, mLe = (e, t) => `<div class="flex flex-wrap items-center justify-between gap-3"><span class="text-body-2-regular text-text-secondary">${DK("111px")}</span>${bo(`Por página ${t} ${e ? "Resultado" : " resultado(s)"}`, { size: "sm" })}${OK(204, 32)}</div>`, hLe = () => `<div class="min-w-0 bg-background-secondary-default rounded-2xl shadow-card flex flex-col gap-4 px-6 py-5 max-sm:px-4 ui-follow-skeleton-surface"><h3 class="text-title-2-medium text-text-primary">${DK("120px")}</h3>${[
+].map((e) => `<td>${e}</td>`).join("")}</tr>`, e)}</tbody></table></div></div>`, mLe = (e, t) => `<div class="flex flex-wrap items-center justify-between gap-3"><span class="text-body-2-regular text-text-secondary">${DK("111px")}</span>${bo(`每页 ${t} ${e ? "条" : "位"}`, { size: "sm" })}${OK(204, 32)}</div>`, hLe = () => `<div class="min-w-0 bg-background-secondary-default rounded-2xl shadow-card flex flex-col gap-4 px-6 py-5 max-sm:px-4 ui-follow-skeleton-surface"><h3 class="text-title-2-medium text-text-primary">${DK("120px")}</h3>${[
 	"72%",
 	"56%",
 	"64%",
@@ -76636,7 +76636,7 @@ var CK = (e = "60%") => `<span class="skeleton" style="width:${e}"></span>`, wK 
 ].map((e) => `<span class="text-body-medium">${DK(e)}</span>`).join("")}</div>`, gLe = (e) => {
 	let t = oLe(e.followTab);
 	if (t !== "list") return `<div class="peach-react"><div class="mx-auto flex w-full max-w-board flex-col gap-8">${kK()}<div class="flex flex-col gap-6">${jK(t)}<div class="flex flex-col gap-4">${hLe()}</div></div></div></div>`;
-	let n = e.followLayout === "table", r = wn(e.followSort, e.followDir), i = e.followPageSize || lLe(), a = n ? pLe(i, r) : `${MK("Seleccionar toda la página")}<div class="flex flex-col gap-3">${PK(3)}${PK(4)}${PK(3)}</div>`;
+	let n = e.followLayout === "table", r = wn(e.followSort, e.followDir), i = e.followPageSize || lLe(), a = n ? pLe(i, r) : `${MK("全选本页")}<div class="flex flex-col gap-3">${PK(3)}${PK(4)}${PK(3)}</div>`;
 	return `<div class="peach-react"><div class="mx-auto flex w-full max-w-board flex-col gap-8">${kK()}<div class="flex flex-col gap-6">${jK(t)}<div class="flex flex-col gap-4"><div class="min-w-0 bg-background-secondary-default rounded-2xl shadow-card flex flex-col gap-4 px-6 py-5 max-sm:px-4 ui-follow-skeleton-surface" data-layout="${n ? "table" : "default"}">${sLe({
 		table: n,
 		...r
@@ -76651,23 +76651,23 @@ function vLe(e, t = {}) {
 	else if (e === "/jav") n = ZMe(new URLSearchParams(location.search).get("tab") === "wants" ? "wants" : "discover");
 	else if (e === "/taste") n = nLe();
 	else if (e === "/subscriptions") n = gLe(t);
-	else if (e === "/settings/library" || e === "/settings/diagnostics") n = eLe(e === "/settings/diagnostics" ? "Diagnóstico del sistema" : "Biblioteca y catalogación");
+	else if (e === "/settings/library" || e === "/settings/diagnostics") n = eLe(e === "/settings/diagnostics" ? "系统诊断" : "媒体库与入库");
 	else if (e === "/tasks") n = `<div class="ui-activitypage">${[
-		"En progreso",
-		"Rechazados",
-		"Completados recientemente"
+		"正在进行",
+		"被挡下的",
+		"最近完成"
 	].map((e) => `<section class="activitysection"><h3 class="geist-fieldset-title">${e}</h3><div class="ui-activity-runs"><article class="cleanupfieldset activity-run"><div class="geist-fieldset-content ui-skeleton-lines">${CK("35%")}${wK()}</div></article></div></section>`).join("")}</div>`;
 	else if (e === "/duplicates") n = rLe();
 	else if (e === "/quality-goals") n = iLe();
-	else if (e === "/playlists") n = `<section class="ui-playlistpage"><header><div><h2>Lista de reproducción</h2><p>Guardar Mix y continuar en tu orden.</p></div><div class="playlistcreate ui-skeleton-lines"><span>Nueva lista de reproducción</span>${CK("200px")}</div></header><div class="ui-playlistcards">${TK(`<article class="card playlistcard"><div class="mixstack"><div class="pic skeleton"></div></div><div class="mixmeta"><span class="mav skeleton"></span><div class="mixcopy ui-skeleton-lines">${wK()}</div></div></article>`, 6)}</div></section>`;
+	else if (e === "/playlists") n = `<section class="ui-playlistpage"><header><div><h2>播放列表</h2><p>保存 Mix，按自己的顺序继续播放。</p></div><div class="playlistcreate ui-skeleton-lines"><span>新播放列表</span>${CK("200px")}</div></header><div class="ui-playlistcards">${TK(`<article class="card playlistcard"><div class="mixstack"><div class="pic skeleton"></div></div><div class="mixmeta"><span class="mav skeleton"></span><div class="mixcopy ui-skeleton-lines">${wK()}</div></div></article>`, 6)}</div></section>`;
 	else return "";
-	return `<div class="board-page-skeleton" data-skeleton="board${e}" role="status" aria-label="Leyendo página"><div aria-hidden="true" inert>${n}</div></div>`;
+	return `<div class="board-page-skeleton" data-skeleton="board${e}" role="status" aria-label="正在读取页面"><div aria-hidden="true" inert>${n}</div></div>`;
 }
 //#endregion
 //#region src/react/follow-detail/follow-detail.ts
 var FK = (e) => ["follow-item", e], yLe = (e) => `/api/follow?item=${encodeURIComponent(e)}`, bLe = "/api/follow/save", xLe = "/api/follow/media/hide", IK = class extends Error {
 	constructor() {
-		super("esteResultadoSeguircontenido internoYano existe");
+		super("这条关注内容已不存在");
 	}
 };
 async function LK(e, t) {
@@ -76741,19 +76741,19 @@ function DLe(e) {
 		let t = new URL(e).hostname.replace(/^www\./, "");
 		return TLe[t] || t;
 	} catch {
-		return "título(s) externosArchivopágina";
+		return "外部文件页";
 	}
 }
 function zK(e, t) {
-	return ELe[e?.resource_provider || ""] || t.provider_label || t.provider || "Imagen en línea";
+	return ELe[e?.resource_provider || ""] || t.provider_label || t.provider || "在线图片";
 }
 function OLe(e, t, n = "") {
 	let r = n;
-	!r && e.is_release && (r = t.variant_label || t.variant_kind || ""), r ||= t.variant_kind === "wip" ? "WIP" : t.variant_label || t.variant_kind || "Videos";
-	let i = e.is_release ? t.summary || (t.has_media ? "(solo adjunto)" : "(Ningunotexto principal)") : t.title;
+	!r && e.is_release && (r = t.variant_label || t.variant_kind || ""), r ||= t.variant_kind === "wip" ? "WIP" : t.variant_label || t.variant_kind || "视频";
+	let i = e.is_release ? t.summary || (t.has_media ? "（仅附件）" : "（无正文）") : t.title;
 	return {
 		label: r,
-		title: e.is_release && t.author ? `${t.author}: ${i}` : i
+		title: e.is_release && t.author ? `${t.author}：${i}` : i
 	};
 }
 var kLe = (e) => String(e.name || "").trim(), BK = (e, t) => e.tag_types?.[t] || "unknown", ALe = /* @__PURE__ */ new Set([
@@ -76808,10 +76808,10 @@ function PLe(e, t) {
 		src: e.thumb_url,
 		thumb: e.thumb_url,
 		name: e.title,
-		source: e.provider_label || e.provider || "Imagen en línea"
+		source: e.provider_label || e.provider || "在线图片"
 	}] : [];
 }
-var FLe = (e) => e === "seen" ? "Marcado como visto" : "Estado de seguimiento actualizado", WK = (e, { cards: t = !1, className: n = "", variant: r = "", count: i, fill: a, cardRatio: o, gridClass: s = "", gridSize: c = "" } = {}) => Go(e, {
+var FLe = (e) => e === "seen" ? "已标记看过" : "已更新关注状态", WK = (e, { cards: t = !1, className: n = "", variant: r = "", count: i, fill: a, cardRatio: o, gridClass: s = "", gridSize: c = "" } = {}) => Go(e, {
 	variant: r || (t ? "cards" : "panel"),
 	className: n,
 	gridClass: s,
@@ -76820,17 +76820,17 @@ var FLe = (e) => e === "seen" ? "Marcado como visto" : "Estado de seguimiento ac
 	...a === void 0 ? {} : { fill: a },
 	...o ? { cardRatio: o } : {}
 }), ILe = [
-	"Campos de metadatos",
-	"Etiquetas de creador",
-	"Logo de sello",
-	"Avatar de actriz",
-	"Reasignación de identidad occidental",
-	"Directorio de códigos JAV en duda",
-	"Marcas de comentarios FC2",
-	"Similitudes entre códigos FC2",
-	"Evidencia de créditos/fuente"
-], LLe = (e = "Cargando cola de re-verificación") => `<div class="review review-workspace review-skeleton" data-skeleton="review" aria-busy="true" aria-label="${B(e)}">
-  <div class="reviewcontrols" data-section-nav><h2 class="review-category-title">Clasificación de revisión</h2>
+	"元数据字段",
+	"创作者标签",
+	"厂牌 Logo",
+	"女优头像",
+	"西方身份回配",
+	"番号目录存疑",
+	"FC2 评论标记",
+	"FC2 跨号相似",
+	"片尾/出处证据"
+], LLe = (e = "正在读取复核队列") => `<div class="review review-workspace review-skeleton" data-skeleton="review" aria-busy="true" aria-label="${B(e)}">
+  <div class="reviewcontrols" data-section-nav><h2 class="review-category-title">复核分类</h2>
     <div class="reviewtabs" data-section-items>${ILe.map((e, t) => `<button type="button" disabled aria-selected="${t === 0}">${B(e)}<span class="skeleton reviewcountskeleton" aria-hidden="true"></span></button>`).join("")}</div></div>
   <div class="reviewbulkbar reviewbulktoolbar" aria-hidden="true">${"<span class=\"skeleton reviewtoolskeleton\"></span>".repeat(3)}</div>
   <section class="reviewsection"><div class="reviewlist">${"<div class=\"skeletoncard\" aria-hidden=\"true\"><i></i><b></b><em></em></div>".repeat(6)}</div></section></div>`, RLe = {
@@ -76838,8 +76838,8 @@ var FLe = (e) => e === "seen" ? "Marcado como visto" : "Estado de seguimiento ac
 	"/data-cleanup": () => VB(),
 	"/resource-sync": () => VB(),
 	"/review": () => LLe(),
-	"/sources": () => `<div class="scraping-page"><p>Las imágenes HD pueden requerir proxy. Verifica la conexión primero.</p>
-    ${WK("CargandoRecolectarFuente", {
+	"/sources": () => `<div class="scraping-page"><p>高清图片可能要经代理才能下载，先检查连接。</p>
+    ${WK("正在读取采集来源", {
 		cards: !0,
 		count: 4,
 		fill: !1,
@@ -76853,7 +76853,7 @@ function GK(e, { followLayout: t, followSort: n, followDir: r }) {
 			followSort: n,
 			followDir: r
 		} : {}
-	}) || (RLe[e] ?? (() => WK("Leyendo página")))();
+	}) || (RLe[e] ?? (() => WK("正在读取页面")))();
 }
 var KK = (e) => String(e).match(/data-skeleton="([^"]*)"/)?.[1] || "";
 function qK(e, t) {
@@ -76872,7 +76872,7 @@ function JK({ children: e, wireDrag: t, busy: n, empty: r, error: i, onRetry: a,
 		"aria-busy": n || void 0,
 		children: [/* @__PURE__ */ (0, C.jsx)("h3", {
 			className: "font-semibold",
-			children: "Continuar viendo"
+			children: "接着看"
 		}), i ? /* @__PURE__ */ (0, C.jsx)("div", {
 			"data-related-state": "",
 			children: /* @__PURE__ */ (0, C.jsx)(TI, {
@@ -76884,8 +76884,8 @@ function JK({ children: e, wireDrag: t, busy: n, empty: r, error: i, onRetry: a,
 			children: /* @__PURE__ */ (0, C.jsx)(yA, {
 				shell: "plain",
 				icon: e_e,
-				title: "No hay contenido para continuar",
-				children: "Puedes volver a la lista para seleccionar otra obra. "
+				title: "暂无接着看的内容",
+				children: "可以回到列表挑选其他作品。"
 			})
 		}) : /* @__PURE__ */ (0, C.jsx)("div", {
 			ref: s,
@@ -76949,13 +76949,13 @@ function XK({ items: e, position: t, onSelect: n, below: r = !1, renderThumbnail
 		t,
 		r
 	]), e.length < 2) return null;
-	let c = (r) => n(e[(t + r + e.length) % e.length].index), l = o ? " elemento(s)" : " imagen(es)", u = (r, i) => /* @__PURE__ */ (0, C.jsx)("button", {
+	let c = (r) => n(e[(t + r + e.length) % e.length].index), l = o ? "项媒体" : "张图片", u = (r, i) => /* @__PURE__ */ (0, C.jsx)("button", {
 		type: "button",
 		"data-follow-image-item": r.index,
 		"data-carousel-video": r.video ? "" : void 0,
 		"aria-current": i === t ? "true" : "false",
-		"aria-label": r.label || `No. ${i + 1}  imagen(es), Total: ${e.length}  imagen(es)`,
-		title: r.label || `No. ${i + 1}  imagen(es)`,
+		"aria-label": r.label || `第 ${i + 1} 张，共 ${e.length} 张`,
+		title: r.label || `第 ${i + 1} 张`,
 		onClick: () => n(r.index),
 		children: r.video ? /* @__PURE__ */ (0, C.jsx)("span", { dangerouslySetInnerHTML: { __html: z("play") } }) : null
 	}, r.index);
@@ -76969,23 +76969,23 @@ function XK({ items: e, position: t, onSelect: n, below: r = !1, renderThumbnail
 				type: "button",
 				"data-follow-image-step": "-1",
 				"data-follow-image-arrow": "prev",
-				"aria-label": o ? "Elemento anterior" : "Imagen anterior",
-				title: "Anterior",
+				"aria-label": o ? "上一项媒体" : "上一张图片",
+				title: "上一张",
 				onClick: () => c(-1),
 				dangerouslySetInnerHTML: { __html: z("chevron-left") }
 			}), /* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
 				"data-follow-image-step": "1",
 				"data-follow-image-arrow": "next",
-				"aria-label": o ? "Elemento siguiente" : "Imagen siguiente",
-				title: "Siguiente",
+				"aria-label": o ? "下一项媒体" : "下一张图片",
+				title: "下一张",
 				onClick: () => c(1),
 				dangerouslySetInnerHTML: { __html: z("chevron-right") }
 			})] }),
 			i ? /* @__PURE__ */ (0, C.jsx)("div", {
 				"data-media-thumbnails": "",
 				role: "group",
-				"aria-label": "Miniaturas de medios",
+				"aria-label": "媒体缩略图",
 				children: e.map((e, r) => /* @__PURE__ */ (0, C.jsx)(zLe, {
 					item: e,
 					selected: r === t,
@@ -77021,7 +77021,7 @@ function zLe({ item: e, selected: t, onSelect: n, render: r }) {
 		type: "button",
 		"data-media-thumbnail": e.index,
 		"aria-current": t ? "true" : "false",
-		"aria-label": `Cambiar${e.label || `No. ${e.index + 1}  imagen(es)`}`,
+		"aria-label": `切换到${e.label || `第 ${e.index + 1} 张`}`,
 		onClick: () => n(e.index),
 		children: [a ? r(e) : /* @__PURE__ */ (0, C.jsx)("span", { className: "block h-full w-full skeleton-sheen" }), e.video ? /* @__PURE__ */ (0, C.jsx)("span", {
 			"data-media-thumbnail-play": "",
@@ -77116,15 +77116,15 @@ function GLe({ onBack: e }) {
 		onClick: (t) => {
 			t.target.closest("[data-note-action]") && e();
 		},
-		dangerouslySetInnerHTML: { __html: ko("esteResultadoSeguircontenido internoYano existe, puedepuedeya eliminado por la fuente o ya limpiado. ", { actionLabel: "volver al seguimiento" }) }
+		dangerouslySetInnerHTML: { __html: ko("这条关注内容已不存在，可能已被来源删除或已清理。", { actionLabel: "回到关注" }) }
 	});
 }
 var eq = ({ onClose: e }) => /* @__PURE__ */ (0, C.jsx)("button", {
 	type: "button",
 	"data-stage-close": "",
 	id: "closeStage",
-	title: "Desactivar",
-	"aria-label": "Desactivar",
+	title: "关闭",
+	"aria-label": "关闭",
 	onClick: e,
 	dangerouslySetInnerHTML: { __html: z("x") }
 });
@@ -77205,7 +77205,7 @@ function qLe({ data: e, media: t, limit: n, context: r, helpers: i, actions: a }
 	let o = pt({
 		queryKey: BLe(e.item.id, t, n),
 		queryFn: ({ signal: r }) => VLe(e, t, n, r)
-	}), [s] = (0, S.useState)(() => WK("Cargando recomendaciones", {
+	}), [s] = (0, S.useState)(() => WK("正在读取推荐", {
 		cards: !0,
 		className: "related-skeleton"
 	})), c = (0, S.useMemo)(() => ({
@@ -77222,7 +77222,7 @@ function qLe({ data: e, media: t, limit: n, context: r, helpers: i, actions: a }
 		wireDrag: i.wireDrag,
 		busy: o.isPending,
 		empty: !!o.data && !l.length,
-		error: o.isError ? `leerContinuar viendoFallido: ${Pt(o.error)}` : void 0,
+		error: o.isError ? `读取接着看失败：${Pt(o.error)}` : void 0,
 		onRetry: () => {
 			o.refetch();
 		},
@@ -77274,7 +77274,7 @@ function JLe({ item: e, media: t, actions: n, onMedia: r, issues: i }) {
 				children: [/* @__PURE__ */ (0, C.jsx)("span", {
 					className: "contents",
 					dangerouslySetInnerHTML: { __html: eI(e.resource_provider || e.provider) }
-				}), /* @__PURE__ */ (0, C.jsx)("span", { children: "SinDisponibleVista previa" })]
+				}), /* @__PURE__ */ (0, C.jsx)("span", { children: "没有可用预览" })]
 			}),
 			u ? /* @__PURE__ */ (0, C.jsx)(XK, {
 				items: c,
@@ -77287,7 +77287,7 @@ function JLe({ item: e, media: t, actions: n, onMedia: r, issues: i }) {
 						src: n,
 						alt: "",
 						referrerPolicy: "no-referrer"
-					}) : /* @__PURE__ */ (0, C.jsx)("span", { children: "Vista previa no disponible" });
+					}) : /* @__PURE__ */ (0, C.jsx)("span", { children: "预览未取得" });
 				}
 			}) : null
 		]
@@ -77317,10 +77317,10 @@ function YLe({ group: e, itemId: t, helpers: n, actions: r }) {
 	return /* @__PURE__ */ (0, C.jsx)(iL, {
 		kind: "collection",
 		"data-follow-queue": "",
-		title: "VideosColección",
+		title: "视频合集",
 		onClose: r.close,
 		listRef: a,
-		summary: `${nI(e.primary)} · ${i.length}  video(s)`,
+		summary: `${nI(e.primary)} · ${i.length} 个视频`,
 		children: i.map((n) => {
 			let i = e.duplicates.includes(n), a = OLe(e, n, i ? n.provider_label : ""), o = i ? eI(n.provider, n.provider_label) : "";
 			return /* @__PURE__ */ (0, C.jsxs)(aL, {
@@ -77366,10 +77366,10 @@ function iq({ item: e, current: t, currentId: n = e.id, helpers: r, actions: i, 
 	return /* @__PURE__ */ (0, C.jsx)(iL, {
 		kind: "media",
 		"data-follow-queue": "",
-		title: "Multimedia",
+		title: "多媒体",
 		onClose: i.close,
 		listRef: s,
-		summary: `${nI(e)} · ${o.length}  medio(s)`,
+		summary: `${nI(e)} · ${o.length} 个媒体`,
 		children: c.map((n) => [n.label ? /* @__PURE__ */ (0, C.jsx)(HCe, {
 			label: n.label,
 			count: n.items.length
@@ -77385,7 +77385,7 @@ function iq({ item: e, current: t, currentId: n = e.id, helpers: r, actions: i, 
 				children: kLe(n)
 			}), /* @__PURE__ */ (0, C.jsx)("span", {
 				"data-truncate-end": "",
-				children: n.media_kind === "image" ? "Imágenes" : "Videos"
+				children: n.media_kind === "image" ? "图片" : "视频"
 			})]
 		}, n.index))])
 	});
@@ -77418,8 +77418,8 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 						href: e.url,
 						target: "_blank",
 						rel: "noreferrer noopener",
-						title: "Abrir página de fuente",
-						"aria-label": "Abrir página de fuente",
+						title: "打开来源页面",
+						"aria-label": "打开来源页面",
 						dangerouslySetInnerHTML: { __html: $K }
 					}) : null]
 				}),
@@ -77443,7 +77443,7 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 						"data-id-group": "creator",
 						children: [/* @__PURE__ */ (0, C.jsx)("h5", {
 							"data-id-label": "",
-							children: "Creador"
+							children: "创作者"
 						}), /* @__PURE__ */ (0, C.jsx)("div", {
 							"data-id-row": "",
 							children: p.entityName ? /* @__PURE__ */ (0, C.jsxs)(uH, {
@@ -77453,7 +77453,7 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 								"data-entity-kind": "creator",
 								"data-follow-source-avatar": "",
 								title: p.author,
-								"aria-label": `ver la página del autor ${p.author}`,
+								"aria-label": `查看 ${p.author} 的作者页`,
 								children: [/* @__PURE__ */ (0, C.jsx)("span", {
 									"data-id-face": "",
 									dangerouslySetInnerHTML: { __html: p.avatar }
@@ -77475,7 +77475,7 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 						})]
 					}), m || p.credited ? /* @__PURE__ */ (0, C.jsxs)("div", {
 						"data-follow-detail-credit": "",
-						children: [m ? /* @__PURE__ */ (0, C.jsxs)("span", { children: ["Editor: ", m] }) : null, p.credited ? /* @__PURE__ */ (0, C.jsxs)("span", { children: ["crédito incluye ", p.credited] }) : null]
+						children: [m ? /* @__PURE__ */ (0, C.jsxs)("span", { children: ["发布者 ", m] }) : null, p.credited ? /* @__PURE__ */ (0, C.jsxs)("span", { children: ["署名含 ", p.credited] }) : null]
 					}) : null]
 				}),
 				e.summary ? /* @__PURE__ */ (0, C.jsx)(ZLe, { text: e.summary }, e.id) : null,
@@ -77487,13 +77487,13 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 					"data-follow-media-issue": "",
 					"data-media-load-issue": "",
 					hidden: a !== "failed",
-					children: "MediosNoobtenervolver : superiorarriba esteunvezSinVolvercontenido interno, múltiplesemiSíSitiolímitetransmisión,  undespués de un momentoAbrir. "
+					children: "媒体未取回：上游这一次没有返回内容，多半是站点限流，过一阵再打开。"
 				}),
 				/* @__PURE__ */ (0, C.jsx)("p", {
 					"data-follow-media-issue": "",
 					"data-media-thumb-fallback": "",
 					hidden: a !== "thumb",
-					children: "OriginalImagenNoobtenervolver , primero mostrar miniatura: la solicitud bloqueó la siguiente esta vez. "
+					children: "原图未取回，先显示缩略图：上游拦下了这一次请求。"
 				}),
 				e.resource_urls?.length ? /* @__PURE__ */ (0, C.jsx)("div", {
 					"data-follow-resources": "",
@@ -77515,8 +77515,8 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 							type: "button",
 							"data-stage-action": "later",
 							"data-follow-detail-save": "",
-							"aria-label": _ ? "Guardado" : "Guardar en base de datos",
-							title: _ ? "Guardado" : "Guardar en base de datos",
+							"aria-label": _ ? "已保存" : "保存到数据库",
+							title: _ ? "已保存" : "保存到数据库",
 							disabled: _,
 							...y("save"),
 							onClick: i.save,
@@ -77527,8 +77527,8 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 							"data-stage-action": "later",
 							"data-follow-detail-want": "",
 							"aria-pressed": !!i.want,
-							"aria-label": i.want ? "Quitar de deseados" : "Deseado",
-							title: i.want ? "Quitar de deseados" : "Deseado",
+							"aria-label": i.want ? "取消想要" : "想要",
+							title: i.want ? "取消想要" : "想要",
 							...y("want"),
 							onClick: i.toggleWant,
 							dangerouslySetInnerHTML: { __html: z("star") }
@@ -77537,8 +77537,8 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 							type: "button",
 							"data-stage-action": "seen",
 							"data-follow-detail-status": "seen",
-							"aria-label": "Marcar como visto",
-							title: "Marcar como visto",
+							"aria-label": "标记已看",
+							title: "标记已看",
 							"aria-pressed": e.status === "seen",
 							...y("seen"),
 							onClick: () => i.status("seen"),
@@ -77548,8 +77548,8 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 							type: "button",
 							"data-stage-action": "dislike",
 							"data-follow-detail-status": "ignored",
-							"aria-label": "Ignorar",
-							title: "Ignorar",
+							"aria-label": "忽略",
+							title: "忽略",
 							"aria-pressed": e.status === "ignored",
 							...y("ignored"),
 							onClick: () => i.status("ignored"),
@@ -77558,8 +77558,8 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 						e.status === "seen" || e.status === "ignored" ? /* @__PURE__ */ (0, C.jsx)("button", {
 							type: "button",
 							"data-follow-detail-status": "new",
-							"aria-label": "Restaurar no vistos",
-							title: "Restaurar no vistos",
+							"aria-label": "恢复未看",
+							title: "恢复未看",
 							...y("new"),
 							onClick: () => i.status("new"),
 							dangerouslySetInnerHTML: { __html: z("rotate-ccw") }
@@ -77568,8 +77568,8 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 							type: "button",
 							"data-stage-action": "dislike",
 							"data-follow-media-hide": l.index,
-							"aria-label": "Ocultareste imagen(es)Imagen",
-							title: "Ocultareste imagen(es)Imagen",
+							"aria-label": "隐藏这张图",
+							title: "隐藏这张图",
 							...y(`hide:${l.index}`),
 							onClick: () => i.hide(l.index),
 							dangerouslySetInnerHTML: { __html: z("image-off") }
@@ -77579,8 +77579,8 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 							"data-follow-download": "",
 							href: `${u}${u.includes("?") ? "&" : "?"}download=1`,
 							download: "",
-							"aria-label": "Descargar localmente",
-							title: "Descargar localmente",
+							"aria-label": "下载到本地",
+							title: "下载到本地",
 							dangerouslySetInnerHTML: { __html: z("download") }
 						}) : null
 					]
@@ -77590,17 +77590,17 @@ function XLe({ item: e, data: t, context: n, media: r, write: i, issue: a, helpe
 					children: [/* @__PURE__ */ (0, C.jsxs)("span", {
 						"data-follow-hidden-label": "",
 						children: [
-							"YaOcultar ",
+							"已隐藏 ",
 							e.hidden_media.length,
-							"  imagen(es)"
+							" 张"
 						]
 					}), /* @__PURE__ */ (0, C.jsx)("div", {
 						"data-follow-hidden-thumbs": "",
 						children: e.hidden_media.map((e) => /* @__PURE__ */ (0, C.jsxs)("button", {
 							type: "button",
 							"data-follow-media-restore": e.index,
-							title: `RestaurarMostrar ${e.name || ""}`,
-							"aria-label": `RestaurarMostrar ${e.name || ""}`,
+							title: `恢复显示 ${e.name || ""}`,
+							"aria-label": `恢复显示 ${e.name || ""}`,
 							...y(`restore:${e.index}`),
 							onClick: () => i.restore(e.index),
 							children: [e.thumb_url ? /* @__PURE__ */ (0, C.jsx)(nq, { src: e.thumb_url }) : /* @__PURE__ */ (0, C.jsx)(HLe, { name: "image-off" }), /* @__PURE__ */ (0, C.jsx)("i", { dangerouslySetInnerHTML: { __html: z("rotate-ccw") } })]
@@ -77647,7 +77647,7 @@ function ZLe({ text: e }) {
 		"data-follow-summary-toggle": "",
 		"aria-expanded": n,
 		onClick: () => r(!n),
-		children: n ? "Colapsar" : "Expandir"
+		children: n ? "收起" : "展开"
 	}) : null] });
 }
 function QLe(e, t, n) {
@@ -77663,7 +77663,7 @@ function QLe(e, t, n) {
 			}
 		}), pi(r, e);
 	}, d = (e) => {
-		c(Pt(e) || "Operación fallida"), t.failure("Actualizar estado de seguimiento", e);
+		c(Pt(e) || "操作失败"), t.failure("更新关注状态", e);
 	}, f = mt({
 		mutationFn: ({ to: e }) => U(Bn, {
 			item: r,
@@ -77682,7 +77682,7 @@ function QLe(e, t, n) {
 	}), p = mt({
 		mutationFn: () => U(bLe, { item: r }),
 		onSuccess: () => {
-			u("saved"), c(""), t.toast("Guardado en la base de datos");
+			u("saved"), c(""), t.toast("已保存到数据库");
 		},
 		onError: d,
 		onSettled: () => l("save", !1)
@@ -77699,7 +77699,7 @@ function QLe(e, t, n) {
 		},
 		onSuccess: (e, { hidden: r, next: a }) => {
 			let o = W.getQueryData(i);
-			o && fi(o.item), n(a), c(""), t.toast(r ? "YaOcultareste imagen(es)Imagen" : "YaRestaurarMostrar");
+			o && fi(o.item), n(a), c(""), t.toast(r ? "已隐藏这张图" : "已恢复显示");
 		},
 		onError: d,
 		onSettled: (e, t, { index: n, hidden: r }) => l(`${r ? "hide" : "restore"}:${n}`, !1)
@@ -77709,7 +77709,7 @@ function QLe(e, t, n) {
 	}).data?.want ?? null, g = mt({
 		mutationFn: async (e) => (e ? await dW([e.id]) : await uW({ follow: r }), !e),
 		onSuccess: (e) => {
-			c(""), t.toast(e ? "Añadido a deseados" : "Quitado de deseados"), fW();
+			c(""), t.toast(e ? "已加入想要" : "已取消想要"), fW();
 		},
 		onError: d,
 		onSettled: () => l("want", !1)
@@ -77803,7 +77803,7 @@ function oq({ people: e, onOpen: t }) {
 		"data-id-group": "series",
 		children: [/* @__PURE__ */ (0, C.jsx)("h5", {
 			"data-id-label": "",
-			children: "Serie"
+			children: "系列"
 		}), /* @__PURE__ */ (0, C.jsx)("div", {
 			"data-series-rows": "",
 			children: e.map((e) => e.id ? /* @__PURE__ */ (0, C.jsx)("button", {
@@ -77858,16 +77858,16 @@ function cq({ item: e, image: t, thumbnail: n = !1 }) {
 	return o ? /* @__PURE__ */ (0, C.jsx)("img", {
 		"data-jav-picture": n ? void 0 : "",
 		src: o,
-		alt: n ? "" : t === "cover" ? `${e.code} Portada` : `${e.code} Vista previa ${Number(t) + 1}`,
+		alt: n ? "" : t === "cover" ? `${e.code} 封面` : `${e.code} 预览 ${Number(t) + 1}`,
 		referrerPolicy: "no-referrer"
 	}) : n ? i && a.isPending ? /* @__PURE__ */ (0, C.jsx)("span", {
 		className: "relative block h-full w-full skeleton-sheen",
-		"aria-label": "Cargando vista previa"
-	}) : /* @__PURE__ */ (0, C.jsx)("span", { children: "Vista previa no disponible" }) : i && a.isPending ? /* @__PURE__ */ (0, C.jsx)("div", {
+		"aria-label": "正在读取预览"
+	}) : /* @__PURE__ */ (0, C.jsx)("span", { children: "预览未取得" }) : i && a.isPending ? /* @__PURE__ */ (0, C.jsx)("div", {
 		"data-jav-picture-wait": "",
 		"data-skeleton": "image",
 		role: "status",
-		"aria-label": "Cargando imagen",
+		"aria-label": "正在读取图片",
 		children: /* @__PURE__ */ (0, C.jsx)("span", { className: "relative skeleton-sheen" })
 	}) : /* @__PURE__ */ (0, C.jsx)("div", {
 		"data-jav-picture-wait": "",
@@ -77879,9 +77879,9 @@ function cq({ item: e, image: t, thumbnail: n = !1 }) {
 				onClick: () => {
 					a.refetch();
 				},
-				children: "Reintentar"
+				children: "重试"
 			}) : void 0,
-			children: a.data?.message || (a.error ? "Imagen no disponible" : "Portada no disponible")
+			children: a.data?.message || (a.error ? "图片未取得" : "封面未取得")
 		})
 	});
 }
@@ -77899,7 +77899,7 @@ function lq({ item: e, image: t, source: n = !1, thumbnail: r = !1 }) {
 		thumbnail: r
 	});
 	let c = t < 0 ? ua(e, !0) : `/${r ? "sample-thumb" : "sample-image"}?code=${encodeURIComponent(e.code || "")}&n=${t}`;
-	return r ? i ? /* @__PURE__ */ (0, C.jsx)("span", { children: "Vista previa no disponible" }) : /* @__PURE__ */ (0, C.jsx)("img", {
+	return r ? i ? /* @__PURE__ */ (0, C.jsx)("span", { children: "预览未取得" }) : /* @__PURE__ */ (0, C.jsx)("img", {
 		src: c,
 		alt: "",
 		onError: () => a(!0)
@@ -77910,13 +77910,13 @@ function lq({ item: e, image: t, source: n = !1, thumbnail: r = !1 }) {
 			onClick: () => {
 				a(!1), s((e) => e + 1);
 			},
-			children: "Reintentar"
+			children: "重试"
 		}),
-		children: "Vista previa no disponible"
+		children: "预览未取得"
 	}) : /* @__PURE__ */ (0, C.jsx)("img", {
 		"data-catalog-picture": "",
 		src: c,
-		alt: t < 0 ? `${e.code} Portada` : `${e.code} Vista previa ${t}`,
+		alt: t < 0 ? `${e.code} 封面` : `${e.code} 预览 ${t}`,
 		onError: () => a(!0)
 	}, o);
 }
@@ -77936,9 +77936,9 @@ function eRe(e, t) {
 //#endregion
 //#region src/react/item-detail/external-playback.tsx
 var pq = "peach.external-player.v1", mq = [
-	["m3u", "Lista de reproducción M3U"],
-	["vlc-ios", "VLC (iPhone / iPad)"],
-	["iina", "IINA (Mac)"]
+	["m3u", "M3U 播放列表"],
+	["vlc-ios", "VLC（iPhone / iPad）"],
+	["iina", "IINA（Mac）"]
 ];
 function tRe(e, t, n) {
 	return e === "vlc-ios" ? `vlc-x-callback://x-callback-url/stream?url=${encodeURIComponent(t)}` : e === "iina" ? `iina://weblink?url=${encodeURIComponent(t)}` : n;
@@ -77951,10 +77951,10 @@ function hq({ id: e }) {
 			return "m3u";
 		}
 	}), [r, i] = (0, S.useState)(null), a = wA();
-	return /* @__PURE__ */ (0, C.jsxs)("details", { children: [/* @__PURE__ */ (0, C.jsx)("summary", { children: "título(s) externosReproductor / VR" }), /* @__PURE__ */ (0, C.jsxs)(MA, { children: [
+	return /* @__PURE__ */ (0, C.jsxs)("details", { children: [/* @__PURE__ */ (0, C.jsx)("summary", { children: "外部播放器 / VR" }), /* @__PURE__ */ (0, C.jsxs)(MA, { children: [
 		/* @__PURE__ */ (0, C.jsx)(oG, {
 			id: `external-player-${e}`,
-			label: "este dispositivotítulo(s) externosReproductor",
+			label: "此设备的外部播放器",
 			options: mq,
 			value: t,
 			epoch: 0,
@@ -77973,21 +77973,21 @@ function hq({ id: e }) {
 				url: new URL(e.url, location.origin).href,
 				playlist: new URL(e.playlist, location.origin).href
 			})),
-			children: "generarReproducirenlaceconectar"
+			children: "生成播放链接"
 		}),
 		a.error ? /* @__PURE__ */ (0, C.jsx)(FA, { children: a.error }) : null,
 		r ? /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 			/* @__PURE__ */ (0, C.jsx)("a", {
 				href: tRe(t, r.url, r.playlist),
 				rel: "noreferrer",
-				children: t === "m3u" ? "Descargar lista de reproducción M3U" : `Abrir ${mq.find(([e]) => e === t)?.[1]}`
+				children: t === "m3u" ? "下载 M3U 播放列表" : `打开 ${mq.find(([e]) => e === t)?.[1]}`
 			}),
 			/* @__PURE__ */ (0, C.jsx)(SP, {
-				label: "RedReproducirDirección",
+				label: "网络播放地址",
 				value: r.url,
 				isReadOnly: !0
 			}),
-			/* @__PURE__ */ (0, C.jsx)(PA, { children: "enlaceconectarVálidoperíodocomo 6 hora(s). VR ReproductorpuedeusarRedReproducirDirección; otro  DispositivoNecesariopuedeAccesoActual Dirección de Peach. " })
+			/* @__PURE__ */ (0, C.jsx)(PA, { children: "链接有效期为 6 小时。VR 播放器可使用网络播放地址；另一台设备需要能访问当前 Peach 地址。" })
 		] }) : null
 	] })] }, e);
 }
@@ -78031,8 +78031,8 @@ function oRe({ code: e, coverUrl: t, box: n, onSaved: r }) {
 		type: "button",
 		"aria-haspopup": "dialog",
 		"data-cover-crop": !0,
-		"aria-label": `Recortar ${e} Portada`,
-		title: "Recortar portada: enmarca un bloque de la portada frontal",
+		"aria-label": `裁剪 ${e} 的封面`,
+		title: "裁剪封面：框出正封那一块",
 		onClick: () => a(!0),
 		className: "flex size-7 cursor-pointer items-center justify-center rounded-lg text-foreground-icon-secondary outline-none transition-colors hover:bg-background-primary-hover hover:text-foreground-icon-primary focus-visible:ring-2 focus-visible:ring-border-focus-ring",
 		children: /* @__PURE__ */ (0, C.jsx)(gq, { className: "size-3.75" })
@@ -78042,7 +78042,7 @@ function oRe({ code: e, coverUrl: t, box: n, onSaved: r }) {
 			isOpen: i,
 			onOpenChange: a,
 			width: "cover-crop",
-			label: "Recortar portada",
+			label: "裁剪封面",
 			children: /* @__PURE__ */ (0, C.jsx)(sRe, {
 				code: e,
 				coverUrl: t,
@@ -78082,11 +78082,11 @@ function sRe({ code: e, coverUrl: t, box: n, onSaved: r, close: i }) {
 						/* @__PURE__ */ (0, C.jsx)(Wj, {
 							slot: "title",
 							className: "text-title-3-semibold text-text-primary",
-							children: "Recortar portada"
+							children: "裁剪封面"
 						}),
 						/* @__PURE__ */ (0, C.jsxs)("p", {
 							className: "text-body-2-regular text-text-secondary",
-							children: [e, ": Enmarca un área de la portada principal; la imagen original no se mueve. Arrastra el marco para mover, usa la rueda o el cuadro de la esquina para cambiar el tamaño. "]
+							children: [e, "：框出正封那一块，封面原图不动。拖动方框移动，滚轮或角上那枚方块改大小。"]
 						}),
 						f.error ? /* @__PURE__ */ (0, C.jsx)(J, {
 							tone: "error",
@@ -78097,7 +78097,7 @@ function sRe({ code: e, coverUrl: t, box: n, onSaved: r, close: i }) {
 				/* @__PURE__ */ (0, C.jsx)(pj, {
 					icon: Mk,
 					size: "small",
-					"aria-label": "Desactivar",
+					"aria-label": "关闭",
 					onClick: i
 				})
 			]
@@ -78110,7 +78110,7 @@ function sRe({ code: e, coverUrl: t, box: n, onSaved: r, close: i }) {
 				aspect: l ? ra : null,
 				box: s,
 				size: a,
-				label: `${e} obtener marco de escena de la portada`,
+				label: `${e} 的正封取景框`,
 				onSize: (e) => {
 					bH(e) && p(e);
 				},
@@ -78126,7 +78126,7 @@ function sRe({ code: e, coverUrl: t, box: n, onSaved: r, close: i }) {
 				},
 				children: /* @__PURE__ */ (0, C.jsx)("span", {
 					className: "text-body-2-regular text-text-secondary",
-					children: "Bloquear relación de aspecto de la portada"
+					children: "锁定正封比例"
 				})
 			}), /* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-1 flex-wrap items-center justify-end gap-3",
@@ -78136,14 +78136,14 @@ function sRe({ code: e, coverUrl: t, box: n, onSaved: r, close: i }) {
 					onClick: () => {
 						m || f.mutate(null);
 					},
-					children: "Restaurar predeterminado"
+					children: "恢复默认"
 				}), /* @__PURE__ */ (0, C.jsx)(q, {
 					disabled: !s || !a,
 					...Y(m),
 					onClick: () => {
 						s && !m && f.mutate(s);
 					},
-					children: "Usar este bloque"
+					children: "用这一块"
 				})]
 			})]
 		})
@@ -78157,7 +78157,7 @@ var _q = ({ name: e }) => /* @__PURE__ */ (0, C.jsx)("span", {
 }), vq = ({ html: e }) => /* @__PURE__ */ (0, C.jsx)("span", {
 	className: "contents",
 	dangerouslySetInnerHTML: { __html: e }
-}), yq = (e) => Number(e) > 0 ? cn(Number(e)) : "Tamaño desconocido";
+}), yq = (e) => Number(e) > 0 ? cn(Number(e)) : "大小未知";
 function cRe(e) {
 	let { queue: t, actions: n } = e, r = pt({
 		queryKey: t ? CD(t) : ["item-queue", "none"],
@@ -78198,8 +78198,8 @@ var bq = ({ onClose: e }) => /* @__PURE__ */ (0, C.jsx)("button", {
 	type: "button",
 	"data-stage-close": "",
 	id: "closeStage",
-	title: "Desactivar",
-	"aria-label": "Desactivar",
+	title: "关闭",
+	"aria-label": "关闭",
 	onClick: e,
 	dangerouslySetInnerHTML: { __html: z("x") }
 });
@@ -78274,15 +78274,15 @@ function uRe({ item: e, gate: t, helpers: n, actions: r, autoplay: i, onEnded: a
 	})), m = e.is_jav && e.code ? [
 		...e.has_cover ? [{
 			index: -1,
-			label: "Portada"
+			label: "封面"
 		}] : [],
 		...p.map((e, t) => ({
 			...e,
-			label: `Vista previa ${t + 1}`
+			label: `预览 ${t + 1}`
 		})),
 		{
 			index: -2,
-			label: "Película completa",
+			label: "正片",
 			video: !0
 		}
 	] : [], h = m.length > 1, g = (e) => {
@@ -78313,7 +78313,7 @@ function uRe({ item: e, gate: t, helpers: n, actions: r, autoplay: i, onEnded: a
 					"data-jav-preview-toggle": "",
 					"aria-pressed": l !== -2,
 					onClick: () => g(l === -2 ? m[0].index : -2),
-					children: [/* @__PURE__ */ (0, C.jsx)(_q, { name: l === -2 ? "image" : "play" }), l === -2 ? "Ver imagen" : "ReproducirPelícula completa"]
+					children: [/* @__PURE__ */ (0, C.jsx)(_q, { name: l === -2 ? "image" : "play" }), l === -2 ? "查看图片" : "播放正片"]
 				}),
 				l === -2 ? null : /* @__PURE__ */ (0, C.jsx)(lq, {
 					item: e,
@@ -78338,7 +78338,7 @@ function uRe({ item: e, gate: t, helpers: n, actions: r, autoplay: i, onEnded: a
 				children: f.isPending ? /* @__PURE__ */ (0, C.jsx)("span", {
 					"data-skeleton": "samples",
 					role: "status",
-					"aria-label": "Cargando imagen de muestra",
+					"aria-label": "正在读取样图",
 					className: "relative block h-12 w-20 skeleton-sheen"
 				}) : /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
@@ -78347,7 +78347,7 @@ function uRe({ item: e, gate: t, helpers: n, actions: r, autoplay: i, onEnded: a
 					onClick: () => {
 						d.current = !0, f.refetch();
 					},
-					children: "Reintentarimagen de muestra"
+					children: "重试样图"
 				})
 			}) : null,
 			t === "offline" ? /* @__PURE__ */ (0, C.jsx)(dRe, {
@@ -78359,8 +78359,8 @@ function uRe({ item: e, gate: t, helpers: n, actions: r, autoplay: i, onEnded: a
 				role: "status",
 				"data-item-gate": "disc",
 				children: [
-					/* @__PURE__ */ (0, C.jsx)("b", { children: "ISO original" }),
-					/* @__PURE__ */ (0, C.jsx)("span", { children: "Por favor usa un reproductor que soporte títulos externos de disco original para abrir. " }),
+					/* @__PURE__ */ (0, C.jsx)("b", { children: "ISO 原盘" }),
+					/* @__PURE__ */ (0, C.jsx)("span", { children: "请使用支持原盘的外部播放器打开。" }),
 					/* @__PURE__ */ (0, C.jsx)(hq, { id: e.id })
 				]
 			}) : t === "online" ? /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -78369,21 +78369,21 @@ function uRe({ item: e, gate: t, helpers: n, actions: r, autoplay: i, onEnded: a
 				"data-item-gate": "online",
 				children: [
 					/* @__PURE__ */ (0, C.jsx)(vq, { html: y }),
-					/* @__PURE__ */ (0, C.jsx)("b", { children: "Obras en línea" }),
-					/* @__PURE__ */ (0, C.jsx)("span", { children: "esteResultadoSinvscorrespondienteresultado objetivo del seguimiento; dirección de medios no disponible para analizar. " }),
+					/* @__PURE__ */ (0, C.jsx)("b", { children: "在线作品" }),
+					/* @__PURE__ */ (0, C.jsx)("span", { children: "这条没有对应的关注条目，媒体地址无从解析。" }),
 					/* @__PURE__ */ (0, C.jsx)("button", {
 						className: "chip",
 						id: "openSavedFollow",
 						type: "button",
 						onClick: r.openSavedFollow,
-						children: "AbrirGuardadoSeguir"
+						children: "打开已保存关注"
 					})
 				]
 			}) : t === "metered" && !o ? /* @__PURE__ */ (0, C.jsxs)("div", {
 				id: "gate",
 				"data-item-gate": "metered",
 				onClick: () => s("clicked"),
-				children: [/* @__PURE__ */ (0, C.jsx)(vq, { html: y }), /* @__PURE__ */ (0, C.jsxs)("span", { children: ["Clic aquí para iniciar transmisión · ", yq(e.size)] })]
+				children: [/* @__PURE__ */ (0, C.jsx)(vq, { html: y }), /* @__PURE__ */ (0, C.jsxs)("span", { children: ["点此开始拉流 · ", yq(e.size)] })]
 			}) : null
 		]
 	});
@@ -78400,7 +78400,7 @@ function dRe({ item: e, badge: t, helpers: n, actions: r }) {
 		"data-item-gate": "offline",
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(vq, { html: t }),
-			/* @__PURE__ */ (0, C.jsx)("b", { children: "Directorio de mediosSin capacidad deAcceso" }),
+			/* @__PURE__ */ (0, C.jsx)("b", { children: "媒体目录无法访问" }),
 			/* @__PURE__ */ (0, C.jsx)("span", { children: n.offlineReason(e.location || "") }),
 			/* @__PURE__ */ (0, C.jsx)("button", {
 				className: "chip",
@@ -78408,7 +78408,7 @@ function dRe({ item: e, badge: t, helpers: n, actions: r }) {
 				type: "button",
 				disabled: i,
 				onClick: () => void c(),
-				children: o ? "Aún no se puede leer · Actualizar" : "ActualizarEstado"
+				children: o ? "仍无法读取 · 刷新" : "刷新状态"
 			})
 		]
 	});
@@ -78425,15 +78425,15 @@ function fRe({ queue: e, itemId: t, helpers: n, actions: r }) {
 	}, [n, e.kind]), l = pRe(e, r), u = e.kind === "mix" ? /* @__PURE__ */ (0, C.jsx)("button", {
 		type: "button",
 		"data-save-mix": "",
-		title: "Guardar como lista de reproducción",
-		"aria-label": "Guardar como lista de reproducción",
+		title: "保存为播放列表",
+		"aria-label": "保存为播放列表",
 		onClick: l,
 		dangerouslySetInnerHTML: { __html: z("playlist") }
 	}) : e.kind === "playlist" ? /* @__PURE__ */ (0, C.jsx)("button", {
 		type: "button",
 		"data-edit-playlist": "",
-		title: "EditarLista de reproducción",
-		"aria-label": "EditarLista de reproducción",
+		title: "编辑播放列表",
+		"aria-label": "编辑播放列表",
 		onClick: r.editPlaylist,
 		dangerouslySetInnerHTML: { __html: z("playlist") }
 	}) : null, d = {
@@ -78459,7 +78459,7 @@ function fRe({ queue: e, itemId: t, helpers: n, actions: r }) {
 				"data-queue-item": i.id,
 				row: { "data-queue-row": i.id },
 				disabled: s,
-				title: s ? "ArchivoYaNoendiscosuperior, NopuedeReproducir" : void 0,
+				title: s ? "文件已不在盘上，不能播放" : void 0,
 				...s ? { "data-queue-vanished": "" } : {},
 				onClick: () => {
 					s || r.openQueueItem(d, i.id);
@@ -78479,8 +78479,8 @@ function fRe({ queue: e, itemId: t, helpers: n, actions: r }) {
 					}), /* @__PURE__ */ (0, C.jsx)("button", {
 						type: "button",
 						"data-queue-remove": i.id,
-						title: "Quitar de lista de reproducción",
-						"aria-label": "Quitar de lista de reproducción",
+						title: "移出播放列表",
+						"aria-label": "移出播放列表",
 						onClick: () => o.remove(i.id),
 						children: /* @__PURE__ */ (0, C.jsx)(_q, { name: "x" })
 					})]
@@ -78493,7 +78493,7 @@ function fRe({ queue: e, itemId: t, helpers: n, actions: r }) {
 					})]
 				}), /* @__PURE__ */ (0, C.jsx)("span", {
 					"data-truncate-end": "",
-					children: s ? "ya desaparecido  · ArchivoYaNoendiscosuperior" : e.kind === "parts" || e.kind === "editions" && i.part_label ? MD(i.part_label) : ka(i, n.tagLabel)
+					children: s ? "已消失 · 文件已不在盘上" : e.kind === "parts" || e.kind === "editions" && i.part_label ? MD(i.part_label) : ka(i, n.tagLabel)
 				})]
 			}, i.id);
 		})
@@ -78528,7 +78528,7 @@ function mRe(e, t, n) {
 		onSuccess: (e, t) => {
 			i(e);
 		},
-		onError: (e) => n.failure("ajustar orden de reproducción", e)
+		onError: (e) => n.failure("调整播放顺序", e)
 	}), s = e.items.map((e) => e.id);
 	return {
 		move: async (t, r, c) => {
@@ -78536,7 +78536,7 @@ function mRe(e, t, n) {
 			let l = Jfe(s, t, r, c);
 			if (Yfe(l, s)) return;
 			let u = s;
-			await o.mutateAsync(l), n.toast("Orden de reproducción ajustado", { undo: async () => {
+			await o.mutateAsync(l), n.toast("已调整播放顺序", { undo: async () => {
 				i(await a({
 					action: "reorder",
 					asset_ids: u
@@ -78546,15 +78546,15 @@ function mRe(e, t, n) {
 		remove: (e) => {
 			let r = s;
 			Rs({
-				title: "Quitar de lista de reproducción",
-				body: "este video(s)serádesdeLista de reproducciónQuitar, VideosArchivoConservar. ",
-				confirmLabel: "Quitar de lista de reproducción",
+				title: "移出播放列表",
+				body: "这个视频将从播放列表移除，视频文件保留。",
+				confirmLabel: "移出播放列表",
 				onConfirm: async () => {
 					let o = await a({
 						action: "remove",
 						asset_id: e
 					});
-					n.toast("Ya quitados de lista de reproducción", { undo: async () => {
+					n.toast("已移出播放列表", { undo: async () => {
 						await a({
 							action: "add",
 							asset_ids: [e]
@@ -78625,9 +78625,9 @@ function hRe({ item: e, queue: t, write: n, helpers: r, actions: i }) {
 							type: "button",
 							"data-spec-item": "",
 							"data-open-region": e.region || "",
-							title: e.region_settled ? "Yadeterminar origen; AbrirmismoOrigenObra" : "según código JAV o sello para inferir el origen, lote determinado, no cambia después; AbrirmismoOrigenObra",
+							title: e.region_settled ? "已判定的产地；打开同产地的作品" : "按番号或厂牌推断的产地，批量判定后不再变；打开同产地的作品",
 							onClick: () => i.openRegion(e.region || ""),
-							children: [/* @__PURE__ */ (0, C.jsx)(_q, { name: "globe" }), /* @__PURE__ */ (0, C.jsxs)("span", { children: [e.region_label, e.region_settled ? "" : "(inferido)"] })]
+							children: [/* @__PURE__ */ (0, C.jsx)(_q, { name: "globe" }), /* @__PURE__ */ (0, C.jsxs)("span", { children: [e.region_label, e.region_settled ? "" : "（推断）"] })]
 						}) : null
 					]
 				}),
@@ -78658,8 +78658,8 @@ function hRe({ item: e, queue: t, write: n, helpers: r, actions: i }) {
 							type: "button",
 							id: "likeBtn",
 							"data-fb": "like",
-							"aria-label": e.liked ? "CancelarMe gusta" : "Me gusta",
-							title: "Me gusta · Registro de preferencias",
+							"aria-label": e.liked ? "取消喜欢" : "喜欢",
+							title: "喜欢 · 记录口味偏好",
 							"aria-pressed": !!e.liked,
 							...o("like"),
 							onClick: () => n.preference({ liked: !e.liked }),
@@ -78669,8 +78669,8 @@ function hRe({ item: e, queue: t, write: n, helpers: r, actions: i }) {
 							type: "button",
 							id: "preferenceToggle",
 							"data-fb": "reason",
-							"aria-label": "Razón del gusto",
-							title: "Razón del gusto",
+							"aria-label": "喜爱理由",
+							title: "喜爱理由",
 							"aria-expanded": s,
 							"aria-controls": "preferencePanel",
 							"data-has-reason": String(!!e.like_reason),
@@ -78681,8 +78681,8 @@ function hRe({ item: e, queue: t, write: n, helpers: r, actions: i }) {
 							type: "button",
 							"data-stage-action": "dislike",
 							"data-kind": "dislike",
-							"aria-label": "No es de mi gusto",
-							title: "No es de mi gusto · Reducir peso de recomendación",
+							"aria-label": "不合口味",
+							title: "不合口味 · 降低推荐权重",
 							"aria-pressed": e.feedback === "dislike",
 							...o("dislike"),
 							onClick: () => n.feedback("dislike"),
@@ -78692,8 +78692,8 @@ function hRe({ item: e, queue: t, write: n, helpers: r, actions: i }) {
 							type: "button",
 							"data-stage-action": "seen",
 							"data-kind": "seen",
-							"aria-label": "Ya lo vi",
-							title: "Ya lo vi · solo bajar recomendaciones recientes",
+							"aria-label": "看过了",
+							title: "看过了 · 只降低近期推荐",
 							"aria-pressed": e.feedback === "seen",
 							...o("seen"),
 							onClick: () => n.feedback("seen"),
@@ -78703,8 +78703,8 @@ function hRe({ item: e, queue: t, write: n, helpers: r, actions: i }) {
 							type: "button",
 							"data-stage-action": "later",
 							id: "stageLater",
-							"aria-label": "Ver más tarde",
-							title: "Ver más tarde · agregar o quitar de la cola",
+							"aria-label": "稍后看",
+							title: "稍后看 · 加入或移出队列",
 							"aria-pressed": !!e.watch_later,
 							...o("later"),
 							onClick: n.later,
@@ -78714,8 +78714,8 @@ function hRe({ item: e, queue: t, write: n, helpers: r, actions: i }) {
 							type: "button",
 							id: "addPlaylist",
 							"data-fb": "playlist",
-							"aria-label": "Añadir a la lista de reproducción",
-							title: "Añadir a la lista de reproducción",
+							"aria-label": "加入播放列表",
+							title: "加入播放列表",
 							onClick: () => i.addToPlaylist(e),
 							children: /* @__PURE__ */ (0, C.jsx)(_q, { name: "playlist" })
 						}),
@@ -78723,8 +78723,8 @@ function hRe({ item: e, queue: t, write: n, helpers: r, actions: i }) {
 							type: "button",
 							id: "betterVersion",
 							"data-fb": "quality",
-							"aria-label": "Buscar mejor versión",
-							title: e.better_version ? e.better_version_reason || "Marcado: buscar mejor versión" : "Buscar versión HD, sin marca de agua o completa",
+							"aria-label": "寻找更好版本",
+							title: e.better_version ? e.better_version_reason || "已标记寻找更好版本" : "寻找高清、无水印或完整版",
 							"aria-pressed": !!e.better_version,
 							...o("quality"),
 							onClick: n.quality,
@@ -78734,8 +78734,8 @@ function hRe({ item: e, queue: t, write: n, helpers: r, actions: i }) {
 							type: "button",
 							"data-kind": "dispose",
 							"data-fb": "dispose",
-							"aria-label": "Mover a papelera",
-							title: "Mover a papelera · Archivotodavía Conservar, puededesdePapelerapermanentementeLimpiar",
+							"aria-label": "移入回收站",
+							title: "移入回收站 · 文件仍保留，可从回收站永久清除",
 							"aria-pressed": e.disposal === "trash",
 							...o("dispose"),
 							onClick: () => n.feedback("dispose"),
@@ -78755,7 +78755,7 @@ function hRe({ item: e, queue: t, write: n, helpers: r, actions: i }) {
 					onClick: () => n.feedback("o"),
 					children: [
 						/* @__PURE__ */ (0, C.jsx)(_q, { name: "sperm" }),
-						/* @__PURE__ */ (0, C.jsx)("span", { children: "Registrar un orgasmo" }),
+						/* @__PURE__ */ (0, C.jsx)("span", { children: "记一次高潮" }),
 						/* @__PURE__ */ (0, C.jsx)("b", {
 							className: "mono",
 							id: "oCount",
@@ -78792,8 +78792,8 @@ function gRe({ item: e, queue: t, helpers: n, actions: r, onStatus: i }) {
 						"data-title-fold": "",
 						hidden: !s,
 						"aria-expanded": o,
-						"aria-label": o ? "Colapsar título" : "Expandir título",
-						title: o ? "Colapsar título" : "Expandir título completo",
+						"aria-label": o ? "收起标题" : "展开标题",
+						title: o ? "收起标题" : "展开完整标题",
 						onClick: c,
 						children: /* @__PURE__ */ (0, C.jsx)(_q, { name: o ? "chevron-up" : "chevron-down" })
 					}),
@@ -78826,26 +78826,26 @@ function _Re({ id: e, actions: t, onStatus: n }) {
 		r || (i("reveal"), n(""), n(await t.reveal(e)), i(""));
 	}, o = async () => {
 		if (r) return;
-		i("sync"), n("ProcesandoverificarDirectorio...");
+		i("sync"), n("正在核对目录…");
 		let a = await t.sync(e);
 		n(a.text), i(""), a.removed.includes(e) && t.close();
 	};
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("button", {
 		type: "button",
 		"data-reveal": e,
-		title: "enArchivoGestionarDispositivodentroAbrirfuente Archivotodos enDirectorio",
-		"aria-label": "Archivo de fuente fija",
+		title: "在文件管理器里打开源文件所在目录",
+		"aria-label": "定位源文件",
 		...r === "reveal" ? {
 			"aria-busy": !0,
 			"aria-disabled": !0
 		} : {},
 		onClick: () => void a(),
-		dangerouslySetInnerHTML: { __html: r === "reveal" ? Ao("Localizando") : z("folder-open") }
+		dangerouslySetInnerHTML: { __html: r === "reveal" ? Ao("正在定位") : z("folder-open") }
 	}), /* @__PURE__ */ (0, C.jsx)("button", {
 		type: "button",
 		"data-sync": e,
-		title: "verificaresteDirectorio: DiscosuperiorYaEliminarmoveren Peach Papelera, con persona(s)Registroetiquetacomoya desaparecido ",
-		"aria-label": "SincronizarEliminar",
+		title: "核对该目录：磁盘上已删除的移入 Peach 回收站，带个人记录的标为已消失",
+		"aria-label": "同步删除",
 		...r === "sync" ? {
 			"aria-busy": !0,
 			"aria-disabled": !0
@@ -78855,12 +78855,12 @@ function _Re({ id: e, actions: t, onStatus: n }) {
 	})] });
 }
 function vRe({ item: e, write: t }) {
-	let n = Active Directory(e.rating);
+	let n = AD(e.rating);
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		id: "detailRating",
 		role: "group",
 		"data-item-rating": "",
-		"aria-label": "Puntuación",
+		"aria-label": "评分",
 		"data-value": Pfe(e.rating),
 		children: [/* @__PURE__ */ (0, C.jsx)("div", {
 			"data-rating-stars": "",
@@ -78874,8 +78874,8 @@ function vRe({ item: e, write: t }) {
 				type: "button",
 				"data-rate": e,
 				"data-on": String(e <= n),
-				title: e === n ? "luegoclicunvezCancelarPuntuación" : `${e} estrellas`,
-				"aria-label": e === n ? `CancelarPuntuación(Actual ${e} estrellas)` : `Calificar con ${e} estrellas`,
+				title: e === n ? "再点一次取消评分" : `${e} 星`,
+				"aria-label": e === n ? `取消评分（当前 ${e} 星）` : `评为 ${e} 星`,
 				...t.busyAttrs(`rate:${e}`),
 				onClick: () => t.rate(e),
 				children: /* @__PURE__ */ (0, C.jsx)(_q, { name: "star" })
@@ -78911,21 +78911,21 @@ function yRe({ item: e, actions: t }) {
 			"data-id-group": "unowned",
 			children: [/* @__PURE__ */ (0, C.jsx)("h5", {
 				"data-id-label": "",
-				children: "Asignación"
+				children: "归属"
 			}), /* @__PURE__ */ (0, C.jsx)("div", {
 				"data-id-row": "",
 				children: /* @__PURE__ */ (0, C.jsxs)("button", {
 					type: "button",
 					"data-id-cell": "unowned",
 					"data-open-unowned": "",
-					title: "AbrirSin asignar: ColeccióndentroSinfirmarnombrepersona(s)Obra",
+					title: "打开未归属：馆藏里没有署名人的作品",
 					onClick: t.openUnowned,
 					children: [/* @__PURE__ */ (0, C.jsx)("span", {
 						"data-id-face": "",
 						children: /* @__PURE__ */ (0, C.jsx)(_q, { name: "user-round" })
 					}), /* @__PURE__ */ (0, C.jsx)("span", {
 						"data-id-name": "",
-						children: "Sin asignar"
+						children: "未归属"
 					})]
 				})
 			})]
@@ -78938,15 +78938,15 @@ function yRe({ item: e, actions: t }) {
 			"aria-expanded": !1,
 			onClick: () => i(!0),
 			children: [
-				"quedan ",
+				"还有 ",
 				a,
-				"  resultado(s)"
+				" 位"
 			]
 		}) : null),
-		s("Sello", "studio", n.studios),
-		s("Productora", "studio", n.makers),
-		s("Vendedor", "creator", n.creators.filter((e) => e.identity_categories?.includes("seller"))),
-		s("Creador", "creator", n.creators.filter((e) => !e.identity_categories?.includes("seller")))
+		s("厂牌", "studio", n.studios),
+		s("片商", "studio", n.makers),
+		s("卖家", "creator", n.creators.filter((e) => e.identity_categories?.includes("seller"))),
+		s("创作者", "creator", n.creators.filter((e) => !e.identity_categories?.includes("seller")))
 	].filter(Boolean);
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		"data-item-identity": "",
@@ -78976,8 +78976,8 @@ function bRe({ item: e, write: t, helpers: n, actions: r }) {
 			}), /* @__PURE__ */ (0, C.jsx)("button", {
 				type: "button",
 				"data-remove-tag": e.k,
-				title: "ocultar esta etiqueta desde estos videos",
-				"aria-label": `EliminarEtiqueta ${n.tagLabel(e.k)}`,
+				title: "从此视频隐藏该标签",
+				"aria-label": `删除标签 ${n.tagLabel(e.k)}`,
 				...t.busyAttrs(`tag:${e.k}`),
 				onClick: () => t.removeTag(e),
 				children: /* @__PURE__ */ (0, C.jsx)(_q, { name: "x" })
@@ -79056,8 +79056,8 @@ function xRe({ item: e, write: t, helpers: n }) {
 		type: "button",
 		id: "tagPlus",
 		"data-tag-plus": "",
-		title: "AñadirEtiqueta",
-		"aria-label": "AñadirEtiqueta",
+		title: "添加标签",
+		"aria-label": "添加标签",
 		"aria-expanded": s,
 		onClick: () => {
 			i.current && (Qa(i.current), c(!0), u(""), f(""), m(-1), requestAnimationFrame(() => a.current?.focus()));
@@ -79068,7 +79068,7 @@ function xRe({ item: e, write: t, helpers: n }) {
 		id: "tagPicker",
 		"data-tag-picker": "",
 		role: "dialog",
-		"aria-label": "AñadirEtiqueta",
+		"aria-label": "添加标签",
 		hidden: !0,
 		children: [/* @__PURE__ */ (0, C.jsxs)("label", {
 			"data-tag-search": "",
@@ -79076,7 +79076,7 @@ function xRe({ item: e, write: t, helpers: n }) {
 				ref: a,
 				id: "tagPickSearch",
 				maxLength: 80,
-				placeholder: "BuscaroIntroducirnuevoEtiqueta",
+				placeholder: "搜索或输入新标签",
 				autoComplete: "off",
 				value: l,
 				onChange: (e) => {
@@ -79095,13 +79095,13 @@ function xRe({ item: e, write: t, helpers: n }) {
 			"data-tag-body": "",
 			children: [s && g.recent.length ? /* @__PURE__ */ (0, C.jsxs)("section", {
 				"data-tag-section": "",
-				children: [/* @__PURE__ */ (0, C.jsx)("h4", { children: "Usados recientemente" }), /* @__PURE__ */ (0, C.jsx)("div", {
+				children: [/* @__PURE__ */ (0, C.jsx)("h4", { children: "最近使用" }), /* @__PURE__ */ (0, C.jsx)("div", {
 					"data-tag-grid": "",
 					children: g.recent.map(x)
 				})]
 			}) : null, s ? /* @__PURE__ */ (0, C.jsxs)("section", {
 				"data-tag-section": "",
-				children: [/* @__PURE__ */ (0, C.jsx)("h4", { children: d.trim() ? "Resultados de búsqueda" : "TodoEtiqueta" }), /* @__PURE__ */ (0, C.jsxs)("div", {
+				children: [/* @__PURE__ */ (0, C.jsx)("h4", { children: d.trim() ? "搜索结果" : "全部标签" }), /* @__PURE__ */ (0, C.jsxs)("div", {
 					"data-tag-grid": "",
 					children: [g.results.map(x), g.create ? (() => {
 						b += 1;
@@ -79116,7 +79116,7 @@ function xRe({ item: e, write: t, helpers: n }) {
 							children: [/* @__PURE__ */ (0, C.jsx)(_q, { name: "plus" }), /* @__PURE__ */ (0, C.jsxs)("span", {
 								"data-pick-name": "",
 								children: [
-									"Nuevo“",
+									"新建“",
 									g.create,
 									"”"
 								]
@@ -79136,7 +79136,7 @@ function SRe({ item: e }) {
 			"data-trace-metric": "",
 			children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 				"data-trace-label": "",
-				children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "Posición al abrir" }), /* @__PURE__ */ (0, C.jsx)("span", {
+				children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "离开位置" }), /* @__PURE__ */ (0, C.jsx)("span", {
 					id: "ratioTxt",
 					children: "0%"
 				})]
@@ -79148,7 +79148,7 @@ function SRe({ item: e }) {
 			"data-trace-metric": "",
 			children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 				"data-trace-label": "",
-				children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "Visualización real" }), /* @__PURE__ */ (0, C.jsx)("span", {
+				children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "真实观看" }), /* @__PURE__ */ (0, C.jsx)("span", {
 					id: "realTxt",
 					children: t == null ? "0%" : `${t.toFixed(0)}%`
 				})]
@@ -79179,7 +79179,7 @@ function CRe({ item: e, open: t, write: n }) {
 			ref: a,
 			id: "likeReason",
 			maxLength: 2e3,
-			placeholder: "¿Por qué te gusta?",
+			placeholder: "为什么喜欢？",
 			value: r,
 			onChange: (e) => i(e.target.value)
 		}), /* @__PURE__ */ (0, C.jsxs)("div", {
@@ -79193,11 +79193,11 @@ function CRe({ item: e, open: t, write: n }) {
 				className: "geist-button primary",
 				id: "savePreference",
 				"data-save-preference": "",
-				title: "EnviarRazón del gusto",
-				"aria-label": "EnviarRazón del gusto",
+				title: "提交喜爱理由",
+				"aria-label": "提交喜爱理由",
 				...n.busyAttrs("preference"),
 				onClick: () => n.preference({ reason: r }),
-				dangerouslySetInnerHTML: { __html: o ? `${Ao("EnviandoRazón del gusto")}<span>EnviarEn proceso...</span>` : "<span>Enviar</span>" }
+				dangerouslySetInnerHTML: { __html: o ? `${Ao("正在提交喜爱理由")}<span>提交中…</span>` : "<span>提交</span>" }
 			})]
 		})]
 	});
@@ -79211,7 +79211,7 @@ function wRe(e) {
 		wireDrag: r.wireDrag,
 		busy: a.isPending,
 		empty: a.data?.length === 0,
-		error: a.isError ? `leerContinuar viendoFallido: ${Pt(a.error)}` : void 0,
+		error: a.isError ? `读取接着看失败：${Pt(a.error)}` : void 0,
 		onRetry: () => {
 			a.refetch();
 		},
@@ -79282,25 +79282,25 @@ function TRe(e, t, n) {
 			"aria-busy": !0,
 			"aria-disabled": !0
 		} : {},
-		rate: (e) => g(`rate:${e}`, "Puntuación", async () => {
+		rate: (e) => g(`rate:${e}`, "评分", async () => {
 			let n = f().rating || 0, r = Ife(n, e);
-			await _("rate", r), t.toast(r ? `Yacalificar ${Active Directory(r)} estrellas` : "YaCancelarPuntuación", { undo: async () => {
+			await _("rate", r), t.toast(r ? `已评 ${AD(r)} 星` : "已取消评分", { undo: async () => {
 				await _("rate", n);
 			} });
 		}),
-		feedback: (e) => g(e, "Acción", async () => {
+		feedback: (e) => g(e, "操作", async () => {
 			let n = { feedback: f().feedback || null }, r = await _(e);
 			t.toast(Qfe(e, r), { undo: async () => {
 				e === "o" ? await _("o-undo") : e === "dispose" ? await _("dispose") : (r.feedback && await _(r.feedback), n.feedback && await _(n.feedback)), await t.trashChanged(f().disposal || null, !0);
 			} }), e === "dispose" && await t.trashChanged(r.disposal || null, !1);
 		}),
-		later: () => g("later", "ActualizarVer más tarde", async () => {
+		later: () => g("later", "更新稍后看", async () => {
 			let e = await m(Tfe, {});
-			p({ watch_later: e.watch_later }), t.toast(e.watch_later ? "YaañadirenVer más tarde" : "Yamoversalir Ver más tarde", { undo: async () => {
+			p({ watch_later: e.watch_later }), t.toast(e.watch_later ? "已加入稍后看" : "已移出稍后看", { undo: async () => {
 				p({ watch_later: (await m(Tfe, {})).watch_later });
 			} });
 		}),
-		quality: () => g("quality", "Necesidad de actualizar versión", async () => {
+		quality: () => g("quality", "更新版本需求", async () => {
 			let e = {
 				wanted: !!f().better_version,
 				reason: f().better_version_reason || ""
@@ -79308,12 +79308,12 @@ function TRe(e, t, n) {
 				better_version: e.better_version,
 				better_version_reason: e.better_version_reason || ""
 			}), r = await m(Efe, { wanted: !e.wanted });
-			n(r), t.toast(r.better_version ? "Marcado: buscar mejor versión" : "YaCancelarBuscar mejor versión", { undo: async () => {
+			n(r), t.toast(r.better_version ? "已标记寻找更好版本" : "已取消寻找更好版本", { undo: async () => {
 				n(await m(Efe, e));
 			} });
 		}),
 		preference: ({ liked: e, reason: n }) => {
-			g(e === void 0 ? "preference" : "like", "Guardar favorito", async () => {
+			g(e === void 0 ? "preference" : "like", "保存喜欢偏好", async () => {
 				let r = {
 					liked: !!f().liked,
 					reason: f().like_reason || ""
@@ -79321,28 +79321,28 @@ function TRe(e, t, n) {
 					liked: e.liked,
 					like_reason: e.like_reason || ""
 				});
-				u("GuardarEn proceso...");
+				u("保存中…");
 				try {
 					o(await m(Dfe, {
 						liked: a,
 						reason: i
 					}));
 				} catch (e) {
-					throw u("GuardarFallido · Por favorReintentar"), e;
+					throw u("保存失败 · 请重试"), e;
 				}
-				u("Guardado"), setTimeout(() => u((e) => e === "Guardado" ? "" : e), 1400);
+				u("已保存"), setTimeout(() => u((e) => e === "已保存" ? "" : e), 1400);
 				let s = f();
-				t.toast(s.liked ? "Guardado en favoritos" : "Favorito cancelado", { undo: async () => {
+				t.toast(s.liked ? "已保存喜欢偏好" : "已取消喜欢", { undo: async () => {
 					o(await m(Dfe, r));
 				} });
 			});
 		},
-		removeTag: (e) => g(`tag:${e.k}`, "EliminarEtiqueta", async () => {
+		removeTag: (e) => g(`tag:${e.k}`, "删除标签", async () => {
 			if (!(await m("/api/item-tag", {
 				operation: "remove",
 				tag: e.k
-			})).ok) throw Error("EtiquetaNoEliminar");
-			p((t) => Rfe(t, e.k)), t.toast(`YaEliminarEtiqueta"${n(e.k)}"`, { undo: async () => {
+			})).ok) throw Error("标签未删除");
+			p((t) => Rfe(t, e.k)), t.toast(`已删除标签「${n(e.k)}」`, { undo: async () => {
 				await m(TD, {
 					operation: "add",
 					tag: e.k
@@ -79351,17 +79351,17 @@ function TRe(e, t, n) {
 		}),
 		addTag: (e) => {
 			let r = e.trim();
-			r && g(`add:${r}`, "AñadirEtiqueta", async () => {
+			r && g(`add:${r}`, "添加标签", async () => {
 				let e = await m(TD, {
 					operation: "add",
 					tag: r
 				});
 				if (!e.ok) return;
 				let i = e.tag || r;
-				jD(f(), i) ? t.toast(`Etiqueta"${n(i)}"Yaexistente en`) : (p((e) => zfe(e, {
+				jD(f(), i) ? t.toast(`标签「${n(i)}」已存在`) : (p((e) => zfe(e, {
 					k: i,
 					cat: "general"
-				})), Hfe(i), t.toast(`YaAñadirEtiqueta"${n(i)}"`, { undo: async () => {
+				})), Hfe(i), t.toast(`已添加标签「${n(i)}」`, { undo: async () => {
 					await m(TD, {
 						operation: "remove",
 						tag: i
@@ -79444,8 +79444,8 @@ var Cq = ({ close: e }) => /* @__PURE__ */ (0, C.jsx)("button", {
 	type: "button",
 	"data-stage-close": "",
 	id: "closeStage",
-	"aria-label": "Desactivar",
-	title: "Desactivar",
+	"aria-label": "关闭",
+	title: "关闭",
 	onClick: e,
 	dangerouslySetInnerHTML: { __html: z("x") }
 });
@@ -79458,15 +79458,15 @@ function ARe({ code: e, item: t, actions: n, readOnly: r, retry: i, retrying: a 
 	let [o, s] = (0, S.useState)(-1), c = [
 		{
 			index: -1,
-			label: "Portada"
+			label: "封面"
 		},
 		...Array.from({ length: t.preview_count }, (e, t) => ({
 			index: t,
-			label: `Vista previa ${t + 1}`
+			label: `预览 ${t + 1}`
 		})),
 		...t.preview_video_url ? [{
 			index: -2,
-			label: "Vista previa de video",
+			label: "视频预览",
 			video: !0
 		}] : []
 	], [l, u] = (0, S.useState)(null), [d, f] = (0, S.useState)(t.want_id), p = wA(), m = () => {
@@ -79475,7 +79475,7 @@ function ARe({ code: e, item: t, actions: n, readOnly: r, retry: i, retrying: a 
 				...e,
 				wanted: !!t,
 				want_id: t
-			}), n.receipt(t ? "Añadido a deseados" : "Quitado de deseados"), fW(), W.invalidateQueries({ queryKey: ["feed-new"] }), W.invalidateQueries({ queryKey: ["jav-discoveries"] });
+			}), n.receipt(t ? "已加入想要" : "已取消想要"), fW(), W.invalidateQueries({ queryKey: ["feed-new"] }), W.invalidateQueries({ queryKey: ["jav-discoveries"] });
 		});
 	};
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
@@ -79490,7 +79490,7 @@ function ARe({ code: e, item: t, actions: n, readOnly: r, retry: i, retrying: a 
 					"data-jav-preview-toggle": "",
 					"aria-pressed": o === -2,
 					onClick: () => s(o === -2 ? -1 : -2),
-					children: [/* @__PURE__ */ (0, C.jsx)(wq, { name: o === -2 ? "image" : "play" }), o === -2 ? "Ver imagen" : "Vista previa de video"]
+					children: [/* @__PURE__ */ (0, C.jsx)(wq, { name: o === -2 ? "image" : "play" }), o === -2 ? "查看图片" : "视频预览"]
 				}) : null,
 				o === -2 && t.preview_video_url ? /* @__PURE__ */ (0, C.jsx)(NRe, { src: t.preview_video_url }, t.preview_video_url) : /* @__PURE__ */ (0, C.jsx)(cq, {
 					item: t,
@@ -79522,12 +79522,12 @@ function ARe({ code: e, item: t, actions: n, readOnly: r, retry: i, retrying: a 
 						"data-stage-meta": "",
 						children: [/* @__PURE__ */ (0, C.jsx)(Tq, {
 							glyph: "calendar",
-							label: "Fecha de lanzamiento",
+							label: "发行日期",
 							value: t.release_date
 						}), /* @__PURE__ */ (0, C.jsx)(Tq, {
 							glyph: "clock",
-							label: "Duración",
-							value: t.duration ? `${t.duration} minuto(s)` : void 0
+							label: "时长",
+							value: t.duration ? `${t.duration} 分钟` : void 0
 						})]
 					}),
 					/* @__PURE__ */ (0, C.jsx)(MRe, {
@@ -79538,11 +79538,11 @@ function ARe({ code: e, item: t, actions: n, readOnly: r, retry: i, retrying: a 
 						"data-jav-facts": "",
 						children: [/* @__PURE__ */ (0, C.jsx)(Tq, {
 							glyph: "briefcase",
-							label: "Distribuidora",
+							label: "发行商",
 							value: t.publisher
 						}), /* @__PURE__ */ (0, C.jsx)(Tq, {
 							glyph: "clapperboard",
-							label: "Director",
+							label: "导演",
 							value: t.director
 						})]
 					}),
@@ -79575,7 +79575,7 @@ function ARe({ code: e, item: t, actions: n, readOnly: r, retry: i, retrying: a 
 							variant: "secondary",
 							...Y(a),
 							onClick: i,
-							children: "Reintentar"
+							children: "重试"
 						}),
 						children: t.message
 					}) : null,
@@ -79592,7 +79592,7 @@ function ARe({ code: e, item: t, actions: n, readOnly: r, retry: i, retrying: a 
 									release_date: t.release_date,
 									origin: `jav:${t.code}`
 								}),
-								children: "Buscar recursos"
+								children: "查找资源"
 							}),
 							/* @__PURE__ */ (0, C.jsx)(q, {
 								variant: "secondary",
@@ -79600,13 +79600,13 @@ function ARe({ code: e, item: t, actions: n, readOnly: r, retry: i, retrying: a 
 								"aria-pressed": !!d,
 								...Y(!!p.busy),
 								onClick: m,
-								children: d ? "Quitar de deseados" : "Deseado"
+								children: d ? "取消想要" : "想要"
 							}),
 							t.source_url ? /* @__PURE__ */ (0, C.jsx)(q, {
 								variant: "secondary",
 								trailingIcon: Ik,
 								onClick: () => window.open(t.source_url, "_blank", "noopener,noreferrer"),
-								children: "Fuente de obra"
+								children: "作品来源"
 							}) : null
 						]
 					}),
@@ -79667,8 +79667,8 @@ function jRe({ item: e }) {
 				"data-title-fold": "",
 				hidden: !r,
 				"aria-expanded": n,
-				"aria-label": n ? "Colapsar título" : "Expandir título",
-				title: n ? "Colapsar título" : "Expandir título completo",
+				"aria-label": n ? "收起标题" : "展开标题",
+				title: n ? "收起标题" : "展开完整标题",
 				onClick: i,
 				children: /* @__PURE__ */ (0, C.jsx)(wq, { name: n ? "chevron-up" : "chevron-down" })
 			})
@@ -79682,7 +79682,7 @@ function Eq({ score: e, review: t = !1 }) {
 		"data-jav-rating": "",
 		"data-review-rating": t ? "" : void 0,
 		role: "img",
-		"aria-label": `Puntuación ${t ? "evaluación" : "JavDB"} ${e} / 5`,
+		"aria-label": `${t ? "评论" : "JavDB"}评分 ${e} / 5`,
 		children: [/* @__PURE__ */ (0, C.jsx)("div", {
 			"data-rating-stars": "",
 			"aria-hidden": "true",
@@ -79742,9 +79742,9 @@ function MRe({ item: e, navigate: t }) {
 		children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 			"data-identity-primary": "",
 			children: [
-				r("performer", "Actriz", e.performer_refs.filter((e) => e.gender === "female"), "female"),
-				r("performer", "Intérpretes", e.performer_refs.filter((e) => !e.gender || e.gender === "unknown"), "unknown"),
-				r("studio", "Sello", e.studio_refs)
+				r("performer", "女优", e.performer_refs.filter((e) => e.gender === "female"), "female"),
+				r("performer", "出演者", e.performer_refs.filter((e) => !e.gender || e.gender === "unknown"), "unknown"),
+				r("studio", "厂牌", e.studio_refs)
 			]
 		}), /* @__PURE__ */ (0, C.jsx)(oq, {
 			people: e.series_refs.map((e) => ({
@@ -79759,7 +79759,7 @@ function NRe({ src: e }) {
 	let t = (0, S.useRef)(null), [n, r] = (0, S.useState)(!1), [i, a] = (0, S.useState)(0);
 	return (0, S.useLayoutEffect)(() => {
 		let n = t.current, i = document.createElement("video");
-		return i.className = "video-js vjs-big-play-centered", i.controls = !0, i.setAttribute("playsinline", ""), i.setAttribute("aria-label", "Vista previa de video"), n.append(i), tfe(i, {
+		return i.className = "video-js vjs-big-play-centered", i.controls = !0, i.setAttribute("playsinline", ""), i.setAttribute("aria-label", "视频预览"), n.append(i), tfe(i, {
 			src: e,
 			type: /\.m3u8(?:\?|$)/i.test(e) ? "application/x-mpegURL" : "video/mp4"
 		}, () => r(!0));
@@ -79773,9 +79773,9 @@ function NRe({ src: e }) {
 				onClick: () => {
 					r(!1), a((e) => e + 1);
 				},
-				children: "Reintentar"
+				children: "重试"
 			}),
-			children: "VideosVista previa no disponible"
+			children: "视频预览未取得"
 		}) : null
 	});
 }
@@ -79799,7 +79799,7 @@ function PRe({ code: e, count: t, released: n }) {
 				if (t?.ok) return {
 					...t,
 					cache_stale: !0,
-					message: i.message || "reseñasNo disponible, Por favorMás tardeReintentar"
+					message: i.message || "评论未取得，请稍后重试"
 				};
 			}
 			return i;
@@ -79816,14 +79816,14 @@ function PRe({ code: e, count: t, released: n }) {
 			trailing: !0,
 			summary: /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [
 				/* @__PURE__ */ (0, C.jsx)(xge, { "aria-hidden": !0 }),
-				"reseñas",
+				"评论",
 				t > 0 ? ` · ${t}` : ""
 			] }),
 			onOpenChange: a,
 			children: [i && c.isPending ? /* @__PURE__ */ (0, C.jsx)("div", {
 				"data-skeleton": "reviews",
 				role: "status",
-				"aria-label": "Cargandoreseñas",
+				"aria-label": "正在读取评论",
 				className: "flex flex-col gap-4 py-3",
 				children: [
 					0,
@@ -79872,12 +79872,12 @@ function PRe({ code: e, count: t, released: n }) {
 						onClick: () => {
 							s.current = !0, c.refetch();
 						},
-						children: "Reintentar"
+						children: "重试"
 					}),
 					children: d
 				}) : !c.isPending && !u.length ? /* @__PURE__ */ (0, C.jsx)(J, {
 					tone: "neutral",
-					children: "Sin comentarios"
+					children: "暂无评论"
 				}) : null,
 				!d && l.length ? /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
@@ -79885,7 +79885,7 @@ function PRe({ code: e, count: t, released: n }) {
 					onClick: () => {
 						s.current = !0, c.refetch();
 					},
-					children: "Actualizarreseñas"
+					children: "刷新评论"
 				}) : null,
 				c.hasNextPage ? /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
@@ -79893,14 +79893,14 @@ function PRe({ code: e, count: t, released: n }) {
 					onClick: () => {
 						c.isFetchingNextPage || c.fetchNextPage();
 					},
-					children: "Másreseñas"
+					children: "更多评论"
 				}) : null,
 				!d && l.at(-1)?.page === 8 && t > u.length ? /* @__PURE__ */ (0, C.jsxs)(J, {
 					tone: "neutral",
 					children: [
-						"YaMostrar ",
+						"已显示 ",
 						u.length,
-						" comentarios, el resto se puede ver en JavDB. "
+						" 条评论，其余评论可在 JavDB 查看。"
 					]
 				}) : null
 			] }) : null]
@@ -79917,7 +79917,7 @@ function FRe({ item: e, actions: t, readOnly: n }) {
 		"data-jav-resources": "",
 		children: /* @__PURE__ */ (0, C.jsx)(BA, {
 			trailing: !0,
-			summary: /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(wq, { name: "link" }), "Recurso"] }),
+			summary: /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(wq, { name: "link" }), "资源"] }),
 			onOpenChange: (e) => {
 				i(e), e && c(!0);
 			},
@@ -79953,7 +79953,7 @@ function IRe(e, t) {
 }
 var Lq = !1;
 function Rq() {
-	if (!Dq) throw Error("reproductor ReproductorAún no hayconectarsuperiorhost principal (configureStagePlayer)");
+	if (!Dq) throw Error("舞台播放器还没有接上宿主（configureStagePlayer）");
 	return Dq;
 }
 function zq(e) {
@@ -79992,17 +79992,17 @@ function Bq(e, t) {
 }
 async function RRe(e, t, n) {
 	let r = await Lt(`/api/item?id=${e.id}`, { signal: n });
-	if (n.throwIfAborted(), !r || r.error) throw Error(r?.error || "ObraNo disponible");
-	if (r.medium && r.medium !== "video") throw Error("esteResultadoObraSinpuedeReproducirVideos");
-	if (r.location === "online") throw Error("Por favorAbrir detallesReproducirObras en línea");
-	if (r.cost === "metered") throw Error("Por favorAbrir detallesConfirmarcon cargoFuente");
+	if (n.throwIfAborted(), !r || r.error) throw Error(r?.error || "作品未取得");
+	if (r.medium && r.medium !== "video") throw Error("这条作品没有可播放的视频");
+	if (r.location === "online") throw Error("请打开详情播放在线作品");
+	if (r.cost === "metered") throw Error("请打开详情确认计费来源");
 	let i = await Rq().player.loadSourceStatus();
 	if (n.throwIfAborted(), i[String(r.location || "")] === !1) throw Error(Rq().player.offlineReason(String(r.location || "")));
 	let a = {
 		kind: "item",
 		item: r,
 		title: String(r.title || r.name || ""),
-		sub: String(r.performers?.[0] || r.creator || "Sin asignar")
+		sub: String(r.performers?.[0] || r.creator || "未归属")
 	};
 	zq(a);
 	let o = Bq(t, {
@@ -80062,7 +80062,7 @@ function VRe() {
 	return Fq() ? document.getElementById("stage")?.querySelector("video") ?? null : Vq()?.el().querySelector("video") ?? BRe();
 }
 function Kq(e) {
-	jq && (jq.title.textContent = e.title || "", jq.sub.textContent = e.sub || "", jq.info.setAttribute("aria-label", e.title ? `Expandir a detalles: ${e.title}` : "Expandir a detalles"));
+	jq && (jq.title.textContent = e.title || "", jq.sub.textContent = e.sub || "", jq.info.setAttribute("aria-label", e.title ? `展开到详情：${e.title}` : "展开到详情"));
 }
 function qq(e = Oq?.item) {
 	if (!jq) return;
@@ -80073,7 +80073,7 @@ function Jq() {
 	let e = Oq?.player;
 	if (!e || e.isDisposed() || !jq) return;
 	let t = e.paused();
-	jq.play.setAttribute("aria-label", t ? "Reproducir" : "Pausar"), jq.play.querySelector("[data-icon-swap]") || (jq.play.innerHTML = Fo("player-pause", "player-play", t ? "b" : "a")), Io(jq.play, t ? "b" : "a");
+	jq.play.setAttribute("aria-label", t ? "播放" : "暂停"), jq.play.querySelector("[data-icon-swap]") || (jq.play.innerHTML = Fo("player-pause", "player-play", t ? "b" : "a")), Io(jq.play, t ? "b" : "a");
 }
 function Yq() {
 	let e = Oq?.player;
@@ -80085,7 +80085,7 @@ var Xq = () => Math.max(1, Number(Rq().player.settings().seekSeconds) || 10);
 function Zq() {
 	if (!jq || !Dq) return;
 	let e = Xq();
-	for (let [t, n] of [[jq.back, `despuésretroceder  ${e} segundo(s)`], [jq.ahead, `Adelantar ${e} segundo(s)`]]) t.setAttribute("aria-label", n), t.title = n;
+	for (let [t, n] of [[jq.back, `后退 ${e} 秒`], [jq.ahead, `前进 ${e} 秒`]]) t.setAttribute("aria-label", n), t.title = n;
 }
 function Qq(e) {
 	let t = (t, n) => {
@@ -80182,7 +80182,7 @@ async function GRe(e) {
 		kind: "item",
 		item: n,
 		title: String(n.title || n.name || ""),
-		sub: String(n.performers?.[0] || n.creator || "Sin asignar")
+		sub: String(n.performers?.[0] || n.creator || "未归属")
 	};
 	Kq(a), pD(i, {
 		kind: "item",
@@ -80238,7 +80238,7 @@ var oJ = ({ name: e }) => /* @__PURE__ */ (0, C.jsx)("svg", {
 		"data-miniplayer": "",
 		id: "miniplayer",
 		"data-corner": "br",
-		"aria-label": "ventana flotanteReproducir",
+		"aria-label": "小窗播放",
 		hidden: !0,
 		children: /* @__PURE__ */ (0, C.jsxs)("div", {
 			ref: t,
@@ -80255,7 +80255,7 @@ var oJ = ({ name: e }) => /* @__PURE__ */ (0, C.jsx)("svg", {
 							type: "button",
 							"data-miniplayer-button": "expand",
 							id: "miniplayerExpand",
-							"aria-label": "Expandir a detalles",
+							"aria-label": "展开到详情",
 							"aria-keyshortcuts": "i",
 							onClick: sJ(nJ),
 							children: /* @__PURE__ */ (0, C.jsx)(oJ, { name: "maximize-2" })
@@ -80264,7 +80264,7 @@ var oJ = ({ name: e }) => /* @__PURE__ */ (0, C.jsx)("svg", {
 							type: "button",
 							"data-miniplayer-button": "close",
 							id: "miniplayerClose",
-							"aria-label": "Desactivar ventana flotante",
+							"aria-label": "关闭小窗",
 							onClick: sJ(tJ),
 							children: /* @__PURE__ */ (0, C.jsx)(oJ, { name: "x" })
 						}),
@@ -80281,7 +80281,7 @@ var oJ = ({ name: e }) => /* @__PURE__ */ (0, C.jsx)("svg", {
 							type: "button",
 							"data-miniplayer-play": "",
 							id: "miniplayerPlay",
-							"aria-label": "Pausar",
+							"aria-label": "暂停",
 							"aria-keyshortcuts": "k",
 							onClick: sJ(WRe),
 							dangerouslySetInnerHTML: KRe
@@ -80308,7 +80308,7 @@ var oJ = ({ name: e }) => /* @__PURE__ */ (0, C.jsx)("svg", {
 				type: "button",
 				"data-miniplayer-info": "",
 				id: "miniplayerInfo",
-				"aria-label": "Expandir a detalles",
+				"aria-label": "展开到详情",
 				onClick: () => nJ(),
 				children: [/* @__PURE__ */ (0, C.jsx)("span", {
 					ref: s,
@@ -80388,7 +80388,7 @@ var cJ = null, lJ = null, uJ = /* @__PURE__ */ new Set(), dJ = 0, fJ = null, pJ 
 	return e instanceof HTMLDialogElement ? e : null;
 };
 function gJ() {
-	if (!cJ) throw Error("El escenario aún no está conectado al host (configureStage)");
+	if (!cJ) throw Error("舞台还没有接上宿主（configureStage）");
 	return cJ;
 }
 function XRe(e) {
@@ -80408,7 +80408,7 @@ function QRe({ view: e }) {
 var vJ = () => /* @__PURE__ */ (0, C.jsx)("div", {
 	"data-skeleton": "detail",
 	role: "status",
-	"aria-label": "CargandoObraDetalles",
+	"aria-label": "正在读取作品详情",
 	dangerouslySetInnerHTML: { __html: _Le() }
 });
 function yJ(e) {
@@ -80431,7 +80431,7 @@ function $Re({ view: e }) {
 		id: "stage",
 		"data-stage": "",
 		"data-stage-kind": r.kind,
-		"aria-label": "ObraDetalles",
+		"aria-label": "作品详情",
 		onKeyDown: (e) => {
 			e.key !== "Escape" || e.defaultPrevented || (e.preventDefault(), bJ());
 		},
@@ -80491,7 +80491,7 @@ function SJ(e) {
 					kind: "item",
 					item: e,
 					title: String(e.title || e.name || ""),
-					sub: String(n?.[0] || e.creator || "Sin asignar")
+					sub: String(n?.[0] || e.creator || "未归属")
 				}), xJ(r().ambientMode, r().theaterMode), queueMicrotask(() => {
 					i() && o.present(e, t);
 				});
@@ -80715,40 +80715,40 @@ async function dze(e) {
 		queryFn: () => EJ(e)
 	});
 }
-var DJ = (e) => e != null && Number.isFinite(e), OJ = (e) => DJ(e) ? e.toLocaleString() : "No disponible", fze = (e, t) => DJ(e) && DJ(t) && t > 0 ? Math.min(100, Math.max(0, Math.round(e / t * 100))) : 0, kJ = (e, t) => {
+var DJ = (e) => e != null && Number.isFinite(e), OJ = (e) => DJ(e) ? e.toLocaleString() : "未取得", fze = (e, t) => DJ(e) && DJ(t) && t > 0 ? Math.min(100, Math.max(0, Math.round(e / t * 100))) : 0, kJ = (e, t) => {
 	let n = fze(e, t);
 	return !n && DJ(e) && e > 0 && DJ(t) && t > 0 ? "<1%" : `${n}%`;
 }, AJ = (e) => {
-	if (!DJ(e)) return "No disponible";
+	if (!DJ(e)) return "未取得";
 	let t = Math.max(0, e);
-	return t >= 172800 ? `${(t / 86400).toLocaleString(void 0, { maximumFractionDigits: 1 })} día(s)` : t >= 3600 ? `${(t / 3600).toFixed(1)} hora(s)` : `${Math.round(t / 60)} minuto(s)`;
-}, jJ = (e) => e.duration ? Math.min(e.play_seconds / e.duration, 1) * 100 : 0, MJ = (e) => (e.max_reached || 0) * 100, pze = (e) => e.kind === "online" ? "Ver en línea directamente" : jJ(e) < MJ(e) - 25 ? "Avance rápido" : e.o_count ? `Orgasmo ${e.o_count}` : "NormalVer", mze = (e) => `${e.kind === "online" ? "/posts/" : "/assets/"}${e.id}`;
+	return t >= 172800 ? `${(t / 86400).toLocaleString(void 0, { maximumFractionDigits: 1 })} 天` : t >= 3600 ? `${(t / 3600).toFixed(1)} 小时` : `${Math.round(t / 60)} 分钟`;
+}, jJ = (e) => e.duration ? Math.min(e.play_seconds / e.duration, 1) * 100 : 0, MJ = (e) => (e.max_reached || 0) * 100, pze = (e) => e.kind === "online" ? "在线直接观看" : jJ(e) < MJ(e) - 25 ? "快进扫过" : e.o_count ? `高潮 ${e.o_count}` : "正常观看", mze = (e) => `${e.kind === "online" ? "/posts/" : "/assets/"}${e.id}`;
 function hze(e, t = 6) {
 	let n = e.filter((e) => Number.isFinite(e.value) && e.value >= 0);
 	if (n.length <= t) return n;
 	let r = [...n].sort((e, t) => t.value - e.value), i = r.slice(t - 1);
 	return [...r.slice(0, t - 1), {
-		name: `otros ${i.length.toLocaleString()} elemento(s)`,
+		name: `其余 ${i.length.toLocaleString()} 项`,
 		value: i.reduce((e, t) => e + t.value, 0),
 		bytes: i.reduce((e, t) => e + (t.bytes ?? 0), 0)
 	}];
 }
 var gze = (e) => Math.max(1, ...e) * 1.1, _ze = (e, t) => e > 0 ? Math.max(e, t * .02) : 0, vze = (e) => Math.max(4, Math.min(14, Math.round(90 / Math.max(1, e)))), yze = {
-	video: "Videos",
-	image: "Imágenes",
-	illustration: "Ilustración",
-	archive: "Archivo comprimido",
-	audio: "Audio",
-	account: "Cuenta",
-	other: "Otros archivos"
+	video: "视频",
+	image: "图片",
+	illustration: "插画",
+	archive: "压缩包",
+	audio: "音频",
+	account: "账号",
+	other: "其它文件"
 }, bze = (e) => e.map((e) => ({
 	name: yze[e.k] ?? e.k,
 	value: e.n
 })).sort((e, t) => t.value - e.value), xze = {
-	comida rápida: "< 5 minutos",
-	corto: "5–15 minutos",
-	En proceso: "15–40 minutos",
-	largo: "> 40 minutos"
+	速食: "<5 分钟",
+	短: "5–15 分钟",
+	中: "15–40 分钟",
+	长: ">40 分钟"
 }, NJ = (e, t = {}) => e.map((e) => ({
 	name: t[e.k] ?? e.k,
 	value: e.n
@@ -80797,7 +80797,7 @@ function PJ(e) {
 }
 //#endregion
 //#region node_modules/recharts/es6/util/svgPropertiesNoEvents.js
-var Eze = /* @__PURE__ */ new Set(/* @__PURE__ */ "aria-activedescendant.aria-atomic.aria-autocomplete.aria-busy.aria-checked.aria-colcount.aria-colindex.aria-colspan.aria-controls.aria-current.aria-describedby.aria-details.aria-disabled.aria-errormessage.aria-expanded.aria-flowto.aria-haspopup.aria-hidden.aria-invalid.aria-keyshortcuts.aria-label.aria-labelledby.aria-level.aria-live.aria-modal.aria-multiline.aria-multiselectable.aria-orientation.aria-owns.aria-placeholder.aria-posinset.aria-pressed.aria-readonly.aria-relevant.aria-required.aria-roledescription.aria-rowcount.aria-rowindex.aria-rowspan.aria-selected.aria-setsize.aria-sort.aria-valuemax.aria-valuemin.aria-valuenow.aria-valuetext.className.color.height.id.lang.max.media.method.min.name.style.target.width.role.tabIndex.accentHeight.accumulate.additive.alignmentBaseline.allowReorder.alphabetic.amplitude.arabicForm.ascent.attributeName.attributeType.autoReverse.azimuth.baseFrequency.baselineShift.baseProfile.bbox.begin.bias.by.calcMode.capHeight.clip.clipPath.clipPathUnits.clipRule.colorInterpolation.colorInterpolationFilters.colorProfile.colorRendering.contentScriptType.contentStyleType.cursor.cx.cy.d.decelerate.descent.diffuseConstant.direction.display.divisor.dominantBaseline.dur.dx.dy.edgeMode.elevation.enableBackground.end.exponent.externalResourcesRequired.fill.fillOpacity.fillRule.filter.filterRes.filterUnits.floodColor.floodOpacity.focusable.fontFamily.fontSize.fontSizeAdjust.fontStretch.fontStyle.fontVariant.fontWeight.format.from.fx.fy.g1.g2.glyphName.glyphOrientationHorizontal.glyphOrientationVertical.glyphRef.gradientTransform.gradientUnits.hanging.horizAdvX.horizOriginX.href.ideographic.imageRendering.in2.in.intercept.k1.k2.k3.k4.k.kernelMatrix.kernelUnitLength.kerning.keyPoints.keySplines.keyTimes.lengthAdjust.letterSpacing.lightingColor.limitingConeAngle.local.markerEnd.markerHeight.markerMid.markerStart.markerUnits.markerWidth.mask.maskContentUnits.maskUnits.mathematical.mode.numOctaves.offset.opacity.operator.order.orient.orientation.origin.overflow.overlinePosition.overlineThickness.paintOrder.panose1.pathLength.patternContentUnits.patternTransform.patternUnits.pointerEvents.pointsAtX.pointsAtY.pointsAtZ.preserveAlpha.preserveAspectRatio.primitiveUnits.r.radius.refX.refY.renderingIntent.repeatCount.repeatDur.requiredExtensions.requiredFeatures.restart.result.rotate.rx.ry.seed.shapeRendering.slope.spacing.specularConstant.specularExponent.speed.spreadMethod.startOffset.stdDeviation.stemh.stemv.stitchTiles.stopColor.stopOpacity.strikethroughPosition.strikethroughThickness.string.stroke.strokeDasharray.strokeDashoffset.strokeLinecap.strokeLinejoin.strokeMiterlimit.strokeOpacity.strokeWidth.surfaceScale.systemLanguage.tableValues.targetX.targetY.textAnchor.textDecoration.textLength.textRendering.to.transform.u1.u2.underlinePosition.underlineThickness.unicode.unicodeBidi.unicodeRange.unitsPerEm.vAlphabetic.values.vectorEffect.version.vertAdvY.vertOriginX.vertOriginY.vHanging.vIdeographic.viewTarget.visibility.vMathematical.widths.wordSpacing.writingMode.x1.x2.x.xChannelSelector.xHeight.xlinkActuate.xlinkArcrole.xlinkHref.xlinkrole.xlinkShow.xlinkTitle.xlinkType.xmlBase.xmlLang.xmlns.xmlnsXlink.xmlSpace.y1.y2.y.yChannelSelector.z.zoomAndPan.ref.key.angle".split("."));
+var Eze = /* @__PURE__ */ new Set(/* @__PURE__ */ "aria-activedescendant.aria-atomic.aria-autocomplete.aria-busy.aria-checked.aria-colcount.aria-colindex.aria-colspan.aria-controls.aria-current.aria-describedby.aria-details.aria-disabled.aria-errormessage.aria-expanded.aria-flowto.aria-haspopup.aria-hidden.aria-invalid.aria-keyshortcuts.aria-label.aria-labelledby.aria-level.aria-live.aria-modal.aria-multiline.aria-multiselectable.aria-orientation.aria-owns.aria-placeholder.aria-posinset.aria-pressed.aria-readonly.aria-relevant.aria-required.aria-roledescription.aria-rowcount.aria-rowindex.aria-rowspan.aria-selected.aria-setsize.aria-sort.aria-valuemax.aria-valuemin.aria-valuenow.aria-valuetext.className.color.height.id.lang.max.media.method.min.name.style.target.width.role.tabIndex.accentHeight.accumulate.additive.alignmentBaseline.allowReorder.alphabetic.amplitude.arabicForm.ascent.attributeName.attributeType.autoReverse.azimuth.baseFrequency.baselineShift.baseProfile.bbox.begin.bias.by.calcMode.capHeight.clip.clipPath.clipPathUnits.clipRule.colorInterpolation.colorInterpolationFilters.colorProfile.colorRendering.contentScriptType.contentStyleType.cursor.cx.cy.d.decelerate.descent.diffuseConstant.direction.display.divisor.dominantBaseline.dur.dx.dy.edgeMode.elevation.enableBackground.end.exponent.externalResourcesRequired.fill.fillOpacity.fillRule.filter.filterRes.filterUnits.floodColor.floodOpacity.focusable.fontFamily.fontSize.fontSizeAdjust.fontStretch.fontStyle.fontVariant.fontWeight.format.from.fx.fy.g1.g2.glyphName.glyphOrientationHorizontal.glyphOrientationVertical.glyphRef.gradientTransform.gradientUnits.hanging.horizAdvX.horizOriginX.href.ideographic.imageRendering.in2.in.intercept.k1.k2.k3.k4.k.kernelMatrix.kernelUnitLength.kerning.keyPoints.keySplines.keyTimes.lengthAdjust.letterSpacing.lightingColor.limitingConeAngle.local.markerEnd.markerHeight.markerMid.markerStart.markerUnits.markerWidth.mask.maskContentUnits.maskUnits.mathematical.mode.numOctaves.offset.opacity.operator.order.orient.orientation.origin.overflow.overlinePosition.overlineThickness.paintOrder.panose1.pathLength.patternContentUnits.patternTransform.patternUnits.pointerEvents.pointsAtX.pointsAtY.pointsAtZ.preserveAlpha.preserveAspectRatio.primitiveUnits.r.radius.refX.refY.renderingIntent.repeatCount.repeatDur.requiredExtensions.requiredFeatures.restart.result.rotate.rx.ry.seed.shapeRendering.slope.spacing.specularConstant.specularExponent.speed.spreadMethod.startOffset.stdDeviation.stemh.stemv.stitchTiles.stopColor.stopOpacity.strikethroughPosition.strikethroughThickness.string.stroke.strokeDasharray.strokeDashoffset.strokeLinecap.strokeLinejoin.strokeMiterlimit.strokeOpacity.strokeWidth.surfaceScale.systemLanguage.tableValues.targetX.targetY.textAnchor.textDecoration.textLength.textRendering.to.transform.u1.u2.underlinePosition.underlineThickness.unicode.unicodeBidi.unicodeRange.unitsPerEm.vAlphabetic.values.vectorEffect.version.vertAdvY.vertOriginX.vertOriginY.vHanging.vIdeographic.viewTarget.visibility.vMathematical.widths.wordSpacing.writingMode.x1.x2.x.xChannelSelector.xHeight.xlinkActuate.xlinkArcrole.xlinkHref.xlinkRole.xlinkShow.xlinkTitle.xlinkType.xmlBase.xmlLang.xmlns.xmlnsXlink.xmlSpace.y1.y2.y.yChannelSelector.z.zoomAndPan.ref.key.angle".split("."));
 function FJ(e) {
 	return typeof e == "string" && Eze.has(e);
 }
@@ -92735,7 +92735,7 @@ var s6e = (e, t, n, r) => e.reduce((e, i) => {
 		e.push(c);
 	}
 	return e;
-}, []), c6e = (e) => e.reduce((e, t) => e.width > t.width ? e : t), l6e = "...", u6e = (e, t, n, r, i, a, o, s) => {
+}, []), c6e = (e) => e.reduce((e, t) => e.width > t.width ? e : t), l6e = "…", u6e = (e, t, n, r, i, a, o, s) => {
 	var c = i6e({
 		breakAll: n,
 		style: r,
@@ -101587,7 +101587,7 @@ var oct = 2, sct = "loading", cct = 2e3, lct = "evil-stacked", uct = .5, dct = .
 ], pct = (0, S.createContext)(null);
 function f8() {
 	let e = (0, S.use)(pct);
-	if (!e) throw Error("Bar chart parts (<Bar />, <XAxis />, ...) must be used within <EvilBarChart />");
+	if (!e) throw Error("Bar chart parts (<Bar />, <XAxis />, …) must be used within <EvilBarChart />");
 	return e;
 }
 function p8({ config: e, data: t, children: n, className: r, chartProps: i, stackType: a = "default", layout: o = "vertical", barRadius: s = oct, animationType: c = "left-to-right", barGap: l, barCategoryGap: u, backgroundVariant: d, defaultSelectedDataKey: f = null, onSelectionChange: p, isLoading: m = !1, loadingBars: h, xDataKey: g }) {
@@ -102344,8 +102344,8 @@ var _8 = (e) => Rct(e) ?? Lct(e).reduce((e, t) => e + Ict(t), 0);
 function zct(e, t) {
 	if (_8(e) <= t) return e;
 	let n = Lct(e), r = 0;
-	for (; r < n.length && _8(`${n.slice(0, r + 1).join("")}...`) <= t;) r += 1;
-	return `${n.slice(0, r).join("")}...`;
+	for (; r < n.length && _8(`${n.slice(0, r + 1).join("")}…`) <= t;) r += 1;
+	return `${n.slice(0, r).join("")}…`;
 }
 var Bct = (e, t = 104) => Math.min(t, Math.max(24, ...e.map(_8)) + 12);
 function v8(e) {
@@ -102446,7 +102446,7 @@ function Kct(e) {
 		let r = e / t;
 		return `${r.toLocaleString(void 0, { maximumFractionDigits: +(Math.abs(r) < 100) })}${n}`;
 	};
-	return t >= 1e8 ? n(1e8, "100 millones") : t >= 1e5 ? n(1e4, "10 mil") : e.toLocaleString();
+	return t >= 1e8 ? n(1e8, "亿") : t >= 1e5 ? n(1e4, "万") : e.toLocaleString();
 }
 var qct = (e) => ({
 	position: e,
@@ -102520,13 +102520,13 @@ function T8({ title: e, unit: t, series: n, rows: r, color: i, empty: a, layout:
 //#endregion
 //#region src/react/charts/heat.ts
 var Jct = [
-	"Lun",
-	"Mar",
-	"Mié",
-	"Jue",
-	"Vie",
-	"Sáb",
-	"Dom"
+	"周一",
+	"周二",
+	"周三",
+	"周四",
+	"周五",
+	"周六",
+	"周日"
 ], Yct = (e, t) => e ? Math.max(.12, e / t) : 0;
 function Xct(e) {
 	let t = Array.from({ length: 7 }, () => Array(24).fill(0));
@@ -102639,7 +102639,7 @@ function tlt({ title: e, words: t, cells: n, total: r, columns: i, rows: a, axis
 							return /* @__PURE__ */ (0, C.jsx)("rect", {
 								tabIndex: 0,
 								role: "img",
-								"aria-label": `${e.label}, ${e.count} ${t.cellUnit}`,
+								"aria-label": `${e.label}，${e.count} ${t.cellUnit}`,
 								x: r,
 								y: i,
 								width: E8,
@@ -102696,7 +102696,7 @@ function rlt({ activity: e, title: t, dailyTitle: n, words: r, tone: i, empty: a
 			columns: 24,
 			rows: 7,
 			axis: nlt,
-			footer: /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "Día × Hora" }), /* @__PURE__ */ (0, C.jsx)("span", { children: e?.timezone || "UTC+08:00" })] })
+			footer: /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "星期 × 小时" }), /* @__PURE__ */ (0, C.jsx)("span", { children: e?.timezone || "UTC+08:00" })] })
 		}), /* @__PURE__ */ (0, C.jsx)(tlt, {
 			title: n,
 			words: r,
@@ -102751,7 +102751,7 @@ function ilt({ children: e, className: t = "", previewCount: n = 10 }) {
 			"data-ranking-toggle": !0,
 			"aria-controls": r,
 			"aria-expanded": a,
-			"aria-label": a ? "colapsar filas de nombre" : "expandir más filas de nombre",
+			"aria-label": a ? "收起排名" : "展开更多排名",
 			onClick: () => {
 				c(!0), o((e) => !e);
 			},
@@ -102764,7 +102764,7 @@ function ilt({ children: e, className: t = "", previewCount: n = 10 }) {
 var alt = "30%", olt = "100%", slt = 5, clt = 14, llt = 5, ult = 1500, dlt = (0, S.createContext)(null);
 function O8() {
 	let e = (0, S.use)(dlt);
-	if (!e) throw Error("Radial chart parts (<RadialBar />, <Tooltip />, ...) must be used within <EvilRadialChart />");
+	if (!e) throw Error("Radial chart parts (<RadialBar />, <Tooltip />, …) must be used within <EvilRadialChart />");
 	return e;
 }
 function k8({ config: e, data: t, nameKey: n, children: r, className: i, chartProps: a, variant: o = "full", max: s, innerRadius: c = alt, outerRadius: l = olt, defaultSelectedDataKey: u = null, onSelectionChange: d, isLoading: f = !1, backgroundVariant: p }) {
@@ -102968,7 +102968,7 @@ var blt = [
 	"aria-pressed:bg-chart-5/10 aria-pressed:ring-chart-5",
 	"aria-pressed:bg-chart-6/10 aria-pressed:ring-chart-6"
 ];
-function Slt({ title: e, rows: t, empty: n, unit: r = " video(s)" }) {
+function Slt({ title: e, rows: t, empty: n, unit: r = "个视频" }) {
 	let [i, a] = (0, S.useState)(-1), [o, s] = (0, S.useState)(-1), c = hze(t);
 	if (!c.length) return /* @__PURE__ */ (0, C.jsx)(h8, {
 		title: e,
@@ -103066,7 +103066,7 @@ function Slt({ title: e, rows: t, empty: n, unit: r = " video(s)" }) {
 }
 //#endregion
 //#region src/react/stats/stats-page.tsx
-var Clt = 10, A8 = b8[5], wlt = b8[4], Tlt = `${vA()} flex flex-col gap-4`, j8 = "AñadirDirectorio de mediosoSeguirFuentedespués, estedentrose mostrarán las estadísticas de colección. ", Elt = "Completar detallesoAñadirEtiquetadespués, estedentrose mostraráColecciónEn procesoEtiquetas de contenido. ", Dlt = "IniciarReproducirdespués, estedentrose mostraráRecienteVisualización realprueba. ", Olt = "raspadooManualabriretiquetadespués de, estedentrose mostrarácuántos videos sobrescribió cada fuente. ", klt = "AñadirDirectorio de mediosdespués, estedentrose mostraráguardar intervalo vacío de almacenamiento. ", Alt = "mover Directorio de mediosasignar aavanzarBiblioteca de mediosdespués, estedentroirá a segúnbibliotecaMostrarVideosnúmero. ", jlt = "detectarDuracióndespués, estedentrose mostraráDuraciónseccióndistribuir. ", Mlt = "detectarCalidad de imagendespués, estedentrose mostraráCalidad de imagenseccióndistribuir. ", Nlt = "IniciarReproducirdespués, estedentrose mostraráReproducircaerá enunen qué semana durantefragmento. ", Plt = "IniciarReproducirdespués, estedentrose mostrarácuántas veces se reprodujo cada obra. ", M8 = (e, t) => Math.min(Math.max(e, 0), t);
+var Clt = 10, A8 = b8[5], wlt = b8[4], Tlt = `${vA()} flex flex-col gap-4`, j8 = "添加媒体目录或关注来源后，这里会显示馆藏统计。", Elt = "补全资料或添加标签后，这里会显示馆藏中的内容标签。", Dlt = "开始播放后，这里会显示最近的真实观看证据。", Olt = "刮削或手动打标之后，这里会显示每个来源覆盖了多少视频。", klt = "添加媒体目录后，这里会显示存储空间。", Alt = "把媒体目录归进媒体库后，这里会按库显示视频数。", jlt = "探测时长后，这里会显示时长分布。", Mlt = "探测画质后，这里会显示画质分布。", Nlt = "开始播放后，这里会显示播放落在一周的哪些时段。", Plt = "开始播放后，这里会显示每个作品播了几次。", M8 = (e, t) => Math.min(Math.max(e, 0), t);
 function N8({ term: e, value: t }) {
 	return /* @__PURE__ */ (0, C.jsxs)("div", {
 		className: "flex min-h-16 min-w-0 flex-col gap-1.5 rounded-2lg bg-background-primary-default p-3",
@@ -103093,7 +103093,7 @@ function P8({ term: e, value: t, total: n }) {
 				}) : null]
 			})]
 		}), /* @__PURE__ */ (0, C.jsx)(CA, {
-			label: `${e}: ${OJ(t)} / ${n.toLocaleString()}`,
+			label: `${e}：${OJ(t)} / ${n.toLocaleString()}`,
 			value: DJ(t) ? M8(t, r) : 0,
 			max: r
 		})]
@@ -103133,7 +103133,7 @@ function Flt({ data: e, configurable: t, openMediaSettings: n }) {
 		children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 			className: "inline-grid w-full gap-5 md:grid-cols-2",
 			children: [/* @__PURE__ */ (0, C.jsx)(Slt, {
-				title: "Nube y local",
+				title: "网盘与本地",
 				empty: j8,
 				rows: e.by_loc.map((e) => ({
 					name: pn[e.k] ?? e.k,
@@ -103142,7 +103142,7 @@ function Flt({ data: e, configurable: t, openMediaSettings: n }) {
 					mark: so[e.k] || "database"
 				}))
 			}), /* @__PURE__ */ (0, C.jsx)(Slt, {
-				title: "Biblioteca de medios",
+				title: "媒体库",
 				empty: Alt,
 				rows: e.by_library.map((e) => ({
 					name: e.name,
@@ -103155,25 +103155,25 @@ function Flt({ data: e, configurable: t, openMediaSettings: n }) {
 			className: "inline-grid w-full gap-5 md:grid-cols-2 xl:grid-cols-3",
 			children: [
 				/* @__PURE__ */ (0, C.jsx)(T8, {
-					title: "Duración",
-					unit: " video(s)",
-					series: "Videos",
+					title: "时长",
+					unit: "个视频",
+					series: "视频",
 					color: A8,
 					rows: Sze(e.by_length),
 					empty: jlt
 				}),
 				/* @__PURE__ */ (0, C.jsx)(T8, {
-					title: "Calidad de imagen",
-					unit: " video(s)",
-					series: "Videos",
+					title: "画质",
+					unit: "个视频",
+					series: "视频",
 					color: A8,
 					rows: NJ(e.by_quality),
 					empty: Mlt
 				}),
 				/* @__PURE__ */ (0, C.jsx)(T8, {
-					title: "Tipo de archivo",
-					unit: " elemento(s)",
-					series: "Resultadoobjetivo",
+					title: "文件类型",
+					unit: "个条目",
+					series: "条目",
 					color: A8,
 					layout: "horizontal",
 					rows: bze(e.by_medium),
@@ -103184,16 +103184,16 @@ function Flt({ data: e, configurable: t, openMediaSettings: n }) {
 	}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 		shell: "plain",
 		icon: e_e,
-		title: "Sin videos todavía",
+		title: "还没有视频",
 		actions: /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [t ? /* @__PURE__ */ (0, C.jsx)(q, {
 			size: "small",
 			onClick: n,
-			children: "AñadirDirectorio de medios"
+			children: "添加媒体目录"
 		}) : null, /* @__PURE__ */ (0, C.jsx)(_A, {
 			variant: "secondary",
 			href: "/subscriptions?tab=add",
 			size: "small",
-			children: "Agregar seguimiento"
+			children: "添加关注"
 		})] }),
 		children: j8
 	});
@@ -103201,19 +103201,19 @@ function Flt({ data: e, configurable: t, openMediaSettings: n }) {
 function Ilt({ data: e }) {
 	return /* @__PURE__ */ (0, C.jsxs)(C.Fragment, { children: [/* @__PURE__ */ (0, C.jsx)(rlt, {
 		activity: e.play_activity,
-		title: "Tiempo de reproducción",
-		dailyTitle: "reproducción diaria",
+		title: "播放时间",
+		dailyTitle: "每日播放",
 		words: {
-			unit: " obra(s)",
-			series: "Obra",
-			cellUnit: " obra(s)"
+			unit: "个作品",
+			series: "作品",
+			cellUnit: "个作品"
 		},
 		tone: 5,
 		empty: Nlt
 	}), /* @__PURE__ */ (0, C.jsx)(T8, {
-		title: "Reproducirveznúmero",
-		unit: " obra(s)",
-		series: "Obra",
+		title: "播放次数",
+		unit: "个作品",
+		series: "作品",
 		color: wlt,
 		rows: wze(e.replays),
 		empty: Plt
@@ -103225,27 +103225,27 @@ function Llt({ attribution: e }) {
 		className: "flex flex-col",
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(P8, {
-				term: "conCreador",
+				term: "有创作者",
 				value: e.creator,
 				total: t
 			}),
 			/* @__PURE__ */ (0, C.jsx)(P8, {
-				term: "conCódigo JAV",
+				term: "有番号",
 				value: e.code,
 				total: t
 			}),
 			/* @__PURE__ */ (0, C.jsx)(P8, {
-				term: "conSello",
+				term: "有厂牌",
 				value: e.studio,
 				total: t
 			}),
 			/* @__PURE__ */ (0, C.jsx)(P8, {
-				term: "Yaextracción de fotogramas",
+				term: "已抽帧",
 				value: e.thumb,
 				total: t
 			}),
 			/* @__PURE__ */ (0, C.jsx)(P8, {
-				term: "YadetectarDuración",
+				term: "已探测时长",
 				value: e.duration,
 				total: t
 			})
@@ -103264,7 +103264,7 @@ function Rlt({ volume: e }) {
 					children: e.label
 				}), t == null ? /* @__PURE__ */ (0, C.jsx)("span", {
 					className: "whitespace-nowrap text-text-secondary",
-					children: e.online ? "Capacidad no disponible" : "Sin conexión"
+					children: e.online ? "容量未取得" : "离线"
 				}) : /* @__PURE__ */ (0, C.jsxs)("b", {
 					className: "whitespace-nowrap tabular-nums",
 					children: [cn(n), /* @__PURE__ */ (0, C.jsx)("span", {
@@ -103274,7 +103274,7 @@ function Rlt({ volume: e }) {
 				})]
 			}),
 			t == null ? null : /* @__PURE__ */ (0, C.jsx)(CA, {
-				label: `${e.label}uso de espacio vacío`,
+				label: `${e.label}空间使用率`,
 				value: M8(n, Math.max(t, 1)),
 				max: Math.max(t, 1)
 			}),
@@ -103282,10 +103282,10 @@ function Rlt({ volume: e }) {
 				className: "flex justify-between gap-3 text-caption-1-regular text-text-secondary",
 				children: [/* @__PURE__ */ (0, C.jsx)("span", {
 					className: "min-w-0 break-words",
-					children: e.root ?? "sin mapeo de escena"
+					children: e.root ?? "未映射"
 				}), t == null ? null : /* @__PURE__ */ (0, C.jsx)("span", {
 					className: "whitespace-nowrap tabular-nums",
-					children: `Disponible ${cn(e.free ?? 0)} · Total: ${cn(t)}`
+					children: `可用 ${cn(e.free ?? 0)} · 共 ${cn(t)}`
 				})]
 			})
 		]
@@ -103298,11 +103298,11 @@ function zlt({ volumes: e, configurable: t, openMediaSettings: n }) {
 	}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 		shell: "plain",
 		icon: Rk,
-		title: "Sin fuentes almacenadas aún",
+		title: "还没有存储来源",
 		actions: t ? /* @__PURE__ */ (0, C.jsx)(q, {
 			size: "small",
 			onClick: n,
-			children: "AñadirDirectorio de medios"
+			children: "添加媒体目录"
 		}) : void 0,
 		children: klt
 	});
@@ -103336,12 +103336,12 @@ function Blt({ tags: e, tagLabel: t, onTag: n }) {
 	}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 		shell: "plain",
 		icon: Vk,
-		title: "Aún no hayEtiquetas de contenido",
+		title: "还没有内容标签",
 		actions: /* @__PURE__ */ (0, C.jsx)(_A, {
 			variant: "secondary",
 			href: "/data-cleanup",
 			size: "small",
-			children: "Completar detalles"
+			children: "补全资料"
 		}),
 		children: Elt
 	});
@@ -103373,11 +103373,11 @@ function Vlt({ rows: e }) {
 				}), /* @__PURE__ */ (0, C.jsxs)("div", {
 					className: "min-w-0 basis-40",
 					children: [/* @__PURE__ */ (0, C.jsx)(CA, {
-						label: `Visualización real ${t.toFixed(0)}%`,
+						label: `真实观看 ${t.toFixed(0)}%`,
 						value: t
 					}), /* @__PURE__ */ (0, C.jsx)("small", {
 						className: "mt-1.5 block text-caption-1-regular text-text-secondary",
-						children: `Real ${t.toFixed(0)}% · alcanzado ${MJ(e).toFixed(0)}%`
+						children: `真实 ${t.toFixed(0)}% · 到达 ${MJ(e).toFixed(0)}%`
 					})]
 				})]
 			}, `${e.kind}:${e.id}`);
@@ -103385,12 +103385,12 @@ function Vlt({ rows: e }) {
 	}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 		shell: "plain",
 		icon: zk,
-		title: "Aún no hayVerRegistro",
+		title: "还没有观看记录",
 		actions: /* @__PURE__ */ (0, C.jsx)(_A, {
 			variant: "secondary",
 			href: "/",
 			size: "small",
-			children: "Explorar colección"
+			children: "浏览馆藏"
 		}),
 		children: Dlt
 	});
@@ -103410,30 +103410,30 @@ function Hlt({ sources: e, videos: t }) {
 						className: "text-body-2-medium whitespace-nowrap text-text-primary",
 						children: [e.assets.toLocaleString(), /* @__PURE__ */ (0, C.jsx)("small", {
 							className: "ml-1 text-caption-1-regular font-normal text-text-secondary",
-							children: " video(s)"
+							children: "个视频"
 						})]
 					})]
 				}),
 				/* @__PURE__ */ (0, C.jsx)(CA, {
-					label: `${e.k} SobrescribirVideos`,
+					label: `${e.k} 覆盖视频`,
 					value: M8(e.assets, Math.max(t, 1)),
 					max: Math.max(t, 1)
 				}),
 				/* @__PURE__ */ (0, C.jsxs)("small", {
 					className: "text-caption-1-regular text-text-secondary",
-					children: [e.n.toLocaleString(), " ResultadoEtiqueta"]
+					children: [e.n.toLocaleString(), " 条标签"]
 				})
 			]
 		}, e.k))
 	}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 		shell: "plain",
 		icon: Vk,
-		title: "Aún no hayFuente de etiqueta",
+		title: "还没有标签来源",
 		actions: /* @__PURE__ */ (0, C.jsx)(_A, {
 			variant: "secondary",
 			href: "/data-cleanup",
 			size: "small",
-			children: "Completar detalles"
+			children: "补全资料"
 		}),
 		children: Olt
 	});
@@ -103461,26 +103461,26 @@ function Ult(e) {
 	}), n = t.data;
 	if (!n) return /* @__PURE__ */ (0, C.jsx)(xA, { children: /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "ColecciónEstadísticasleerFallido",
-		children: t.error ? V(t.error) : "No disponibleEstadísticasdatos numéricos, Por favor actualiza la páginaReintentar. "
+		title: "馆藏统计读取失败",
+		children: t.error ? V(t.error) : "未取得统计数据，请刷新页面重试。"
 	}) });
-	let r = n.consumption, i = n.storage_summary, a = n.by_loc.reduce((e, t) => e + t.videos, 0), o = n.by_loc.reduce((e, t) => e + t.bytes, 0), s = DJ(n.tag_cov) ? kJ(n.tag_cov, n.attribution.videos) : "No disponible", c = `${OJ(n.tag_cov)} / ${n.attribution.videos.toLocaleString()}`;
+	let r = n.consumption, i = n.storage_summary, a = n.by_loc.reduce((e, t) => e + t.videos, 0), o = n.by_loc.reduce((e, t) => e + t.bytes, 0), s = DJ(n.tag_cov) ? kJ(n.tag_cov, n.attribution.videos) : "未取得", c = `${OJ(n.tag_cov)} / ${n.attribution.videos.toLocaleString()}`;
 	return /* @__PURE__ */ (0, C.jsxs)(xA, { children: [
 		/* @__PURE__ */ (0, C.jsx)("p", {
 			className: "text-caption-1-regular text-text-secondary",
-			children: `Base de datosEn procesoActualEstadísticas · ${a.toLocaleString()}  video(s) · ${cn(o)}`
+			children: `数据库中的当前统计 · ${a.toLocaleString()} 个视频 · ${cn(o)}`
 		}),
 		/* @__PURE__ */ (0, C.jsxs)(uP, {
 			defaultSelectedKey: "inventory",
 			className: "flex flex-col gap-4",
 			children: [
 				/* @__PURE__ */ (0, C.jsxs)(dP, {
-					"aria-label": "EstadísticasVista",
+					"aria-label": "统计视图",
 					className: AB,
 					children: [
 						/* @__PURE__ */ (0, C.jsx)(L8, {
 							id: "inventory",
-							label: "Videos de la colección",
+							label: "馆藏视频",
 							icon: Pk,
 							accent: 0,
 							figure: a.toLocaleString(),
@@ -103488,7 +103488,7 @@ function Ult(e) {
 						}),
 						/* @__PURE__ */ (0, C.jsx)(L8, {
 							id: "viewing",
-							label: "Visto",
+							label: "看过",
 							icon: kge,
 							accent: 1,
 							figure: OJ(r.played),
@@ -103496,7 +103496,7 @@ function Ult(e) {
 						}),
 						/* @__PURE__ */ (0, C.jsx)(L8, {
 							id: "coverage",
-							label: "Etiquetas de contenido",
+							label: "内容标签",
 							icon: Vk,
 							accent: 2,
 							figure: s,
@@ -103504,11 +103504,11 @@ function Ult(e) {
 						}),
 						/* @__PURE__ */ (0, C.jsx)(L8, {
 							id: "storage",
-							label: "Espacio usado",
+							label: "使用空间",
 							icon: Rk,
 							accent: 3,
-							figure: `${i.online.toLocaleString()} Volumen`,
-							detail: i.measured ? `Usado ${cn(i.used)}` : "Capacidad no disponible"
+							figure: `${i.online.toLocaleString()} 个卷`,
+							detail: i.measured ? `已用 ${cn(i.used)}` : "容量未取得"
 						})
 					]
 				}),
@@ -103524,43 +103524,43 @@ function Ult(e) {
 					className: "flex flex-col gap-5",
 					children: [/* @__PURE__ */ (0, C.jsx)(I8, {
 						headline: /* @__PURE__ */ (0, C.jsx)(F8, {
-							term: "Ver",
+							term: "观看",
 							figure: OJ(r.played),
-							unit: " obra(s) con historial de reproducción"
+							unit: "个作品有播放记录"
 						}),
 						children: /* @__PURE__ */ (0, C.jsxs)("div", {
 							className: "inline-grid w-full gap-3 sm:grid-cols-2",
 							children: [
 								/* @__PURE__ */ (0, C.jsx)(N8, {
-									term: "Visualización de la colección",
+									term: "馆藏观看",
 									value: r.library_played
 								}),
 								/* @__PURE__ */ (0, C.jsx)(N8, {
-									term: "Ver en línea directamente",
+									term: "在线直接观看",
 									value: r.online_played
 								}),
 								/* @__PURE__ */ (0, C.jsx)(N8, {
-									term: "Contador de orgasmos",
+									term: "高潮计数",
 									value: r.o_total
 								}),
 								/* @__PURE__ */ (0, C.jsx)(N8, {
-									term: "Avance rápido",
+									term: "快进扫过",
 									value: r.skimmed
 								}),
 								/* @__PURE__ */ (0, C.jsx)(N8, {
-									term: "Me gusta",
+									term: "喜欢",
 									value: r.liked
 								}),
 								/* @__PURE__ */ (0, C.jsx)(N8, {
-									term: "claroconfirmarNo me gusta",
+									term: "明确不喜欢",
 									value: r.dislike
 								}),
 								/* @__PURE__ */ (0, C.jsx)(N8, {
-									term: "Ya lo vi",
+									term: "看过了",
 									value: r.seen
 								}),
 								/* @__PURE__ */ (0, C.jsx)(N8, {
-									term: "Papelera",
+									term: "回收站",
 									value: r.trash
 								})
 							]
@@ -103571,7 +103571,7 @@ function Ult(e) {
 					id: "coverage",
 					children: /* @__PURE__ */ (0, C.jsx)(I8, {
 						headline: /* @__PURE__ */ (0, C.jsx)(F8, {
-							term: "Etiquetas de contenidoSobrescribir",
+							term: "内容标签覆盖",
 							figure: s,
 							unit: c
 						}),
@@ -103582,9 +103582,9 @@ function Ult(e) {
 					id: "storage",
 					children: /* @__PURE__ */ (0, C.jsx)(I8, {
 						headline: /* @__PURE__ */ (0, C.jsx)(F8, {
-							term: "Espacio usado",
+							term: "使用空间",
 							figure: i.measured.toLocaleString(),
-							unit: " volumen(es) con capacidad obtenida"
+							unit: "个卷已取得容量"
 						}),
 						children: /* @__PURE__ */ (0, C.jsx)(zlt, {
 							volumes: n.storage_volumes,
@@ -103601,23 +103601,23 @@ function Ult(e) {
 				/* @__PURE__ */ (0, C.jsx)("div", {
 					className: "px-4 pt-3",
 					children: /* @__PURE__ */ (0, C.jsxs)(GF, {
-						"aria-label": "Dimensión de estadísticas",
+						"aria-label": "统计维度",
 						className: qF,
 						children: [
 							/* @__PURE__ */ (0, C.jsx)(fP, {
 								id: "tags",
 								className: JF,
-								children: "Etiquetas de contenido"
+								children: "内容标签"
 							}),
 							/* @__PURE__ */ (0, C.jsx)(fP, {
 								id: "recent",
 								className: JF,
-								children: "Visto recientemente"
+								children: "最近看过"
 							}),
 							/* @__PURE__ */ (0, C.jsx)(fP, {
 								id: "sources",
 								className: JF,
-								children: "Fuente de etiqueta"
+								children: "标签来源"
 							})
 						]
 					})
@@ -103995,11 +103995,11 @@ function fut() {
 //#endregion
 //#region src/react/taste/taste.ts
 var put = "/api/taste", mut = "/api/taste/refresh", hut = "/api/taste/import", gut = "/api/taste/source", G8 = (e) => ["taste", e], _ut = ["taste", "refresh"], vut = [
-	["7d", "Últimos 7 días"],
-	["30d", "Últimos 30 días"],
-	["90d", "Últimos 90 días"],
-	["365d", "RecienteunAño"],
-	["all", "Todo el tiempo"]
+	["7d", "最近 7 天"],
+	["30d", "最近 30 天"],
+	["90d", "最近 90 天"],
+	["365d", "最近一年"],
+	["all", "全部时间"]
 ], yut = (e, t) => U(gut, {
 	...e,
 	window: t
@@ -104033,13 +104033,13 @@ async function Tut(e) {
 	} catch {}
 	if (!t.ok) {
 		let e = n?.error;
-		throw new vn(e || `ImportarFallido(${t.status})`, t.status, n);
+		throw new vn(e || `导入失败（${t.status}）`, t.status, n);
 	}
 	return n;
 }
 var Eut = 1e4, K8 = (e) => e ? new Date(e).toLocaleDateString("zh-CN") : "—";
 function Dut(e) {
-	let t = `${Number(e.history_sources || 0).toLocaleString()} Fuente de datos`;
+	let t = `${Number(e.history_sources || 0).toLocaleString()} 个数据源`;
 	if (!e.range_start && !e.range_end) return t;
 	let n = e.range_start?.slice(0, 4) === e.range_end?.slice(0, 4), r = (e) => e && n ? new Date(e).toLocaleDateString("zh-CN", {
 		month: "numeric",
@@ -104051,7 +104051,7 @@ var Out = AJ, kut = (e) => e.filter((e) => Number.isFinite(Number(e.score)) && N
 function jut(e) {
 	if (e.web_visits == null && !e.web_bookmarks) return Number(e.score || e.visits || 0).toLocaleString();
 	let t = [], n = Number(e.web_bookmarks || 0), r = Number(e.web_visits ?? e.visits ?? 0) - n;
-	return r > 0 && t.push(`Explorar ${r.toLocaleString()}`), n && t.push(`marcador ${n.toLocaleString()}`), e.peach_items && t.push(`Peach ${Number(e.peach_items).toLocaleString()}`), t.join(" · ");
+	return r > 0 && t.push(`浏览 ${r.toLocaleString()}`), n && t.push(`书签 ${n.toLocaleString()}`), e.peach_items && t.push(`Peach ${Number(e.peach_items).toLocaleString()}`), t.join(" · ");
 }
 function Mut(e) {
 	let t = e.map(Aut), n = Math.max(1, ...t);
@@ -104082,7 +104082,7 @@ function zut(e, t, n) {
 function But(e = []) {
 	let t = e.filter((e) => e.source && e.target && Number.isFinite(e.value) && e.value > 0);
 	if (!t.length) return null;
-	let n = zut(t, "source", (e) => `otros ${e.toLocaleString()} Sitio web`), r = zut(t, "target", (e) => `otros ${e.toLocaleString()}  resultado(s)Creador`), i = /* @__PURE__ */ new Map();
+	let n = zut(t, "source", (e) => `其余 ${e.toLocaleString()} 个网站`), r = zut(t, "target", (e) => `其余 ${e.toLocaleString()} 位创作者`), i = /* @__PURE__ */ new Map();
 	for (let e of t) {
 		let t = n(e.source), a = r(e.target), o = JSON.stringify([t, a]), s = i.get(o);
 		s ? s.value += e.value : i.set(o, {
@@ -104263,7 +104263,7 @@ Gut.displayName = "ColoredBorderDot";
 var Kut = 1, qut = .3, Jut = 6, Yut = 1500, Xut = "value", Zut = (0, S.createContext)(null);
 function q8() {
 	let e = (0, S.use)(Zut);
-	if (!e) throw Error("Radar chart parts (<Radar />, <PolarAngleAxis />, ...) must be used within <EvilRadarChart />");
+	if (!e) throw Error("Radar chart parts (<Radar />, <PolarAngleAxis />, …) must be used within <EvilRadarChart />");
 	return e;
 }
 function J8({ config: e, data: t, children: n, className: r, chartProps: i, backgroundVariant: a, defaultSelectedDataKey: o = null, onSelectionChange: s, isLoading: c = !1, loadingPoints: l }) {
@@ -104565,7 +104565,7 @@ var hdt = [
 	"fill-chart-5",
 	"fill-chart-6"
 ], _dt = { value: {
-	label: "Etiqueta: nombrando en proceso",
+	label: "标签命中",
 	colors: x8(b8[3])
 } }, vdt = [
 	"min-h-24",
@@ -104587,7 +104587,7 @@ function Sdt({ rows: e, label: t }) {
 	}));
 	return /* @__PURE__ */ (0, C.jsx)("div", {
 		role: "img",
-		"aria-label": `${t}: ${i.map((e) => e.name).join(", ")}`,
+		"aria-label": `${t}：${i.map((e) => e.name).join("，")}`,
 		children: /* @__PURE__ */ (0, C.jsxs)(J8, {
 			data: i,
 			config: bdt,
@@ -104662,12 +104662,12 @@ function wdt({ flows: e }) {
 		className: m8,
 		children: [
 			/* @__PURE__ */ (0, C.jsx)(y8, {
-				title: "Fuentes de pistas de creador",
+				title: "创作者线索来源",
 				figure: (t ? t.value : r.total).toLocaleString(),
-				note: t ? t.label : "ResultadoPistas"
+				note: t ? t.label : "条线索"
 			}),
 			/* @__PURE__ */ (0, C.jsx)("ol", {
-				"aria-label": "Sitio web de fuenteyCreadorPistas",
+				"aria-label": "来源网站与创作者线索",
 				className: "flex flex-col sm:hidden",
 				children: [...r.links].sort((e, t) => t.value - e.value).map((e) => /* @__PURE__ */ (0, C.jsxs)("li", {
 					className: "flex items-baseline justify-between gap-3 border-b border-separator-border py-2 text-body-2-regular text-text-primary last:border-b-0",
@@ -104686,7 +104686,7 @@ function wdt({ flows: e }) {
 					viewBox: `0 0 ${Fut.width} ${r.height}`,
 					fill: "none",
 					role: "img",
-					"aria-label": "Sitio web de fuenteyCreadorPistas",
+					"aria-label": "来源网站与创作者线索",
 					className: "block h-auto w-full",
 					onPointerLeave: () => n(null),
 					children: [/* @__PURE__ */ (0, C.jsx)("g", { children: r.links.map((e) => /* @__PURE__ */ (0, C.jsx)("path", {
@@ -104694,7 +104694,7 @@ function wdt({ flows: e }) {
 						strokeWidth: e.width,
 						tabIndex: 0,
 						role: "img",
-						"aria-label": `${e.label}: ${e.value} ResultadoPistas`,
+						"aria-label": `${e.label}：${e.value} 条线索`,
 						fillOpacity: 0,
 						strokeOpacity: a(e, e.label) ? .55 : .08,
 						className: `outline-none transition-opacity ${hdt[e.color]}`,
@@ -104712,7 +104712,7 @@ function wdt({ flows: e }) {
 					}, e.key)) }), /* @__PURE__ */ (0, C.jsx)("g", { children: r.nodes.map((e) => /* @__PURE__ */ (0, C.jsxs)("g", {
 						tabIndex: 0,
 						role: "img",
-						"aria-label": `${e.name}: ${e.value} ResultadoPistas`,
+						"aria-label": `${e.name}：${e.value} 条线索`,
 						className: "outline-none focus-visible:opacity-100",
 						onPointerEnter: () => n({
 							value: e.value,
@@ -104749,7 +104749,7 @@ function wdt({ flows: e }) {
 			}),
 			/* @__PURE__ */ (0, C.jsxs)("footer", {
 				className: "flex justify-between gap-3 text-caption-1-regular text-text-secondary max-sm:hidden",
-				children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "Sitio web de fuente" }), /* @__PURE__ */ (0, C.jsx)("span", { children: "Creador · Pistasocupandocomparar" })]
+				children: [/* @__PURE__ */ (0, C.jsx)("span", { children: "来源网站" }), /* @__PURE__ */ (0, C.jsx)("span", { children: "创作者 · 线索占比" })]
 			})
 		]
 	});
@@ -104766,19 +104766,19 @@ function Edt({ browsers: e, sources: t, range: n, children: r }) {
 	});
 	return /* @__PURE__ */ (0, C.jsxs)("section", {
 		className: `${vA()} flex flex-col gap-4`,
-		"aria-label": "Fuente de datos",
+		"aria-label": "数据源",
 		children: [
 			/* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-wrap items-center justify-between gap-3",
 				children: [/* @__PURE__ */ (0, C.jsx)("h3", {
 					className: "text-title-2-medium text-text-primary",
-					children: "Fuente de datos"
+					children: "数据源"
 				}), /* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					size: "small",
 					onClick: () => a(!0),
 					disabled: i,
-					children: "AñadirExplorar dispositivo"
+					children: "添加浏览器"
 				})]
 			}),
 			u.error ? /* @__PURE__ */ (0, C.jsx)(J, {
@@ -104796,7 +104796,7 @@ function Edt({ browsers: e, sources: t, range: n, children: r }) {
 				},
 				children: [
 					/* @__PURE__ */ (0, C.jsx)(SP, {
-						label: "Explorar dispositivoNombre",
+						label: "浏览器名称",
 						value: o,
 						onChange: s,
 						maxLength: 80,
@@ -104804,13 +104804,13 @@ function Edt({ browsers: e, sources: t, range: n, children: r }) {
 						isDisabled: u.isPending
 					}),
 					/* @__PURE__ */ (0, C.jsx)(SP, {
-						label: "DetallesDirectoriooHistorialArchivo",
+						label: "资料目录或历史文件",
 						value: c,
 						onChange: l,
 						maxLength: 1024,
 						isRequired: !0,
 						isDisabled: u.isPending,
-						hint: "Por favorSeleccionarejecutar  Peach ordenadorsuperiorExplorar dispositivoDetalles. "
+						hint: "请选择运行 Peach 的电脑上的浏览器资料。"
 					}),
 					/* @__PURE__ */ (0, C.jsxs)("div", {
 						className: "flex gap-2",
@@ -104819,14 +104819,14 @@ function Edt({ browsers: e, sources: t, range: n, children: r }) {
 							variant: "secondary",
 							disabled: !o.trim() || !c.trim(),
 							...Y(u.isPending),
-							children: "Añadir"
+							children: "添加"
 						}), /* @__PURE__ */ (0, C.jsx)(q, {
 							variant: "ghost",
 							disabled: u.isPending,
 							onClick: () => {
 								a(!1), u.reset();
 							},
-							children: "Cancelar"
+							children: "取消"
 						})]
 					})
 				]
@@ -104859,15 +104859,15 @@ function Edt({ browsers: e, sources: t, range: n, children: r }) {
 									}),
 									/* @__PURE__ */ (0, C.jsx)("span", {
 										className: "text-caption-1-regular text-text-secondary",
-										children: e.enabled ? e.available ? `Historial y marcadores · ${e.profiles} Detalles` : "DetallesDirectorioNoDisponible" : "YaDetener lectura"
+										children: e.enabled ? e.available ? `历史与书签 · ${e.profiles} 个资料` : "资料目录不可用" : "已停止读取"
 									}),
 									n.length ? /* @__PURE__ */ (0, C.jsxs)("span", {
 										className: "text-caption-1-regular text-text-secondary",
 										children: [
 											r.toLocaleString(),
-											" ResultadoHistorial · ",
+											" 条历史 · ",
 											i.toLocaleString(),
-											" marcadores"
+											" 枚书签"
 										]
 									}) : null
 								]
@@ -104880,12 +104880,12 @@ function Edt({ browsers: e, sources: t, range: n, children: r }) {
 									...Y(u.isPending),
 									iconOnly: !0,
 									leadingIcon: e.enabled ? Gge : Bk,
-									"aria-label": `${e.enabled ? "Detener lectura" : "Activar"} ${e.name}`,
+									"aria-label": `${e.enabled ? "停止读取" : "启用"} ${e.name}`,
 									onClick: () => {
 										e.enabled ? Rs({
-											title: `Detener lectura ${e.name}`,
-											body: "El historial y marcadores ya importados siguen siendo usados paraPreferenciasAnálisis. ",
-											confirmLabel: "Detener lectura",
+											title: `停止读取 ${e.name}`,
+											body: "已导入的历史与书签仍用于口味分析。",
+											confirmLabel: "停止读取",
 											onConfirm: () => u.mutateAsync({
 												operation: "disable",
 												id: e.id
@@ -104901,12 +104901,12 @@ function Edt({ browsers: e, sources: t, range: n, children: r }) {
 									iconOnly: !0,
 									leadingIcon: Fk,
 									...Y(u.isPending),
-									"aria-label": `Eliminar ${e.name}`,
+									"aria-label": `删除 ${e.name}`,
 									onClick: () => {
 										Rs({
-											title: `Eliminar ${e.name}`,
-											body: "QuitaresteExplorar dispositivo: leer configuración e historial ya importado, marcador, los archivos originales del explorador de dispositivos se conservan. puedeconAceptarAñadirExplorar dispositivode nuevoconectaren. ",
-											confirmLabel: "EliminarExplorar dispositivoFuente",
+											title: `删除 ${e.name}`,
+											body: "移除该浏览器的读取配置和已导入历史、书签，浏览器原文件保留。可以通过添加浏览器重新接入。",
+											confirmLabel: "删除浏览器来源",
 											onConfirm: () => u.mutateAsync({
 												operation: "delete_browser",
 												id: e.id
@@ -104924,7 +104924,7 @@ function Edt({ browsers: e, sources: t, range: n, children: r }) {
 }
 //#endregion
 //#region src/react/taste/taste-page.tsx
-var Ddt = 10, X8 = fA(WP, GP, "text-body-2-medium"), Z8 = `${vA()} flex flex-col gap-4`, Odt = "rounded-xl bg-background-primary-default p-3", kdt = "Leer historial y marcadores del explorador al ejecutar Peach en este ordenador", Adt = "ImportaroleerHistorial de navegacióndespués, estedentroirá a listarYaRecolectarDispositivo. ", jdt = "Coleccióndentrotemporalmente SinvsobtenersuperiorExplorarinformaciónnúmeroEtiqueta. ", Mdt = "RecolectarHistorial de navegacióndespués, estedentrose mostraráagregar despuésPreferenciasprueba. ", Ndt = "estas palabras aparecen en el historial de navegación en curso, pero aún no hay resultados correspondientes en el registro de Peacheprueba", Pdt = "RecolectarHistorial de navegacióndespués, estedentroirá a listarExplorar Etiqueta. ", Fdt = "RecolectarHistorial de navegacióndespués, estedentroirá a listarExplorar Creador. ", Idt = "RecolectarHistorial de navegacióndespués, estedentroirá a listarnormalmente AccesoSitio web. ", Ldt = "en Peach dentroReproduciroValoraciónObradespués, estedentroirá a listarvscorrespondienteEtiqueta. ", Rdt = "en Peach dentroReproduciroValoraciónObradespués, estedentroirá a listarvscorrespondienteCreador. ", zdt = "en Peach dentroReproduciroValoraciónObradespués, estedentroirá a listarvscorrespondienteActriz. ", Bdt = "enejecutar  Peach en el ordenador: haz clic en la parte superior en "Leer historial del navegador". ", Vdt = "registro en otro dispositivosuperior: ExportarArchivodespués, Seleccionar"ImportarHistorialArchivo"o"ImportarmarcadorArchivo". marcadorsoportemantenerExplorar dispositivoExportar HTML Archivo y  Chromium Bookmarks JSON Archivo. ", Hdt = "NecesarioActualizarcuandoluegovezleeroImportar; la fuente de datos puede quitar títulos en el fondo de la página. ", Udt = "Eliminaresta fuente ya tiene registro importado, archivo original conservado. Si el explorador de dispositivos sigue activo, la próxima vez leerá hacia luegovezImportar. ", Wdt = "peach-taste-guide-dismissed";
+var Ddt = 10, X8 = fA(WP, GP, "text-body-2-medium"), Z8 = `${vA()} flex flex-col gap-4`, Odt = "rounded-xl bg-background-primary-default p-3", kdt = "读取运行 Peach 的这台电脑上的浏览历史与书签", Adt = "导入或读取浏览记录后，这里会列出已采集设备。", jdt = "馆藏里暂时没有对得上浏览信号的标签。", Mdt = "采集浏览记录后，这里会显示聚合后的口味证据。", Ndt = "这些词在浏览记录中出现，但 Peach 观看记录还没有对应证据", Pdt = "采集浏览记录后，这里会列出浏览过的标签。", Fdt = "采集浏览记录后，这里会列出浏览过的创作者。", Idt = "采集浏览记录后，这里会列出常访问的网站。", Ldt = "在 Peach 里播放或评价作品后，这里会列出对应的标签。", Rdt = "在 Peach 里播放或评价作品后，这里会列出对应的创作者。", zdt = "在 Peach 里播放或评价作品后，这里会列出对应的女优。", Bdt = "在运行 Peach 的电脑上使用浏览器：点上面的「读取浏览器记录」。", Vdt = "记录在其他设备上：导出文件后，选择「导入历史文件」或「导入书签文件」。书签支持浏览器导出的 HTML 文件和 Chromium Bookmarks JSON 文件。", Hdt = "需要刷新时再次读取或导入；数据源可在页面底部移除。", Udt = "删除这个来源的已导入记录，原始文件保留。若浏览器仍启用，下次读取会再次导入。", Wdt = "peach-taste-guide-dismissed";
 function Q8({ icon: e, term: t, figure: n, detail: r, detailTitle: i, accent: a }) {
 	return /* @__PURE__ */ (0, C.jsx)("div", {
 		className: kB(),
@@ -104965,7 +104965,7 @@ function qdt({ rows: e, kind: t, visual: n, empty: r, onSignal: i }) {
 	if (!e.length) return /* @__PURE__ */ (0, C.jsx)(yA, {
 		shell: "plain",
 		icon: Uk,
-		title: "Sin suficiente evidencia aún",
+		title: "暂无足够证据",
 		children: r
 	});
 	let a = Mut(e);
@@ -105074,14 +105074,14 @@ function Ydt({ data: e, onSignal: t, navigate: n }) {
 	}))];
 	return /* @__PURE__ */ (0, C.jsxs)("section", {
 		className: Z8,
-		"aria-label": "Resumen de preferencias",
+		"aria-label": "口味总结",
 		children: [
 			/* @__PURE__ */ (0, C.jsxs)("header", {
 				className: "flex flex-col gap-2",
 				children: [
 					/* @__PURE__ */ (0, C.jsx)("h3", {
 						className: "text-title-2-medium text-text-primary",
-						children: "Resumen de preferencias"
+						children: "口味总结"
 					}),
 					/* @__PURE__ */ (0, C.jsx)("p", {
 						className: "max-w-prose text-title-2-regular wrap-anywhere text-text-primary",
@@ -105094,7 +105094,7 @@ function Ydt({ data: e, onSignal: t, navigate: n }) {
 							className: `size-2 shrink-0 rounded-full ${i.level === "high" ? "bg-status-lime-text" : i.level === "medium" ? "bg-status-yellow-text" : "bg-text-tertiary"}`
 						}), /* @__PURE__ */ (0, C.jsx)("span", {
 							className: "min-w-0 wrap-anywhere",
-							children: i.label || "Aún aprendiendo"
+							children: i.label || "仍在学习"
 						})]
 					})
 				]
@@ -105135,7 +105135,7 @@ function Ydt({ data: e, onSignal: t, navigate: n }) {
 			}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 				shell: "plain",
 				icon: Uk,
-				title: "Aún no hay entradas para explorar",
+				title: "还没有可探索的入口",
 				children: jdt
 			})
 		]
@@ -105155,7 +105155,7 @@ function Xdt({ onboarding: e, done: t }) {
 			className: "p-4"
 		}),
 		children: /* @__PURE__ */ (0, C.jsxs)(BA, {
-			summary: "Explorar dispositivoimportar registro de historial",
+			summary: "浏览器历史记录导入指南",
 			defaultOpen: e,
 			children: [
 				/* @__PURE__ */ (0, C.jsx)("p", {
@@ -105169,7 +105169,7 @@ function Xdt({ onboarding: e, done: t }) {
 				/* @__PURE__ */ (0, C.jsxs)("ul", {
 					className: "flex list-disc flex-col gap-1 pl-5 text-body-2-regular text-text-secondary",
 					children: [/* @__PURE__ */ (0, C.jsxs)("li", { children: [
-						"Chrome: en ",
+						"Chrome：在 ",
 						/* @__PURE__ */ (0, C.jsx)("a", {
 							href: "https://takeout.google.com/",
 							target: "_blank",
@@ -105178,9 +105178,9 @@ function Xdt({ onboarding: e, done: t }) {
 							children: "Google Takeout"
 						}),
 						" ",
-						"Seleccionar historial de Chrome, descargas ZIP y luego importar directamente. "
+						"选择 Chrome 历史记录，下载 ZIP 后直接导入。"
 					] }), /* @__PURE__ */ (0, C.jsxs)("li", { children: [
-						"OtroExplorar dispositivo: usar ",
+						"其他浏览器：用 ",
 						/* @__PURE__ */ (0, C.jsx)("a", {
 							href: "https://github.com/purarue/browserexport",
 							target: "_blank",
@@ -105189,7 +105189,7 @@ function Xdt({ onboarding: e, done: t }) {
 							children: "browserexport"
 						}),
 						" ",
-						"ExportarHistorialRegistro, luegoImportarExportarArchivo. "
+						"导出历史记录，再导入导出文件。"
 					] })]
 				}),
 				/* @__PURE__ */ (0, C.jsx)("p", {
@@ -105207,7 +105207,7 @@ function Xdt({ onboarding: e, done: t }) {
 							} catch {}
 							r(!0);
 						},
-						children: "Omitir"
+						children: "跳过"
 					})
 				})
 			]
@@ -105227,12 +105227,12 @@ function Zdt({ busy: e, onRefresh: t, onImport: n, onImportBookmarks: r }) {
 			title: kdt,
 			onClick: t,
 			...Y(e),
-			children: "leerHistorial del navegador"
+			children: "读取浏览器记录"
 		}), /* @__PURE__ */ (0, C.jsx)(q, {
 			ref: i,
 			iconOnly: !0,
 			leadingIcon: Ok,
-			"aria-label": "Método para obtener más historial de navegación",
+			"aria-label": "更多取得浏览记录的方式",
 			"aria-haspopup": "dialog",
 			"aria-expanded": a,
 			...Y(e),
@@ -105248,7 +105248,7 @@ function Zdt({ busy: e, onRefresh: t, onImport: n, onImportBookmarks: r }) {
 		offset: 4,
 		className: UP,
 		children: /* @__PURE__ */ (0, C.jsxs)(bF, {
-			"aria-label": "Método para obtener más historial de navegación",
+			"aria-label": "更多取得浏览记录的方式",
 			className: "flex w-52 flex-col gap-1 outline-none",
 			children: [
 				/* @__PURE__ */ (0, C.jsxs)("button", {
@@ -105258,7 +105258,7 @@ function Zdt({ busy: e, onRefresh: t, onImport: n, onImportBookmarks: r }) {
 					children: [/* @__PURE__ */ (0, C.jsx)(Nk, {
 						"aria-hidden": !0,
 						className: "size-4 shrink-0"
-					}), "leerHistorial del navegador"]
+					}), "读取浏览器记录"]
 				}),
 				/* @__PURE__ */ (0, C.jsxs)("button", {
 					type: "button",
@@ -105267,7 +105267,7 @@ function Zdt({ busy: e, onRefresh: t, onImport: n, onImportBookmarks: r }) {
 					children: [/* @__PURE__ */ (0, C.jsx)(Qge, {
 						"aria-hidden": !0,
 						className: "size-4 shrink-0"
-					}), "ImportarHistorialArchivo"]
+					}), "导入历史文件"]
 				}),
 				/* @__PURE__ */ (0, C.jsxs)("button", {
 					type: "button",
@@ -105276,7 +105276,7 @@ function Zdt({ busy: e, onRefresh: t, onImport: n, onImportBookmarks: r }) {
 					children: [/* @__PURE__ */ (0, C.jsx)(vge, {
 						"aria-hidden": !0,
 						className: "size-4 shrink-0"
-					}), "ImportarmarcadorArchivo"]
+					}), "导入书签文件"]
 				})
 			]
 		})
@@ -105286,7 +105286,7 @@ function Qdt({ sources: e, browsers: t, window: n, toast: r }) {
 	let i = mt({
 		mutationFn: (e) => wut(e, n),
 		onSuccess: (e) => {
-			W.setQueryData(G8(n), e.dashboard), r("YaQuitarPreferenciasFuente de datos");
+			W.setQueryData(G8(n), e.dashboard), r("已移除口味数据源");
 		}
 	});
 	return /* @__PURE__ */ (0, C.jsxs)(Edt, {
@@ -105320,22 +105320,22 @@ function Qdt({ sources: e, browsers: t, window: n, toast: r }) {
 						children: e.profile
 					}), /* @__PURE__ */ (0, C.jsx)("small", {
 						className: "min-w-0 text-caption-1-regular break-words text-text-secondary",
-						children: `ImportarArchivo · ${e.host} · ${Number(e.visits || e.bookmarks || 0).toLocaleString()} ${e.bookmarks ? "marcadores" : "ResultadoHistorial"}`
+						children: `导入文件 · ${e.host} · ${Number(e.visits || e.bookmarks || 0).toLocaleString()} ${e.bookmarks ? "枚书签" : "条历史"}`
 					})]
 				}),
 				/* @__PURE__ */ (0, C.jsx)(q, {
 					variant: "secondary",
 					size: "small",
-					"aria-label": `Quitar ${e.profile}`,
+					"aria-label": `移除 ${e.profile}`,
 					className: "shrink-0",
 					iconOnly: !0,
 					leadingIcon: Fk,
 					...Y(i.isPending),
 					onClick: () => {
 						i.isPending || Rs({
-							title: "QuitarPreferenciasFuente de datos",
+							title: "移除口味数据源",
 							body: Udt,
-							confirmLabel: "QuitarPreferenciasFuente de datos",
+							confirmLabel: "移除口味数据源",
 							onConfirm: () => i.mutateAsync(e.source_key)
 						});
 					}
@@ -105344,7 +105344,7 @@ function Qdt({ sources: e, browsers: t, window: n, toast: r }) {
 		}, e.source_key)) }) : t.length ? null : /* @__PURE__ */ (0, C.jsx)(yA, {
 			shell: "plain",
 			icon: Pk,
-			title: "Aún no hay fuentes de datos",
+			title: "还没有数据源",
 			children: Adt
 		})]
 	});
@@ -105360,12 +105360,12 @@ function $dt(e) {
 		start: () => Cut(a),
 		idlePollMs: Eut,
 		onFinish: (e) => {
-			e.status !== "failed" && (W.invalidateQueries({ queryKey: ["taste"] }), r(e.warnings?.length ? "ParcialHistorial de navegaciónNo disponible" : "YaActualizarPreferenciasAnálisis"));
+			e.status !== "failed" && (W.invalidateQueries({ queryKey: ["taste"] }), r(e.warnings?.length ? "部分浏览记录未取得" : "已更新口味分析"));
 		}
 	}), g = mt({
 		mutationFn: (e) => Tut(e),
 		onSuccess: (e) => {
-			W.setQueryData(G8("all"), e.dashboard), o("all"), r("YaImportarPreferenciasdatos numéricos");
+			W.setQueryData(G8("all"), e.dashboard), o("all"), r("已导入口味数据");
 		}
 	}), _ = (e) => {
 		let t = e.currentTarget.files?.[0];
@@ -105375,10 +105375,10 @@ function $dt(e) {
 	}, y = d.data;
 	if (!y) return /* @__PURE__ */ (0, C.jsx)(xA, { children: /* @__PURE__ */ (0, C.jsx)(J, {
 		tone: "error",
-		title: "PreferenciasAnálisisleerFallido",
-		children: d.error ? V(d.error) : "leerPreferenciasAnálisisFallido"
+		title: "口味分析读取失败",
+		children: d.error ? V(d.error) : "读取口味分析失败"
 	}) });
-	let b = y.summary || {}, x = y.coverage || {}, w = y.rankings || {}, T = y.storage || {}, E = kut(w.browser_categories || []), D = Put(E).length > 0, O = y.gaps || [], k = x.tagged || 0, A = x.identified || 0, j = h.error ? V(h.error) : g.error ? V(g.error) : m?.status === "failed" ? m.error || "leerNo disponible" : "";
+	let b = y.summary || {}, x = y.coverage || {}, w = y.rankings || {}, T = y.storage || {}, E = kut(w.browser_categories || []), D = Put(E).length > 0, O = y.gaps || [], k = x.tagged || 0, A = x.identified || 0, j = h.error ? V(h.error) : g.error ? V(g.error) : m?.status === "failed" ? m.error || "读取未取得" : "";
 	return /* @__PURE__ */ (0, C.jsxs)(xA, { children: [
 		/* @__PURE__ */ (0, C.jsxs)(uP, {
 			selectedKey: s,
@@ -105388,22 +105388,22 @@ function $dt(e) {
 				/* @__PURE__ */ (0, C.jsxs)("div", {
 					className: "flex flex-wrap items-center justify-between gap-3",
 					children: [/* @__PURE__ */ (0, C.jsxs)(GF, {
-						"aria-label": "Prueba de preferencias de fuente",
+						"aria-label": "口味证据来源",
 						className: qF,
 						children: [/* @__PURE__ */ (0, C.jsx)(fP, {
 							id: "browser",
 							className: JF,
-							children: "Historial del navegador"
+							children: "浏览器记录"
 						}), /* @__PURE__ */ (0, C.jsx)(fP, {
 							id: "peach",
 							className: JF,
-							children: "Interno de Peach"
+							children: "Peach 内部"
 						})]
 					}), /* @__PURE__ */ (0, C.jsxs)("div", {
 						className: "flex flex-wrap items-center gap-2",
 						children: [
 							/* @__PURE__ */ (0, C.jsx)(BF, {
-								"aria-label": "Ámbito de análisis",
+								"aria-label": "分析范围",
 								selectedKey: a,
 								onSelectionChange: (e) => {
 									e !== null && o(String(e));
@@ -105448,18 +105448,18 @@ function $dt(e) {
 					className: "flex flex-col gap-3 empty:hidden",
 					children: [
 						p ? /* @__PURE__ */ (0, C.jsx)(OF, {
-							label: f?.message || "CargandoHistorial de navegacióny actualizar preferencias de análisis",
+							label: f?.message || "正在读取浏览记录并更新口味分析",
 							value: f?.checked,
 							total: f?.total
 						}) : null,
-						g.isPending ? /* @__PURE__ */ (0, C.jsx)(OF, { label: "ProcesandoImportarPreferenciasdatos numéricos" }) : null,
+						g.isPending ? /* @__PURE__ */ (0, C.jsx)(OF, { label: "正在导入口味数据" }) : null,
 						j ? /* @__PURE__ */ (0, C.jsx)(J, {
 							tone: "error",
 							children: j
 						}) : null,
 						m?.warnings?.length ? /* @__PURE__ */ (0, C.jsx)(J, {
 							tone: "warning",
-							children: m.warnings.join("; ")
+							children: m.warnings.join("；")
 						}) : null
 					]
 				}),
@@ -105473,7 +105473,7 @@ function $dt(e) {
 								/* @__PURE__ */ (0, C.jsx)(Q8, {
 									accent: 0,
 									icon: zk,
-									term: "Historial de navegación",
+									term: "浏览记录",
 									figure: Number(b.history_visits || 0).toLocaleString(),
 									detail: Dut(b),
 									detailTitle: `${K8(b.range_start)}—${K8(b.range_end)}`
@@ -105481,77 +105481,77 @@ function $dt(e) {
 								/* @__PURE__ */ (0, C.jsx)(Q8, {
 									accent: 1,
 									icon: Vk,
-									term: "Dimensión de preferencias",
+									term: "口味维度",
 									figure: E.length.toLocaleString(),
-									detail: E[0]?.name || "sin dimensión principal"
+									detail: E[0]?.name || "尚无主维度"
 								}),
 								/* @__PURE__ */ (0, C.jsx)(Q8, {
 									accent: 2,
 									icon: Uk,
-									term: "Pistas de navegación",
+									term: "浏览线索",
 									figure: O.length.toLocaleString()
 								}),
 								/* @__PURE__ */ (0, C.jsx)(Q8, {
 									accent: 3,
 									icon: vge,
-									term: "Marcadores del navegador",
+									term: "浏览器书签",
 									figure: Number(b.bookmarks || 0).toLocaleString(),
-									detail: `${Number(T.exports || 0).toLocaleString()}  exportaciones privadas · ${cn(T.bytes || 0)}`
+									detail: `${Number(T.exports || 0).toLocaleString()} 份私有导出 · ${cn(T.bytes || 0)}`
 								})
 							]
 						}),
 						/* @__PURE__ */ (0, C.jsxs)("section", {
 							className: D ? `${Z8} md:flex-row md:gap-6` : Z8,
-							"aria-label": "Perfil del navegador",
+							"aria-label": "浏览器画像",
 							children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 								className: D ? "flex shrink-0 flex-col gap-2 pb-5 md:w-80 md:pr-6 md:pb-0" : "flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1",
 								children: [
 									/* @__PURE__ */ (0, C.jsx)("span", {
 										className: "text-caption-1-regular text-text-secondary",
-										children: "Perfil del navegador"
+										children: "浏览器画像"
 									}),
 									D ? /* @__PURE__ */ (0, C.jsx)(Sdt, {
 										rows: E,
-										label: "Dimensiones principales de preferencias"
+										label: "主要口味维度"
 									}) : null,
 									/* @__PURE__ */ (0, C.jsx)("small", {
 										className: "text-caption-1-regular text-text-secondary",
-										children: y.updated_at ? `Actualizado el ${K8(y.updated_at)}` : "aún sin historial de navegación recopilado"
+										children: y.updated_at ? `更新于 ${K8(y.updated_at)}` : "尚未采集浏览记录"
 									})
 								]
 							}), /* @__PURE__ */ (0, C.jsx)("div", {
 								className: "flex min-w-0 grow flex-col",
 								children: E.length ? /* @__PURE__ */ (0, C.jsx)(Cdt, {
 									rows: E,
-									label: "Dimensión de preferencias: ordenar por nombre"
+									label: "口味维度排名"
 								}) : /* @__PURE__ */ (0, C.jsx)(yA, {
 									shell: "plain",
 									icon: Uk,
-									title: "Sin dimensión de preferencias aún",
+									title: "暂无口味维度",
 									children: Mdt
 								})
 							})]
 						}),
 						/* @__PURE__ */ (0, C.jsx)(rlt, {
 							activity: y.activity,
-							title: "Tiempo de actividad de navegación",
-							dailyTitle: "Actividad diaria",
+							title: "浏览活跃时间",
+							dailyTitle: "每日活跃",
 							words: {
-								unit: "PreferenciasSitio webAcceso",
-								series: "Acceso",
-								cellUnit: "Visita(s)"
+								unit: "口味网站访问",
+								series: "访问",
+								cellUnit: "次访问"
 							},
 							tone: 4,
-							empty: "Aún no haydisponible en los registros de acceso a sitios web de preferencias de análisis. "
+							empty: "还没有可用于分析的口味网站访问记录。"
 						}),
 						/* @__PURE__ */ (0, C.jsx)(wdt, { flows: y.creator_flows }),
 						/* @__PURE__ */ (0, C.jsx)(Jdt, {
-							label: "Explorar dispositivoDimensión de preferencias",
+							label: "浏览器口味维度",
 							onSignal: t,
 							panels: [
 								{
 									id: "tags",
-									name: "Etiqueta",
+									name: "标签",
 									props: {
 										rows: w.browser_tags || [],
 										kind: "tag",
@@ -105561,7 +105561,7 @@ function $dt(e) {
 								},
 								{
 									id: "creators",
-									name: "Creador",
+									name: "创作者",
 									props: {
 										rows: w.browser_creators || [],
 										kind: "creator",
@@ -105571,17 +105571,17 @@ function $dt(e) {
 								},
 								{
 									id: "performers",
-									name: "Actriz",
+									name: "女优",
 									props: {
 										rows: w.browser_performers || [],
 										kind: "performer",
 										visual: "entity",
-										empty: "Aún no hay historial de navegación asociado a actrices ya archivadasegación. "
+										empty: "还没有与已建档女优关联的浏览记录。"
 									}
 								},
 								{
 									id: "domains",
-									name: "Sitios más visitados",
+									name: "常访问网站",
 									props: {
 										rows: w.domains || [],
 										kind: "",
@@ -105591,7 +105591,7 @@ function $dt(e) {
 								},
 								{
 									id: "gaps",
-									name: "Pistas de navegación",
+									name: "浏览线索",
 									props: {
 										rows: O,
 										kind: "",
@@ -105613,39 +105613,39 @@ function $dt(e) {
 								/* @__PURE__ */ (0, C.jsx)(Q8, {
 									accent: 0,
 									icon: kge,
-									term: "Visto en Peach",
+									term: "Peach 看过",
 									figure: Number(b.peach_items || 0).toLocaleString(),
 									detail: Out(b.peach_seconds || 0)
 								}),
 								/* @__PURE__ */ (0, C.jsx)(Q8, {
 									accent: 1,
 									icon: Zge,
-									term: "Me gusta",
+									term: "喜欢",
 									figure: Number(b.liked || 0).toLocaleString()
 								}),
 								/* @__PURE__ */ (0, C.jsx)(Q8, {
 									accent: 2,
 									icon: Xge,
-									term: "No es de mi gusto",
+									term: "不合口味",
 									figure: Number(b.disliked || 0).toLocaleString()
 								}),
 								/* @__PURE__ */ (0, C.jsx)(Q8, {
 									accent: 3,
 									icon: Vk,
-									term: "Con etiqueta",
+									term: "有标签",
 									figure: k.toLocaleString()
 								})
 							]
 						}),
 						/* @__PURE__ */ (0, C.jsxs)("section", {
 							className: `${Z8} md:flex-row md:gap-6`,
-							"aria-label": "Reproducido en Peach",
+							"aria-label": "Peach 观看",
 							children: [/* @__PURE__ */ (0, C.jsxs)("div", {
 								className: "flex shrink-0 flex-col gap-0.5 pb-5 md:w-72 md:pr-6 md:pb-0",
 								children: [
 									/* @__PURE__ */ (0, C.jsx)("span", {
 										className: "text-caption-1-regular text-text-secondary",
-										children: "Reproducido en Peach"
+										children: "Peach 观看"
 									}),
 									/* @__PURE__ */ (0, C.jsx)("b", {
 										className: "text-display-4-medium tabular-nums text-text-primary",
@@ -105653,29 +105653,29 @@ function $dt(e) {
 									}),
 									/* @__PURE__ */ (0, C.jsx)("span", {
 										className: "text-body-2-regular text-text-secondary",
-										children: " obra(s) con evidencia de comportamiento interno"
+										children: "个作品有内部行为证据"
 									})
 								]
 							}), /* @__PURE__ */ (0, C.jsxs)("div", {
 								className: "flex min-w-0 grow flex-col",
 								children: [/* @__PURE__ */ (0, C.jsx)(eft, {
-									term: "Con etiqueta",
+									term: "有标签",
 									value: k,
 									rest: x.untagged || 0
 								}), /* @__PURE__ */ (0, C.jsx)(eft, {
-									term: "Con identidad",
+									term: "有身份",
 									value: A,
 									rest: x.unidentified || 0
 								})]
 							})]
 						}),
 						/* @__PURE__ */ (0, C.jsx)(Jdt, {
-							label: "Dimensiones de preferencias de Peach",
+							label: "Peach 口味维度",
 							onSignal: t,
 							panels: [
 								{
 									id: "tags",
-									name: "Etiqueta",
+									name: "标签",
 									props: {
 										rows: w.peach_tags || [],
 										kind: "tag",
@@ -105685,7 +105685,7 @@ function $dt(e) {
 								},
 								{
 									id: "creators",
-									name: "Creador",
+									name: "创作者",
 									props: {
 										rows: w.peach_creators || [],
 										kind: "creator",
@@ -105695,7 +105695,7 @@ function $dt(e) {
 								},
 								{
 									id: "performers",
-									name: "Actriz",
+									name: "女优",
 									props: {
 										rows: w.peach_performers || [],
 										kind: "performer",
@@ -105732,11 +105732,11 @@ function eft({ term: e, value: t, rest: n }) {
 				className: "tabular-nums",
 				children: [t.toLocaleString(), /* @__PURE__ */ (0, C.jsx)("span", {
 					className: "ml-1.5 text-caption-1-regular text-text-secondary",
-					children: `${n.toLocaleString()} elemento(s)pendiente de complementar`
+					children: `${n.toLocaleString()} 项待补`
 				})]
 			})]
 		}), /* @__PURE__ */ (0, C.jsx)(CA, {
-			label: `${e}: ${t.toLocaleString()} / ${r.toLocaleString()}`,
+			label: `${e}：${t.toLocaleString()} / ${r.toLocaleString()}`,
 			value: t,
 			max: r
 		})]
@@ -105745,66 +105745,66 @@ function eft({ term: e, value: t, rest: n }) {
 //#endregion
 //#region src/index-skeleton.ts
 var $8 = {
-	performers: "Actriz",
-	creators: "Vendedor",
-	studios: "Sello",
-	agencies: "Agencia",
-	tags: "Etiqueta"
+	performers: "艺人",
+	creators: "卖家",
+	studios: "厂牌",
+	agencies: "事务所",
+	tags: "标签"
 }, tft = [[
 	"big",
-	"Imagen grande · Avatar vertical",
+	"大图 · 竖幅头像",
 	"maximize"
 ], [
 	"compact",
-	"Compacto · Avatar circular",
+	"紧凑 · 圆形头像",
 	"layout-grid"
 ]], nft = [[
 	"big",
-	"Imagen grande · Logo completo",
+	"大图 · 完整标识",
 	"maximize"
 ], [
 	"compact",
-	"Compacto · Logo circular",
+	"紧凑 · 圆形标识",
 	"layout-grid"
 ]], rft = [[
 	"studios",
-	"Sello",
+	"厂牌",
 	"clapperboard"
 ], [
 	"agencies",
-	"Agencia",
+	"事务所",
 	"briefcase"
 ]], ift = [[
 	"local",
-	"Local",
+	"本地",
 	"hard-drive"
 ], [
 	"online",
-	"En línea",
+	"在线",
 	"rss"
 ]], aft = [
 	[
 		"performers",
-		"Actriz",
+		"艺人",
 		"user-round"
 	],
 	[
 		"creators",
-		"Vendedor",
+		"卖家",
 		"user-round"
 	],
 	[
 		"online",
-		"En línea",
+		"在线",
 		"rss"
 	]
 ], oft = [[
 	"cloud",
-	"Nube de etiquetas",
+	"标签云",
 	"tags"
 ], [
 	"alphabet",
-	"Alfabeto",
+	"字母表",
 	"text-aa"
 ]], sft = (e) => e === "compact" ? "compact" : "big";
 function cft(e, t) {
@@ -105826,18 +105826,18 @@ var e5 = (e, t, n) => Mo(e.map(([e, t, n]) => ({
 	label: n,
 	className: "indextabs"
 }), lft = (e) => `<div class="board-filter-frame" data-filter-frame>
-    <div class="tagbar" data-filter-row="top" data-skeleton-tier="pill" aria-label="Tipo de etiqueta"></div>
+    <div class="tagbar" data-filter-row="top" data-skeleton-tier="pill" aria-label="标签类型"></div>
     <div class="count" data-filter-row="bottom"><span class="mono"><span class="countskeleton"></span></span>
-      ${Os("tag-view", "Vista de etiquetas", oft, e)}</div></div>`;
+      ${Os("tag-view", "标签视图", oft, e)}</div></div>`;
 function uft({ kind: e, q: t, scope: n, view: r, category: i }, a) {
-	let o = $8[e] || "Etiqueta", s = e !== "tags", c = e === "studios" || e === "agencies", l = s ? Os("people-layout", o + "formato de índice", c ? nft : tft, a) : "";
+	let o = $8[e] || "标签", s = e !== "tags", c = e === "studios" || e === "agencies", l = s ? Os("people-layout", o + "索引版式", c ? nft : tft, a) : "";
 	return `<div class="ihead peach-react" data-index-head>
       <h2 class="disp indexheading">${o}</h2>
       ${s ? "<span class=\"mono\" id=\"indexCount\"><span class=\"countskeleton\"></span></span>" : ""}${l}
       ${go()}
-      <div data-index-search class="ml-auto min-w-35 max-w-80 flex-1 max-board-narrow:order-1 max-board-narrow:basis-40">${_o("", t, "Filtrar" + o)}</div>
+      <div data-index-search class="ml-auto min-w-35 max-w-80 flex-1 max-board-narrow:order-1 max-board-narrow:basis-40">${_o("", t, "过滤" + o)}</div>
     </div>
-    ${e === "tags" ? e5(ift, n, "Glosario") : e === "performers" || e === "creators" ? e5(aft, e === "performers" && n === "online" ? "online" : e, "Lista de personas") : c ? e5(rft, e, "Tipo de empresa") : ""}
+    ${e === "tags" ? e5(ift, n, "词表") : e === "performers" || e === "creators" ? e5(aft, e === "performers" && n === "online" ? "online" : e, "人物名册") : c ? e5(rft, e, "公司类型") : ""}
     ${e === "tags" ? lft(r) : ""}
     ${e === "performers" && n !== "online" ? rke(i) : ""}
     ${Ko({
@@ -105974,7 +105974,7 @@ async function Cft(e, t, n, r, i, a, o) {
 	if (e.surfaceChanged("entity", r), await t.loading(l, u, a), !a()) return;
 	pl({ entityJavLayout: !1 });
 	let d = document.createElement("template");
-	d.innerHTML = "<div data-entity-hero><div class=\"peach-react\"></div></div>\n    <div data-entity-filter><div class=\"peach-react\"></div></div>\n    <section class=\"feednew\" data-feed-new aria-label=\"novedades sin biblioteca\" hidden></section>\n    <div data-entity-body><div class=\"peach-react\"></div></div>";
+	d.innerHTML = "<div data-entity-hero><div class=\"peach-react\"></div></div>\n    <div data-entity-filter><div class=\"peach-react\"></div></div>\n    <section class=\"feednew\" data-feed-new aria-label=\"未入库的新作\" hidden></section>\n    <div data-entity-body><div class=\"peach-react\"></div></div>";
 	let f = [...d.content.childNodes], p = d.content.querySelector("[data-entity-hero]"), m = {
 		filter: d.content.querySelector("[data-entity-filter]>.peach-react"),
 		feed: d.content.querySelector("[data-feed-new]"),
@@ -106304,7 +106304,7 @@ function l5(e) {
 function Zft(e, t) {
 	return {
 		readOnly: !!e?.ledger_read_only,
-		readOnlyMessage: e?.ledger_read_only_message || "Esta máquina solo puede explorar",
+		readOnlyMessage: e?.ledger_read_only_message || "本机当前只能浏览",
 		writerUrl: e?.ledger_writer_origin ? new URL(t, e.ledger_writer_origin).href : ""
 	};
 }
@@ -106322,7 +106322,7 @@ async function Qft(e, t) {
 		return pl({ cameFromSetup: !1 }), { onboarding: e };
 	}
 	if (e.startsWith("/settings/")) {
-		window.location.hash === "#peachProxy" && pl({ configurationRequestedSection: "Red y acceso" });
+		window.location.hash === "#peachProxy" && pl({ configurationRequestedSection: "网络与访问" });
 		let t = c5().get("section") || tl || Jhe(e);
 		return t ? { section: t } : {};
 	}
@@ -106482,7 +106482,7 @@ var p5 = (e) => ({
 	page: (t, n, r) => /* @__PURE__ */ (0, C.jsx)(lIe, {
 		receipt: (e) => n.receipt(e),
 		reopenTutorial: n.reopenTutorial,
-		section: e === "/settings/diagnostics" ? "Diagnóstico del sistema" : t.section ?? "",
+		section: e === "/settings/diagnostics" ? "系统诊断" : t.section ?? "",
 		diagnostics: /* @__PURE__ */ (0, C.jsx)(kje, {
 			navigate: r,
 			openItem: n.openItem,
@@ -106510,7 +106510,7 @@ var p5 = (e) => ({
 			onTag: t.openTag,
 			configurable: e.configurable,
 			openMediaSettings: () => {
-				t.requestConfigurationSection("Biblioteca y catalogación"), n("/settings/library");
+				t.requestConfigurationSection("媒体库与入库"), n("/settings/library");
 			}
 		})
 	},
@@ -106721,7 +106721,7 @@ function gpt(e) {
 	return h5(e) ? m5[e] : spt(e) ? g5[e] : cpt(e) ? x5[e] : dpt(e) ? upt[e] : ppt(e) ? fpt[e] : Object.hasOwn(v5, e) ? v5[e] : b5[e];
 }
 function _pt(e, t, n) {
-	return hpt(e) ? gpt(e).prefetch(t, n) : Promise.reject(/* @__PURE__ */ Error(`rutadentroSinesteunpágina: ${e}`));
+	return hpt(e) ? gpt(e).prefetch(t, n) : Promise.reject(/* @__PURE__ */ Error(`路由树里没有这一页：${e}`));
 }
 function vpt(e, t, n, r) {
 	return gpt(e).page(t, n, r);
@@ -106762,8 +106762,8 @@ var Spt = (e, t) => {
 			left: 16,
 			bottom: "calc(var(--toast-bottom, 16px) + var(--processing-toast-space, 0px))"
 		},
-		toastOptions: { closeButtonAriaLabel: "Desactivar la indicación" },
-		containerAriaLabel: "Notificación",
+		toastOptions: { closeButtonAriaLabel: "关闭提示" },
+		containerAriaLabel: "通知",
 		icons: {
 			success: ypt(t.success, !0),
 			error: ypt(t.error, !1)
@@ -106786,8 +106786,8 @@ var Spt = (e, t) => {
 			left: 16,
 			bottom: "var(--toast-bottom, 16px)"
 		},
-		toastOptions: { closeButtonAriaLabel: "Desactivar la indicación de tarea" },
-		containerAriaLabel: "Tareas en segundo plano"
+		toastOptions: { closeButtonAriaLabel: "关闭任务提示" },
+		containerAriaLabel: "后台任务"
 	})] }));
 }, Cpt = 6e3, wpt = (e, t) => {
 	if (!String(t.html ?? "").trim()) return;
@@ -106819,7 +106819,7 @@ async function D5(e, t, n = (e) => e) {
 		resident: !0,
 		isCurrent: () => !!C5 && r === T5,
 		place: () => n(t)
-	}) || r !== T5 || !C5) throw new DOMException("AplicarYaDesmontar", "AbortError");
+	}) || r !== T5 || !C5) throw new DOMException("应用已卸载", "AbortError");
 }
 function Dpt() {
 	T5 += 1, C5 = null, w5 = null, O5 = null, k5 = null, M5 = null, N5 = null, F5 = null, I5 = null, L5 = null, R5 = null, B5 = null, V5 = null, H5 = null, U5 = null, W5 = null;
@@ -106958,7 +106958,7 @@ var Rpt = class {
 		} catch (t) {
 			e.push(t);
 		}
-		if (e.length) throw AggregateError(e, "AplicarRecursoLimpiarNoTodoFinalizar");
+		if (e.length) throw AggregateError(e, "应用资源清理未全部完成");
 	}
 }, G5 = new Rpt();
 function zpt() {
@@ -107006,17 +107006,17 @@ function Bpt() {
 		return r = K5.toast({ text: e }, {
 			timeout: n,
 			action: t ? {
-				label: "Deshacer",
+				label: "撤销",
 				run: async () => {
 					try {
-						await t(), r.replaceMessage({ text: "YaDeshacer" });
+						await t(), r.replaceMessage({ text: "已撤销" });
 					} catch (e) {
-						r.replaceMessage({ text: `DeshacerFallido: ${e.message || "Por favorReintentar"}` }, { warn: !0 });
+						r.replaceMessage({ text: `撤销失败：${e.message || "请重试"}` }, { warn: !0 });
 					}
 				}
 			} : null
 		}), r;
-	}, K5.actionFailure = (e, t) => K5.toast({ text: `${e}Fallido: ${t?.message || "Por favorReintentar"}` }, { warn: !0 }), K5.rollSeed = () => hn(), K5.seededSample = (e, t, n, r = (e) => e.k) => {
+	}, K5.actionFailure = (e, t) => K5.toast({ text: `${e}失败：${t?.message || "请重试"}` }, { warn: !0 }), K5.rollSeed = () => hn(), K5.seededSample = (e, t, n, r = (e) => e.k) => {
 		if (e.length <= t) return e;
 		let i = new Set([...e].sort((e, t) => mn(n, r(e)) - mn(n, r(t))).slice(0, t).map(r));
 		return e.filter((e) => i.has(r(e)));
@@ -107217,22 +107217,22 @@ function Y5() {
 var tmt = [
 	[
 		"",
-		"Inicio",
+		"首页",
 		"home"
 	],
 	[
 		"performers",
-		"Actriz",
+		"艺人",
 		"user-round"
 	],
 	[
 		"studios",
-		"Sello",
+		"厂牌",
 		"clapperboard"
 	],
 	[
 		"tags",
-		"Etiqueta",
+		"标签",
 		"tags"
 	],
 	[
@@ -107242,73 +107242,73 @@ var tmt = [
 	],
 	[
 		"flagged",
-		"Marcado",
+		"已标记",
 		"bookmark"
 	],
 	[
 		"playlists",
-		"Lista de reproducción",
+		"播放列表",
 		"playlist"
 	],
 	[
 		"follow",
-		"Seguir",
+		"关注",
 		"rss"
 	],
 	[
 		"immerse",
-		"Modo inmersivo",
+		"沉浸模式",
 		"gallery-vertical-end"
 	],
 	[
 		"manage",
-		"Gestionar",
+		"管理",
 		"wrench"
 	]
 ], X5 = [
 	[
 		"stats",
-		"Estadísticas",
+		"统计",
 		"chart"
 	],
 	[
 		"taste",
-		"Preferencias",
+		"口味",
 		"heart"
 	],
 	[
 		"review",
-		"Revisión manual",
+		"人工复核",
 		"square-check-big"
 	],
 	[
 		"cleanup",
-		"Gestión de datos",
+		"数据管理",
 		"hard-drive"
 	],
 	[
 		"trash",
-		"Papelera",
+		"回收站",
 		"trash"
 	],
 	[
 		"follow",
-		"Gestionar seguidos",
+		"关注管理",
 		"rss"
 	],
 	[
 		"quality",
-		"Versión HD",
+		"高清版",
 		"sparkles"
 	],
 	[
 		"activity",
-		"Centro de tareas",
+		"任务中心",
 		"history"
 	],
 	[
 		"configuration",
-		"Configuración de Peach",
+		"Peach 配置",
 		"folder-cog"
 	]
 ], nmt = [
@@ -107406,7 +107406,7 @@ function hmt(e) {
 	return async (t, n, { button: r = null } = {}) => {
 		if (r?.getAttribute("aria-busy") === "true") return;
 		let i = r?.innerHTML ?? "", a = r?.textContent?.trim() ?? "";
-		r && (Ts(r), r.innerHTML = `${Ao("Localizando")}${a ? `<span>${B(a)}</span>` : ""}`), n.textContent = "";
+		r && (Ts(r), r.innerHTML = `${Ao("正在定位")}${a ? `<span>${B(a)}</span>` : ""}`), n.textContent = "";
 		try {
 			await e.request(t), n.textContent = "", e.success();
 		} catch (t) {
@@ -107630,9 +107630,9 @@ function Dmt(e) {
 //#endregion
 //#region src/card-art/feed-identity.ts
 function Omt(e) {
-	let t = e.performer_refs || [], n = [...new Set((e.performers || "").split(/[,, , ;/]/).map((e) => e.trim()).filter(Boolean))], r = t.length ? t : n.map((e) => ({ name: e })), i = r.slice(0, 3).map((t) => {
+	let t = e.performer_refs || [], n = [...new Set((e.performers || "").split(/[,，、;/]/).map((e) => e.trim()).filter(Boolean))], r = t.length ? t : n.map((e) => ({ name: e })), i = r.slice(0, 3).map((t) => {
 		let n = e.code && t.source_actor_id && t.source_avatar && !t.has_image && !t.has_avatar, r = n ? ` data-feed-source-avatar data-code="${B(e.code)}" data-actor="${B(t.source_actor_id)}" data-name="${B(t.name)}"` : "", i = n ? "" : ha(t.name, t, null);
-		return "id" in t && t.id ? `<a class="mav"${r} href="${B(Kt("performer", t.name, t.id))}" aria-label="AbrirActrizpágina: ${B(t.name)}">${i}</a>` : `<span class="mav"${r} title="${B(t.name)}">${i}</span>`;
+		return "id" in t && t.id ? `<a class="mav"${r} href="${B(Kt("performer", t.name, t.id))}" aria-label="打开女优页：${B(t.name)}">${i}</a>` : `<span class="mav"${r} title="${B(t.name)}">${i}</span>`;
 	}).join("");
 	return r.length > 1 ? `<div class="mavstack">${i}</div>` : i;
 }
@@ -107655,23 +107655,23 @@ var Q5 = {
 	HERO_WIDE_PX: void 0
 };
 function kmt(e) {
-	return e.has_cover ? ba(e, "big") : e.cover_url ? ba(e, "big").replace(/ src="[^"]*"/, ` src="${B(e.cover_url)}" referrerpolicy="no-referrer" data-panel-prior="1"`).replace("data-drop=\"self\"", "data-drop=\"initial\" data-initial=\"Sin portada\" data-drop-class=\"nopic\"") : e.cover_fetching ? `<span class="nopic" data-feed-cover-state="fetching">${jo("ObtenerEn proceso")}</span>` : "<span class=\"nopic\" data-feed-cover-state=\"missing\">Sin portada</span>";
+	return e.has_cover ? ba(e, "big") : e.cover_url ? ba(e, "big").replace(/ src="[^"]*"/, ` src="${B(e.cover_url)}" referrerpolicy="no-referrer" data-panel-prior="1"`).replace("data-drop=\"self\"", "data-drop=\"initial\" data-initial=\"无封面\" data-drop-class=\"nopic\"") : e.cover_fetching ? `<span class="nopic" data-feed-cover-state="fetching">${jo("抓取中")}</span>` : "<span class=\"nopic\" data-feed-cover-state=\"missing\">无封面</span>";
 }
 function Amt(e) {
-	let t = [e.performers && `<span class="feednewperformers" title="${B(e.performers)}">${B(e.performers)}</span>`, e.release_date && `<span>${B(e.release_date)}</span>`].filter(Boolean).join(""), n = kmt(e), r = e.code || String(e.title || "").trim() || "NonombrarnombreNovedades", i = e.code ? Dk({
+	let t = [e.performers && `<span class="feednewperformers" title="${B(e.performers)}">${B(e.performers)}</span>`, e.release_date && `<span>${B(e.release_date)}</span>`].filter(Boolean).join(""), n = kmt(e), r = e.code || String(e.title || "").trim() || "未命名新作", i = e.code ? Dk({
 		is_jav: !0,
 		code: e.code,
 		name: e.code,
 		display_title: e.title || ""
-	}) : B(r), a = e.code ? `<a class="feednewopen" href="/works/${encodeURIComponent(e.code)}" aria-label="Abrir ${B(r)} ObraDetalles"></a>` : "";
+	}) : B(r), a = e.code ? `<a class="feednewopen" href="/works/${encodeURIComponent(e.code)}" aria-label="打开 ${B(r)} 的作品详情"></a>` : "";
 	return `<article class="card feednewcard${e.read ? " isread" : ""}" data-feed-id="${e.id}">
     ${a}<div class="pic" style="--card-ratio:${CE}">${n}
       <div class="hovertools feednewtools">
-        <button type="button" data-feed-action="${e.wanted ? "unwant" : "want"}" aria-pressed="${!!e.wanted}" title="${e.wanted ? "Quitar de deseados" : "Deseado"}" aria-label="Deseado ${B(r)}">${z("star")}</button>
-        <button type="button" data-feed-action="ignore" title="NoQuiero ver" aria-label="NoQuiero ver ${B(r)}">${z("x")}</button>
-        <button type="button" data-feed-action="read" title="etiquetacomoYaVisto" aria-label="etiquetacomoYaVisto ${B(r)}">${z("check")}</button></div></div>
+        <button type="button" data-feed-action="${e.wanted ? "unwant" : "want"}" aria-pressed="${!!e.wanted}" title="${e.wanted ? "取消想要" : "想要"}" aria-label="想要 ${B(r)}">${z("star")}</button>
+        <button type="button" data-feed-action="ignore" title="不想看" aria-label="不想看 ${B(r)}">${z("x")}</button>
+        <button type="button" data-feed-action="read" title="标为已看过" aria-label="标为已看过 ${B(r)}">${z("check")}</button></div></div>
     <div class="meta">${Omt(e)}<div class="mtext"><span class="t">${i}</span>
-      <div class="s mono">${t || (e.title ? "" : "Detalles aún no obtenidos")}</div></div></div></article>`;
+      <div class="s mono">${t || (e.title ? "" : "资料还没取到")}</div></div></div></article>`;
 }
 function jmt() {
 	let e = document.getElementById("peach-entity-shape");
@@ -107689,10 +107689,10 @@ function Mmt(e) {
 	!e || lk(e) || e.querySelector("[data-feed-id]") || (e.hidden = Z.homeHasFeed !== !0, Z.homeHasFeed === !0 && (e.setAttribute("aria-busy", "true"), e.querySelector(".feednewskeleton") || (e.innerHTML = Q5.feedNewSkeletonHtml())));
 }
 function Nmt(e, t) {
-	return !(e > 0) || !t.some((e) => !e.has_cover) ? "" : ko(`${e}  título(s)NovedadesPortadano se puede conectar a DMM Imágeneshost, en procesocomún al cambiar ancho de banda en el país. Cambiar DMM / FANZA Método de conexiónconfigurarconvertir en Proxy de Peach, en la próxima ronda se reintentará automáticamente. `, {
+	return !(e > 0) || !t.some((e) => !e.has_cover) ? "" : ko(`${e} 部新作的封面连不上 DMM 图片主机，中国移动宽带常见。把 DMM / FANZA 的连接方式设成 Peach 代理，下一轮会自动重取。`, {
 		variant: "warning",
 		className: "feednetwork",
-		actionLabel: "ConfiguraciónMétodo de conexión",
+		actionLabel: "配置连接方式",
 		actionHref: "/sources"
 	});
 }
@@ -107745,8 +107745,8 @@ function Bmt() {
 //#region src/entity-skeleton.ts
 function Vmt(e, t, n, r = "") {
 	let i = e === "studio" || e === "agency";
-	return `<section data-skeleton="entity/${e}" role="status" aria-label="CargandoDetalles">
-    <span class="sr-only">CargandoDetalles</span><div aria-hidden="true"><div class="peach-react contents">
+	return `<section data-skeleton="entity/${e}" role="status" aria-label="正在读取资料">
+    <span class="sr-only">正在读取资料</span><div aria-hidden="true"><div class="peach-react contents">
     <section class="entityhero" data-entity-card><div class="entityprofile" data-entity-profile><div data-entity-portrait-wrap><div class="entityportrait ${i ? "square " : ""}skeleton" data-entity-portrait="${i ? "square" : "round"}"></div></div>
       <div class="ui-entityidentity entityskeletontext" data-entity-identity><div class="entitytitle" data-entity-title><h2 class="skeleton">&nbsp;</h2></div>
       <div class="alias" data-entity-alias><span class="skeleton"></span></div>
@@ -107760,7 +107760,7 @@ function Vmt(e, t, n, r = "") {
 //#region src/filter-controls-skeleton.ts
 function Hmt(e, t) {
 	let n = "disabled data-skeleton-action", r = t ? `<span data-entity-layout="" class="${YF}" role="radiogroup" aria-label="${B(t.label)}">${t.options.map(([e, r, i]) => `<button type="button" class="${XF}" role="radio" aria-label="${B(r)}" aria-checked="${e === t.value}" data-glass-segment=""${e === t.value ? " data-selected=\"\"" : ""} ${n}>${z(i)}</button>`).join("")}</span>` : "";
-	return `<span data-entity-sorts=""><button type="button" data-entity-batch="" aria-label="Cargar nuevos" ${n}>${z("shuffle")}</button>${r}${e.map((e) => `<button type="button" data-entity-sort="${B(e.key)}" aria-pressed="${e.pressed}" ${n}>${B(e.label)}${e.dir ? z(e.dir === "asc" ? "arrow-up" : "arrow-down") : ""}</button>`).join("")}</span>`;
+	return `<span data-entity-sorts=""><button type="button" data-entity-batch="" aria-label="换一批" ${n}>${z("shuffle")}</button>${r}${e.map((e) => `<button type="button" data-entity-sort="${B(e.key)}" aria-pressed="${e.pressed}" ${n}>${B(e.label)}${e.dir ? z(e.dir === "asc" ? "arrow-up" : "arrow-down") : ""}</button>`).join("")}</span>`;
 }
 //#endregion
 //#region src/application/entity.js
@@ -107818,7 +107818,7 @@ function o7(e, t, n = R7()) {
 			label: r,
 			pressed: i,
 			dir: i && Ale(n, t) ? t === "asc" ? "asc" : "desc" : "",
-			ariaLabel: a ? `según${r}${a.dir ? Ale(a.sort, a.dir) : ""}Ordenar` : ""
+			ariaLabel: a ? `按${r}${a.dir ? Ale(a.sort, a.dir) : ""}排序` : ""
 		};
 	});
 }
@@ -107849,7 +107849,7 @@ var Gmt = hmt({
 		method: "POST",
 		body: JSON.stringify({ id: e })
 	}),
-	success: () => K5.toast({ text: "Mostrado en el explorador" }),
+	success: () => K5.toast({ text: "已在资源管理器中显示" }),
 	failureText: (e) => n7.sourceHint(e instanceof Error ? e.message : String(e))
 });
 async function Kmt(e) {
@@ -107866,7 +107866,7 @@ async function qmt(e) {
 	};
 }
 async function Jmt(e, t, n) {
-	t.textContent = "ProcesandoverificarDirectorio...";
+	t.textContent = "正在核对目录…";
 	try {
 		let r = await Lt("/api/purge-missing", {
 			method: "POST",
@@ -107876,7 +107876,7 @@ async function Jmt(e, t, n) {
 			t.textContent = n7.sourceHint(r.error);
 			return;
 		}
-		if (t.textContent = r.removed ? `${n7.syncedText(r)}(verificar ${r.checked} elemento(s)${r.unreadable ? `, ${r.unreadable} elemento(s)Nopuedeleer` : ""})` : r.unreadable ? `Directoriocon ${r.unreadable} elemento(s)temporalmente Sin capacidad deleer, esta vez no renombrar ni mover` : `Directoriocontenido interno ${r.checked} elemento(s)todosaúnen, Ningunonecesario renombrar y mover`, r.removed) {
+		if (t.textContent = r.removed ? `${n7.syncedText(r)}（核对 ${r.checked} 项${r.unreadable ? `，${r.unreadable} 项未能读取` : ""}）` : r.unreadable ? `目录有 ${r.unreadable} 项暂时无法读取，本次未改动` : `目录内 ${r.checked} 项都还在，无需改动`, r.removed) {
 			let e = (r.items || []).filter((e) => e.disposal !== "reattached").map((e) => e.id);
 			n && n(r), K5.actionReceipt(n7.syncedText(r), { undo: e.length ? async () => {
 				await Lt("/api/batch", {
@@ -107890,9 +107890,9 @@ async function Jmt(e, t, n) {
 					restored: e.length
 				});
 			} : null });
-		} else K5.actionReceipt("DirectorioverificarFinalizar, Ningunonecesario renombrar y mover");
+		} else K5.actionReceipt("目录核对完成，无需改动");
 	} catch (e) {
-		t.textContent = n7.sourceHint(e.message), K5.actionFailure("verificarDirectorio", e);
+		t.textContent = n7.sourceHint(e.message), K5.actionFailure("核对目录", e);
 	}
 }
 function Ymt(e) {
@@ -107907,13 +107907,13 @@ function Xmt(e, t) {
 }
 async function Zmt(e, t) {
 	let n = Is({
-		title: "AñadirAlias",
-		description: "La galería guarda imágenes por nombre; complementar el formato del nombre permite buscar más imágenes de reserva para seleccionar; también puedes establecer el nombre canónico aquí. ",
-		body: "<label class=\"modalfield\"><span>Alias</span>\n        <input class=\"geist-input\" name=\"alias\" maxlength=\"80\" autocomplete=\"off\"\n          placeholder=\"otro formato de tipo, ootro nombre artístico\"></label>" + (e.length ? `<div class="modalfield"><span>añadidos manualmente</span>
+		title: "添加别名",
+		description: "图库按名字存图，补充名字写法能找到更多备选图片；这里添加的名字也能设为统称。",
+		body: "<label class=\"modalfield\"><span>别名</span>\n        <input class=\"geist-input\" name=\"alias\" maxlength=\"80\" autocomplete=\"off\"\n          placeholder=\"另一种写法，或另一个艺名\"></label>" + (e.length ? `<div class="modalfield"><span>自己添过的</span>
         <div class="aliaschips">${e.map((e) => `<span class="aliaschip">${B(e)}
           <button type="button" data-alias-drop="${B(e)}"
-            aria-label="DeshacerAlias ${B(e)}">${z("x")}</button></span>`).join("")}</div></div>` : ""),
-		confirmLabel: "AñadirAlias",
+            aria-label="撤销别名 ${B(e)}">${z("x")}</button></span>`).join("")}</div></div>` : ""),
+		confirmLabel: "添加别名",
 		confirmDisabled: !0,
 		onConfirm: () => t({ alias: r.value.trim() })
 	}), r = n.dialog.querySelector("[name=alias]");
@@ -107928,31 +107928,31 @@ async function Zmt(e, t) {
 				remove: !0
 			});
 		} catch (e) {
-			K5.actionFailure("DeshacerAlias", e);
+			K5.actionFailure("撤销别名", e);
 			return;
 		}
-		K5.actionReceipt(`YaDeshacerAlias ${r}`, { undo: async () => {
+		K5.actionReceipt(`已撤销别名 ${r}`, { undo: async () => {
 			await t({ alias: r });
 		} });
 	}));
 	let { confirmed: i, result: a } = await n.done;
-	i && (a?.added ? K5.actionReceipt(`YaAñadirAlias ${a.alias}`, { undo: async () => {
+	i && (a?.added ? K5.actionReceipt(`已添加别名 ${a.alias}`, { undo: async () => {
 		await t({
 			alias: a.alias,
 			remove: !0
 		});
-	} }) : K5.actionReceipt(`${a?.alias} ya es el nombre actual de este archivo`));
+	} }) : K5.actionReceipt(`${a?.alias} 已经是这份档案中的名字`));
 }
 function Qmt(e, t) {
 	let n = ["performer", "studio"].includes(e) && Q5.hasEntityPart(e, t, "jav"), r = `<div data-filter-row="bottom" class="flex min-w-0 items-center gap-3 px-3 py-2 min-h-12"><h3 data-entity-readout><span data-skeleton="count" class="relative inline-block h-3.5 w-24 rounded-md align-middle skeleton-sheen"></span></h3>${go()}${e === "agency" ? "" : Hmt(o7(G.sort, G.dir, n), n ? {
 		name: "jav-layout",
-		label: "Diseño de tarjeta JAV",
+		label: "JAV 卡片版式",
 		value: TE(),
 		options: SE
-	} : null)}</div>`, i = e === "agency" ? "" : `<div data-entity-media><button type="button" data-media-view="videos" aria-label="Videos" aria-pressed="true" disabled data-skeleton-action>${z("play")}</button><button type="button" data-media-view="photos" aria-label="Foto" disabled data-skeleton-action>${z("pics")}</button></div><span data-entity-sep></span><div data-entity-scroll><div data-entity-states>${Z.catalogViews().map((e) => `<button type="button" data-entity-state="${B(e.k)}" aria-pressed="${G.state === e.k}" disabled data-skeleton-action>${B(e.label)}</button>`).join("")}</div>`, a = Vmt(e, r, e === "agency" ? Ko({
+	} : null)}</div>`, i = e === "agency" ? "" : `<div data-entity-media><button type="button" data-media-view="videos" aria-label="视频" aria-pressed="true" disabled data-skeleton-action>${z("play")}</button><button type="button" data-media-view="photos" aria-label="照片" disabled data-skeleton-action>${z("pics")}</button></div><span data-entity-sep></span><div data-entity-scroll><div data-entity-states>${Z.catalogViews().map((e) => `<button type="button" data-entity-state="${B(e.k)}" aria-pressed="${G.state === e.k}" disabled data-skeleton-action>${B(e.label)}</button>`).join("")}</div>`, a = Vmt(e, r, e === "agency" ? Ko({
 		kind: "performers",
 		layout: y7.peopleIndexLayout()
-	}) : WK("CargandoObra", {
+	}) : WK("正在读取作品", {
 		cards: !0,
 		className: "catalog-skeleton postercard-skeleton",
 		cardRatio: AE(kE({
@@ -107972,8 +107972,8 @@ function u7(e, t) {
 	r(n.querySelector(".entityfoot"), e !== "agency" && Q5.hasEntityPart(e, t, "costars"), () => n.querySelector(".entityhero")?.insertAdjacentHTML("beforeend", Q5.costarSkeletonFoot())), r(n.querySelector(".feednew"), Q5.hasEntityPart(e, t, "feed"), () => n.querySelector(".entitysection")?.insertAdjacentHTML("beforebegin", Q5.feedNewSkeletonSection())), r(n.querySelector(".entityfacts"), e === "performer" && Q5.hasEntityPart(e, t, "facts"), () => n.querySelector(".entityprofile")?.insertAdjacentHTML("beforeend", Q5.factsSkeleton()));
 }
 function $mt(e) {
-	let t = Wt[e] || e, n = $8[t] || "Resultadoobjetivo", r = $8[t] ? `<a class="geist-button primary" href="/${t}">Volver${n}Lista</a>` : "";
-	R("#index").innerHTML = Q.emptyState("search-x", `No encontradoeste${n}`, "el nombre puede estar mal escrito, o puede que ya se haya fusionado con un nombre diferente; volver Listadentrode nuevobuscar. ", { actions: r });
+	let t = Wt[e] || e, n = $8[t] || "条目", r = $8[t] ? `<a class="geist-button primary" href="/${t}">返回${n}列表</a>` : "";
+	R("#index").innerHTML = Q.emptyState("search-x", `找不到这个${n}`, "名字可能拼错了，或者已经合并到别的名字下；回列表里重新找。", { actions: r });
 }
 function d7(e, t) {
 	O9(n7.application.fresh(e, t));
@@ -108030,20 +108030,20 @@ function tht() {
 		loaded: () => {},
 		toggleSelection: () => {}
 	}, n7.SOURCE_HINTS = {
-		"source offline": "Fuente sin conexión, sin comparación esta vez; conectar la fuente y reintentar",
-		"source not mapped": "Esta máquinasin asignación de letra de unidad para esta fuente",
-		"file missing": "Archivo fuente no encontrado; haz clic en el botón de escanear de la derecha, reverifica el directorio y actualiza la base de datosRegistro",
-		"unsupported platform": "el servicio remoto actual no mantiene conexión directa para archivos",
-		"reveal failed": "Error al abrir el explorador, por favor inténtalo de nuevo"
+		"source offline": "来源不在线，这一次不对账；接上这个来源后重试",
+		"source not mapped": "本机没有映射这个来源的盘符",
+		"file missing": "找不到源文件；点击右侧的扫描按钮，重新检查目录并更新数据库记录",
+		"unsupported platform": "当前服务端系统不支持直接定位文件",
+		"reveal failed": "打开文件管理器失败，请重试"
 	}, n7.sourceHint = (e) => n7.SOURCE_HINTS[e] || e, n7.syncedText = (e) => [
-		e.trashed ? `Ya movido ${e.trashed} elementos movidos a la papelera` : "",
-		e.vanished ? `${e.vanished} elemento(s) con registros de persona, Yaetiquetacomoya desaparecido ` : "",
-		e.reattached ? `${e.reattached} elemento(s)RegistroYareconectado a otra versión en la biblioteca` : ""
-	].filter(Boolean).join(", "), n7.sourceToolButtons = (e) => `
-    <button type="button" data-reveal="${e}" title="enArchivoGestionarDispositivodentroAbrirfuente Archivotodos enDirectorio"
-      aria-label="Archivo de fuente fija">${z("folder-open")}</button>
-    <button type="button" data-sync="${e}" title="verificaresteDirectorio: DiscosuperiorYaEliminarmoveren Peach Papelera, con persona(s)Registroetiquetacomoya desaparecido "
-      aria-label="SincronizarEliminar">${z("folder-sync")}</button>`;
+		e.trashed ? `已把 ${e.trashed} 项移入回收站` : "",
+		e.vanished ? `${e.vanished} 项带个人记录，已标为已消失` : "",
+		e.reattached ? `${e.reattached} 项的记录已接到库里的另一个版本` : ""
+	].filter(Boolean).join("，"), n7.sourceToolButtons = (e) => `
+    <button type="button" data-reveal="${e}" title="在文件管理器里打开源文件所在目录"
+      aria-label="定位源文件">${z("folder-open")}</button>
+    <button type="button" data-sync="${e}" title="核对该目录：磁盘上已删除的移入 Peach 回收站，带个人记录的标为已消失"
+      aria-label="同步删除">${z("folder-sync")}</button>`;
 }
 function nht() {
 	n7.application = Dmt({
@@ -108160,24 +108160,24 @@ function rht(e, t) {
 	} }), Z.clearSearchField(), $.route(q7()), k7(), e9()) : d7(e, t);
 }
 function iht(e = "") {
-	return `<label class="modalfield"><span>Nombre</span><input class="geist-input" name="name"
-    maxlength="80" placeholder="Introducir nombre" value="${B(e)}"></label>`;
+	return `<label class="modalfield"><span>名称</span><input class="geist-input" name="name"
+    maxlength="80" placeholder="输入名称" value="${B(e)}"></label>`;
 }
 async function aht({ title: e, count: t, save: n }) {
 	let r = Is({
-		title: "Guardar como lista de reproducción",
-		description: `este Mix  ${t}  video(s)se guardará como un elemento en la lista de reproducción. `,
+		title: "保存为播放列表",
+		description: `这个 Mix 的 ${t} 个视频会存成一份可以继续播放的列表。`,
 		body: iht(e),
-		confirmLabel: "Guardar como lista de reproducción",
+		confirmLabel: "保存为播放列表",
 		onConfirm: () => {
 			let e = r.dialog.querySelector("[name=\"name\"]").value.trim();
-			if (!e) throw Error("Lista de reproducciónNombreNopuedecomoVacío");
+			if (!e) throw Error("播放列表名称不能为空");
 			return n(e);
 		}
 	});
 	r.dialog.querySelector("[name=\"name\"]").select();
 	let { confirmed: i, result: a } = await r.done;
-	i && (await c_t(a.id, a.current_asset_id, !0), K5.actionReceipt("GuardadocomoLista de reproducción", { undo: async () => {
+	i && (await c_t(a.id, a.current_asset_id, !0), K5.actionReceipt("已保存为播放列表", { undo: async () => {
 		await f7.playlistWrite({
 			action: "delete",
 			id: a.id
@@ -108186,11 +108186,11 @@ async function aht({ title: e, count: t, save: n }) {
 }
 async function oht(e) {
 	let t = ((await Lt("/api/playlists")).items || []).map((e) => `<label class="pickrow">${Po(`data-pick-playlist="${e.id}"`)}
-    <span class="pickrowtext"><b>${B(e.name)}</b><small>${e.item_count}  video(s)</small></span></label>`).join(""), n = Is({
-		title: "Añadir a la lista de reproducción",
-		description: "Marca los que quieras agregar a la lista, o escribe un nombre para crear uno nuevo. ",
-		body: iht() + (t ? `<div class="picklist" role="group" aria-label="YaconLista de reproducción">${t}</div>` : ko("Aún no hayLista de reproducción, introduce un nombre para crear un nuevo elemento. ", { size: "small" })),
-		confirmLabel: "Guardar",
+    <span class="pickrowtext"><b>${B(e.name)}</b><small>${e.item_count} 个视频</small></span></label>`).join(""), n = Is({
+		title: "加入播放列表",
+		description: "勾选要加入的列表，或者填个名称新建一份。",
+		body: iht() + (t ? `<div class="picklist" role="group" aria-label="已有播放列表">${t}</div>` : ko("还没有播放列表，填个名称就能新建一份。", { size: "small" })),
+		confirmLabel: "保存",
 		confirmDisabled: !0,
 		onConfirm: async () => {
 			let t = n.dialog.querySelector("[name=\"name\"]").value.trim(), r = [...n.dialog.querySelectorAll("[data-pick-playlist]:checked")].map((e) => +e.dataset.pickPlaylist), i = t ? (await f7.playlistWrite({
@@ -108216,7 +108216,7 @@ async function oht(e) {
 	let { confirmed: i, result: a } = await n.done;
 	if (!i) return;
 	let o = +!!a.created + a.added.length;
-	K5.actionReceipt(`Yaañadiren ${o} Lista de reproducción`, { undo: async () => {
+	K5.actionReceipt(`已加入 ${o} 个播放列表`, { undo: async () => {
 		for (let t of a.added) await f7.playlistWrite({
 			action: "remove",
 			id: t,
@@ -108321,23 +108321,23 @@ function ght(e, t = !1) {
 }
 async function _ht(e, t) {
 	let n = {
-		like: "Me gusta",
-		seen: "etiquetacomoVisto",
-		later: "añadirenVer más tarde",
-		dispose: "Mover a papelera",
-		restore: "Restaurar",
-		delete: "Eliminar permanentemente"
+		like: "喜欢",
+		seen: "标为看过",
+		later: "加入稍后看",
+		dispose: "移入回收站",
+		restore: "还原",
+		delete: "彻底删除"
 	}, r = {
-		like: "Me gusta: todas las opciones objetivo",
-		seen: "MarcarcomoYa visto",
-		later: "añadirenVer más tarde",
-		dispose: "Mover a papelera",
-		restore: "Restaurar todas las opciones objetivo",
-		delete: "Eliminar permanentemente opciones objetivo"
+		like: "喜欢所选项目",
+		seen: "标记为已看",
+		later: "加入稍后看",
+		dispose: "移入回收站",
+		restore: "还原所选项目",
+		delete: "永久删除所选项目"
 	}, i = [...Vc];
 	if (i.length) return Rs({
 		title: r[e],
-		body: `seráProcesarseleccionarEn proceso ${i.length} elemento(s). ${e === "delete" ? "Archivo y ColecciónRegistrose eliminará permanentemente sin posibilidad de restaurar. " : e === "dispose" ? "ColecciónRegistropuedeenPapeleraRestaurar. " : ""}`,
+		body: `将处理选中的 ${i.length} 项。${e === "delete" ? "文件和馆藏记录会永久删除，无法恢复。" : e === "dispose" ? "馆藏记录可在回收站还原。" : ""}`,
 		confirmLabel: r[e],
 		danger: e === "delete",
 		onConfirm: async () => {
@@ -108350,10 +108350,10 @@ async function _ht(e, t) {
 						operation: e
 					})
 				});
-				if (t.blocked && t.blocked.length) throw Error(`Ya eliminado permanentemente ${t.purged} elemento(s); ${t.blocked.length} elemento(s)NopuedeEliminar, aún enPapelera: \n` + t.blocked.slice(0, 5).map((e) => `${e.path}(${e.reason})`).join("\n"));
+				if (t.blocked && t.blocked.length) throw Error(`已永久删除 ${t.purged} 项；${t.blocked.length} 项未能删除，仍在回收站：\n` + t.blocked.slice(0, 5).map((e) => `${e.path}（${e.reason}）`).join("\n"));
 				g7(!1, !0), await H7();
 				let r = e === "dispose" ? "restore" : e === "restore" ? "dispose" : null;
-				K5.actionReceipt(`Ya ${n[e]} ${i.length} elemento(s)`, { undo: r ? async () => {
+				K5.actionReceipt(`已${n[e]} ${i.length} 项`, { undo: r ? async () => {
 					if (r === "dispose" && t.restored_reasons) for (let e of [
 						null,
 						"manual",
@@ -108392,15 +108392,15 @@ async function vht() {
 	let e = [...Vc];
 	if (!e.length) return;
 	let t = Is({
-		title: "determinar origen",
-		description: `seleccionarEn proceso ${e.length} elemento(s)agrupar comomismounOrigen. Después del veredicto, el raspado y la inferencia automática ya no cambiarán el origen. `,
-		body: "<div class=\"chips\" role=\"group\" aria-label=\"Origen\">" + m7.REGION_CHOICES.map(([e, t]) => `<button type="button" class="chip" aria-pressed="false" data-region-pick="${e}">
+		title: "判定产地",
+		description: `选中的 ${e.length} 项归为同一个产地。判定之后，刮削和自动推断不再改写产地。`,
+		body: "<div class=\"chips\" role=\"group\" aria-label=\"产地\">" + m7.REGION_CHOICES.map(([e, t]) => `<button type="button" class="chip" aria-pressed="false" data-region-pick="${e}">
         <span class="chip-label">${t}</span></button>`).join("") + "</div>",
-		confirmLabel: "determinar origen",
+		confirmLabel: "判定产地",
 		confirmDisabled: !0,
 		onConfirm: async () => {
 			let n = t.dialog.querySelector("[data-region-pick][aria-pressed=\"true\"]");
-			if (!n) throw Error("primero selecciona un origen");
+			if (!n) throw Error("先选一个产地");
 			return await Lt("/api/batch", {
 				method: "POST",
 				body: JSON.stringify({
@@ -108418,23 +108418,23 @@ async function vht() {
 		t.dialog.querySelectorAll("[data-region-pick]").forEach((t) => t.setAttribute("aria-pressed", String(t === e))), t.confirmButton.disabled = !1;
 	}));
 	let { confirmed: n, result: r } = await t.done;
-	n && (g7(!1, !0), await H7(), K5.actionReceipt(r.region === "none" ? `Ya revertidos ${e.length} elementos, juicio de origen` : `Ya clasificado como${r.label}: ${e.length} elemento(s)`));
+	n && (g7(!1, !0), await H7(), K5.actionReceipt(r.region === "none" ? `已撤回 ${e.length} 项的产地判定` : `已判为${r.label}：${e.length} 项`));
 }
 async function yht(e, t) {
 	let n = [...Hc];
 	if (!n.length) return;
 	let r = {
-		save: "Guardar en base de datos",
-		seen: "Marcar como visto",
-		ignored: "Ignorar"
+		save: "保存到数据库",
+		seen: "标记已看",
+		ignored: "忽略"
 	}, i = {
-		save: "GuardarseleccionadosObra",
-		seen: "MarcarcomoYa visto",
-		ignored: "IgnorarseleccionadosObra"
+		save: "保存所选作品",
+		seen: "标记为已看",
+		ignored: "忽略所选作品"
 	};
 	return Rs({
 		title: i[e],
-		body: `seráProcesarseleccionarEn proceso ${n.length} elemento(s)SeguirObra. `,
+		body: `将处理选中的 ${n.length} 项关注作品。`,
 		confirmLabel: i[e],
 		danger: !1,
 		onConfirm: async () => {
@@ -108446,7 +108446,7 @@ async function yht(e, t) {
 						items: n,
 						to: e
 					})
-				}), g7(!1, !0), location.pathname === "/follow" && pl({ pageOpens: il + 1 }), K5.actionReceipt(`Ya${r[e]} ${n.length} elemento(s)`);
+				}), g7(!1, !0), location.pathname === "/follow" && pl({ pageOpens: il + 1 }), K5.actionReceipt(`已${r[e]} ${n.length} 项`);
 			} catch (e) {
 				throw Ts(t, !1), e;
 			} finally {
@@ -108459,17 +108459,17 @@ async function bht(e, t) {
 	let n = [...Vc];
 	if (!n.length) return;
 	let r = {
-		"dismiss-junk": "No es basura",
-		"reconsider-junk": "Reclasificar",
-		dispose: "Mover a papelera"
+		"dismiss-junk": "不是垃圾",
+		"reconsider-junk": "重新判断",
+		dispose: "移入回收站"
 	}, i = {
-		"dismiss-junk": "Marcar como No-Basura",
-		"reconsider-junk": "ReverificarArchivo",
-		dispose: "Mover a papelera"
+		"dismiss-junk": "标记为非垃圾",
+		"reconsider-junk": "重新检查文件",
+		dispose: "移入回收站"
 	};
 	return Rs({
 		title: i[e],
-		body: `seráProcesarseleccionarEn proceso ${n.length} Archivo. `,
+		body: `将处理选中的 ${n.length} 个文件。`,
 		confirmLabel: i[e],
 		danger: !1,
 		onConfirm: async () => {
@@ -108484,7 +108484,7 @@ async function bht(e, t) {
 					})
 				}), g7(!1, !0), await r9();
 				let t = e === "dispose" ? "restore" : e === "dismiss-junk" ? "reconsider-junk" : e === "reconsider-junk" ? "dismiss-junk" : null;
-				K5.actionReceipt(`Lote ya: ${r[e]}: ${n.length} elemento(s)`, { undo: t ? async () => {
+				K5.actionReceipt(`已批量${r[e]}：${n.length} 项`, { undo: t ? async () => {
 					await Lt("/api/batch", {
 						method: "POST",
 						body: JSON.stringify({
@@ -108517,12 +108517,12 @@ function Sht() {
 		context: "catalog",
 		junkDismissed: !1
 	}, m7.trashCount = null, m7.currentSelectSurface = () => p7(location.pathname), G5.handler(R("#selectMode"), "onclick", () => g7(!Uc, !!Uc)), m7.REGION_CHOICES = [
-		["jp", "Japón"],
-		["kr", "Corea"],
-		["cn", "Producción nacional"],
-		["west", "Occidente"],
-		["other", "Otro"],
-		["none", "retirar veredicto"]
+		["jp", "日本"],
+		["kr", "韩国"],
+		["cn", "国产"],
+		["west", "欧美"],
+		["other", "其他"],
+		["none", "撤回判定"]
 	], m7.BATCH_RUNNERS = {
 		batch: _ht,
 		region: vht,
@@ -108607,7 +108607,7 @@ function Nht() {
 		"add",
 		"feeds"
 	], G5.listen(document, "click", (e) => {
-		e.target.closest?.("[data-empty-settings]") ? lht("Biblioteca y catalogación") : !e.target.closest?.("a[href=\"/subscriptions?tab=add\"]") || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e.preventDefault(), $.navigatePath(b7("add")));
+		e.target.closest?.("[data-empty-settings]") ? lht("媒体库与入库") : !e.target.closest?.("a[href=\"/subscriptions?tab=add\"]") || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e.preventDefault(), $.navigatePath(b7("add")));
 	}), y7.peopleIndexLayout = () => sft(Q.appSettings.peopleLayout), y7.personAvatar = cmt;
 }
 function Pht() {
@@ -108632,7 +108632,7 @@ var S7 = {
 	ENTITY_SHAPES_WAIT: void 0,
 	syncPageTitle: void 0
 };
-function C7(e = "CargandoObra") {
+function C7(e = "正在读取作品") {
 	if (location.pathname === "/wall") {
 		R("#loadSentinel").hidden = !0;
 		return;
@@ -108663,12 +108663,12 @@ function Iht() {
 	if (document.body.dataset.surface = location.pathname, e === "/wall") document.body.setAttribute("data-wall-open", ""), w7();
 	else if (/^\/assets\/\d+$/.test(e)) w7();
 	else if (e === "/settings" || /^\/settings\/(appearance|playback|jav|search|content)$/.test(e) || e.startsWith("/posts/") || e.startsWith("/works/")) w7();
-	else if (e === "/junk-files") C7("CargandoArchivos basura");
-	else if (e === "/jav" && ZU(new URLSearchParams(location.search).get("tab")) === "library") C7("CargandoColección");
+	else if (e === "/junk-files") C7("正在读取垃圾文件");
+	else if (e === "/jav" && ZU(new URLSearchParams(location.search).get("tab")) === "library") C7("正在读取馆藏");
 	else if ($.managedPagePath(e)) {
 		w7();
 		let t = R("#stats");
-		t.hidden = !1, i9(), t.innerHTML = e.startsWith("/follow") && e !== "/subscriptions" ? k9.followSkeletonHtml("CargandoSeguircontenido interno") : S7.managementPlaceholder(e), $o(t);
+		t.hidden = !1, i9(), t.innerHTML = e.startsWith("/follow") && e !== "/subscriptions" ? k9.followSkeletonHtml("正在读取关注内容") : S7.managementPlaceholder(e), $o(t);
 	} else if (/^\/(performers|creators|studios|agencies|tags)$/.test(e)) w7(), x7(), fft(R("#index"), cft(e.slice(1), location.search), y7.peopleIndexLayout());
 	else if (/^\/(?:performers|creators|studios|agencies|series|tags)\//.test(e)) {
 		w7(), R("#index").hidden = !1, i9();
@@ -108679,19 +108679,19 @@ function Iht() {
 	} else $.routeMeta(e) ? C7() : (i9(), R("#count").textContent = "", R("#loadSentinel").hidden = !0);
 }
 function Lht() {
-	k9.followContentSkeletonHtml = (e = new URLSearchParams(location.search).get("media") === "images" ? "images" : "videos", t = "CargandoSeguircontenido interno") => WK(t, {
+	k9.followContentSkeletonHtml = (e = new URLSearchParams(location.search).get("media") === "images" ? "images" : "videos", t = "正在读取关注内容") => WK(t, {
 		cards: !0,
 		className: "follow-content-skeleton postercard-skeleton",
 		gridClass: e === "images" ? "followlist followphotowall" : "",
 		gridSize: EE()
-	}), k9.followSkeletonHtml = (e = "CargandoSeguircontenido interno") => `<div class="peach-react"><div class="follow" data-follow-feed>
-  <div data-follow-head><h2 data-follow-title>Seguir</h2></div>
+	}), k9.followSkeletonHtml = (e = "正在读取关注内容") => `<div class="peach-react"><div class="follow" data-follow-feed>
+  <div data-follow-head><h2 data-follow-title>关注</h2></div>
   <div class="tier followauthors" data-skeleton-tier="av"></div>
   <div class="tier followworks" data-skeleton-tier="brandpill"></div>
   <div class="board-filter-frame" data-filter-frame>
     <div class="tagbar followfilters" data-filter-row="top" data-skeleton-tier="pill"></div>
     <div class="count followcount" data-filter-row="bottom"><span class="mono"><span class="countskeleton"></span></span></div></div>
-  ${k9.followContentSkeletonHtml(void 0, e)}</div></div>`, R("#loadSentinel").innerHTML = jo("Cargando más..."), S7.setGridCards = (e) => Uo(R("#grid"), () => {
+  ${k9.followContentSkeletonHtml(void 0, e)}</div></div>`, R("#loadSentinel").innerHTML = jo("继续载入中…"), S7.setGridCards = (e) => Uo(R("#grid"), () => {
 		R("#grid").innerHTML = `<div class="grid">${e}</div>`;
 	}), S7.gridCards = () => document.querySelectorAll(":is(#grid,#index [data-entity-grid]) :is([data-media-grid] > [data-media-card][data-id],[data-catalog-row][data-id])"), S7.managementPlaceholder = (e) => GK(e, {
 		followLayout: wht(),
@@ -108702,7 +108702,7 @@ function Lht() {
 		}))(Tht())
 	}), S7.wantsDiscoveryBars = () => R("#catalogFilter").style.display !== "none", S7.entityShapesReady = null, S7.ENTITY_SHAPES_WAIT = 400, S7.syncPageTitle = (e) => {
 		let t = new URL(e, location.origin), n = ik(decodeURIComponent(t.pathname))?.title;
-		document.title = n ? `${n} · Peach` : "Peach · Durazno", document.body.dataset.surface = t.pathname, h_t();
+		document.title = n ? `${n} · Peach` : "Peach · 蜜桃", document.body.dataset.surface = t.pathname, h_t();
 	};
 }
 //#endregion
@@ -108811,7 +108811,7 @@ function A7() {
 }
 function j7(e) {
 	let t = R("#drawer"), n = !e && t.contains(document.activeElement);
-	t.inert = !e && A7(), t.classList.toggle("open", e), R("#scrim").classList.toggle("on", e), document.body.classList.toggle("drawer-open", !!e), document.dispatchEvent(new Event("board:sidebar")), R("#filterBtn").setAttribute("aria-expanded", String(!!e)), R("#filterBtn").setAttribute("aria-controls", "drawer"), R("#filterBtn").setAttribute("aria-label", e ? "Colapsar barra lateral" : "Expandir barra lateral"), n && R("#filterBtn").focus(), sessionStorage.setItem("board.sidebar", e ? "open" : "closed");
+	t.inert = !e && A7(), t.classList.toggle("open", e), R("#scrim").classList.toggle("on", e), document.body.classList.toggle("drawer-open", !!e), document.dispatchEvent(new Event("board:sidebar")), R("#filterBtn").setAttribute("aria-expanded", String(!!e)), R("#filterBtn").setAttribute("aria-controls", "drawer"), R("#filterBtn").setAttribute("aria-label", e ? "收起侧栏" : "展开侧栏"), n && R("#filterBtn").focus(), sessionStorage.setItem("board.sidebar", e ? "open" : "closed");
 }
 function Uht() {
 	A7() && j7(!1);
@@ -108993,7 +108993,7 @@ function U7(e) {
 		let e = N7();
 		return !!e && !Q.appSettings.sidebarOrder.some((t) => E7.DIRECT_MANAGE_NAV[t] === e);
 	}
-	return e === "jav" ? t === "/jav" || R7() : e === "shorts" ? G.orient === "Pantalla vertical" : e === "" ? t === "/" && !N7() && !G.state && !R7() && G.orient !== "Pantalla vertical" : Bt[e] ? n === e && G.orient !== "Pantalla vertical" : n ? n === e : t === "/" && G.state === e && G.orient !== "Pantalla vertical";
+	return e === "jav" ? t === "/jav" || R7() : e === "shorts" ? G.orient === "竖屏" : e === "" ? t === "/" && !N7() && !G.state && !R7() && G.orient !== "竖屏" : Bt[e] ? n === e && G.orient !== "竖屏" : n ? n === e : t === "/" && G.state === e && G.orient !== "竖屏";
 }
 function ngt(e) {
 	if (Uht(), E7.DIRECT_MANAGE_NAV[e]) {
@@ -109013,7 +109013,7 @@ function ngt(e) {
 		return;
 	}
 	let t = Bt[e] ? null : $.routePathOf("nav", e);
-	t ? $.openRoutePath(t) : (e === "shorts" ? (G.orient = "Pantalla vertical", G.state = "") : (G.orient = "", G.state = e), ml(), $.route(q7()), k7(), w9(), e9());
+	t ? $.openRoutePath(t) : (e === "shorts" ? (G.orient = "竖屏", G.state = "") : (G.orient = "", G.state = e), ml(), $.route(q7()), k7(), w9(), e9());
 }
 function W7() {
 	let e = decodeURIComponent(location.pathname), t = e.split("/").filter(Boolean);
@@ -109096,7 +109096,7 @@ var ogt = 64, K7 = (e) => e.replace(/[&<>"]/g, (e) => ({
 })[e]), sgt = (e) => e.repeat(ogt);
 function cgt(e, t, n) {
 	let r = e.map((e) => `<a href="${K7(e.href)}" data-catalog-view="${K7(e.k)}" data-entity-press="" aria-pressed="${t === e.k}">${K7(e.label)}</a>`).join("");
-	return "<div class=\"peach-react\"><div class=\"contents\" data-catalog-root=\"\" data-loading=\"\"><div data-catalog-tiers=\"\" aria-busy=\"true\"><div data-catalog-tier=\"performers\" data-skeleton=\"tiers\">" + sgt("<span data-catalog-placeholder=\"performer\" aria-hidden=\"true\"><span></span><span>&nbsp;</span></span>") + "</div><div data-catalog-tier=\"studios\">" + sgt("<span data-catalog-placeholder=\"studio\" aria-hidden=\"true\"><span></span><span>&nbsp;</span></span>") + `</div></div><div role="group" aria-label="Filtrar y ordenar" data-filter-glass="" data-glass-pane="" data-filter-frame="" data-catalog-frame="" class="sticky top-topbar z-10 mb-5.5 flex flex-col mx-4"><div role="group" aria-label="Vista y etiquetas" data-filter-row="top" class="flex h-12 min-w-0 items-center overscroll-x-contain px-3 py-2 gap-1.5 overflow-visible"><div data-catalog-scroll=""><div role="group" aria-label="Vista" data-catalog-views="">${r}<span data-entity-sep="" aria-hidden="true"></span></div><div data-catalog-tags=""><span data-catalog-placeholder="tag" aria-hidden="true">` + "<span></span>".repeat(ogt) + `</span></div></div></div><div data-filter-row="bottom" aria-busy="true" class="flex min-w-0 items-center gap-3 px-3 py-2 min-h-12"><span data-catalog-summary=""><span data-catalog-readout=""><span data-skeleton="count" aria-hidden="true" class="relative inline-block h-3.5 w-37.5 rounded-md align-middle skeleton-sheen"></span></span>${go()}</span>` + (n ? Hmt(n.sorts, n.layout) : "") + "</div></div></div></div>";
+	return "<div class=\"peach-react\"><div class=\"contents\" data-catalog-root=\"\" data-loading=\"\"><div data-catalog-tiers=\"\" aria-busy=\"true\"><div data-catalog-tier=\"performers\" data-skeleton=\"tiers\">" + sgt("<span data-catalog-placeholder=\"performer\" aria-hidden=\"true\"><span></span><span>&nbsp;</span></span>") + "</div><div data-catalog-tier=\"studios\">" + sgt("<span data-catalog-placeholder=\"studio\" aria-hidden=\"true\"><span></span><span>&nbsp;</span></span>") + `</div></div><div role="group" aria-label="筛选与排序" data-filter-glass="" data-glass-pane="" data-filter-frame="" data-catalog-frame="" class="sticky top-topbar z-10 mb-5.5 flex flex-col mx-4"><div role="group" aria-label="视图与标签" data-filter-row="top" class="flex h-12 min-w-0 items-center overscroll-x-contain px-3 py-2 gap-1.5 overflow-visible"><div data-catalog-scroll=""><div role="group" aria-label="视图" data-catalog-views="">${r}<span data-entity-sep="" aria-hidden="true"></span></div><div data-catalog-tags=""><span data-catalog-placeholder="tag" aria-hidden="true">` + "<span></span>".repeat(ogt) + `</span></div></div></div><div data-filter-row="bottom" aria-busy="true" class="flex min-w-0 items-center gap-3 px-3 py-2 min-h-12"><span data-catalog-summary=""><span data-catalog-readout=""><span data-skeleton="count" aria-hidden="true" class="relative inline-block h-3.5 w-37.5 rounded-md align-middle skeleton-sheen"></span></span>${go()}</span>` + (n ? Hmt(n.sorts, n.layout) : "") + "</div></div></div></div>";
 }
 //#endregion
 //#region src/catalog-onboarding.ts
@@ -109132,23 +109132,23 @@ async function ugt(e, t) {
 	}))).filter(Boolean);
 }
 function dgt({ kind: e = "catalog", filtered: t = !1, jav: n = !1, configurable: r = !1, online: i = !1 } = {}) {
-	let a = r ? "<button class=\"geist-button primary\" data-empty-settings>Añadir contenido</button>" : "", o = "<a class=\"geist-button" + (!r || i ? " primary" : "") + "\" href=\"/subscriptions?tab=add\">Agregar seguimiento</a>";
-	if (t || n) return No("search", n ? "Aún no hayque cumple los criterios de resultado de Obras JAV" : "Sin contenido que coincida", n ? "Ya escaneados pero aún sin añadir detalles de lanzamientodetalles de los videospuedeenTodover el contenido en proceso. " : "Limpiar filtros o buscarcriterios de resultadodespuésVer todo el contenido. ", { actions: "<a class=\"geist-button primary\" href=\"/?loc=&thumb=0\">Ver todo el contenido</a>" });
+	let a = r ? "<button class=\"geist-button primary\" data-empty-settings>添加内容</button>" : "", o = "<a class=\"geist-button" + (!r || i ? " primary" : "") + "\" href=\"/subscriptions?tab=add\">添加关注</a>";
+	if (t || n) return No("search", n ? "还没有符合条件的 JAV 作品" : "没有符合条件的内容", n ? "已扫描但尚未补充发行资料的视频可在全部内容中查看。" : "清除筛选或搜索条件后查看全部内容。", { actions: "<a class=\"geist-button primary\" href=\"/?loc=&thumb=0\">查看全部内容</a>" });
 	if (e !== "catalog") {
 		let t = (i ? {
-			tags: "Etiqueta",
-			performers: "Creador"
+			tags: "标签",
+			performers: "创作者"
 		}[e] : "") || {
-			tags: "Etiqueta",
-			performers: "Actriz",
-			creators: "Vendedor",
-			studios: "Sello",
-			agencies: "Agencia",
-			series: "Serie"
-		}[e] || "Detalles";
-		return No(e === "tags" ? "tags" : "user-round", "Aún no hay" + t, i ? "Agregar seguimiento de fuente y obtener contenido, luego, esto mostrará el contenido de " + t + ". " : "Añade contenido y completa los datos para ver la información aquí.", { actions: i ? o : a + o });
+			tags: "标签",
+			performers: "艺人",
+			creators: "卖家",
+			studios: "厂牌",
+			agencies: "事务所",
+			series: "系列"
+		}[e] || "资料";
+		return No(e === "tags" ? "tags" : "user-round", "还没有" + t, i ? "添加关注来源并获取内容后，这里会显示来源上的" + t + "。" : "添加内容并补充资料后，这里会显示对应信息。", { actions: i ? o : a + o });
 	}
-	return No("play", "Sin videos todavía", "AñadirDirectorio de mediosoSeguirFuente, Comenzar a construir tu colección. ", { actions: a + o });
+	return No("play", "还没有视频", "添加媒体目录或关注来源，开始建立你的馆藏。", { actions: a + o });
 }
 //#endregion
 //#region src/application/catalog.js
@@ -109226,7 +109226,7 @@ async function ygt(e, t) {
 			method: "POST",
 			body: JSON.stringify({ id: e.id })
 		});
-		e.watch_later = n.watch_later, t(!!n.watch_later), K5.actionReceipt(n.watch_later ? "YaañadirenVer más tarde" : "Yamoversalir Ver más tarde", { undo: async () => {
+		e.watch_later = n.watch_later, t(!!n.watch_later), K5.actionReceipt(n.watch_later ? "已加入稍后看" : "已移出稍后看", { undo: async () => {
 			let n = await Lt("/api/watch-later", {
 				method: "POST",
 				body: JSON.stringify({ id: e.id })
@@ -109234,7 +109234,7 @@ async function ygt(e, t) {
 			e.watch_later = n.watch_later, t(!!n.watch_later);
 		} });
 	} catch (e) {
-		K5.actionFailure("ActualizarVer más tarde", e);
+		K5.actionFailure("更新稍后看", e);
 	}
 }
 async function bgt(e, t) {
@@ -109247,7 +109247,7 @@ async function bgt(e, t) {
 			})
 		}), await r9();
 		let n = t === "restore" ? "dispose" : "restore";
-		K5.actionReceipt(t === "restore" ? "YaRestaurar" : "YaMover a papelera", { undo: async () => {
+		K5.actionReceipt(t === "restore" ? "已还原" : "已移入回收站", { undo: async () => {
 			await Lt("/api/batch", {
 				method: "POST",
 				body: JSON.stringify({
@@ -109258,7 +109258,7 @@ async function bgt(e, t) {
 			}), await r9();
 		} });
 	} catch (e) {
-		throw K5.actionFailure("Acción", e), e;
+		throw K5.actionFailure("操作", e), e;
 	}
 }
 async function xgt(e) {
@@ -109403,12 +109403,12 @@ function wgt() {
 function Tgt() {
 	return R7() ? {
 		name: "jav-layout",
-		label: "Diseño de tarjeta JAV",
+		label: "JAV 卡片版式",
 		value: TE(),
 		options: SE
 	} : z7() ? {
 		name: "home-layout",
-		label: "InicioTarjetaformato",
+		label: "首页卡片版式",
 		value: B7(),
 		options: SE
 	} : null;
@@ -109521,15 +109521,15 @@ function jgt(e, t) {
 }
 function Mgt() {
 	return Rs({
-		title: "Vaciar papelera",
-		body: "PapeleraEn procesoTodoArchivo y ColecciónRegistroseráeliminar permanentemente, Sin capacidad deRestaurar. ",
-		confirmLabel: "Vaciar papelera",
+		title: "清空回收站",
+		body: "回收站中的全部文件和馆藏记录将永久删除，无法恢复。",
+		confirmLabel: "清空回收站",
 		danger: !0,
 		onConfirm: async () => {
 			try {
 				let e = await Lt("/api/trash/empty", { method: "POST" });
-				if (e.blocked && e.blocked.length) throw Error(`Ya eliminado permanentemente ${e.purged} elemento(s); ${e.blocked.length} elemento(s)NopuedeEliminar, aún enPapelera: \n` + e.blocked.slice(0, 5).map((e) => `${e.path}(${e.reason})`).join("\n"));
-				K5.actionReceipt(`Ya eliminado permanentemente ${e.purged} elemento(s)`);
+				if (e.blocked && e.blocked.length) throw Error(`已永久删除 ${e.purged} 项；${e.blocked.length} 项未能删除，仍在回收站：\n` + e.blocked.slice(0, 5).map((e) => `${e.path}（${e.reason}）`).join("\n"));
+				K5.actionReceipt(`已永久删除 ${e.purged} 项`);
 			} finally {
 				await r9();
 			}
@@ -109554,7 +109554,7 @@ function Ngt(e) {
 	}), e.owner === "none" && t.push({
 		kind: "clear",
 		key: "owner",
-		label: `${Z.COMBO_LABELS.owner} Sin asignar`
+		label: `${Z.COMBO_LABELS.owner} 未归属`
 	}), Z.tagList(e.tag).forEach((e) => t.push({
 		kind: "untag",
 		key: e,
@@ -109624,10 +109624,10 @@ function c9() {
 	return kE({
 		active: R7() || e,
 		home: e,
-		portrait: G.orient === "Pantalla vertical"
+		portrait: G.orient === "竖屏"
 	});
 }
-function l9(e = "CargandoObra") {
+function l9(e = "正在读取作品") {
 	return WK(e, {
 		cards: !0,
 		className: "catalog-skeleton postercard-skeleton",
@@ -109666,11 +109666,11 @@ function zgt() {
 		groupCollapse: Q.appSettings.groupCollapse,
 		excludeVertical: t && e !== "/wall" && !G.q && !G.orient && G.browse !== "folders" || G.jav === "1",
 		mix: t && e !== "/wall" && !n && G.browse !== "folders",
-		shorts: t && e !== "/wall" && !R7() && G.orient !== "Pantalla vertical" && !n && G.browse !== "folders",
+		shorts: t && e !== "/wall" && !R7() && G.orient !== "竖屏" && !n && G.browse !== "folders",
 		countRow: R("#count"),
 		onCount: jgt,
 		onCountFailed: () => $7({ count: !1 }),
-		emptyHtml: ({ trash: e, libraryEmpty: t }) => e ? Q.emptyState("trash", "PapeleraSíVacío", "Eliminar el contenido interno primero aquí; confirmar que no es necesario limpiarlo después. ") : dgt({
+		emptyHtml: ({ trash: e, libraryEmpty: t }) => e ? Q.emptyState("trash", "回收站是空的", "删掉的内容会先到这里；确认不再需要后再清空。") : dgt({
 			jav: R7() && !t,
 			configurable: nl,
 			filtered: !t
@@ -109680,7 +109680,7 @@ function zgt() {
 }
 function Bgt(e) {
 	let t = R("#count");
-	return Z.controller.page === "/junk-files" && a9() && !Z.controller.pending && t.querySelector(":scope > .peach-react:not([data-junk-count-skeleton])") || (i9(), C7("CargandoArchivos basura")), k7(), n9(), t.classList.add("manage-static", "junkcount"), t.classList.remove("is-stuck"), Igt(e);
+	return Z.controller.page === "/junk-files" && a9() && !Z.controller.pending && t.querySelector(":scope > .peach-react:not([data-junk-count-skeleton])") || (i9(), C7("正在读取垃圾文件")), k7(), n9(), t.classList.add("manage-static", "junkcount"), t.classList.remove("is-stuck"), Igt(e);
 }
 async function Vgt(e, t) {
 	let n = [e.id], r = t === "dispose", i = t === "reconsider-junk";
@@ -109694,7 +109694,7 @@ async function Vgt(e, t) {
 			})
 		}), await r9();
 		let e = r ? "restore" : i ? "dismiss-junk" : "reconsider-junk";
-		K5.actionReceipt(r ? "YaMover a papelera" : i ? "Yade nuevoañadirenBasuradeterminarinterrumpir" : "MarcadocomoNo es basura", { undo: async () => {
+		K5.actionReceipt(r ? "已移入回收站" : i ? "已重新加入垃圾判断" : "已标记为不是垃圾", { undo: async () => {
 			await Lt("/api/batch", {
 				method: "POST",
 				body: JSON.stringify({
@@ -109704,7 +109704,7 @@ async function Vgt(e, t) {
 			}), await r9();
 		} });
 	} catch (e) {
-		throw K5.actionFailure("Acción", e), e;
+		throw K5.actionFailure("操作", e), e;
 	}
 }
 function Hgt() {
@@ -109718,7 +109718,7 @@ function Hgt() {
 		selected: new Set(Vc),
 		countRow: R("#count"),
 		settled: Pgt,
-		skeletonHtml: () => WK("CargandoArchivos basura", {
+		skeletonHtml: () => WK("正在读取垃圾文件", {
 			cards: !0,
 			className: "catalog-skeleton postercard-skeleton"
 		}),
@@ -109798,19 +109798,19 @@ function Wgt() {
 	}, Z.facetCountsSeq = 0, Z.VIEW_PILLS = [
 		{
 			k: "",
-			label: "Todo"
+			label: "全部"
 		},
 		{
 			k: "fresh",
-			label: "No visto"
+			label: "没看过"
 		},
 		{
 			k: "later",
-			label: "Ver más tarde"
+			label: "稍后看"
 		},
 		{
 			k: "flagged",
-			label: "Marcado"
+			label: "已标记"
 		}
 	], Z.catalogViews = () => Z.VIEW_PILLS.map((e) => ({
 		...e,
@@ -109819,9 +109819,9 @@ function Wgt() {
 		let t = e.target.closest?.("[data-catalog-view]");
 		t && !e.defaultPrevented && (e.preventDefault(), wgt().setView(t.dataset.catalogView));
 	}), Z.catalogOnScreen = () => R("#index").hidden && R("#stats").hidden, Z.COMBO_LABELS = {
-		creator: "Creador",
-		studio: "Sello",
-		owner: "Asignación"
+		creator: "创作者",
+		studio: "厂牌",
+		owner: "归属"
 	}, Z.hideCatalogCombo = () => {
 		Z.catalogFilterProps && $7({ comboHidden: !0 });
 	};
@@ -109838,7 +109838,7 @@ function Ggt() {
 				return await Lt("/api/reveal", {
 					method: "POST",
 					body: JSON.stringify({ id: e.id })
-				}), K5.toast({ text: "Mostrado en el explorador" }), "";
+				}), K5.toast({ text: "已在资源管理器中显示" }), "";
 			} catch (e) {
 				return n7.sourceHint(e.message);
 			}
@@ -109983,11 +109983,11 @@ function $gt() {
 	return /^\d+$/.test(e || "") ? Number(e) : void 0;
 }
 function e_t() {
-	Q.sourceOnline = {}, Q.sourceProblems = {}, Q.sourceOffline = (e) => Q.sourceOnline[e] === !1, Q.OFFLINE_HINT = "Directorio de mediosSin capacidad deAcceso, Por favorVerificarDirectorio, leerPermiso y Almacenamiento en la nubeMontarEstado", Q.OFFLINE_REASON = {
-		local: "Sin capacidad deleerDirectorio de medios, Por favorVerificarDirectorioSíNoexistente en y leerPermiso. ",
-		115: "Sin capacidad de leer directorio de medios 115. Por favor verifica los permisos del directorio y el montaje del almacenamiento en la nubeHerramientasSíNoNormalejecutar . ",
-		pikpak: "Sin capacidad deleer PikPak Directorio de medios, Por favorVerificarDirectorioPermisoy que las herramientas de montaje del almacenamiento en la nube estén funcionando normalmente. "
-	}, Q.offlineReason = (e) => Q.sourceProblems[e] || Q.OFFLINE_REASON[e] || "Sin capacidad deleereste fuente(s)Directorio de medios, Por favorVerificarDirectorioPermisoy el estado de montaje. ", Q.settingsStore = yE(), Q.appSettings = Q.settingsStore.value, Q.saveSettings = () => Q.settingsStore.save(), document.documentElement.style.setProperty("--hover-delay", `${Q.appSettings.hoverDelaySeconds}s`), Va(Q.appSettings.uiSounds), qa(), xE(), lue(), Oue(), NE(), PE(), Q.catalogLoadWaiters = [], Q.nextCatalogLoad = () => new Promise((e) => Q.catalogLoadWaiters.push(e)), Q.handOff = (e) => (Q.catalogLoadWaiters.splice(0).forEach((t) => t(e)), e), Q.settingsEffects = {
+	Q.sourceOnline = {}, Q.sourceProblems = {}, Q.sourceOffline = (e) => Q.sourceOnline[e] === !1, Q.OFFLINE_HINT = "媒体目录无法访问，请检查目录、读取权限和网盘挂载状态", Q.OFFLINE_REASON = {
+		local: "无法读取媒体目录，请检查目录是否存在及读取权限。",
+		115: "无法读取 115 媒体目录，请检查目录权限及网盘挂载工具是否正常运行。",
+		pikpak: "无法读取 PikPak 媒体目录，请检查目录权限及网盘挂载工具是否正常运行。"
+	}, Q.offlineReason = (e) => Q.sourceProblems[e] || Q.OFFLINE_REASON[e] || "无法读取这个来源的媒体目录，请检查目录权限及挂载状态。", Q.settingsStore = yE(), Q.appSettings = Q.settingsStore.value, Q.saveSettings = () => Q.settingsStore.save(), document.documentElement.style.setProperty("--hover-delay", `${Q.appSettings.hoverDelaySeconds}s`), Va(Q.appSettings.uiSounds), qa(), xE(), lue(), Oue(), NE(), PE(), Q.catalogLoadWaiters = [], Q.nextCatalogLoad = () => new Promise((e) => Q.catalogLoadWaiters.push(e)), Q.handOff = (e) => (Q.catalogLoadWaiters.splice(0).forEach((t) => t(e)), e), Q.settingsEffects = {
 		theme: () => xE(),
 		uiSounds: () => {
 			Va(Q.appSettings.uiSounds), Q.appSettings.uiSounds && Ha("toggle-on");
@@ -110025,7 +110025,7 @@ function e_t() {
 		...Object.fromEntries(Object.entries(so).map(([e, t]) => [e, t.startsWith("data:") ? `<img class="source-icon" src="${t}" alt="">` : z(t)])),
 		online: z("rss")
 	}, Q.srcBadge = (e, t, n) => {
-		let r = `${pn[e] || e}${t === "metered" ? " · con cargo" : ""}`;
+		let r = `${pn[e] || e}${t === "metered" ? " · 计费" : ""}`;
 		return `<span class="${n || "src"} ${t === "metered" ? "metered" : "free"}" title="${B(r)}" aria-label="${B(r)}">` + (Q.SRCICON[e] || "") + "</span>";
 	}, Q.emptyState = No;
 }
@@ -110229,7 +110229,7 @@ function f_t() {
 		tagCandidates: () => h9.facets && h9.facets.tags || [],
 		sourceOffline: (e) => Q.sourceOffline(e),
 		offlineReason: (e) => Q.offlineReason(e),
-		relatedSkeletonHtml: () => WK("Cargando recomendaciones", {
+		relatedSkeletonHtml: () => WK("正在读取推荐", {
 			cards: !0,
 			className: "related-skeleton"
 		}),
@@ -110327,7 +110327,7 @@ async function S9() {
 		return;
 	}
 	let n = Zs();
-	e.hidden = !1, e.setAttribute("aria-busy", "true"), e.firstElementChild || (e.innerHTML = `<article class="post-setup-notification post-setup-loading">${z("compass")}<p>ProcesandoVerificarInstalarProgreso...</p></article>`);
+	e.hidden = !1, e.setAttribute("aria-busy", "true"), e.firstElementChild || (e.innerHTML = `<article class="post-setup-notification post-setup-loading">${z("compass")}<p>正在检查安装进度…</p></article>`);
 	try {
 		let r = await x9.postSetupTutorialTasks();
 		if (!Qs(n)) return;
@@ -110347,10 +110347,10 @@ async function S9() {
 		let l = s[0], u = e.querySelector("[data-tutorial-collapse]");
 		G5.handler(u, "onclick", () => {
 			let t = e.querySelector(".post-setup-notification"), n = t.dataset.collapsed !== "true";
-			t.dataset.collapsed = String(n), Ks(n), u.setAttribute("aria-expanded", String(!n)), u.setAttribute("aria-label", n ? "ExpandirTutorial de instalación" : "ColapsarTutorial de instalación"), u.innerHTML = z(n ? "chevron-up" : "chevron-down");
+			t.dataset.collapsed = String(n), Ks(n), u.setAttribute("aria-expanded", String(!n)), u.setAttribute("aria-label", n ? "展开安装教程" : "折叠安装教程"), u.innerHTML = z(n ? "chevron-up" : "chevron-down");
 		}), e.querySelectorAll("[data-tutorial-skip]").forEach((e) => G5.handler(e, "onclick", () => {
 			let t = qs(), n = e.dataset.tutorialSkip;
-			t.add(n), Js(t), K5.actionReceipt(`YaOmitir"${e.dataset.tutorialLabel}"`, { undo: async () => {
+			t.add(n), Js(t), K5.actionReceipt(`已跳过「${e.dataset.tutorialLabel}」`, { undo: async () => {
 				let e = qs();
 				e.delete(n), Js(e), Gs("pending"), await S9();
 			} }), S9();
@@ -110363,9 +110363,9 @@ async function S9() {
 	} catch {
 		if (!Qs(n)) return;
 		e.innerHTML = `<article class="post-setup-notification post-setup-error">${z("alert")}
-      <div><h2>sin progreso de verificación de instalación</h2><p>Cambia de página o vuelve a abrir para verificar de nuevo. </p>
-      <div class="post-setup-error-actions"><button class="geist-button" type="button" data-tutorial-retry>Reintentar</button>
-      <button class="geist-button" type="button" data-tutorial-dismiss>Desactivar</button></div></div></article>`, e.removeAttribute("aria-busy"), G5.handler(e.querySelector("[data-tutorial-retry]"), "onclick", () => {
+      <div><h2>暂时无法检查安装进度</h2><p>切换页面或重新打开后会再检查一次。</p>
+      <div class="post-setup-error-actions"><button class="geist-button" type="button" data-tutorial-retry>重试</button>
+      <button class="geist-button" type="button" data-tutorial-dismiss>关闭</button></div></div></article>`, e.removeAttribute("aria-busy"), G5.handler(e.querySelector("[data-tutorial-retry]"), "onclick", () => {
 			delete e.dataset.tutorialSignature, e.innerHTML = "", S9();
 		}), G5.handler(e.querySelector("[data-tutorial-dismiss]"), "onclick", t);
 	}
@@ -110391,24 +110391,24 @@ function m_t() {
 		return [
 			{
 				key: "library",
-				label: "Finalizar primer escaneo",
-				description: u ? `ya Importar ${Number(e.total).toLocaleString()} elemento(s)Colección. ` : "etc.PendienteEscanearImportarPrimeroelemento(s)Colección. ",
+				label: "完成首次扫描",
+				description: u ? `已经导入 ${Number(e.total).toLocaleString()} 项馆藏。` : "等待扫描导入第一项馆藏。",
 				href: "/data-cleanup",
 				done: u,
 				icon: "scan-search"
 			},
 			{
 				key: "scraping",
-				label: "ConfiguraciónRecolectarFuenteycredenciales",
-				description: o.length ? `Yacomo ${o.length.toLocaleString()} RecolectarFuenteGuardarcredenciales. ` : "VerificarFuenteMétodo de conexión, y guardar credenciales de fuentes que requieren inicio de sesión. ",
+				label: "设置采集来源与凭证",
+				description: o.length ? `已为 ${o.length.toLocaleString()} 个采集来源保存凭证。` : "检查来源连接方式，并为需要登录的来源保存凭证。",
 				href: "/sources",
 				done: o.length > 0,
 				icon: "settings"
 			},
 			{
 				key: "history",
-				label: "ImportarExplorar dispositivoHistorialRegistro",
-				description: Number(n.history_sources || 0) > 0 ? `Ya importados ${Number(n.history_sources).toLocaleString()} historiales del explorador de dispositivo. ` : "desdeeste ordenadorExplorar dispositivoImportarPreferenciasAnálisisRegistro. ",
+				label: "导入浏览器历史记录",
+				description: Number(n.history_sources || 0) > 0 ? `已导入 ${Number(n.history_sources).toLocaleString()} 份浏览器历史。` : "从这台电脑的浏览器导入口味分析记录。",
 				href: "/taste",
 				setupEntry: !0,
 				done: Number(n.history_sources || 0) > 0,
@@ -110416,24 +110416,24 @@ function m_t() {
 			},
 			{
 				key: "follow",
-				label: "AñadirunSeguirFuente",
-				description: d ? `Activado ${s.length.toLocaleString()}  fuente(s). ` : "Añadir creadores o fuentes para dar seguimiento continuo. ",
+				label: "添加一个关注来源",
+				description: d ? `已启用 ${s.length.toLocaleString()} 个来源。` : "添加想持续追踪的创作者或来源。",
 				href: "/subscriptions?tab=add",
 				done: d,
 				icon: "rss"
 			},
 			{
 				key: "credentials",
-				label: "Completar credenciales de fuente seguida",
-				description: d ? l.length ? f ? "YaConfiguraciónActualFuenterequieren credenciales. " : `${l.length.toLocaleString()}  fuente(s) requieren credenciales. ` : "ActualSeguirFuenteNo se necesitacredenciales. " : "Agregar seguimientodespués, verificará las credenciales necesarias de la fuente. ",
+				label: "补齐关注来源凭证",
+				description: d ? l.length ? f ? "已配置当前来源需要的凭证。" : `${l.length.toLocaleString()} 个来源需要凭证。` : "当前关注来源不需要凭证。" : "添加关注后，会按来源检查必要凭证。",
 				href: "/subscriptions?tab=source",
 				done: f,
 				icon: "key-round"
 			},
 			{
 				key: "review",
-				label: "Procesar primera re-verificación",
-				description: u ? p ? `quedan ${p.toLocaleString()} ResultadoNecesariovolver verificar. ` : "primera vezcola de re-verificaciónYaLimpiar. " : "Escaneo completadodespués, estedentrolistará los detalles de re-verificación necesarios. ",
+				label: "处理首次复核",
+				description: u ? p ? `还有 ${p.toLocaleString()} 条需要复核。` : "首次复核队列已清空。" : "扫描完成后，这里会列出需要复核的资料。",
 				href: "/review",
 				done: u && p === 0,
 				icon: "square-check-big"
@@ -110445,18 +110445,18 @@ function m_t() {
       <span class="post-setup-check" aria-hidden="true">${e.done ? z("check") : z(e.icon)}</span>
       <span><b>${e.label}</b><small>${e.description}</small></span>
       ${z("chevron-right")}</a>
-    ${e.done ? "" : `<button class="post-setup-skip" type="button" data-tutorial-skip="${e.key}" data-tutorial-label="${e.label}">Omitir</button>`}
+    ${e.done ? "" : `<button class="post-setup-skip" type="button" data-tutorial-skip="${e.key}" data-tutorial-label="${e.label}">跳过</button>`}
     </li>`).join("");
 		return `<article class="post-setup-notification" data-collapsed="${o}">
       <header class="post-setup-notification-head">
         <span class="post-setup-notification-icon" aria-hidden="true">${z("compass")}</span>
-        <div><h2>Finalizar Peach Tutorial de instalación</h2>
-        <p>YaProcesar ${a}/${n} elemento(s). </p></div>
+        <div><h2>完成 Peach 的安装教程</h2>
+        <p>已处理 ${a}/${n} 项。</p></div>
         <button class="post-setup-collapse" type="button" data-tutorial-collapse aria-controls="postSetupTaskList" aria-expanded="${!o}"
-          aria-label="${o ? "ExpandirTutorial de instalación" : "ColapsarTutorial de instalación"}">${z(o ? "chevron-up" : "chevron-down")}</button>
+          aria-label="${o ? "展开安装教程" : "折叠安装教程"}">${z(o ? "chevron-up" : "chevron-down")}</button>
       </header>
       <ol class="post-setup-task-list" id="postSetupTaskList">${s}</ol>
-      <footer><button class="geist-button" type="button" data-tutorial-action="next">Continuar: ${i.label}</button></footer>
+      <footer><button class="geist-button" type="button" data-tutorial-action="next">继续：${i.label}</button></footer>
     </article>`;
 	}, x9.writePostSetupTutorialDone = async (e) => {
 		x9.postSetupTutorialDone = e, await Lt("/api/settings", {
@@ -110590,9 +110590,9 @@ async function b_t(e) {
 }
 function x_t(e) {
 	let t = e.note || ((e) => ko(e, {
-		label: "Estado de tarea",
+		label: "任务状态",
 		variant: "error"
-	})), n = e.loading || jo, r = e.progress || ((e, t, n) => y_t(n || `YaProcesar ${e} / ${t}`, e, t)), i = e.container || ((e) => `<section class="followtask" data-geist-fieldset aria-label="progreso de tarea"><div class="geist-fieldset-content">${e}</div></section>`), a = document.createElement("div");
+	})), n = e.loading || jo, r = e.progress || ((e, t, n) => y_t(n || `已处理 ${e} / ${t}`, e, t)), i = e.container || ((e) => `<section class="followtask" data-geist-fieldset aria-label="任务进度"><div class="geist-fieldset-content">${e}</div></section>`), a = document.createElement("div");
 	e.host.hidden = !0, a.dataset.followJob = "", a.setAttribute("aria-live", "polite"), e.host.prepend(a);
 	let o = e.storageKey || "peach-follow-job", s = sessionStorage.getItem(o) || void 0, c = !1;
 	b_t({
@@ -110603,19 +110603,19 @@ function x_t(e) {
 			let u = l.status === "running";
 			if (e.host.hidden = !u, e.busy(u), u) {
 				s = l.job_id, s && sessionStorage.setItem(o, s);
-				let t = l.current, c = (t?.attempt || 1) > 1 ? ` · intento ${t?.attempt}/${t?.max_attempts} vecesintento${t?.retry_in ? `, ${t.retry_in} segundo(s)despuésReintentar` : ""}` : "", u = (l.message || (e.title ? e.title + (l.total ? `: Completado ${l.checked || 0}/${l.total}` : "") : "") || (l.total ? `${l.older ? "Historial de búsqueda" : "Comprobar actualizaciones"}: Completado ${l.checked || 0}/${l.total}  fuente(s)` : "Procesando, preparando tarea de verificación...")) + (t ? ` · ${t.label || t.provider || ""}${c}` : ""), d = (l.total || 0) > 0 ? r(l.checked || 0, l.total, u) : n(u);
+				let t = l.current, c = (t?.attempt || 1) > 1 ? ` · 第 ${t?.attempt}/${t?.max_attempts} 次尝试${t?.retry_in ? `，${t.retry_in} 秒后重试` : ""}` : "", u = (l.message || (e.title ? e.title + (l.total ? `：已完成 ${l.checked || 0}/${l.total}` : "") : "") || (l.total ? `${l.older ? "抓取历史" : "检查更新"}：已完成 ${l.checked || 0}/${l.total} 个来源` : "正在准备检查任务…")) + (t ? ` · ${t.label || t.provider || ""}${c}` : ""), d = (l.total || 0) > 0 ? r(l.checked || 0, l.total, u) : n(u);
 				a.innerHTML = i(d);
-			} else if (s && s === l.job_id) s = void 0, c = !0, e.host.hidden = l.status !== "failed", sessionStorage.removeItem(o), a.innerHTML = l.status === "failed" ? t(l.error || "Error de verificación") : "", e.complete(l);
+			} else if (s && s === l.job_id) s = void 0, c = !0, e.host.hidden = l.status !== "failed", sessionStorage.removeItem(o), a.innerHTML = l.status === "failed" ? t(l.error || "检查失败") : "", e.complete(l);
 			else {
 				if (s && l.status === "idle") {
-					e.host.hidden = !1, a.innerHTML = t("El estado de la tarea ya no es válido. Por favor, inicia una nueva tarea"), sessionStorage.removeItem(o), c = !0;
+					e.host.hidden = !1, a.innerHTML = t("任务状态已失效，请重新发起任务"), sessionStorage.removeItem(o), c = !0;
 					return;
 				}
 				a.innerHTML = "";
 			}
 		},
 		disconnected: () => {
-			e.host.hidden = !1, a.innerHTML = t("Sin progreso disponible, reconectando...");
+			e.host.hidden = !1, a.innerHTML = t("暂时无法读取进度，正在重新连接…");
 		}
 	});
 }
@@ -110652,7 +110652,7 @@ function S_t(e) {
 		timeout: t ? 8e3 : 6e3,
 		sound: t ? "warning" : "success",
 		action: {
-			label: "buscarver",
+			label: "查看",
 			run: () => F9(!0)
 		}
 	});
@@ -110751,7 +110751,7 @@ function O_t() {
 		failure: (e, t) => K5.actionFailure(e, t),
 		checkReport: (e) => S_t(e)
 	}, k9.followFeedShell = {
-		skeleton: () => k9.followSkeletonHtml("CargandoSeguircontenido interno"),
+		skeleton: () => k9.followSkeletonHtml("正在读取关注内容"),
 		ground: () => {
 			j5()?.showing() !== "follow" && (Cc(), g9(!1), O7(), !N9() && ($.claimSurface($.surfacePath()), D7({ manage: !1 }), R("#stats").querySelector(".peach-react") && mk(R("#stats")), R("#stats").replaceChildren()));
 		}
@@ -110822,9 +110822,9 @@ function A_t() {
 		filters: {},
 		latest: null
 	}, E7.sidebarSurface = "", E7.sidebarCatalog = null, E7.sidebarContentSeq = 0, k9.followFilter = "", k9.followAuthors = /* @__PURE__ */ new Set(), k9.followProviders = /* @__PURE__ */ new Set(), k9.followTags = /* @__PURE__ */ new Set(), k9.followWorks = /* @__PURE__ */ new Set(), k9.followMediaView = "videos", k9.FOLLOW_FEED_SORTS = [
-		["new", "Fecha de actualización"],
-		["hot", "Popularidad"],
-		["dur", "Duración"]
+		["new", "更新时间"],
+		["hot", "热度"],
+		["dur", "时长"]
 	], k9.FOLLOW_RANDOM_SORT = "rand", k9.followSort = "new", k9.followDir = "desc", k9.followSeed = 0, k9.followDurMin = 0, k9.followDurMax = 0;
 }
 //#endregion
@@ -110837,7 +110837,7 @@ async function j_t(e) {
 		e("/api/feeds/discoveries?limit=5"),
 		e("/api/follow/authors?limit=3")
 	])).map((e) => e.status === "fulfilled" ? e.value : null), n = (t[0]?.items || []).slice(0, 5), r = (t[1]?.items || []).slice(0, 5), i = t[2], a = t[3]?.items || [], o = (e, t) => ({
-		value: String(e.code || e.display_title || e.title || e.name || "Obra sin nombre"),
+		value: String(e.code || e.display_title || e.title || e.name || "未命名作品"),
 		id: e.id,
 		code: e.code,
 		title: String(e.display_title || e.title || ""),
@@ -110872,7 +110872,7 @@ async function j_t(e) {
 		value: e.k,
 		href: e.entity_id ? `/creators/${e.entity_id}` : `/follow?author=${encodeURIComponent(e.key)}`,
 		avatarHtml: aI(l.sources.filter((t) => t.author_key === e.key), e.k),
-		subtitle: "Siguiendoautor"
+		subtitle: "关注中的作者"
 	})), d = /* @__PURE__ */ new Map();
 	for (let e of r) for (let t of e.performer_refs || []) t.id && !d.has(t.name) && d.set(t.name, {
 		value: t.name,
@@ -110883,60 +110883,60 @@ async function j_t(e) {
 		avatar_focus: t.avatar_focus,
 		rep: t.has_avatar ? t.rep : null,
 		works: [e],
-		subtitle: "buscarverObraySuscribirse a nuevas obras"
+		subtitle: "查看作品与订阅新作"
 	});
 	return [
 		{
 			kind: "performer",
-			label: "ActrizyNovedades",
+			label: "艺人与新作",
 			items: [...d.values()].slice(0, 3),
 			href: "/subscriptions?tab=feeds",
-			action: "Suscribirse a nuevas obras"
+			action: "订阅新作"
 		},
 		{
 			kind: "author",
-			label: "Seguirautor",
+			label: "关注作者",
 			items: u,
 			href: "/subscriptions?tab=add",
-			action: "Agregar seguimiento"
+			action: "添加关注"
 		},
 		{
 			kind: "asset",
-			label: "ObraRecomendado",
+			label: "作品推荐",
 			items: n.map((e) => o(e)),
 			href: "/",
-			action: "todas las obras"
+			action: "全部作品"
 		},
 		{
 			kind: "jav",
-			label: "Recomendaciones JAV",
+			label: "JAV 推荐",
 			items: r.map((e) => o(e, `/assets/${e.asset_id || e.id}`)),
 			href: "/jav?tab=discover",
-			action: "Descubrir JAV"
+			action: "发现 JAV"
 		},
 		{
 			kind: "post",
-			label: "SeguirObra",
+			label: "关注作品",
 			items: s.slice(0, 5),
 			href: "/follow",
-			action: "TodoSeguirObra"
+			action: "全部关注作品"
 		},
 		{
 			kind: "photo",
-			label: "SeguirImágenes",
+			label: "关注图片",
 			items: c.slice(0, 5),
 			href: "/follow?media=images",
-			action: "TodoSeguirImágenes"
+			action: "全部关注图片"
 		},
 		{
 			kind: "release",
-			label: "Suscribirse a nuevas obras",
+			label: "订阅新作",
 			items: a.filter((e) => e.code).map((e) => o({
 				...e,
 				sourceWork: !0
 			}, `/works/${encodeURIComponent(e.code)}`)),
 			href: "/subscriptions?tab=feeds",
-			action: "GestionarSuscribirse"
+			action: "管理订阅"
 		}
 	];
 }
@@ -110973,7 +110973,7 @@ function N_t(e) {
 		...e,
 		is_jav: !!e.code
 	}, Q.appSettings.javImage) : "";
-	return t === "cover" ? ba(e, "big") : t ? `<img class="poster still" src="/poster?id=${e.id}&c=4" width="640" height="360" alt="" loading="lazy" data-drop="self">` : "<span class=\"nopic\">Sin vista previa</span>";
+	return t === "cover" ? ba(e, "big") : t ? `<img class="poster still" src="/poster?id=${e.id}&c=4" width="640" height="360" alt="" loading="lazy" data-drop="self">` : "<span class=\"nopic\">无预览</span>";
 }
 function B9() {
 	R9.searchMorph?.cancel(), R9.searchMorph = null, R(".search").classList.remove("search-morphing");
@@ -111242,14 +111242,14 @@ function R_t() {
 		}
 	}, H9.routing = !1, G5.own(Sk.listen((e) => {
 		$.queueOpenRequest && e.seq !== $.queueOpenRequest.seq && !JO(e.location.pathname) && g9(!1), H9.routing && !e.claimed && D9();
-	})), Ept(H9.shellActions).catch((e) => console.error("clienteusuarioextremoimportarnavegacióninstalarcargarFallido", e)), Xht(), xht(), P7(), Promise.all([
+	})), Ept(H9.shellActions).catch((e) => console.error("客户端导航装载失败", e)), Xht(), xht(), P7(), Promise.all([
 		d9(),
 		Jht(),
 		S7.entityShapesReady
 	]).then(() => e.isActive && S7.wantsDiscoveryBars() ? e9() : null).then(() => {
 		e.isActive && (w9(), Qgt(), H9.routing = !0, pl({ pageOpens: 1 }), D9(), G7());
 	}).catch((t) => {
-		e.isActive && console.error("AplicarIniciarFallido", t);
+		e.isActive && console.error("应用启动失败", t);
 	});
 }
 //#endregion
@@ -111303,9 +111303,9 @@ function B_t() {
 			n.inert = r, Q.placeSidebarHead === x && (Q.placeSidebarHead = i);
 		}), document.documentElement.classList.toggle("board-high-contrast", localStorage.getItem("peach.high-contrast") === "true");
 		let c = document.querySelector("#brandHome");
-		c.setAttribute("aria-label", "Peach Inicio");
+		c.setAttribute("aria-label", "Peach 首页");
 		let l = document.createElement("div");
-		l.className = "board-library-menu", l.id = "boardLibraryMenu", l.hidden = !0, l.setAttribute("popover", "manual"), l.setAttribute("role", "dialog"), l.setAttribute("aria-label", "Biblioteca de medios"), document.body.append(l), e.own(() => l.remove()), c.setAttribute("aria-haspopup", "dialog"), c.setAttribute("aria-controls", l.id), c.insertAdjacentHTML("beforeend", "<svg class=\"board-library-chevron\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"m5 6 3-3 3 3M5 10l3 3 3-3\"/></svg>");
+		l.className = "board-library-menu", l.id = "boardLibraryMenu", l.hidden = !0, l.setAttribute("popover", "manual"), l.setAttribute("role", "dialog"), l.setAttribute("aria-label", "媒体库"), document.body.append(l), e.own(() => l.remove()), c.setAttribute("aria-haspopup", "dialog"), c.setAttribute("aria-controls", l.id), c.insertAdjacentHTML("beforeend", "<svg class=\"board-library-chevron\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"m5 6 3-3 3 3M5 10l3 3 3-3\"/></svg>");
 		let u = c.lastElementChild;
 		e.own(() => u.remove()), e.handler(c, "onclick", (e) => {
 			e.preventDefault();
@@ -111336,7 +111336,7 @@ function B_t() {
 			if (!e.isActive) return;
 			let n = [[
 				"",
-				"TodoBiblioteca de medios",
+				"全部媒体库",
 				"database"
 			], ...t.libraries.map((e) => [
 				e.id,
@@ -111348,12 +111348,12 @@ function B_t() {
 				return;
 			}
 			let i = sessionStorage.getItem("peach.library") || "";
-			c.querySelector("h1").textContent = i || "TodoBiblioteca de medios";
+			c.querySelector("h1").textContent = i || "全部媒体库";
 			let a = (e) => so[e]?.startsWith("data:") ? `<img src="${so[e]}" alt="">` : z(so[e] || e), o = document.createElement("span");
-			o.className = "mark", o.setAttribute("aria-hidden", "true"), o.innerHTML = a(n.find((e) => e[0] === i)?.[2] || "database"), c.querySelector(".mark").replaceWith(o), l.innerHTML = `<p>Biblioteca de medios</p><div class="board-library-rows">${n.map(([e, t, n]) => `<button type="button" data-library="${B(e)}" aria-pressed="${e === i}"><span class="board-library-avatar">${a(n)}</span><span>${B(t)}</span></button>`).join("")}</div><footer><button type="button" class="geist-button primary" data-library-manage>GestionarBiblioteca de medios</button></footer>`, l.querySelectorAll("[data-library]").forEach((t) => e.handler(t, "onclick", () => {
+			o.className = "mark", o.setAttribute("aria-hidden", "true"), o.innerHTML = a(n.find((e) => e[0] === i)?.[2] || "database"), c.querySelector(".mark").replaceWith(o), l.innerHTML = `<p>媒体库</p><div class="board-library-rows">${n.map(([e, t, n]) => `<button type="button" data-library="${B(e)}" aria-pressed="${e === i}"><span class="board-library-avatar">${a(n)}</span><span>${B(t)}</span></button>`).join("")}</div><footer><button type="button" class="geist-button primary" data-library-manage>管理媒体库</button></footer>`, l.querySelectorAll("[data-library]").forEach((t) => e.handler(t, "onclick", () => {
 				sessionStorage.setItem("peach.library", t.dataset.library), location.assign("/");
 			})), e.handler(l.querySelector("[data-library-manage]"), "onclick", () => {
-				d.setOpen(!1), j7(!1), lht("Biblioteca y catalogación");
+				d.setOpen(!1), j7(!1), lht("媒体库与入库");
 			});
 			let s = l.querySelector(".board-library-rows");
 			e.listen(s, "pointerover", (e) => {
@@ -111369,19 +111369,19 @@ function B_t() {
 		let h = document.querySelector("#filterBtn"), g = document.createComment("sidebar toggle");
 		h.before(g), e.own(() => g.remove());
 		let _ = document.createElement("div");
-		_.className = "board-sidebar-foot", e.own(() => _.remove()), _.innerHTML = `<div class="board-theme-toggle" role="group" aria-label="Tema claro/oscuro"><span class="board-theme-thumb" aria-hidden="true"></span><button type="button" data-board-theme="light" aria-label="ClaroTema">${z("sun")}</button><button type="button" data-board-theme="dark" aria-label="OscuroTema">${z("moon")}</button></div>`, _.insertAdjacentHTML("beforeend", "<div class=\"board-foot-actions\"><button type=\"button\" class=\"board-glow-toggle\" id=\"boardGlowBtn\" aria-label=\"Colores de resplandor\" aria-haspopup=\"dialog\" aria-expanded=\"false\" aria-controls=\"boardGlowMenu\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><use href=\"#ri-palette-line\"/></svg><span class=\"board-glow-mark\" aria-hidden=\"true\"><span class=\"board-glow-mark-glow\"></span><span class=\"board-glow-mark-accent\"></span></span></button></div>"), _.querySelector(".board-foot-actions").append(document.querySelector("#settingsBtn")), document.querySelector("#drawer").append(_), _.querySelectorAll("[data-board-theme]").forEach((t) => e.handler(t, "onclick", () => {
+		_.className = "board-sidebar-foot", e.own(() => _.remove()), _.innerHTML = `<div class="board-theme-toggle" role="group" aria-label="明暗主题"><span class="board-theme-thumb" aria-hidden="true"></span><button type="button" data-board-theme="light" aria-label="浅色主题">${z("sun")}</button><button type="button" data-board-theme="dark" aria-label="深色主题">${z("moon")}</button></div>`, _.insertAdjacentHTML("beforeend", "<div class=\"board-foot-actions\"><button type=\"button\" class=\"board-glow-toggle\" id=\"boardGlowBtn\" aria-label=\"光晕配色\" aria-haspopup=\"dialog\" aria-expanded=\"false\" aria-controls=\"boardGlowMenu\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><use href=\"#ri-palette-line\"/></svg><span class=\"board-glow-mark\" aria-hidden=\"true\"><span class=\"board-glow-mark-glow\"></span><span class=\"board-glow-mark-accent\"></span></span></button></div>"), _.querySelector(".board-foot-actions").append(document.querySelector("#settingsBtn")), document.querySelector("#drawer").append(_), _.querySelectorAll("[data-board-theme]").forEach((t) => e.handler(t, "onclick", () => {
 			t.getAttribute("aria-pressed") !== "true" && z_t(t, () => {
 				Q.appSettings.theme = t.dataset.boardTheme, Q.saveSettings(), xE();
 			});
 		})), xE();
 		let v = document.createElement("div");
-		v.className = "popmenu board-glow-menu", v.id = "boardGlowMenu", v.hidden = !0, v.setAttribute("popover", "manual"), v.setAttribute("role", "dialog"), v.setAttribute("aria-label", "Esquema de color"), document.body.append(v), e.own(() => v.remove());
+		v.className = "popmenu board-glow-menu", v.id = "boardGlowMenu", v.hidden = !0, v.setAttribute("popover", "manual"), v.setAttribute("role", "dialog"), v.setAttribute("aria-label", "配色"), document.body.append(v), e.own(() => v.remove());
 		let y = _.querySelector("#boardGlowBtn"), b = no(_, y, v);
 		e.own(b.dispose), e.own(Lue(y)), Ipt({
 			root: v,
 			store: Q.settingsStore,
 			openDetails: () => {
-				e.isActive && (b.setOpen(!1), j7(!1), M7("Apariencia y navegación").then((t) => {
+				e.isActive && (b.setOpen(!1), j7(!1), M7("外观与导航").then((t) => {
 					e.isActive && t.reveal("#homeGlowControls");
 				}));
 			}
@@ -111392,7 +111392,7 @@ function B_t() {
 			if (!e.isActive) return;
 			let t = document.querySelector("#drawerScroll > [data-sidebar-head]"), n = document.querySelector("#drawer");
 			if (!t) return;
-			c.setAttribute("aria-label", "SeleccionarBiblioteca de medios"), c.parentElement !== t && t.prepend(c);
+			c.setAttribute("aria-label", "选择媒体库"), c.parentElement !== t && t.prepend(c);
 			let r = n.classList.contains("open"), i = !A7();
 			i || r ? h.parentElement !== t && t.append(h) : h.parentElement !== g.parentElement && g.after(h), n.inert = !i && !r;
 		}
@@ -111491,7 +111491,7 @@ function V_t() {
 }
 //#endregion
 //#region src/ui-kit/middle-truncate.ts
-var H_t = "...", U_t = typeof Intl.Segmenter == "function" ? new Intl.Segmenter(void 0, { granularity: "grapheme" }) : null, W9 = /* @__PURE__ */ new WeakMap(), G9 = /* @__PURE__ */ new WeakSet(), K9 = null, q9 = null, J9 = /* @__PURE__ */ new Set(), W_t = (e) => U_t ? [...U_t.segment(String(e ?? ""))].map((e) => e.segment) : Array.from(String(e ?? ""));
+var H_t = "…", U_t = typeof Intl.Segmenter == "function" ? new Intl.Segmenter(void 0, { granularity: "grapheme" }) : null, W9 = /* @__PURE__ */ new WeakMap(), G9 = /* @__PURE__ */ new WeakSet(), K9 = null, q9 = null, J9 = /* @__PURE__ */ new Set(), W_t = (e) => U_t ? [...U_t.segment(String(e ?? ""))].map((e) => e.segment) : Array.from(String(e ?? ""));
 function G_t(e, t) {
 	let n = W_t(e);
 	if (!n.length || t(e)) return String(e ?? "");
@@ -111712,7 +111712,7 @@ function avt(e) {
 //#region src/react/bootstrap.tsx
 d();
 var ovt = document.getElementById("appRoot");
-if (!ovt) throw Error("Host de la interfaz principal no encontrado");
+if (!ovt) throw Error("主界面宿主缺失");
 avt(ovt);
 //#endregion
 export { xE as applyTheme, Sk as peachHistory, Ro as popCount, Lpt as showToast };
