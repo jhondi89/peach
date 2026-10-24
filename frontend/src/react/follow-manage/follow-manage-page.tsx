@@ -37,7 +37,7 @@ import {
 import { SourceList } from './source-list';
 
 const TABS = [
-  ['list', '关注列表'], ['add', '添加关注'], ['feeds', 'JAV 订阅源'],
+  ['list', 'Lista de seguidos'], ['add', 'Seguir'], ['feeds', 'Fuentes de suscripción JAV'],
 ] as const;
 type TabKey = (typeof TABS)[number][0];
 
@@ -116,11 +116,11 @@ export function FollowManagePage(props: FollowManageProps) {
   return (
     <Page>
       {readOnly ? (
-        <Note tone="warning" title="本机只能浏览"
+        <Note tone="warning" title="Este equipo solo puede ver"
           extra={writerUrl
             ? <p className="text-body-2-regular">
                 <a href={writerUrl} className="text-text-primary underline underline-offset-2">
-                  前往写入端管理关注
+                  Ve al equipo con permiso de escritura para gestionar seguimientos
                 </a>
               </p>
             : undefined}>
@@ -129,13 +129,13 @@ export function FollowManagePage(props: FollowManageProps) {
       ) : null}
 
       {/* 前四张是关注，后两张是 JAV 订阅源：订了几位、拉回来的新作还有几条没看。 */}
-      <div className={STAT_STRIP_SIX} aria-label="关注概览">
-        <Reading term="关注创作者" figure={groups.length} unit="位" />
-        <Reading term="启用来源" figure={enabled} unit={`/ ${sources.length}`} />
-        <Reading term="检查失败" figure={broken} unit="个来源" />
-        <Reading term="未看更新" figure={data.counts?.new || 0} unit="条" />
-        <Reading term="JAV 订阅" figure={subscribed} unit="位" />
-        <Reading term="未看新作" figure={feeds.data?.unread || 0} unit="条" />
+      <div className={STAT_STRIP_SIX} aria-label="Resumen de seguimientos">
+        <Reading term="Creadores seguidos" figure={groups.length} unit="personas" />
+        <Reading term="Fuentes activas" figure={enabled} unit={`/ ${sources.length}`} />
+        <Reading term="Revisión fallida" figure={broken} unit="fuentes" />
+        <Reading term="Novedades sin ver" figure={data.counts?.new || 0} unit="elementos" />
+        <Reading term="Suscripciones JAV" figure={subscribed} unit="personas" />
+        <Reading term="Estrenos sin ver" figure={feeds.data?.unread || 0} unit="elementos" />
       </div>
 
       <Tabs selectedKey={tab} onSelectionChange={(key) => {
@@ -144,7 +144,7 @@ export function FollowManagePage(props: FollowManageProps) {
         setTab(next);
         go({ tab: next });
       }} className="flex flex-col gap-6">
-        <TabList ref={sectionScroll} aria-label="关注管理区域" data-section-nav data-section-items
+        <TabList ref={sectionScroll} aria-label="Zona de gestión de seguimientos" data-section-nav data-section-items
           className="flex max-w-full flex-nowrap overflow-x-auto">
           {TABS.map(([key, name]) => (
             <Tab key={key} id={key} className="cursor-pointer whitespace-nowrap">{name}</Tab>
@@ -189,7 +189,7 @@ export function FollowManagePage(props: FollowManageProps) {
         </TabPanel>
 
       </Tabs>
-      <div><Button variant="secondary" onClick={openServiceConfiguration}>来源与订阅设置{pending ? `（${pending}）` : ''}</Button></div>
+      <div><Button variant="secondary" onClick={openServiceConfiguration}>Ajustes de fuentes y suscripciones{pending ? `（${pending}）` : ''}</Button></div>
     </Page>
   );
 }

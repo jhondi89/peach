@@ -111,7 +111,7 @@ const configurationRoute = (path: ConfigurationPath): ManagedRoute<ManagedOpenPr
     await Promise.all([prefetchConfiguration(signal), ...(path === '/settings/diagnostics' ? [prefetchDiagnostics(signal)] : [])]);
   },
   page: (open, actions, go) => <ConfigurationPage receipt={message => actions.receipt(message)}
-    reopenTutorial={actions.reopenTutorial} section={path === '/settings/diagnostics' ? '系统诊断' : open.section ?? ''}
+    reopenTutorial={actions.reopenTutorial} section={path === '/settings/diagnostics' ? 'Diagnóstico del sistema' : open.section ?? ''}
     diagnostics={<DiagnosticsPage navigate={go} openItem={actions.openItem} receipt={message => actions.receipt(message)}
       configure={section => { actions.requestConfigurationSection(section); go(settingsPath(section)) }} />} />,
 });
@@ -128,7 +128,7 @@ export const MANAGED_ROUTES: ManagedRouteTable = {
     /* 点一个内容标签是「回目录并按它筛选」，整页换成目录仍归壳。 */
     page: (open, actions, go) => (
       <StatsPage tagLabel={tagLabel} onTag={actions.openTag} configurable={open.configurable}
-        openMediaSettings={() => { actions.requestConfigurationSection('媒体库与入库'); go('/settings/library') }} />
+        openMediaSettings={() => { actions.requestConfigurationSection('Bibliotecas e importación'); go('/settings/library') }} />
     ),
   },
   '/taste': {
@@ -387,7 +387,7 @@ function routeOf(path: RoutedPath): ManagedRoute<object> {
 
 /** 首屏取数（`openManagedRoute` 经 `connectManagedRoutes` 调它）。 */
 export function prefetchManagedRoute(path: string, open: object, signal: AbortSignal): Promise<void> {
-  if (!isRoutedPath(path)) return Promise.reject(new Error(`路由树里没有这一页：${path}`));
+  if (!isRoutedPath(path)) return Promise.reject(new Error(`Esta página no está en el árbol de rutas: ${path}`));
   return routeOf(path).prefetch(open, signal);
 }
 

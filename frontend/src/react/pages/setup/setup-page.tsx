@@ -43,14 +43,14 @@ export function SetupPage() {
     setAttempt((count) => count + 1);
   };
   return (
-    <AuthCard title="欢迎使用 Peach" lede="添加媒体库，开始整理馆藏。" busy={view.kind === 'loading'}>
-      {view.kind === 'denied' ? <Note tone="error">请在运行 Peach 的这台电脑上打开设置。</Note> : null}
+    <AuthCard title="Bienvenido a Peach" lede="Añade una biblioteca para empezar a ordenar tu colección." busy={view.kind === 'loading'}>
+      {view.kind === 'denied' ? <Note tone="error">Abre la configuración en el equipo donde corre Peach.</Note> : null}
       {view.kind === 'failed'
-        ? <Note tone="error" action={<Button variant="secondary" onClick={retry}>重试</Button>}>{view.message}</Note>
+        ? <Note tone="error" action={<Button variant="secondary" onClick={retry}>Reintentar</Button>}>{view.message}</Note>
         : null}
       {view.kind === 'form' ? <>
         <Button variant="secondary" className="self-start" onClick={() => setRestoring((current) => !current)}>
-          {restoring ? '返回首次设置' : '使用已有数据目录'}
+          {restoring ? 'Volver a la configuración inicial' : 'Usar una carpeta de datos existente'}
         </Button>
         {restoring
           ? <SetupRestore onDone={(done) => setView({ kind: 'done', done })} />

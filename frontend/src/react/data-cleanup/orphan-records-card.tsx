@@ -31,23 +31,23 @@ function OrphanActions({ item, toast }: { item: OrphanRecord; toast(message: str
   const [target, setTarget] = useState<number | null>(item.candidates[0]?.id ?? null);
   const attach = useMutation({
     mutationFn: () => attachOrphan(item.id, Number(target)),
-    onSuccess: (data) => { toast(`记录已接到新文件，批次 ${data.batch}`); void refresh(); },
+    onSuccess: (data) => { toast(`Registro conectado al archivo nuevo, lote ${data.batch}`); void refresh(); },
     onError: (error) => toast(errorMessage(error)),
   });
   const purge = useMutation({
     mutationFn: () => purgeOrphan(item.id),
     onSuccess: (data) => {
       toast(data.blocked.length
-        ? `${item.name} 的文件又回到盘上，没有删除；下一次扫描会把它接回在库`
-        : `已彻底删除 ${item.name}`);
+        ? `El archivo de ${item.name} volvió al disco, así que no se borró; el próximo escaneo lo volverá a enlazar`
+        : `${item.name} eliminado definitivamente`);
       void refresh();
     },
   });
   const remove = () => {
     void confirmModal({
-      title: '彻底删除',
-      body: `将删除「${item.name}」这一条和它带的记录（${recordsText(item.records)}）。此操作不可撤销。`,
-      confirmLabel: '彻底删除',
+      title: 'Eliminar definitivamente',
+      body: `Se borrará “${item.name}” junto con sus registros (${recordsText(item.records)}). No se puede deshacer.`,
+      confirmLabel: 'Eliminar definitivamente',
       danger: true,
       onConfirm: () => purge.mutateAsync(),
     });
@@ -56,7 +56,7 @@ function OrphanActions({ item, toast }: { item: OrphanRecord; toast(message: str
   return (
     <span className="flex min-w-48 flex-wrap items-center gap-2">
         {item.candidates.length
-          ? <Select aria-label={`把 ${item.name} 的记录接到哪个文件`} className="w-52" selectedKey={target}
+          ? <Select aria-label={`A qué archivo conectar los registros de ${item.name}`} className="w-52" selectedKey={target}
               onSelectionChange={(key) => { if (key !== null) setTarget(Number(key)) }}>
               {item.candidates.map((candidate) => (
                 <SelectItem key={candidate.id} id={candidate.id} textValue={candidateText(candidate)}>
@@ -64,12 +64,12 @@ function OrphanActions({ item, toast }: { item: OrphanRecord; toast(message: str
                 </SelectItem>
               ))}
             </Select>
-          : <span className="text-text-secondary">没有番号或文件名对得上的文件</span>}
+          : <span className="text-text-secondary">No hay archivos cuyo código o nombre coincida</span>}
         {item.candidates.length
           ? <Button size="small" disabled={target === null} {...busyProps(busy)}
-              onClick={() => attach.mutate()}>接到这个文件</Button>
+              onClick={() => attach.mutate()}>Conectar a este archivo</Button>
           : null}
-        <Button variant="danger" size="small" {...busyProps(busy)} onClick={remove}>彻底删除</Button>
+        <Button variant="danger" size="small" {...busyProps(busy)} onClick={remove}>Eliminar definitivamente</Button>
     </span>
   );
 }
@@ -104,22 +104,22 @@ export function OrphanRecordsCard({ toast }: { toast(message: string): void }) {
   const purge = useMutation({
     mutationFn: (ids: number[]) => purgeOrphan(ids),
     onSuccess: (data) => {
-      toast(`已彻底删除 ${data.purged} 条记录${data.blocked.length ? `，${data.blocked.length} 条文件已恢复，未删除` : ''}`);
+      toast(`Se eliminaron definitivamente ${data.purged} registros${data.blocked.length ? `, ${data.blocked.length} archivos se recuperaron y no se borraron` : ''}`);
       setSelected([]); void refresh();
     },
   });
   const removeSelected = (chosen: OrphanRecord[]) => void confirmModal({
-    title: '彻底删除所选记录',
-    body: `将删除以下 ${chosen.length} 条作品和它们带的全部记录。此操作不可撤销。`,
+    title: 'Eliminar definitivamente los registros seleccionados',
+    body: `Se borrarán estas ${chosen.length} obras y todos sus registros. No se puede deshacer.`,
     items: chosen.map((item) => item.name),
-    confirmLabel: '彻底删除所选记录', danger: true,
+    confirmLabel: 'Eliminar definitivamente los registros seleccionados', danger: true,
     onConfirm: () => purge.mutateAsync(chosen.map((item) => item.id)),
   });
   const columns: DataColumn<OrphanRecord>[] = [
-    { id: 'item', label: '作品', value: (item) => item.name, render: (item) => <OrphanIdentity item={item} /> },
-    { id: 'records', label: '带的记录', value: (item) => recordsText(item.records),
-      render: (item) => <span className="block min-w-28">{recordsText(item.records) || '无个人记录'}</span> },
-    { id: 'target', label: '接到与操作', value: (item) => item.candidates.length,
+    { id: 'item', label: 'Obra', value: (item) => item.name, render: (item) => <OrphanIdentity item={item} /> },
+    { id: 'records', label: 'Registros', value: (item) => recordsText(item.records),
+      render: (item) => <span className="block min-w-28">{recordsText(item.records) || 'Sin registros personales'}</span> },
+    { id: 'target', label: 'Conexión y acciones', value: (item) => item.candidates.length,
       render: (item) => <OrphanActions item={item} toast={toast} /> },
   ];
   if (!query.isError && !items.length) return null;
@@ -127,17 +127,17 @@ export function OrphanRecordsCard({ toast }: { toast(message: string): void }) {
     <section id="orphan-records" aria-labelledby="orphan-records-title" className="flex scroll-mt-20 flex-col gap-4">
         {query.isError
           ? <Fieldset layout="stack" labelledBy="orphan-records-title">
-              <FieldsetTitle id="orphan-records-title">孤儿记录</FieldsetTitle>
-              <Note tone="error" title="孤儿记录读取失败">{errorMessage(query.error)}</Note>
+              <FieldsetTitle id="orphan-records-title">Registros huérfanos</FieldsetTitle>
+              <Note tone="error" title="No se pudieron cargar los registros huérfanos">{errorMessage(query.error)}</Note>
             </Fieldset>
-          : <DataTable label="文件已消失的作品" items={items} columns={columns}
-              title="孤儿记录" titleId="orphan-records-title" unit="条作品"
-              description="这些作品的文件已不在盘上，喜欢、稍后看、播放列表与观看历史都还留着。接到新文件后记录跟过去，旧的这一条删掉。"
+          : <DataTable label="Obras cuyo archivo desapareció" items={items} columns={columns}
+              title="Registros huérfanos" titleId="orphan-records-title" unit="obras"
+              description="Los archivos de estas obras ya no están en el disco, pero sus me gusta, Ver más tarde, listas e historial siguen guardados. Al conectarlas a un archivo nuevo, los registros pasan a él y se borra la entrada vieja."
               rowId={(item) => String(item.id)} rowLabel={(item) => item.name}
               selected={selected} onSelected={setSelected}
               actions={(chosen) => <Button variant="danger" size="small" disabled={!chosen.length}
                 {...busyProps(purge.isPending)} onClick={() => removeSelected(chosen)}>
-                {`彻底删除所选（${chosen.length}）`}
+                {`Eliminar definitivamente los seleccionados (${chosen.length})`}
               </Button>} />}
     </section>
   );

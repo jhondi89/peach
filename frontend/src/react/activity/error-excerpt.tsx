@@ -23,7 +23,7 @@ export function ErrorExcerpt({ text, className = '' }: { text: string; className
       {more
         ? <Button variant="ghost" size="xs" className="-ml-2" aria-expanded={open} aria-controls={open ? id : undefined}
             onClick={() => setOpen(!open)}>
-            {open ? '收起详情' : '查看详情'}
+            {open ? 'Ocultar detalles' : 'Ver detalles'}
           </Button>
         : null}
     </div>

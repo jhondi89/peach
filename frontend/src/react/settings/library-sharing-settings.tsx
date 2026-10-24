@@ -29,7 +29,7 @@ export function LibrarySharingSettings({ initial, receipt }: {
     apiSend<LibrarySharingState>('/api/configuration/library-sharing', {
       enabled, schema: value.schema, consent: accepted, preview_token: preview?.token,
     }, 'POST', signal), (saved) => {
-    setValue(saved); setPreview(null); setAccepted(false); setReviewing(false); receipt('已保存馆藏与口味上传选项');
+    setValue(saved); setPreview(null); setAccepted(false); setReviewing(false); receipt('Opciones de envío de colección y gustos guardadas');
   });
   const downloadPreview = () => {
     const url = URL.createObjectURL(new Blob([previewText], { type: 'application/json' }));
@@ -41,34 +41,34 @@ export function LibrarySharingSettings({ initial, receipt }: {
     }
   };
   return <>
-    <Rows><SettingsRow label="上传馆藏与口味明细" description={value.notice}>
-      <Switch aria-label="上传馆藏与口味明细" isSelected={value.enabled}
+    <Rows><SettingsRow label="Enviar detalles de colección y gustos" description={value.notice}>
+      <Switch aria-label="Enviar detalles de colección y gustos" isSelected={value.enabled}
         onChange={(enabled) => enabled ? setReviewing(true) : save(false)}
         {...busyProps(action.busy === 'save')} />
     </SettingsRow></Rows>
-    {!value.available ? <Stack divided><Help>上传服务未配置。</Help></Stack> : null}
+    {!value.available ? <Stack divided><Help>El servicio de envío no está configurado.</Help></Stack> : null}
     {value.enabled && value.last_attempt?.status === 'failed'
-      ? <Stack divided><ErrorText>馆藏与口味上传失败，自动重试。</ErrorText></Stack> : null}
+      ? <Stack divided><ErrorText>Falló el envío de colección y gustos; se reintentará solo.</ErrorText></Stack> : null}
     {preview ? <Stack divided>
-      <Help>当前预览包含 {preview.data.library.length} 部有编号作品、{preview.data.coverage.uncoded_items} 条无编号馆藏的汇总，约 {(preview.bytes / 1024).toFixed(1)} KiB。不含账号、设备、文件路径和浏览器历史记录等个人数据。</Help>
-      <Disclosure summary="上传数据预览" defaultOpen>
-        <CodeBlock code={previewText} language="json" label="馆藏与口味上传预览" maxCharacters={24000} />
+      <Help>La vista previa actual incluye {preview.data.library.length} obras con código y un resumen de {preview.data.coverage.uncoded_items} elementos sin código, unos {(preview.bytes / 1024).toFixed(1)} KiB. No incluye datos personales como cuenta, dispositivo, rutas de archivo ni historial del navegador.</Help>
+      <Disclosure summary="Vista previa de los datos a enviar" defaultOpen>
+        <CodeBlock code={previewText} language="json" label="Vista previa del envío de colección y gustos" maxCharacters={24000} />
       </Disclosure>
-      {previewText.length > 24000 ? <Help>显示前 24,000 个字符，下载可查看完整内容。</Help> : null}
-      <Button variant="secondary" onClick={downloadPreview}>下载完整预览</Button>
-      {!value.enabled ? <Checkbox isSelected={accepted} onChange={setAccepted}>我已查看上传预览，同意上传馆藏与口味明细</Checkbox> : null}
+      {previewText.length > 24000 ? <Help>Se muestran los primeros 24 000 caracteres; descárgala para ver todo.</Help> : null}
+      <Button variant="secondary" onClick={downloadPreview}>Descargar vista previa completa</Button>
+      {!value.enabled ? <Checkbox isSelected={accepted} onChange={setAccepted}>Revisé la vista previa y acepto enviar los detalles de colección y gustos</Checkbox> : null}
     </Stack> : null}
     {action.error ? <Stack divided><ErrorText>{action.error}</ErrorText></Stack> : null}
     <Footer>
       <Button variant="secondary" onClick={() => { setReviewing(true); void action.run('preview',
         (signal) => apiGet<Preview>('/api/configuration/library-sharing/preview', signal),
         (data) => { setPreview(data); setAccepted(false) }) }}
-        {...busyProps(action.busy === 'preview')}>预览上传内容</Button>
+        {...busyProps(action.busy === 'preview')}>Ver lo que se enviará</Button>
       {!value.enabled && preview ? <Button disabled={!accepted} onClick={() => save(true)}
-        {...busyProps(action.busy === 'save')}>同意并开启上传</Button> : null}
+        {...busyProps(action.busy === 'save')}>Aceptar y activar el envío</Button> : null}
       {reviewing && !value.enabled ? <Button variant="secondary" onClick={() => {
         setReviewing(false); setPreview(null); setAccepted(false);
-      }}>取消</Button> : null}
+      }}>Cancelar</Button> : null}
     </Footer>
   </>;
 }

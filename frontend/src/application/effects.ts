@@ -81,7 +81,7 @@ export class ApplicationEffects {
     for (const cleanup of [...this.cleanups].reverse()) {
       try { cleanup(); } catch (error) { errors.push(error); }
     }
-    if (errors.length) throw new AggregateError(errors, '应用资源清理未全部完成');
+    if (errors.length) throw new AggregateError(errors, 'La limpieza de recursos de la aplicación no terminó por completo');
   }
 }
 

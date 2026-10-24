@@ -30,8 +30,8 @@ export const TASTE_REFRESH_KEY = ['taste', 'refresh'] as const;
 
 /** 分析范围。值就是 `/api/taste?window=` 收的那几个。 */
 export const TASTE_WINDOWS = [
-  ['7d', '最近 7 天'], ['30d', '最近 30 天'], ['90d', '最近 90 天'],
-  ['365d', '最近一年'], ['all', '全部时间'],
+  ['7d', 'Últimos 7 días'], ['30d', 'Últimos 30 días'], ['90d', 'Últimos 90 días'],
+  ['365d', 'Último año'], ['all', 'Todo el tiempo'],
 ] as const;
 
 export const DEFAULT_WINDOW = 'all';
@@ -183,7 +183,7 @@ export async function importTasteExport(file: File): Promise<{ dashboard: TasteD
   } catch { /* 失败响应不一定是 JSON，下面按状态码兜底 */ }
   if (!response.ok) {
     const reason = (payload as { error?: string } | null)?.error;
-    throw new ApiError(reason || `导入失败（${response.status}）`, response.status, payload);
+    throw new ApiError(reason || `Falló la importación (${response.status})`, response.status, payload);
   }
   return payload as { dashboard: TasteData };
 }
@@ -196,7 +196,7 @@ export const tasteDate = (value: string | null | undefined): string =>
 
 /** 浏览记录那张读数卡的脚注：几个数据源，加上记录覆盖的日期范围；两头都没有日期时不写范围。 */
 export function historySpan(summary: TasteSummary): string {
-  const sources = `${Number(summary.history_sources || 0).toLocaleString()} 个数据源`;
+  const sources = `${Number(summary.history_sources || 0).toLocaleString()} fuentes de datos`;
   if (!summary.range_start && !summary.range_end) return sources;
   const sameYear = summary.range_start?.slice(0, 4) === summary.range_end?.slice(0, 4);
   const date = (value: string | null | undefined) => value && sameYear
@@ -222,8 +222,8 @@ export function rankDetail(row: RankRow): string {
   const parts: string[] = [];
   const bookmarks = Number(row.web_bookmarks || 0);
   const visits = Number(row.web_visits ?? row.visits ?? 0) - bookmarks;
-  if (visits > 0) parts.push(`浏览 ${visits.toLocaleString()}`);
-  if (bookmarks) parts.push(`书签 ${bookmarks.toLocaleString()}`);
+  if (visits > 0) parts.push(`Navegación ${visits.toLocaleString()}`);
+  if (bookmarks) parts.push(`Marcadores ${bookmarks.toLocaleString()}`);
   if (row.peach_items) parts.push(`Peach ${Number(row.peach_items).toLocaleString()}`);
   return parts.join(' · ');
 }
@@ -297,8 +297,8 @@ export function flowGraph(rows: CreatorFlow[] = []): FlowGraph | null {
   const valid = rows.filter((row) =>
     row.source && row.target && Number.isFinite(row.value) && row.value > 0);
   if (!valid.length) return null;
-  const sourceOf = foldSide(valid, 'source', (count) => `其余 ${count.toLocaleString()} 个网站`);
-  const targetOf = foldSide(valid, 'target', (count) => `其余 ${count.toLocaleString()} 位创作者`);
+  const sourceOf = foldSide(valid, 'source', (count) => `Otros ${count.toLocaleString()} sitios`);
+  const targetOf = foldSide(valid, 'target', (count) => `Otros ${count.toLocaleString()} creadores`);
   const folded = new Map<string, CreatorFlow>();
   for (const row of valid) {
     const source = sourceOf(row.source);

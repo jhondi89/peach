@@ -24,19 +24,19 @@ export async function catalogSuggestions(state: Record<string, string>, request:
 
 /** 空馆藏、筛选无结果与资料尚未建立分别给出可执行入口。 */
 export function catalogEmptyHtml({ kind = 'catalog', filtered = false, jav = false, configurable = false, online = false } = {}): string {
-  const add = configurable ? '<button class="geist-button primary" data-empty-settings>添加内容</button>' : '';
-  const follow = '<a class="geist-button' + (!configurable || online ? ' primary' : '') + '" href="/subscriptions?tab=add">添加关注</a>';
-  if (filtered || jav) return emptyStateHtml('search', jav ? '还没有符合条件的 JAV 作品' : '没有符合条件的内容',
-    jav ? '已扫描但尚未补充发行资料的视频可在全部内容中查看。' : '清除筛选或搜索条件后查看全部内容。',
-    { actions: '<a class="geist-button primary" href="/?loc=&thumb=0">查看全部内容</a>' });
+  const add = configurable ? '<button class="geist-button primary" data-empty-settings>Añadir contenido</button>' : '';
+  const follow = '<a class="geist-button' + (!configurable || online ? ' primary' : '') + '" href="/subscriptions?tab=add">Seguir</a>';
+  if (filtered || jav) return emptyStateHtml('search', jav ? 'Todavía no hay obras JAV que coincidan' : 'No hay contenido que coincida',
+    jav ? 'Los videos escaneados que aún no tienen datos de lanzamiento están en Todo el contenido.' : 'Quita los filtros o la búsqueda para ver todo el contenido.',
+    { actions: '<a class="geist-button primary" href="/?loc=&thumb=0">Ver todo el contenido</a>' });
   if (kind !== 'catalog') {
-    const labels: Record<string, string> = { tags: '标签', performers: '艺人', creators: '卖家', studios: '厂牌', agencies: '事务所', series: '系列' };
+    const labels: Record<string, string> = { tags: 'Etiquetas', performers: 'Artistas', creators: 'Vendedores', studios: 'Estudio', agencies: 'Agencias', series: 'Series' };
     // 在线那一档数的是来源上的东西，名字也跟着来源的说法：艺人页在线摆的是关注来源里的创作者。
-    const onlineLabels: Record<string, string> = { tags: '标签', performers: '创作者' };
-    const label = (online ? onlineLabels[kind] : '') || labels[kind] || '资料';
-    return emptyStateHtml(kind === 'tags' ? 'tags' : 'user-round', '还没有' + label,
-      online ? '添加关注来源并获取内容后，这里会显示来源上的' + label + '。' : '添加内容并补充资料后，这里会显示对应信息。',
+    const onlineLabels: Record<string, string> = { tags: 'Etiquetas', performers: 'Creador' };
+    const label = (online ? onlineLabels[kind] : '') || labels[kind] || 'datos';
+    return emptyStateHtml(kind === 'tags' ? 'tags' : 'user-round', 'Aún no hay' + label,
+      online ? 'Cuando añadas fuentes a seguir y se obtenga contenido, aquí aparecerán los datos de la fuente:' + label + '。' : 'Cuando añadas contenido y se completen sus datos, aquí aparecerá la información.',
       { actions: online ? follow : add + follow });
   }
-  return emptyStateHtml('play', '还没有视频', '添加媒体目录或关注来源，开始建立你的馆藏。', { actions: add + follow });
+  return emptyStateHtml('play', 'Aún no hay videos', 'Añade una carpeta de medios o una fuente a seguir para empezar tu colección.', { actions: add + follow });
 }

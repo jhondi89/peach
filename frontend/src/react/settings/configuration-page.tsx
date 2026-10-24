@@ -30,8 +30,8 @@ export function ConfigurationPage({ receipt, reopenTutorial, section = '', diagn
   if (!data) {
     return (
       <div className="ui-configpage">
-        <Note tone="error" title="配置读取失败">
-          {config.error ? errorMessage(config.error) : '未取得配置，请刷新页面重试。'}
+        <Note tone="error" title="No se pudo cargar la configuración">
+          {config.error ? errorMessage(config.error) : 'No se obtuvo la configuración; recarga la página e inténtalo de nuevo.'}
         </Note>
       </div>
     );
@@ -81,23 +81,23 @@ function ConfigurationGroups(
   const network = Boolean(data.peach_proxy || data.access || data.tunnel || (data.editable && data.port_editable !== false));
   const downloads = data.downloads;
   const groups: Group[] = [
-    { title: '媒体库与入库', body: (panel) => <div {...groupRoot(panel)}>
+    { title: 'Bibliotecas e importación', body: (panel) => <div {...groupRoot(panel)}>
       <MediaSettings {...group} /><MediaProcessingSettings receipt={receipt} />
     </div> },
-    { title: '来源与订阅', body: (panel) => <SourceSettings {...group} panel={panel} /> },
+    { title: 'Fuentes y suscripciones', body: (panel) => <SourceSettings {...group} panel={panel} /> },
     ...(downloads ? [{
-      title: '下载渠道',
+      title: 'Canales de descarga',
       body: (panel: ConfigurationPanel) => <DownloadGroup initial={downloads} receipt={receipt} panel={panel} />,
     }] : []),
-    ...(network ? [{ title: '网络与访问', body: (panel: ConfigurationPanel) => <NetworkSettings {...group} panel={panel} /> }] : []),
+    ...(network ? [{ title: 'Red y acceso', body: (panel: ConfigurationPanel) => <NetworkSettings {...group} panel={panel} /> }] : []),
     {
-      title: '应用与维护',
+      title: 'Aplicación y mantenimiento',
       body: (panel) => <div {...groupRoot(panel)}>
         <GeneralSettings {...group} />
         <MaintenanceSettings {...group} reopenTutorial={reopenTutorial} />
       </div>,
     },
-    { title: '系统诊断', body: panel => <div {...groupRoot(panel)}>{panel.active ? diagnostics : null}</div> },
+    { title: 'Diagnóstico del sistema', body: panel => <div {...groupRoot(panel)}>{panel.active ? diagnostics : null}</div> },
   ];
   const at = Math.max(0, groups.findIndex((item) => item.title === chosen));
   const move = (event: KeyboardEvent<HTMLButtonElement>, from: number) => {
@@ -114,7 +114,7 @@ function ConfigurationGroups(
   };
   return (
     <div ref={workspace} className="ui-configpage">
-      <div className="ui-board-local-nav" role="tablist" aria-label="配置分区" data-section-nav="" data-section-items=""
+      <div className="ui-board-local-nav" role="tablist" aria-label="Secciones de la configuración" data-section-nav="" data-section-items=""
         aria-orientation={narrow ? 'horizontal' : 'vertical'}>
         {groups.map(({ title }, i) => (
           <button key={title} ref={(node) => { buttons.current[i] = node }} type="button" role="tab"

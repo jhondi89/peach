@@ -104,8 +104,8 @@ function JunkBody({ props, data, pending, error, retry }: {
     if (!items.length) {
       const dismissed = props.view === 'dismissed';
       return (
-        <EmptyState icon={CheckGlyph} title={dismissed ? '没有已排除的文件' : '没有待判断的垃圾文件'}>
-          {dismissed ? '点“不是垃圾”的资源会保留在这里，可随时重新判断。' : '当前分类没有待检查文件。'}
+        <EmptyState icon={CheckGlyph} title={dismissed ? 'No hay archivos excluidos' : 'No hay archivos basura pendientes'}>
+          {dismissed ? 'Lo que marques como “No es basura” se queda aquí y puedes volver a evaluarlo cuando quieras.' : 'Esta categoría no tiene archivos pendientes.'}
         </EmptyState>
       );
     }
@@ -121,7 +121,7 @@ function JunkBody({ props, data, pending, error, retry }: {
         {/* 队列一次只取前 200 条：露到底了还有没取的，说清楚是截断而不是全部。 */}
         {shown.length >= items.length && Number(data.total || 0) > items.length
           ? <p data-junk-truncated="" className="py-6 text-center text-caption-1-regular text-text-secondary">
-              {`显示前 ${items.length.toLocaleString()} 条，共 ${Number(data.total).toLocaleString()} 条；处理掉这些后，其余的会补上来。`}
+              {`Se muestran los primeros ${items.length.toLocaleString()} de ${Number(data.total).toLocaleString()}; al resolverlos aparecerán los demás.`}
             </p>
           : null}
       </>
@@ -148,5 +148,5 @@ function RevealMore({ onMore }: { onMore(): void }) {
     observer.observe(el);
     return () => observer.disconnect();
   }, [onMore]);
-  return <div ref={node} data-load-more="" onClick={onMore} dangerouslySetInnerHTML={{ __html: loadingDotsHtml('继续载入中…') }} />;
+  return <div ref={node} data-load-more="" onClick={onMore} dangerouslySetInnerHTML={{ __html: loadingDotsHtml('Cargando más…') }} />;
 }

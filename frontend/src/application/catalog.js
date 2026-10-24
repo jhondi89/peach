@@ -87,11 +87,11 @@ export async function toggleWatchLater(it,onChange){
   try{
     const r=await api('/api/watch-later',{method:'POST',body:JSON.stringify({id:it.id})});
     it.watch_later=r.watch_later;onChange(!!r.watch_later);
-    receiptsState.actionReceipt(r.watch_later?'已加入稍后看':'已移出稍后看',{undo:async()=>{
+    receiptsState.actionReceipt(r.watch_later?'Añadido a Ver más tarde':'Quitado de Ver más tarde',{undo:async()=>{
       const restored=await api('/api/watch-later',{method:'POST',body:JSON.stringify({id:it.id})});
       it.watch_later=restored.watch_later;onChange(!!restored.watch_later);
     }});
-  }catch(error){receiptsState.actionFailure('更新稍后看',error)}
+  }catch(error){receiptsState.actionFailure('Actualizar Ver más tarde',error)}
 }
 
 export async function runResourceOperation(it,operation){
@@ -99,12 +99,12 @@ export async function runResourceOperation(it,operation){
     await api('/api/batch',{method:'POST',body:JSON.stringify({ids:[it.id],operation})});
     await loadCatalog();
     const inverse=operation==='restore'?'dispose':'restore';
-    receiptsState.actionReceipt(operation==='restore'?'已还原':'已移入回收站',{undo:async()=>{
+    receiptsState.actionReceipt(operation==='restore'?'Restaurado':'Movido a la papelera',{undo:async()=>{
       await api('/api/batch',{method:'POST',body:JSON.stringify({ids:[it.id],operation:inverse,
         ...(inverse==='dispose'?{disposal_reason:it.disposal_reason??null}:{})})});
       await loadCatalog();
     }});
-  }catch(error){receiptsState.actionFailure('操作',error);throw error}
+  }catch(error){receiptsState.actionFailure('Acción',error);throw error}
 }
 
 export async function getBarsData(context){
@@ -244,8 +244,8 @@ export function catalogFilterActions(){
 }
 
 export function catalogLayoutProp(){
-  if(javActive())return {name:'jav-layout',label:'JAV 卡片版式',value:javLayout(),options:JAV_LAYOUTS};
-  if(homeLayoutActive())return {name:'home-layout',label:'首页卡片版式',value:cardLayout(),options:JAV_LAYOUTS};
+  if(javActive())return {name:'jav-layout',label:'Diseño de tarjetas JAV',value:javLayout(),options:JAV_LAYOUTS};
+  if(homeLayoutActive())return {name:'home-layout',label:'Diseño de tarjetas de inicio',value:cardLayout(),options:JAV_LAYOUTS};
   return null;
 }
 
@@ -346,14 +346,14 @@ export function paintCatalogCount(nextTotal,n){
 }
 
 export function emptyTrash(){
-  return confirmModal({title:'清空回收站',body:'回收站中的全部文件和馆藏记录将永久删除，无法恢复。',confirmLabel:'清空回收站',danger:true,onConfirm:async()=>{
+  return confirmModal({title:'Vaciar papelera',body:'Todos los archivos y registros de la papelera se eliminarán para siempre y no se podrán recuperar.',confirmLabel:'Vaciar papelera',danger:true,onConfirm:async()=>{
     try{
       const r=await api('/api/trash/empty',{method:'POST'});
       /* 删不掉的文件（占用中、网盘离线）会连同数据库行一起留在回收站，必须说出来，
          否则用户看到条目还在会以为清空又没生效。 */
-      if(r.blocked&&r.blocked.length)throw new Error(`已永久删除 ${r.purged} 项；${r.blocked.length} 项未能删除，仍在回收站：\n`
+      if(r.blocked&&r.blocked.length)throw new Error(`Se eliminaron para siempre ${r.purged} elementos; ${r.blocked.length} no se pudieron eliminar y siguen en la papelera:\n`
         +r.blocked.slice(0,5).map(x=>`${x.path}（${x.reason}）`).join('\n'));
-      receiptsState.actionReceipt(`已永久删除 ${r.purged} 项`);
+      receiptsState.actionReceipt(`Se eliminaron para siempre ${r.purged} elementos`);
     }finally{await loadCatalog()}
   }});
 }
@@ -364,7 +364,7 @@ export function comboItems(filters){
   const items=[];
   if(filters.creator)items.push({kind:'clear',key:'creator',label:`${catalogState.COMBO_LABELS.creator} ${filters.creator}`});
   if(filters.studio)items.push({kind:'clear',key:'studio',label:`${catalogState.COMBO_LABELS.studio} ${filters.studio}`});
-  if(filters.owner==='none')items.push({kind:'clear',key:'owner',label:`${catalogState.COMBO_LABELS.owner} 未归属`});
+  if(filters.owner==='none')items.push({kind:'clear',key:'owner',label:`${catalogState.COMBO_LABELS.owner} sin asignar`});
   catalogState.tagList(filters.tag).forEach(t=>items.push({kind:'untag',key:t,label:tagLabel(t)}));
   return items;
 }
@@ -433,7 +433,7 @@ export function catalogGridLayout(){
   return gridLayout({active:javActive()||home,home,portrait:state.orient==='竖屏'});
 }
 
-export function catalogSkeletonHtml(label='正在读取作品'){
+export function catalogSkeletonHtml(label='Cargando obras'){
   return pageSkeletonHtml(label,{cards:true,className:'catalog-skeleton postercard-skeleton',cardRatio:catalogCardRatio()});
 }
 
@@ -469,7 +469,7 @@ export function catalogGridProps(){
     shorts:home&&path!=='/wall'&&!javActive()&&state.orient!=='竖屏'&&!trash&&state.browse!=='folders',
     countRow:$('#count'),onCount:paintCatalogCount,onCountFailed:()=>paintCatalogFilter({count:false}),
     emptyHtml:({trash:inTrash,libraryEmpty})=>inTrash
-      ?preferencesState.emptyState('trash','回收站是空的','删掉的内容会先到这里；确认不再需要后再清空。')
+      ?preferencesState.emptyState('trash','La papelera está vacía','Lo que borres llega aquí primero; vacíala cuando estés seguro de que ya no lo necesitas.')
       :catalogEmptyHtml({jav:javActive()&&!libraryEmpty,configurable:runtimeConfigurable,filtered:!libraryEmpty}),
     canLoadMore:()=>$('#stats').hidden&&$('#index').hidden,
   };
@@ -479,7 +479,7 @@ export function loadJunk(surface){
   const count=$('#count');
   const live=catalogState.controller.page==='/junk-files'&&gridPainted()&&!catalogState.controller.pending
     &&count.querySelector(':scope > .peach-react:not([data-junk-count-skeleton])');
-  if(!live){clearCatalogGrid();renderCatalogLoading('正在读取垃圾文件')}
+  if(!live){clearCatalogGrid();renderCatalogLoading('Cargando archivos basura')}
   showHomeSurfaces();
   renderCombo();
   // 垃圾文件是逐项处置队列，计数只是当前队列说明，不是需要跟随浏览的排序工具。
@@ -495,11 +495,11 @@ export async function runJunkOperation(it,operation){
       ...(disposed?{disposal_reason:'junk'}:{})})});
     await loadCatalog();
     const inverse=disposed?'restore':reconsidered?'dismiss-junk':'reconsider-junk';
-    receiptsState.actionReceipt(disposed?'已移入回收站':reconsidered?'已重新加入垃圾判断':'已标记为不是垃圾',{undo:async()=>{
+    receiptsState.actionReceipt(disposed?'Movido a la papelera':reconsidered?'Vuelve a evaluarse como basura':'Marcado como no basura',{undo:async()=>{
       await api('/api/batch',{method:'POST',body:JSON.stringify({ids,operation:inverse})});
       await loadCatalog();
     }});
-  }catch(error){receiptsState.actionFailure('操作',error);throw error}
+  }catch(error){receiptsState.actionFailure('Acción',error);throw error}
 }
 
 export function junkQueueProps(){
@@ -507,7 +507,7 @@ export function junkQueueProps(){
     ...junkRoute(location.search),helpers:catalogState.junkQueueHelpers,actions:catalogState.junkQueueActions,
     batchSize:preferencesState.appSettings.batchSize,revision:catalogState.controller.revision,selectMode,selected:new Set(selected),
     countRow:$('#count'),settled:settleCatalog,
-    skeletonHtml:()=>pageSkeletonHtml('正在读取垃圾文件',{cards:true,className:'catalog-skeleton postercard-skeleton'}),
+    skeletonHtml:()=>pageSkeletonHtml('Cargando archivos basura',{cards:true,className:'catalog-skeleton postercard-skeleton'}),
     canLoadMore:()=>$('#stats').hidden&&$('#index').hidden,
   };
 }
@@ -582,8 +582,8 @@ catalogState.topsQueryParams = (context,page=0)=>{
   return params;
 };
 catalogState.facetCountsSeq = 0;
-catalogState.VIEW_PILLS = [{k:'',label:'全部'},{k:'fresh',label:'没看过'},
-                  {k:'later',label:'稍后看'},{k:'flagged',label:'已标记'}];
+catalogState.VIEW_PILLS = [{k:'',label:'Todos'},{k:'fresh',label:'Sin ver'},
+                  {k:'later',label:'Ver más tarde'},{k:'flagged',label:'Marcados'}];
 catalogState.catalogViews = ()=>catalogState.VIEW_PILLS.map(v=>({...v,href:v.k?STATE_ROUTES[v.k]:'/'}));
 catalogState.TAGS_FIRST = 26;
 applicationEffects.listen($('#catalogFilter'), 'click', event=>{
@@ -592,7 +592,7 @@ applicationEffects.listen($('#catalogFilter'), 'click', event=>{
   event.preventDefault();catalogFilterActions().setView(view.dataset.catalogView);
 });
 catalogState.catalogOnScreen = ()=>$('#index').hidden&&$('#stats').hidden;
-catalogState.COMBO_LABELS = {creator:'创作者',studio:'厂牌',owner:'归属'};
+catalogState.COMBO_LABELS = {creator:'Creador',studio:'Estudio',owner:'Pertenencia'};
 catalogState.hideCatalogCombo = ()=>{if(catalogState.catalogFilterProps)paintCatalogFilter({comboHidden:true})};
 }
 
@@ -606,7 +606,7 @@ catalogState.junkQueueActions = {
     ?window.open('/photo?id='+it.id,'_blank','noopener'):openItem(it.id,true,null,anchor),
   /* 定位成功由 Toast 报，卡上状态行留空；失败把原因写回状态行。 */
   reveal:async it=>{
-    try{await api('/api/reveal',{method:'POST',body:JSON.stringify({id:it.id})});receiptsState.toast({text:'已在资源管理器中显示'});return ''}
+    try{await api('/api/reveal',{method:'POST',body:JSON.stringify({id:it.id})});receiptsState.toast({text:'Mostrado en el explorador de archivos'});return ''}
     catch(error){return entityState.sourceHint(error.message)}
   },
   operate:(it,operation)=>runJunkOperation(it,operation),
