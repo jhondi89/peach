@@ -235,7 +235,7 @@ var f = /* @__PURE__ */ o(((e) => {
 			return e;
 		}
 	};
-	e.Activity = f, e.Children = ne, e.Component = y, e.Fragment = r, e.Profiler = a, e.PureComponent = x, e.StrictMode = i, e.Suspense = l, e.ViewTransition = p, e.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRActive DirectoryE = T, e.__COMPILER_RUNTIME = {
+	e.Activity = f, e.Children = ne, e.Component = y, e.Fragment = r, e.Profiler = a, e.PureComponent = x, e.StrictMode = i, e.Suspense = l, e.ViewTransition = p, e.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = T, e.__COMPILER_RUNTIME = {
 		__proto__: null,
 		c: function(e) {
 			return T.H.useMemoCache(e);
@@ -582,12 +582,12 @@ var f = /* @__PURE__ */ o(((e) => {
 			implementation: n
 		};
 	}
-	var l = t.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRActive DirectoryE;
+	var l = t.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
 	function u(e, t) {
 		if (e === "font") return "";
 		if (typeof t == "string") return t === "use-credentials" ? t : "";
 	}
-	e.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRActive DirectoryE = i, e.browser = function(e) {
+	e.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = i, e.browser = function(e) {
 		return {
 			$$typeof: o,
 			_reason: e
@@ -886,7 +886,7 @@ var f = /* @__PURE__ */ o(((e) => {
 		}
 		return null;
 	}
-	var fe = Array.isArray, pe = n.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRActive DirectoryE, me = r.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRActive DirectoryE, he = {
+	var fe = Array.isArray, pe = n.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, me = r.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, he = {
 		pending: !1,
 		data: null,
 		method: null,
