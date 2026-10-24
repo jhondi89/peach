@@ -108,16 +108,10 @@ if(cameFromSetup){
   if(localStorage.getItem('peach.agentation')==='on')import('/dev/agentation.js').catch(()=>{});
 }
 tutorialState.postSetupTutorialTasks = async()=>{
-  const {library,scraping,taste,follow,credentials,review}=await api('/api/post-setup-tutorial');
+  const {library,scraping,taste,review}=await api('/api/post-setup-tutorial');
   const scrapingCredentialSources=(scraping.sources||[]).filter(source=>source.accepts_cookie);
   const savedScrapingCredentials=scrapingCredentialSources.filter(source=>source.cookie_saved);
-  const sources=(follow.sources||[]).filter(source=>source.enabled!==false);
-  const providers=new Map((credentials.providers||[]).map(row=>[row.provider,row]));
-  const required=[...new Set(sources.map(source=>source.provider))]
-    .map(provider=>providers.get(provider)).filter(row=>row?.requirement==='required');
   const libraryReady=Number(library.total||0)>0;
-  const followReady=sources.length>0;
-  const credentialsReady=followReady&&required.every(row=>row.present&&!row.missing?.length);
   const pendingReview=Object.values(review.counts||{})
     .reduce((sum,value)=>sum+(Number(value)||0),0);
   return [
@@ -132,14 +126,6 @@ tutorialState.postSetupTutorialTasks = async()=>{
       ?`Se importaron ${Number(taste.history_sources).toLocaleString()} historiales del navegador.`
       :'Importa desde los navegadores de este equipo los registros para analizar tus gustos.',
       href:'/taste',setupEntry:true,done:Number(taste.history_sources||0)>0,icon:'history'},
-    {key:'follow',label:'Añadir una fuente a seguir',description:followReady
-      ?`${sources.length.toLocaleString()} fuentes activadas.`:'Añade los creadores o fuentes que quieras seguir.',
-      href:'/subscriptions?tab=add',done:followReady,icon:'rss'},
-    {key:'credentials',label:'Completar credenciales de las fuentes seguidas',description:!followReady
-      ?'Al añadir seguimientos se revisan las credenciales que necesita cada fuente.':required.length
-        ?(credentialsReady?'Ya están configuradas las credenciales que necesitan las fuentes actuales.':`${required.length.toLocaleString()} fuentes necesitan credenciales.`)
-        :'Las fuentes seguidas actuales no necesitan credenciales.',
-      href:'/subscriptions?tab=source',done:credentialsReady,icon:'key-round'},
     {key:'review',label:'Hacer la primera revisión',description:!libraryReady
       ?'Al terminar el escaneo, aquí aparecerán los datos que necesitan revisión.':pendingReview
         ?`Quedan ${pendingReview.toLocaleString()} elementos por revisar.`:'La cola de la primera revisión está vacía.',

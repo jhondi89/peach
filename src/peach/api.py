@@ -288,7 +288,8 @@ def create_app(
     follow_scheduler = FollowUpdateScheduler(
         settings.follow_state_root,
         lambda: web_follow.w_follow_check(contract, {"automatic": True}),
-        available=sync is None or not sync.read_only,
+        # Esta versión no sigue creadores (FANBOX, Patreon…): la revisión automática queda apagada.
+        available=False,
     )
     push_discovery = PushDiscoveryService(
         state_root=settings.follow_state_root,

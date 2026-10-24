@@ -1,52 +1,24 @@
-import { authorAvatarHtml, followIdentity, followTitle } from '../follow-feed/follow-marks';
-import { groupMediaKinds, itemForMedia, type FollowPage } from '../follow-feed/follow-feed';
 import type { Discovery } from '../jav/jav';
 import type { SuggestCard, SuggestGroup, SuggestItem } from './search';
 
 type Request = (url: string) => Promise<any>;
 
-/** 搜索入口复用馆藏、口味推荐、关注和新作的本机读接口。 */
+/** 搜索入口复用馆藏、口味推荐和 JAV 新作的本机读接口。 */
 export async function searchRecommendations(request: Request): Promise<SuggestGroup[]> {
   const results = await Promise.allSettled([
     request('/api/items?sort=rand&limit=5'),
     request('/api/jav/discoveries?scope=library&limit=5'),
-    request(`/api/follow?limit=20&sort=rand&seed=${Date.now() >>> 0}`),
     request('/api/feeds/discoveries?limit=5'),
-    request('/api/follow/authors?limit=3'),
   ]);
   const data = results.map(result => result.status === 'fulfilled' ? result.value : null);
   const library: SuggestCard[] = (data[0]?.items || []).slice(0, 5);
   const jav: Discovery[] = (data[1]?.items || []).slice(0, 5);
-  const follow: FollowPage | null = data[2];
-  const releases: Discovery[] = data[3]?.items || [];
+  const releases: Discovery[] = data[2]?.items || [];
   const work = (card: SuggestCard, href?: string): SuggestItem => ({
     value: String(card.code || card.display_title || card.title || card.name || 'Obra sin título'),
     id: card.id, code: card.code, title: String(card.display_title || card.title || ''),
     who: String(card.performers || card.creator || ''), card, href,
   });
-  const posts: SuggestItem[] = [];
-  const photos: SuggestItem[] = [];
-  const context = { sources: follow?.sources || [], aliases: follow?.author_aliases || [], credentials: new Set<string>() };
-  for (const group of follow?.groups || []) {
-    const kinds = groupMediaKinds(group);
-    for (const media of ['videos', 'images'] as const) {
-      if (media === 'images' ? !kinds.has('image') : kinds.size && !kinds.has('video')) continue;
-      const item = itemForMedia(group, media);
-      const source = context.sources.find(source => source.id === item.source_id);
-      const sources = source?.author_key ? context.sources.filter(row => row.author_key === source.author_key) : source ? [source] : [];
-      const identity = followIdentity(item, sources, context);
-      const image = media === 'images' ? item.media_items?.find(entry => entry.media_kind === 'image') : undefined;
-      (media === 'images' ? photos : posts).push({ value: followTitle(item), id: item.id, who: identity.author,
-        href: `/posts/${item.id}`, followMedia: media, mediaIndex: image?.index ?? null,
-        card: { id: item.id, thumb_url: image?.thumb_url || item.thumb_url },
-      });
-    }
-  }
-  const authors: SuggestItem[] = (data[4]?.items || []).map((row: { k: string; key: string; entity_id?: number }) => ({
-    value: row.k, href: row.entity_id ? `/creators/${row.entity_id}` : `/follow?author=${encodeURIComponent(row.key)}`,
-    avatarHtml: authorAvatarHtml(context.sources.filter(source => source.author_key === row.key), row.k),
-    subtitle: 'Autores que sigues',
-  }));
   const people = new Map<string, SuggestItem>();
   for (const card of jav) {
     for (const ref of card.performer_refs || []) {
@@ -59,12 +31,9 @@ export async function searchRecommendations(request: Request): Promise<SuggestGr
     }
   }
   return [
-    { kind: 'performer', label: 'Artistas y estrenos', items: [...people.values()].slice(0, 3), href: '/subscriptions?tab=feeds', action: 'Suscribirse a estrenos' },
-    { kind: 'author', label: 'Autores seguidos', items: authors, href: '/subscriptions?tab=add', action: 'Seguir' },
+    { kind: 'performer', label: 'Artistas y estrenos', items: [...people.values()].slice(0, 3), href: '/subscriptions', action: 'Suscribirse a estrenos' },
     { kind: 'asset', label: 'Obras recomendadas', items: library.map(card => work(card)), href: '/', action: 'Todas las obras' },
     { kind: 'jav', label: 'Recomendaciones JAV', items: jav.map(card => work(card, `/assets/${card.asset_id || card.id}`)), href: '/jav?tab=discover', action: 'Descubrir JAV' },
-    { kind: 'post', label: 'Obras seguidas', items: posts.slice(0, 5), href: '/follow', action: 'Todas las obras seguidas' },
-    { kind: 'photo', label: 'Imágenes seguidas', items: photos.slice(0, 5), href: '/follow?media=images', action: 'Todas las imágenes seguidas' },
-    { kind: 'release', label: 'Suscribirse a estrenos', items: releases.filter(card => card.code).map(card => work({ ...card, sourceWork: true }, `/works/${encodeURIComponent(card.code)}`)), href: '/subscriptions?tab=feeds', action: 'Gestionar suscripciones' },
+    { kind: 'release', label: 'Suscribirse a estrenos', items: releases.filter(card => card.code).map(card => work({ ...card, sourceWork: true }, `/works/${encodeURIComponent(card.code)}`)), href: '/subscriptions', action: 'Gestionar suscripciones' },
   ];
 }

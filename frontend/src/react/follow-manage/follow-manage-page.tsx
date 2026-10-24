@@ -14,43 +14,23 @@
  * 版式判据来自 docs/reference-sources.json 的 vercel-report-design：要避开卡片套卡片、用
  * 边框补救层级、成排通栏空条、细小灰字加随意字号。所以分组靠标题和一条发丝分隔线，行与
  * 行之间也只用分隔线，不各自套框；字号只取 BoardUI 排好的那几档 token。 */
-import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Tab, TabList, TabPanel, Tabs } from 'react-aria-components';
 
-import { resolveFollowSort } from '../../follow-sort';
 import type { FollowManageProps } from '../bundle';
 import { cardClass } from '../components/card';
 import { Note } from '../components/note';
 import { Page } from '../components/page';
-import { useHorizontalScroller } from '../components/use-horizontal-scroller';
-import { STAT_STRIP_SIX } from '../components/stat-card';
-import { AddSource } from './add-source';
-import { AliasManager } from './alias-manager';
+import { STAT_STRIP } from '../components/stat-card';
 import { Button } from '@/components/base/buttons/button';
 import { FeedSources } from './feed-sources';
-import {
-  credentialDone, DEFAULT_SORT, FEEDS_KEY, fetchCredentials, fetchFeeds, fetchFollow, FOLLOW_CREDENTIALS_KEY,
-  FOLLOW_MANAGE_KEY, groupByAuthor, isBroken, isLayout, keepSelected, pageSizeOf,
-  SORT_DEFAULT_DIR, type CredentialData, type FollowData, type Layout, type SortDir, type SortKey,
-} from './follow-manage';
-import { SourceList } from './source-list';
+import { FEEDS_KEY, fetchFeeds } from './follow-manage';
 
-const TABS = [
-  ['list', 'Lista de seguidos'], ['add', 'Seguir'], ['feeds', 'Fuentes de suscripción JAV'],
-] as const;
-type TabKey = (typeof TABS)[number][0];
-
-const isTab = (value: unknown): value is TabKey => TABS.some(([key]) => key === value);
-
-/** 一格读数：一个名字、一个大数、一句它的量词。旧 `.fmanageoverview>div` 的填充卡。 */
+/** 一格读数：一个名字、一个大数、一句它的量词。 */
 function Reading({ term, figure, unit }: { term: string; figure: number; unit: string }) {
   return (
     <div className={cardClass({ padding: 'none', className: 'flex flex-col gap-3 px-6 py-5 max-sm:gap-2 max-sm:p-4' })}>
       <span className="text-body-medium text-text-secondary">{term}</span>
-      {/* 六位数起小一号字、七位数起再小一号，六卡并排时读数和单位仍在一行；更长时单位落到下一行，不顶出卡片。 */}
-      <b data-follow-reading="" className={`flex min-w-0 flex-wrap items-baseline gap-x-1 tabular-nums text-text-primary ${
-        figure >= 1000000 ? 'text-headline-medium' : figure >= 100000 ? 'text-title-3-medium' : 'text-title-1-medium'}`}>
+      <b data-follow-reading="" className="flex min-w-0 flex-wrap items-baseline gap-x-1 tabular-nums text-text-primary text-title-1-medium">
         <span className="min-w-0 wrap-anywhere">{figure.toLocaleString()}</span>
         <small className="whitespace-nowrap text-body-2-regular text-text-secondary">{` ${unit}`}</small>
       </b>
@@ -58,58 +38,12 @@ function Reading({ term, figure, unit }: { term: string; figure: number; unit: s
   );
 }
 
+/** Suscripciones JAV: estrenos de las actrices que sigues. El seguimiento de creadores de FANBOX,
+ *  Patreon y similares no forma parte de esta versión. */
 export function FollowManagePage(props: FollowManageProps) {
-  const sectionScroll = useHorizontalScroller<HTMLDivElement>();
-  const {
-    route, savePreference, toast, openFollow, openServiceConfiguration, readOnly, readOnlyMessage, writerUrl,
-  } = props;
-  const [tab, setTab] = useState<TabKey>(isTab(props.tab) ? props.tab : 'list');
-  const [page, setPage] = useState(Math.max(1, Math.floor(props.page) || 1));
-  const [sort, setSort] = useState<SortKey>(() => resolveFollowSort(props.sort, props.dir).sort);
-  const [dir, setDir] = useState<SortDir>(() => resolveFollowSort(props.sort, props.dir).dir);
-  const [layout, setLayout] = useState<Layout>(isLayout(props.layout) ? props.layout : 'default');
-  const [pageSize, setPageSize] = useState(pageSizeOf(props.pageSize));
-  /* 勾选跨页也跨视图，身份是来源 ID：换页、换排序、从卡片切到表格，选中的仍是同一批。
-     它不进地址栏——那是这一刻手里的一批东西，不是这一页的身份。 */
-  const [selected, setSelected] = useState<ReadonlySet<number>>(new Set<number>());
-
-  const follow = useQuery({ queryKey: FOLLOW_MANAGE_KEY, queryFn: ({ signal }) => fetchFollow(signal) });
-  const credentials = useQuery({
-    queryKey: FOLLOW_CREDENTIALS_KEY, queryFn: ({ signal }) => fetchCredentials(signal),
-  });
-  /* 和 JAV 订阅源页签同一份缓存：读数与表格看的是同一次读取。 */
+  const { toast, openServiceConfiguration, readOnly, readOnlyMessage, writerUrl } = props;
   const feeds = useQuery({ queryKey: FEEDS_KEY, queryFn: ({ signal }) => fetchFeeds(signal) });
-  const data: FollowData = follow.data || { sources: [] };
-  const creds: CredentialData = credentials.data || { root: '', providers: [] };
-  const sources = data.sources;
-
-  /* 删掉的来源不该还占着计数：清单换一份就把已经不在里面的 ID 丢掉。 */
-  useEffect(() => {
-    setSelected((now) => {
-      const next = keepSelected(now, sources);
-      return next.size === now.size ? now : next;
-    });
-  }, [sources]);
-
-  /* 默认值传空串：哪一项算默认只有这一边知道（`DEFAULT_SORT` 与每一档的默认方向都在
-     数据层），壳照这个判据决定写不写进地址栏，不必在它那边再抄一份默认表。 */
-  const go = (next: Partial<{ tab: TabKey; page: number; sort: SortKey; dir: SortDir }>) => {
-    const nextSort = next.sort ?? sort;
-    const nextDir = next.dir ?? dir;
-    route({
-      tab: next.tab ?? tab,
-      page: next.page ?? page,
-      sort: nextSort === DEFAULT_SORT ? '' : nextSort,
-      dir: nextDir === SORT_DEFAULT_DIR[nextSort] ? '' : nextDir,
-    });
-  };
-
-  const groups = groupByAuthor(sources);
-  const broken = sources.filter(isBroken).length;
-  const enabled = sources.filter((source) => source.enabled).length;
-  const pending = (creds.providers || []).filter(
-    (row) => row.requirement === 'required' && !credentialDone(row)).length;
-  /* 按人数：一位女优常有本名页和旧艺名页两条源，订的是她这个人。没挂人物的源各算一位。 */
+  /* Por personas: una actriz suele tener dos páginas de fuente; lo que se sigue es a ella. */
   const subscribed = new Set((feeds.data?.sources || []).map(
     (source) => source.entity_id ?? `source-${source.id}`)).size;
 
@@ -120,7 +54,7 @@ export function FollowManagePage(props: FollowManageProps) {
           extra={writerUrl
             ? <p className="text-body-2-regular">
                 <a href={writerUrl} className="text-text-primary underline underline-offset-2">
-                  Ve al equipo con permiso de escritura para gestionar seguimientos
+                  Ve al equipo con permiso de escritura para gestionar las suscripciones
                 </a>
               </p>
             : undefined}>
@@ -128,68 +62,13 @@ export function FollowManagePage(props: FollowManageProps) {
         </Note>
       ) : null}
 
-      {/* 前四张是关注，后两张是 JAV 订阅源：订了几位、拉回来的新作还有几条没看。 */}
-      <div className={STAT_STRIP_SIX} aria-label="Resumen de seguimientos">
-        <Reading term="Creadores seguidos" figure={groups.length} unit="personas" />
-        <Reading term="Fuentes activas" figure={enabled} unit={`/ ${sources.length}`} />
-        <Reading term="Revisión fallida" figure={broken} unit="fuentes" />
-        <Reading term="Novedades sin ver" figure={data.counts?.new || 0} unit="elementos" />
+      <div className={STAT_STRIP} aria-label="Resumen de suscripciones">
         <Reading term="Suscripciones JAV" figure={subscribed} unit="personas" />
         <Reading term="Estrenos sin ver" figure={feeds.data?.unread || 0} unit="elementos" />
       </div>
 
-      <Tabs selectedKey={tab} onSelectionChange={(key) => {
-        const next = String(key);
-        if (!isTab(next)) return;
-        setTab(next);
-        go({ tab: next });
-      }} className="flex flex-col gap-6">
-        <TabList ref={sectionScroll} aria-label="Zona de gestión de seguimientos" data-section-nav data-section-items
-          className="flex max-w-full flex-nowrap overflow-x-auto">
-          {TABS.map(([key, name]) => (
-            <Tab key={key} id={key} className="cursor-pointer whitespace-nowrap">{name}</Tab>
-          ))}
-        </TabList>
-
-        <TabPanel id="list" className="flex flex-col gap-4">
-          <SourceList data={data} sort={sort} dir={dir} page={page} layout={layout}
-            pageSize={pageSize} selected={selected} readOnly={readOnly} toast={toast}
-            openFollow={openFollow}
-            onSort={(nextSort, nextDir) => {
-              setSort(nextSort);
-              setDir(nextDir);
-              setPage(1);
-              go({ sort: nextSort, dir: nextDir, page: 1 });
-            }}
-            onPage={(next) => { setPage(next); go({ page: next }) }}
-            onSelected={setSelected}
-            onLayout={(next) => {
-              setLayout(next);
-              setPage(1);
-              savePreference({ layout: next });
-              go({ page: 1 });
-            }}
-            onPageSize={(next) => {
-              setPageSize(next);
-              setPage(1);
-              savePreference({ pageSize: next });
-              go({ page: 1 });
-            }} />
-        </TabPanel>
-
-        <TabPanel id="add" className="flex flex-col gap-8">
-          <AddSource data={data} credentials={creds} readOnly={readOnly} toast={toast}
-            openCredentials={openServiceConfiguration} />
-          <AliasManager groups={data.author_aliases || []} readOnly={readOnly} toast={toast}
-            suggestions={data.alias_suggestions || []} sources={data.sources} />
-        </TabPanel>
-
-        <TabPanel id="feeds" className="flex flex-col gap-4">
-          <FeedSources readOnly={readOnly} toast={toast} />
-        </TabPanel>
-
-      </Tabs>
-      <div><Button variant="secondary" onClick={openServiceConfiguration}>Ajustes de fuentes y suscripciones{pending ? `（${pending}）` : ''}</Button></div>
+      <FeedSources readOnly={readOnly} toast={toast} />
+      <div><Button variant="secondary" onClick={openServiceConfiguration}>Ajustes de fuentes y suscripciones</Button></div>
     </Page>
   );
 }

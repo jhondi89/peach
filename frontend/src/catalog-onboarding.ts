@@ -25,7 +25,7 @@ export async function catalogSuggestions(state: Record<string, string>, request:
 /** 空馆藏、筛选无结果与资料尚未建立分别给出可执行入口。 */
 export function catalogEmptyHtml({ kind = 'catalog', filtered = false, jav = false, configurable = false, online = false } = {}): string {
   const add = configurable ? '<button class="geist-button primary" data-empty-settings>Añadir contenido</button>' : '';
-  const follow = '<a class="geist-button' + (!configurable || online ? ' primary' : '') + '" href="/subscriptions?tab=add">Seguir</a>';
+  const follow = online ? '<a class="geist-button primary" href="/subscriptions">Suscripciones JAV</a>' : '';
   if (filtered || jav) return emptyStateHtml('search', jav ? 'Todavía no hay obras JAV que coincidan' : 'No hay contenido que coincida',
     jav ? 'Los videos escaneados que aún no tienen datos de lanzamiento están en Todo el contenido.' : 'Quita los filtros o la búsqueda para ver todo el contenido.',
     { actions: '<a class="geist-button primary" href="/?loc=&thumb=0">Ver todo el contenido</a>' });
@@ -38,5 +38,5 @@ export function catalogEmptyHtml({ kind = 'catalog', filtered = false, jav = fal
       online ? 'Cuando añadas fuentes a seguir y se obtenga contenido, aquí aparecerán los datos de la fuente:' + label + '。' : 'Cuando añadas contenido y se completen sus datos, aquí aparecerá la información.',
       { actions: online ? follow : add + follow });
   }
-  return emptyStateHtml('play', 'Aún no hay videos', 'Añade una carpeta de medios o una fuente a seguir para empezar tu colección.', { actions: add + follow });
+  return emptyStateHtml('play', 'Aún no hay videos', 'Añade una carpeta de medios para empezar tu colección.', { actions: add });
 }

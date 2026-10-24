@@ -14,7 +14,6 @@ export const SIDEBAR_ITEMS = [
   ['jav', 'JAV', 'jav'],
   ['flagged', 'Marcados', 'bookmark'],
   ['playlists', 'Listas', 'playlist'],
-  ['follow', 'Siguiendo', 'rss'],
   ['immerse', 'Modo inmersivo', 'gallery-vertical-end'],
   ['manage', 'Gestión', 'wrench'],
 ] as const satisfies readonly NavigationItem<SidebarKey>[];
@@ -25,7 +24,7 @@ export const MANAGE_SECTIONS = [
   ['review', 'Revisión manual', 'square-check-big'],
   ['cleanup', 'Datos', 'hard-drive'],
   ['trash', 'Papelera', 'trash'],
-  ['follow', 'Gestionar seguimientos', 'rss'],
+  ['follow', 'Suscripciones JAV', 'rss'],
   ['quality', 'Versiones HD', 'sparkles'],
   ['activity', 'Tareas', 'history'],
   ['configuration', 'Configuración de Peach', 'folder-cog'],
