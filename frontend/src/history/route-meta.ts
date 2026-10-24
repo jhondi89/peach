@@ -36,7 +36,7 @@ export const ROUTE_META: Readonly<Record<string, RouteMeta>> = {
   '/duplicates': { section: 'cleanup', title: 'Archivos duplicados', refresh: 'reopen' },
   '/quality-goals': { section: 'quality', title: 'Versiones HD', refresh: 'reopen' },
   '/sources': { section: 'cleanup', title: 'Fuentes y credenciales', refresh: 'reopen' },
-  '/subscriptions': { section: 'follow', title: 'Gestionar seguimientos', refresh: 'skip' },
+  '/subscriptions': { section: 'follow', title: 'Suscripciones JAV', refresh: 'skip' },
   '/settings/library': { section: 'configuration', title: 'Configuración de Peach', refresh: 'reopen' },
   '/tasks': { section: 'activity', title: 'Tareas', refresh: 'reopen' },
   // 旧直达地址，改写到数据管理页的锚点，没有自己的管理身份。

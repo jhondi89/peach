@@ -34,8 +34,8 @@ function FavoriteChoice({ item }: { item: Favorite }) {
     : item.favorite ?? (query.data ? isFavorite(query.data.favorites || [], item) : false);
   return <span className="inline-flex min-w-0 flex-col gap-1">
     <button type="button" data-favorite="" aria-pressed={!!selected}
-      aria-label={`${selected ? 'Quitar de favoritos' : 'Favorito'}${item.name}`}
-      title={`${selected ? 'Quitar de favoritos' : 'Favorito'}${item.name}`}
+      aria-label={`${selected ? 'Quitar de favoritos' : 'Añadir a favoritos'}: ${item.name}`}
+      title={`${selected ? 'Quitar de favoritos' : 'Añadir a favoritos'}: ${item.name}`}
       {...busyProps(write.isPending)} onClick={() => {
         if (!write.isPending) write.mutate({ action: 'favorite', ...item, on: !selected });
       }}>{write.isPending ? <span aria-hidden dangerouslySetInnerHTML={{ __html: spinnerHtml('') }} /> : <Star />}</button>

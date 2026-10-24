@@ -14,8 +14,8 @@ VALUES = {
     'market': {'japanese_av':'日本 AV', 'western_adult':'西方成人发行'},
     'account_role': {'seller':'卖家', 'publisher':'发布者', 'studio':'发行厂牌'},
 }
-CATEGORIES = {'japanese_av': '女优', 'amateur': '素人', 'western': '西方',
-              'blogger': '网黄博主', 'seller': '卖家', 'animation': '动画作者'}
+CATEGORIES = {'japanese_av': 'Actriz', 'amateur': 'Amateur', 'western': 'Occidental',
+              'blogger': 'Creadora web', 'seller': 'Vendedor', 'animation': 'Animación'}
 #: observed 只属于代码判据（ADR-0052 决策一）：`source:` 是抓取器从来源页解析出的事实，
 #: `script:fc2-seller@` 由 FC2 作品页快照的卖家字段解析，`script:creator-identity-wiki@` 由查创作者
 #: 身份后继按页名直取资料站、按作品表结构判定（ADR-0098）。研究与检索结论只写 candidate。

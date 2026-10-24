@@ -7,6 +7,7 @@
  * 体积走 `src/core/index.ts` 的 `fmtSize`，与馆藏、重复项、高清版同一套口径；播放时长、百分比
  * 与图表的分档是这一页自己的折算，写成纯函数放在这里，由 vitest 直接验。 */
 import { apiGet } from '../../api';
+import { tagLabel } from '../../core/tags';
 import type { BarRow } from '../charts/bar-card';
 import type { ActivityCounts } from '../charts/heat';
 import { queryClient } from '../query';
@@ -193,7 +194,7 @@ const LENGTH_LABEL: Record<string, string> = {
 
 /** 时长与画质分档，顺序由服务端给。时长换成分钟区间，画质原样。 */
 export const bandRows = (rows: BandCount[], labels: Record<string, string> = {}): BarRow[] =>
-  rows.map((row) => ({ name: labels[row.k] ?? row.k, value: row.n }));
+  rows.map((row) => ({ name: labels[row.k] ?? tagLabel(row.k), value: row.n }));
 
 export const lengthRows = (rows: BandCount[]): BarRow[] => bandRows(rows, LENGTH_LABEL);
 
