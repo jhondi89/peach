@@ -67107,7 +67107,7 @@ function EMe({ readOnly: e, receipt: t, navigate: n, initial: r }) {
 			/* @__PURE__ */ (0, C.jsxs)("p", {
 				className: "text-body-2-regular text-text-secondary",
 				children: [
-					"Busca en JavDB y en las páginas que añadiste en ",
+					"Busca en FreeJavBT, en JavDB y en las páginas que añadiste en ",
 					/* @__PURE__ */ (0, C.jsx)("a", {
 						className: "underline",
 						href: "/sources",
@@ -67142,9 +67142,9 @@ function EMe({ readOnly: e, receipt: t, navigate: n, initial: r }) {
 			o ? /* @__PURE__ */ (0, C.jsxs)("div", {
 				className: "flex flex-col gap-3",
 				children: [
-					/* @__PURE__ */ (0, C.jsx)("h3", {
+					/* @__PURE__ */ (0, C.jsxs)("h3", {
 						className: "text-title-2-medium text-text-primary",
-						children: "Actrices en JavDB"
+						children: ["Actrices en ", y?.site || "FreeJavBT"]
 					}),
 					y?.approximate ? /* @__PURE__ */ (0, C.jsxs)("p", {
 						className: "text-body-2-regular text-text-secondary",
@@ -67196,7 +67196,7 @@ function EMe({ readOnly: e, receipt: t, navigate: n, initial: r }) {
 									href: t.url,
 									target: "_blank",
 									rel: "noopener noreferrer",
-									children: "JavDB"
+									children: y?.site || "FreeJavBT"
 								}),
 								/* @__PURE__ */ (0, C.jsx)(K, {
 									variant: "primary",
