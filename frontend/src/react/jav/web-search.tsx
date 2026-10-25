@@ -1,4 +1,4 @@
-/* Buscar en internet: actrices y obras en JavDB y en las páginas que el usuario añadió como fuente.
+/* Buscar en internet: actrices y obras en FreeJavBT, JavDB y en las páginas que el usuario añadió como fuente.
  * Solo muestra; suscribirse y «Lo quiero» usan los mismos puntos que el resto de la aplicación. */
 import { useEffect, useState, type FormEvent } from 'react';
 import { RiExternalLinkLine } from '@remixicon/react';
@@ -19,7 +19,7 @@ interface WebSource { id: string; name: string; items: WebResult[]; error: strin
 interface WebSearchResponse {
   q: string;
   code: { code: string; owned: boolean; wanted: boolean } | null;
-  actresses: { candidates: FeedCandidate[]; error?: string; approximate?: boolean; q?: string; asked?: string };
+  actresses: { candidates: FeedCandidate[]; error?: string; approximate?: boolean; q?: string; asked?: string; site?: string };
   sources: WebSource[];
 }
 
@@ -70,7 +70,7 @@ export function WebSearch({ readOnly, receipt, navigate, initial }: {
       <Button type="submit" variant="primary" {...busyProps(search.busy === 'search')} disabled={!text.trim()}>Buscar</Button>
     </form>
     <p className="text-body-2-regular text-text-secondary">
-      Busca en JavDB y en las páginas que añadiste en <a className="underline" href="/sources">Fuentes y credenciales</a> con página de búsqueda.
+      Busca en FreeJavBT, en JavDB y en las páginas que añadiste en <a className="underline" href="/sources">Fuentes y credenciales</a> con página de búsqueda.
     </p>
     {search.error ? <Note tone="error" title="La búsqueda falló">{search.error}</Note> : null}
     {act.error ? <Note tone="error">{act.error}</Note> : null}
@@ -80,7 +80,7 @@ export function WebSearch({ readOnly, receipt, navigate, initial }: {
       {workActions(result.code)}
     </div> : null}
     {result ? <div className="flex flex-col gap-3">
-      <h3 className="text-title-2-medium text-text-primary">Actrices en JavDB</h3>
+      <h3 className="text-title-2-medium text-text-primary">Actrices en {actresses?.site || 'FreeJavBT'}</h3>
       {actresses?.approximate ? <p className="text-body-2-regular text-text-secondary">
         No hay nadie llamado «{actresses.asked}»; estas son las que coinciden con «{actresses.q}».</p> : null}
       {actresses?.error ? <Note tone="warning">{actresses.error}</Note> : null}
@@ -93,7 +93,7 @@ export function WebSearch({ readOnly, receipt, navigate, initial }: {
             {card.record ? <span className="text-body-2-regular text-text-secondary"> · {card.record === '無碼' ? 'sin censura' : card.record}</span> : null}
             {card.held_by ? <span className="text-body-2-regular text-text-secondary"> · ya está como {card.held_by.name}</span> : null}
           </span>
-          <ButtonLink variant="secondary" trailingIcon={RiExternalLinkLine} href={card.url} target="_blank" rel="noopener noreferrer">JavDB</ButtonLink>
+          <ButtonLink variant="secondary" trailingIcon={RiExternalLinkLine} href={card.url} target="_blank" rel="noopener noreferrer">{actresses?.site || 'FreeJavBT'}</ButtonLink>
           <Button variant="primary" disabled={readOnly || followed.has(card.id)} {...busyProps(act.busy === `follow:${card.id}`)}
             onClick={() => follow(card)}>{followed.has(card.id) ? 'Suscrita' : 'Añadir y suscribirse'}</Button>
         </li>)}
