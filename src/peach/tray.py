@@ -731,12 +731,10 @@ def build_macos_service_specs(
     cert_dir = Path(tls_dir) if tls_dir is not None else SECRETS_DIR / "tls"
     ca, cert, key = (cert_dir / n for n in
                      ("peach-local-ca.crt", "peach.crt", "peach.key"))
+    # 本机的明文口始终直接提供应用：`peach.local` 要靠 pf 转发 443 和信任本机 CA，
+    # 两样缺一样浏览器就打不开，所以 http://127.0.0.1:8900 不跳转。
+    del redirect_origin
     if all(path.is_file() for path in (ca, cert, key)):
-        specs[0] = ServiceSpec(
-            "http", f"http://127.0.0.1:{MACOS_PORT}/healthz",
-            (peach, "serve", "--host", "0.0.0.0", "--port", str(MACOS_PORT),
-             "--redirect-origin", redirect_origin), True,
-        )
         specs.append(ServiceSpec(
             "https",
             # 健康检查走回环，不走局域网地址。走 `peach.local` 会先解析到本机的
